@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TrainingTestingData>
+  <Positive>
+    <DataItem Date="2011-01-01T00:00:00">
+      <Stars>1</Stars>
+    </DataItem>
+    <DataItem Date="2010-01-01T00:00:00">
+      <Stars>2</Stars>
+    </DataItem>
+  </Positive>
+  <Negative>
+    <DataItem Date="2014-01-01T00:00:00">
+      <Stars>3</Stars>
+    </DataItem>
+  </Negative>
+  <Neutral />
+</TrainingTestingData>

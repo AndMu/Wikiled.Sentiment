@@ -1,0 +1,129 @@
+﻿using System;
+using System.Collections.Generic;
+using Wikiled.Core.Utility.Arguments;
+using Wikiled.Core.Utility.Collection;
+using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Words;
+
+namespace Wikiled.Sentiment.Text.Parser
+{
+    public class SentimentDataHolder : ISentimentDataHolder
+    {
+        private MaskDictionary<SentimentValueData> EmotionsLookup { get; } = new MaskDictionary<SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+
+        private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+
+        public void AddValue(string word, SentimentValueData value)
+        {
+            AddSentimentValue(word, value);
+        }
+
+        public bool Adjust(string word, double value)
+        {
+            SentimentValueData sentimentOne;
+            SentimentValueData sentimentTwo;
+            bool found = false;
+            if (EmotionsTable.TryGetValue(word, out sentimentOne))
+            {
+                AdjustWeight(sentimentOne, value);
+                found = true;
+            }
+
+            if (EmotionsLookup.TryGetValue(word, out sentimentTwo))
+            {
+                AdjustWeight(sentimentTwo, value);
+                found = true;
+            }
+
+            return found;
+        }
+
+        public void Clear()
+        {
+            EmotionsLookup.Clear();
+            EmotionsTable.Clear();
+        }
+
+        public Dictionary<string, SentimentValueData> CreateEmotionsData()
+        {
+            Dictionary<string, SentimentValueData> table = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in EmotionsTable)
+            {
+                table[string.Intern(item.Key)] = item.Value;
+            }
+
+            foreach (var item in EmotionsLookup)
+            {
+                table[string.Intern(item.Key + "*")] = item.Value;
+            }
+
+            return table;
+        }
+
+        public SentimentValue MeasureSentiment(IWordItem word)
+        {
+            SentimentValueData value;
+            if (!EmotionsTable.TryGetWordValue(word, out value))
+            {
+                return MeasureLookupSentiment(word);
+            }
+
+            var sentiment = new SentimentValue(word, new SentimentValueData(value.Value));
+            return sentiment;
+        }
+
+        public void PopulateEmotionsData(Dictionary<string, double> data)
+        {
+            Guard.NotNull(() => data, data);
+            Clear();
+            foreach (var item in data)
+            {
+                var value = new SentimentValueData(item.Value);
+                if (item.Key[item.Key.Length - 1] == '*')
+                {
+                    string word = item.Key.Substring(0, item.Key.Length - 1);
+                    AddValue(word, value);
+                    if (word.Length > 4)
+                    {
+                        EmotionsLookup.Add(string.Intern(word), value);
+                    }
+                }
+                else
+                {
+                    AddValue(item.Key, value);
+                }
+            }
+        }
+
+        private void AddSentimentValue(string word, SentimentValueData value)
+        {
+            if (EmotionsTable.ContainsKey(word))
+            {
+                return;
+            }
+
+            EmotionsTable[string.Intern(word)] = value;
+        }
+
+        private void AdjustWeight(SentimentValueData sentiment, double value)
+        {
+            sentiment?.Add(new SentimentValueData(value));
+        }
+
+        private SentimentValue MeasureLookupSentiment(IWordItem word)
+        {
+            SentimentValueData value;
+            if (!EmotionsLookup.TryGetWordValue(word, out value))
+            {
+                return null;
+            }
+
+            bool isInverted = word.Text.EndsWith("free", StringComparison.OrdinalIgnoreCase) ||
+                              word.Text.EndsWith("proof", StringComparison.OrdinalIgnoreCase) ||
+                              word.Text.EndsWith("less", StringComparison.OrdinalIgnoreCase);
+            var invertingEnd = isInverted ? -1 : 1;
+            var sentiment = new SentimentValue(word, new SentimentValueData(value.Value * invertingEnd));
+            return sentiment;
+        }
+    }
+}

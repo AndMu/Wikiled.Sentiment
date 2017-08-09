@@ -1,0 +1,587 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D57137FD-0DF5-4F85-BFB0-3CD62CFDBD81}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Wikiled.Sentiment.Text</RootNamespace>
+    <AssemblyName>Wikiled.Sentiment.Text</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Alglib2, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.6\lib\net462\Alglib2.dll</HintPath>
+    </Reference>
+    <Reference Include="Crc32C.NET, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Crc32C.NET.1.0.5.0\lib\net20\Crc32C.NET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.20.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MathNet.Numerics.3.20.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8\Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenNLP, Version=1.0.6283.20546, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenNLP.1.4.6\lib\net462\OpenNLP.dll</HintPath>
+    </Reference>
+    <Reference Include="ParallelExtensionsExtras, Version=1.2.3.0, Culture=neutral, PublicKeyToken=665f4d61f853b5a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ParallelExtensionsExtras.1.2.0.0\lib\net40\ParallelExtensionsExtras.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Polly, Version=5.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Polly.5.3.0\lib\net45\Polly.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.3.1.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\protobuf-net.2.3.1\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpEntropy, Version=1.0.6283.20546, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenNLP.1.4.6\lib\net462\SharpEntropy.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpWordNet, Version=1.0.6283.20546, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\OpenNLP.1.4.6\lib\net462\SharpWordNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SmartThreadPool, Version=2.2.4.0, Culture=neutral, PublicKeyToken=1126fe8b671e8a79, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SmartThreadPool.dll.2.2.4\lib\net45\SmartThreadPool.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Snappy.NET, Version=1.1.1.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Snappy.NET.1.1.1.8\lib\net45\Snappy.NET.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\StackExchange.Redis.1.2.5\lib\net46\StackExchange.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Core.3.1.1\lib\net46\System.Reactive.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Interfaces.3.1.1\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Linq.3.1.1\lib\net46\System.Reactive.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.PlatformServices.3.1.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Wikiled.Arff, Version=1.0.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Arff.1.0.16\lib\net462\Wikiled.Arff.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Core.Utility, Version=2.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.12\lib\net462\Wikiled.Core.Utility.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.MachineLearning, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.6\lib\net462\Wikiled.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.14\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Redis, Version=2.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.2.11\lib\net462\Wikiled.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.1.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.27\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Anomaly\AnomalyVector.cs" />
+    <Compile Include="Anomaly\AnomalyVectorType.cs" />
+    <Compile Include="Anomaly\DataTreeExtension.cs" />
+    <Compile Include="Anomaly\DocumentAnomalyDetector.cs" />
+    <Compile Include="Aspects\Data\AspectData.cs" />
+    <Compile Include="Aspects\AspectDectector.cs" />
+    <Compile Include="Aspects\Data\AspectSentimentData.cs" />
+    <Compile Include="Aspects\Data\AspectSentimentItem.cs" />
+    <Compile Include="Aspects\AspectSentimentTracker.cs" />
+    <Compile Include="Aspects\AspectSerializer.cs" />
+    <Compile Include="Aspects\IAspectSerializer.cs" />
+    <Compile Include="Aspects\IMainAspectHandler.cs" />
+    <Compile Include="Aspects\IMainAspectHandlerFactory.cs" />
+    <Compile Include="Aspects\MainAspectHandler.cs" />
+    <Compile Include="Aspects\MainAspectHandlerFactory.cs" />
+    <Compile Include="Aspects\WordOccurenceTracker.cs" />
+    <Compile Include="Async\AsyncSettings.cs" />
+    <Compile Include="Async\AsynThrottledAction.cs" />
+    <Compile Include="Async\ForEachHelper.cs" />
+    <Compile Include="Cache\RedisDocumentCache.cs" />
+    <Compile Include="Cache\RedisDocumentCacheFactory.cs" />
+    <Compile Include="Configuration\BasicLexiconFactory.cs" />
+    <Compile Include="Configuration\IConfigurationFactory.cs" />
+    <Compile Include="Configuration\IExtendedLexiconFactory.cs" />
+    <Compile Include="Configuration\ILexiconFactory.cs" />
+    <Compile Include="Data\Constants.cs" />
+    <Compile Include="Data\Review\IParsedDocumentHolder.cs" />
+    <Compile Include="Data\Review\ParsedDocumentHolder.cs" />
+    <Compile Include="Data\Review\ParsingDocumentHolder.cs" />
+    <Compile Include="Extensions\DocumentExtension.cs" />
+    <Compile Include="Aspects\IAspectContext.cs" />
+    <Compile Include="Aspects\IAspectContextFactory.cs" />
+    <Compile Include="Aspects\AspectContext.cs" />
+    <Compile Include="Aspects\AspectContextFactory.cs" />
+    <Compile Include="Features\DetectionBlock.cs" />
+    <Compile Include="Features\DetectionData.cs" />
+    <Compile Include="Features\DetectionItem.cs" />
+    <Compile Include="Features\FeatureIndicator.cs" />
+    <Compile Include="Features\IFeatureIndicator.cs" />
+    <Compile Include="Features\Results\IdentificationResult.cs" />
+    <Compile Include="Features\Results\IIdentificationResult.cs" />
+    <Compile Include="Helpers\Calculator.cs" />
+    <Compile Include="Helpers\ParsingException.cs" />
+    <Compile Include="Helpers\WordsDictionary.cs" />
+    <Compile Include="MachineLearning\MachineDetectionResult.cs" />
+    <Compile Include="MachineLearning\Statistics\BaseDistributionCalculator.cs" />
+    <Compile Include="MachineLearning\Statistics\ISimpleStatistics.cs" />
+    <Compile Include="MachineLearning\Statistics\SentenceDistributionCalculator.cs" />
+    <Compile Include="MachineLearning\Statistics\SimpleStatistics.cs" />
+    <Compile Include="MachineLearning\Statistics\WordDistributionCalculator.cs" />
+    <Compile Include="MachineLearning\Statistics\IStatisticsResult.cs" />
+    <Compile Include="MachineLearning\Statistics\NullStatisticsResult.cs" />
+    <Compile Include="MachineLearning\Statistics\StatisticsResult.cs" />
+    <Compile Include="MachineLearning\SvmResult.cs" />
+    <Compile Include="MachineLearning\SentimentSource.cs" />
+    <Compile Include="MachineLearning\TextVectorCell.cs" />
+    <Compile Include="MachineLearning\TrainedSentimentProvider.cs" />
+    <Compile Include="NLP\NRC\SentimentVectorExtension.cs" />
+    <Compile Include="NLP\NRC\WordNRCRecord.cs" />
+    <Compile Include="NLP\Stanford\IStanfordFactory.cs" />
+    <Compile Include="Parser\ISentimentProvider.cs" />
+    <Compile Include="Parser\QueueTextSplitter.cs" />
+    <Compile Include="Persitency\BaseWrappedPersistencyItem.cs" />
+    <Compile Include="Persitency\FilePersistency.cs" />
+    <Compile Include="Persitency\IFilePersistency.cs" />
+    <Compile Include="Persitency\IIndexedPersistency.cs" />
+    <Compile Include="Persitency\IIndexRegistry.cs" />
+    <Compile Include="Persitency\IndexedPersistency.cs" />
+    <Compile Include="Persitency\IndexRegistry.cs" />
+    <Compile Include="Persitency\IndexRegistryHandler.cs" />
+    <Compile Include="Persitency\IPersistencyItem.cs" />
+    <Compile Include="Persitency\IWrappedPersistency.cs" />
+    <Compile Include="Persitency\LoadingEventArgs.cs" />
+    <Compile Include="Persitency\MultiFilePersistencyHandler.cs" />
+    <Compile Include="Persitency\MultiThroughFilePersistencyHandler.cs" />
+    <Compile Include="Persitency\PersistencyHandler.cs" />
+    <Compile Include="Persitency\PersitencyEventArgs.cs" />
+    <Compile Include="Persitency\SimplePersistencyItem.cs" />
+    <Compile Include="Persitency\SingleFilePersistencyHandler.cs" />
+    <Compile Include="Persitency\WrappedPersistency.cs" />
+    <Compile Include="Persitency\WrappedPersistencyItem.cs" />
+    <Compile Include="Reflection\CategoriesMapper.cs" />
+    <Compile Include="Reflection\ChildMapCategory.cs" />
+    <Compile Include="Reflection\CollectionMapCategory.cs" />
+    <Compile Include="Reflection\Data\DataItem.cs" />
+    <Compile Include="Reflection\Data\DataTree.cs" />
+    <Compile Include="Reflection\Data\DictionaryDataItemFactory.cs" />
+    <Compile Include="Reflection\Data\IDataItem.cs" />
+    <Compile Include="Reflection\Data\IDataItemFactory.cs" />
+    <Compile Include="Reflection\Data\IDataTree.cs" />
+    <Compile Include="Reflection\Data\IItemProbability.cs" />
+    <Compile Include="Reflection\Data\ItemProbability.cs" />
+    <Compile Include="Reflection\Data\MapFieldDataItem.cs" />
+    <Compile Include="Reflection\Data\MapFieldDataItemFactory.cs" />
+    <Compile Include="Reflection\EnumerableMapCategory.cs" />
+    <Compile Include="Reflection\IgnoreAttribute.cs" />
+    <Compile Include="Reflection\IMapCategory.cs" />
+    <Compile Include="Reflection\IMapField.cs" />
+    <Compile Include="Reflection\InfoArrayCategoryAttribute.cs" />
+    <Compile Include="Reflection\InfoCategoryAttribute.cs" />
+    <Compile Include="Reflection\InfoFieldAttribute.cs" />
+    <Compile Include="Reflection\ItemProbabilityHolder.cs" />
+    <Compile Include="Reflection\MapCategory.cs" />
+    <Compile Include="Reflection\MapField.cs" />
+    <Compile Include="Sentiment\ContextSentimentFactory.cs" />
+    <Compile Include="Sentiment\IContextSentiment.cs" />
+    <Compile Include="Sentiment\IContextSentimentFactory.cs" />
+    <Compile Include="Sentiment\NullRatingAdjustment.cs" />
+    <Compile Include="Structure\IDocumentFromReviewFactory.cs" />
+    <Compile Include="Structure\WordExFactory.cs" />
+    <Compile Include="Tokenizer\WordTokenizer.cs" />
+    <Compile Include="Words\IPhraseContructor.cs" />
+    <Compile Include="Words\PhraseContructor.cs" />
+    <Compile Include="Words\SentenceExtensions.cs" />
+    <Compile Include="Words\WordTypeResolver.cs" />
+    <EmbeddedResource Include="Resources\Dictionary\inquirer.dat" />
+    <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
+    <EmbeddedResource Include="Resources\Dictionary\NRC.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\Quantifiers.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\QuestionWords.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\Sentiments.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\StopWords.txt" />
+    <EmbeddedResource Include="Resources\POS\Adjective.txt" />
+    <EmbeddedResource Include="Resources\POS\Adverb.txt" />
+    <EmbeddedResource Include="Resources\POS\Verb.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
+    <EmbeddedResource Include="Resources\POS\Noun.txt" />
+    <EmbeddedResource Include="Resources\POS\Preposition.txt" />
+    <Compile Include="NLP\Inquirer\DataItem.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\AffectionData.cs" />
+    <Compile Include="NLP\NRC\ISentimentDimension.cs" />
+    <Compile Include="NLP\NRC\NRCDictionary.cs" />
+    <Compile Include="NLP\NRC\NRCRecord.cs" />
+    <Compile Include="NLP\NRC\SentimentCategory.cs" />
+    <Compile Include="NLP\NRC\SentimentVector.cs" />
+    <Compile Include="NLP\OpenNLP\OpenNlpSplitterFactory.cs" />
+    <Compile Include="NLP\OpenNLP\SentenceData.cs" />
+    <Compile Include="NLP\OpenNLP\OpenNLPTextSplitter.cs" />
+    <Compile Include="NLP\Style\Description\Data\AllObscrunityData.cs" />
+    <Compile Include="NLP\Style\Description\Data\CharactersSurfaceData.cs" />
+    <Compile Include="NLP\Style\Description\Data\INLPDataItem.cs" />
+    <Compile Include="NLP\Style\Description\Data\InquirerData.cs" />
+    <Compile Include="NLP\Style\Description\Data\ObscrunityData.cs" />
+    <Compile Include="NLP\Style\Description\Data\ReadabilityData.cs" />
+    <Compile Include="NLP\Style\Description\Data\SyntaxData.cs" />
+    <Compile Include="NLP\Style\Description\DocumentStyle.cs" />
+    <Compile Include="NLP\Style\Description\SentenceStyle.cs" />
+    <Compile Include="NLP\Style\Description\Data\SentenceSurfaceData.cs" />
+    <Compile Include="NLP\Style\Description\StyleExtractor.cs" />
+    <Compile Include="NLP\Style\Description\WordStyle.cs" />
+    <Compile Include="NLP\Style\Description\Data\WordSurfaceData.cs" />
+    <Compile Include="NLP\Style\IDataSource.cs" />
+    <Compile Include="NLP\Style\InquirerDefinitionExtensions.cs" />
+    <Compile Include="NLP\Style\Obscurity\SpecificObscrunity.cs" />
+    <Compile Include="NLP\Style\Readability\FleschReadingEase.cs" />
+    <Compile Include="NLP\Style\Surface\CharactersSurface.cs" />
+    <Compile Include="NLP\Style\SentenceItemExtension.cs" />
+    <Compile Include="NLP\Style\Surface\SentenceSurface.cs" />
+    <Compile Include="NLP\Style\Surface\WordSurface.cs" />
+    <Compile Include="NLP\Style\TextBlock.cs" />
+    <Compile Include="NLP\Style\InquirerFingerPrint.cs" />
+    <Compile Include="NLP\Style\Readability\ReadabilityDataSource.cs" />
+    <Compile Include="NLP\Style\Surface\SurfaceData.cs" />
+    <Compile Include="NLP\Style\SyntaxFeatures.cs" />
+    <Compile Include="NLP\Style\Obscurity\VocabularyObscurity.cs" />
+    <Compile Include="NLP\Inquirer\InquirerDescription.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\ActivityData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\CognitiveOrientationData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\CommunicationProcessData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\FeelingData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\InstitutionData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\LocationData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\MotivationData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\NegationInterjectionsData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\ObjectData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\BroadData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\OtherProcessData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\PronounData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\SocialData.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\StatementData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\EnlightenmentData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\LasswellDescription.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\PowerData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\RectitudeData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\RemainingData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\Respect Data.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\SkillData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\WealthData.cs" />
+    <Compile Include="NLP\Inquirer\Lasswell\WellBeingData.cs" />
+    <Compile Include="NLP\Inquirer\SocialCognition\AdjectiveData.cs" />
+    <Compile Include="NLP\Inquirer\SocialCognition\VerbData.cs" />
+    <Compile Include="NLP\Inquirer\InquirerDefinition.cs" />
+    <Compile Include="NLP\Inquirer\InquirerDefinitionFactory.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\HarwardDescription.cs" />
+    <Compile Include="NLP\Inquirer\InquirerRecord.cs" />
+    <Compile Include="NLP\Inquirer\InquirerManager.cs" />
+    <Compile Include="NLP\Inquirer\Harvard\SentimentData.cs" />
+    <Compile Include="NLP\ISplitterFactory.cs" />
+    <Compile Include="NLP\ParsedReviewFactory.cs" />
+    <Compile Include="NLP\Repair\NullSentenceRepairHandler.cs" />
+    <Compile Include="NLP\SimpleTextSplitter.cs" />
+    <Compile Include="NLP\SimpleSplitterFactory.cs" />
+    <Compile Include="NLP\Style\WordExExtension.cs" />
+    <Compile Include="Data\TenseType.cs" />
+    <Compile Include="NLP\TenseDetector.cs" />
+    <Compile Include="NLP\TextSplitterFactoryFinder.cs" />
+    <Compile Include="Parser\BaseTextSplitter.cs" />
+    <Compile Include="Parser\BasicWordsHandler.cs" />
+    <Compile Include="Parser\Cache\CacheHeaderItem.cs" />
+    <Compile Include="Parser\Cache\DocumentPersist.cs" />
+    <Compile Include="Parser\Cache\DocumentPersistencyItem.cs" />
+    <Compile Include="Parser\ComparativeLevel.cs" />
+    <Compile Include="Parser\DocumentTokenizer.cs" />
+    <Compile Include="Parser\ISentimentDataHolder.cs" />
+    <Compile Include="Parser\ParseRequest.cs" />
+    <Compile Include="Parser\SentimentDataHolder.cs" />
+    <Compile Include="Parser\SimpleWordsExtraction.cs" />
+    <Compile Include="Configuration\ExtendedLexiconFactory.cs" />
+    <Compile Include="Parser\WordsDataLoader.cs" />
+    <Compile Include="Aspects\IAspectDectector.cs" />
+    <Compile Include="Data\IWordsExtraction.cs" />
+    <Compile Include="Words\IWordFactory.cs" />
+    <Compile Include="Words\Phrase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\Review\SingleProcessingData.cs" />
+    <Compile Include="Extensions\WordItemRelationshipsExtension.cs" />
+    <Compile Include="MachineLearning\ExtractReviewTextVector.cs" />
+    <Compile Include="MachineLearning\ExtractSentenceTextVector.cs" />
+    <Compile Include="MachineLearning\ExtractTextVectorBase.cs" />
+    <Compile Include="MachineLearning\IMachineSentiment.cs" />
+    <Compile Include="Data\IParsedReview.cs" />
+    <Compile Include="Words\IPhrase.cs" />
+    <Compile Include="Data\IReview.cs" />
+    <Compile Include="Data\ISentence.cs" />
+    <Compile Include="Data\ISentencePart.cs" />
+    <Compile Include="Words\IWordItem.cs" />
+    <Compile Include="Data\IWordItemRelationships.cs" />
+    <Compile Include="Aspects\NullAspectDectector.cs" />
+    <Compile Include="Data\ParsedReview.cs" />
+    <Compile Include="Data\Sentence.cs" />
+    <Compile Include="Data\SentencePart.cs" />
+    <Compile Include="Data\NGramBlock.cs" />
+    <Compile Include="Data\Weighting\IItemCoefficient.cs" />
+    <Compile Include="Data\Weighting\ItemCoefficient.cs" />
+    <Compile Include="Data\Weighting\SentimentCalculator.cs" />
+    <Compile Include="Extensions\WordItemExtension.cs" />
+    <Compile Include="Words\WordItemRelationships.cs" />
+    <Compile Include="Words\WordItemType.cs" />
+    <Compile Include="Words\SimpleWordItemEquality.cs" />
+    <Compile Include="Words\TextExtensions.cs" />
+    <Compile Include="Words\WordDictionaryExtension.cs" />
+    <Compile Include="Words\WordOccurenceFactory.cs" />
+    <Compile Include="Words\WordOccurrence.cs" />
+    <Compile Include="Parser\IWordsHandler.cs" />
+    <Compile Include="NLP\Repair\Rule.cs" />
+    <Compile Include="NLP\Repair\RuleSet.cs" />
+    <Compile Include="NLP\Repair\WordRepairRule.cs" />
+    <Compile Include="NLP\Repair\WordRepairRuleEngine.cs" />
+    <Compile Include="Configuration\LexiconTypes.cs" />
+    <Compile Include="ProcessingException.cs" />
+    <Compile Include="SentimentException.cs" />
+    <Compile Include="Sentiment\ContextSentimentCalculator.cs" />
+    <Compile Include="Sentiment\IRatingAdjustment.cs" />
+    <Compile Include="Sentiment\ITrainingPerspective.cs" />
+    <Compile Include="Sentiment\NullTrainingPerspective.cs" />
+    <Compile Include="Sentiment\RatingAdjustment.cs" />
+    <Compile Include="Sentiment\RatingCalculator.cs" />
+    <Compile Include="Sentiment\RatingData.cs" />
+    <Compile Include="Sentiment\SentimentValue.cs" />
+    <Compile Include="Sentiment\SentimentValueData.cs" />
+    <Compile Include="Sentiment\SimpleTrainingPerspective.cs" />
+    <Compile Include="Structure\DocumentFromReviewFactory.cs" />
+    <Compile Include="Structure\Sentiment\SentimentDataItem.cs" />
+    <Compile Include="Structure\Sentiment\SentimentLevel.cs" />
+    <Compile Include="MachineLearning\MachineSentiment.cs" />
+    <Compile Include="MachineLearning\NullMachineSentiment.cs" />
+    <Compile Include="Words\NGramManager.cs" />
+    <Compile Include="NLP\Repair\ISentenceRepairHandler.cs" />
+    <Compile Include="Parser\ITextSplitter.cs" />
+    <Compile Include="NLP\Repair\SentenceRepair.cs" />
+    <Compile Include="NLP\Repair\SentenceRepairHandler.cs" />
+    <Compile Include="NLP\Repair\SentenceRepairMultiHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tokenizer\CombinedPipeline.cs" />
+    <Compile Include="Tokenizer\InvertorPipeline.cs" />
+    <Compile Include="Tokenizer\IWordItemFactory.cs" />
+    <Compile Include="Tokenizer\IPipeline.cs" />
+    <Compile Include="Tokenizer\NullSimpleWordPipeline.cs" />
+    <Compile Include="Tokenizer\NullWordItemPipeline.cs" />
+    <Compile Include="Tokenizer\PunctuationPipeline.cs" />
+    <Compile Include="Tokenizer\SentenceTokenizer.cs" />
+    <Compile Include="Tokenizer\ISentenceTokenizer.cs" />
+    <Compile Include="Tokenizer\IWordsTokenizerFactory.cs" />
+    <Compile Include="Tokenizer\LowerCasePipeline.cs" />
+    <Compile Include="Tokenizer\StopWordItemPipeline.cs" />
+    <Compile Include="Tokenizer\WordCleanupPipeline.cs" />
+    <Compile Include="Tokenizer\SimpleWordItemFactory.cs" />
+    <Compile Include="Tokenizer\WordItemFilterOutPipeline.cs" />
+    <Compile Include="Tokenizer\WordsTokenizerFactory.cs" />
+    <Compile Include="WordNet\InformationContent\IInformationContentResnik.cs" />
+    <Compile Include="WordNet\InformationContent\InformationContentResnik.cs" />
+    <Compile Include="WordNet\InformationContent\IRelatednessMesaure.cs" />
+    <Compile Include="WordNet\InformationContent\JcnMeasure.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\POS\Conjunctions\CoordinatingConjunction.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\POS\Conjunctions\SubordinateConjunction.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\POS\Conjunctions\InvertingConjunction.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\POS\Article.txt" />
+    <EmbeddedResource Include="Resources\POS\Pronoun.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\POS\Conjunctions\RegularConjunction.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Features\Features.xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\Shared\common.targets" Condition="Exists('..\..\Shared\common.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

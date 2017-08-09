@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Wikiled.Sentiment.Analysis</id>
+    <version>1.0.0</version>
+    <authors>Wikiled</authors>
+    <description>Sentiment Library</description>
+    <dependencies>
+      <dependency id="SharpZipLib" />
+      <dependency id="MathNet.Numerics" />
+      <dependency id="Wikiled.Core.Utility" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Wikiled.Sentiment.MachineLearning.dll" target="lib\net461" />
+    <file src="bin\Release\Wikiled.Sentiment.MachineLearning.pdb" target="lib\net461" />
+    <file src="bin\Release\Wikiled.Sentiment.Text.dll" target="lib\net461" />
+    <file src="bin\Release\Wikiled.Sentiment.Text.pdb" target="lib\net461" />
+    <file src="bin\Release\alglibnet2.dll" target="lib\net461" />
+  </files>
+</package>

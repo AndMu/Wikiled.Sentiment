@@ -1,0 +1,4 @@
+﻿And
+Or
+But
+Nor

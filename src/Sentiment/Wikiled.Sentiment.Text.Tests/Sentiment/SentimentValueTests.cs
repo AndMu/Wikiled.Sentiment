@@ -1,0 +1,68 @@
+﻿using Wikiled.Sentiment.Text.Data;
+using NUnit.Framework;
+using Rhino.Mocks;
+using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Words;
+
+namespace Wikiled.Sentiment.Text.Tests.Sentiment
+{
+    [TestFixture]
+    public class SentimentValueTests
+    {
+        private MockRepository mocks;
+        private IWordItem wordItem;
+
+        [Test]
+        public void Setup()
+        {
+            mocks = new MockRepository();
+            wordItem = mocks.StrictMock<IWordItem>();
+        }
+
+        [Test]
+        public void Netgative()
+        {
+            SentimentValue value = new SentimentValue(wordItem, - 0.5);
+            Assert.AreEqual(-0.5, value.DataValue.Value);
+            Assert.IsFalse(value.DataValue.IsPositive);
+        }
+
+        [Test]
+        public void Positive()
+        {
+            SentimentValue value = new SentimentValue(wordItem, 0.5);
+            Assert.AreEqual(0.5, value.DataValue.Value);
+            Assert.IsTrue(value.DataValue.IsPositive);
+        }
+
+        [Test]
+        public void CreateGood()
+        {
+            var value = SentimentValue.CreateGood(wordItem);
+            Assert.AreEqual(1, value.DataValue.Value);
+            Assert.IsTrue(value.DataValue.IsPositive);
+        }
+
+        [Test]
+        public void CreateBad()
+        {
+            var value = SentimentValue.CreateBad(wordItem);
+            Assert.AreEqual(-1, value.DataValue.Value);
+            Assert.IsFalse(value.DataValue.IsPositive);
+        }
+
+        [Test]
+        public void GetDistanced()
+        {
+            var value = SentimentValue.CreateBad(wordItem);
+            var distanced = value.GetDistanced(1);
+            Assert.AreEqual(-1, distanced.DataValue.Value);
+            distanced = value.GetDistanced(2);
+            Assert.AreEqual(-1, distanced.DataValue.Value);
+            distanced = value.GetDistanced(3);
+            Assert.AreEqual(-0.5, distanced.DataValue.Value);
+            distanced = value.GetDistanced(5);
+            Assert.AreEqual(-0.25, distanced.DataValue.Value);
+        }
+    }
+}
