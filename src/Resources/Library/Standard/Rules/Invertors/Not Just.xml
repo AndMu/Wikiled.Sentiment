@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WordRepairRule>  
+    <Type>Invertor</Type>
+  <SuccesfulResult>false</SuccesfulResult>
+    <Set>
+    <RuleSet>
+  <Rules>
+    <Rule>
+      <Index>1</Index>       
+	  <Word>just</Word>
+    </Rule>
+  </Rules>
+  </RuleSet>
+</Set>
+</WordRepairRule>

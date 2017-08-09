@@ -1,0 +1,90 @@
+how are you	2
+it hanging	2
+shock horror	-2
+wat up	2
+what's good	2
+what's up	2
+whats good	2
+whats up	2
+wuts good	2
+let down	-2
+don't bother	-2
+do not bother	-2
+easy to use	2
+blown out of the water	4
+blow out of the water	4
+out of luck	-2
+security hole	-2
+don't give up the day job	-2
+cash cow	-2
+more than you can chew	-2
+clear the air	1
+turn your back on	-2
+not cut out for	-2
+scrape the bottom of the barrel	-2
+a class act	-1
+clean up your act	1
+go ape	-2
+grey area	-1
+glad to see	2
+early bird	2
+fit the bill	1
+give me a break	-3
+close call	-1
+fat cat	-2
+tough cookie	2
+couch potato	-3
+in a tight corner	-2
+crocodile tears	-3
+says on the tin	3
+idiom all or nothing	0
+absence makes the heart grow fonder	2
+cats are grey in the dark	-1
+glitters is not gold	-2
+is fair in love and war	-1
+well that ends well	1
+apple a day keeps the doctor away	1
+bad workman blames his tools	-2
+bird in hand is worth two in a bush	+1
+broken friendship may be soldered but will never be sound	-2
+cat has nine lives	+1
+weakest link	-2
+friend in need is a friend indeed	2
+leopard cannot change its spots	-2
+known by the company he keeps	-2
+rolling stone gathers no moss	-1
+rotten apple spoils the barrel	-3
+tree is known by its fruit	-1
+bad news travels fast	-2
+better be alone than in bad company	-1
+better flatter a fool than fight him	-2
+better the devil you know than the devil you don't know	-1
+better late than never	1
+diamond cuts diamond	1
+dogs of the same street bark alike	-1
+don't bark if you can't bite	-3
+count your chickens	-1
+don't judge a book by its cover	-1
+easier said than done	-1
+in the garden is rosy	2
+experience is the father of wisdom	1
+facts speak louder than words	-1
+ignorance is bliss	-1
+never rains but it pours	-2
+darkest before the dawn	1
+spilt milk	-2
+walk before you run	-1
+like father, like son	-2
+like father like son	-2
+love is blind	-2
+money begets money	1
+root of all evil	-3
+never say die	1
+never say never	1
+no news is good news	1
+no smoke without fire	-2
+no wind, no waves	-2
+once bitten, twice shy	-1
+once bitten twice shy	-1
+practice makes perfec	1
+rome was not built in a day	-1

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WordRepairRule>
+  <Lemma>cease</Lemma>
+  <SuccesfulResult>true</SuccesfulResult>
+    <Set>
+    <RuleSet>
+    <Rules>
+	<Rule>
+      <Index>1</Index>
+      <Word>To</Word>	  
+    </Rule>
+    <Rule>
+      <Index>2</Index>
+      <NextWordPOS>Verb</NextWordPOS>	  
+    </Rule>
+  </Rules>  
+  </RuleSet>
+</Set>
+</WordRepairRule>

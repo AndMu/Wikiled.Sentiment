@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TrainingHeader>
+  <AverageVectorSize>13.285333333333334</AverageVectorSize>
+  <Normalization>L2</Normalization>
+</TrainingHeader>

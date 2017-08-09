@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Rules>
+  <Rule Name="ButAlso">
+    <Test>Not only</Test>
+    <Match>(\s|^)not only\s(.*)but also</Match>
+    <Replace>$1$2and</Replace>
+  </Rule>
+  <Rule Name="a lot of">
+    <Test>a lot of</Test>
+    <Match>(\s|^)a lot of</Match>
+    <Replace>$1alot</Replace>
+  </Rule>
+  <Rule Name="a lot">
+    <Test>a lot</Test>
+    <Match>(\s|^)a lot</Match>
+    <Replace>$1alot</Replace>
+  </Rule>
+  <Rule Name="special">
+    <Test></Test>
+    <Match>[^\u0000-\u007F]+</Match>
+    <Replace></Replace>
+  </Rule>
+  <Rule Name="plus1">
+    <Test>+1</Test>
+    <Match>\+1</Match>
+    <Replace>plusone</Replace>
+  </Rule>  
+  <Rule Name="emoticon">
+    <Test>:</Test>
+    <Match>\:\b(\S+?)\b\:</Match>
+    <Replace>EMOTICON_$1</Replace>
+  </Rule>  
+  <Rule Name="super">
+    <Test>super</Test>
+    <Match>super(\w+)</Match>
+    <Replace>super $1</Replace>
+  </Rule>
+  <Rule Name="non invertor">
+    <Test>non</Test>
+    <Match>(\s|^)(non)(-)?(\w+)</Match>
+    <Replace>$1not $4</Replace>
+	<Verify>4</Verify>
+  </Rule>
+</Rules>

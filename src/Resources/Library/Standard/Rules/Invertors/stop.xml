@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WordRepairRule>
+  <Lemma>stop</Lemma>
+  <SuccesfulResult>true</SuccesfulResult>
+  <Set>
+    <RuleSet>
+		<Rules>
+			<Rule>
+			  <Index>1</Index>
+			  <NextWordPOS>Verb</NextWordPOS>
+			  <Ending>ing</Ending>
+			</Rule>
+		</Rules>
+	</RuleSet>
+</Set>
+</WordRepairRule>
