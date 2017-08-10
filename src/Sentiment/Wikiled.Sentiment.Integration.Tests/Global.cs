@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Wikiled.Testing.Library.Processes;
+using Wikiled.Redis.Logic;
 
 namespace Wikiled.Sentiment.Integration.Tests
 {
@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Integration.Tests
         public void Setup()
         {
             manager = new RedisProcessManager();
-            manager.Start();
+            manager.Start(TestContext.CurrentContext.TestDirectory);
         }
 
         [OneTimeTearDown]
