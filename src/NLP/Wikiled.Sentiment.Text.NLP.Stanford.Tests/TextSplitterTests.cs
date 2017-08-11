@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford.Tests
 {
     [TestFixture]
     [Timeout(1000 * 60 * 10)]
-    public class TextSplitterTest
+    public class TextSplitterTests
     {
         private StanfordTextSplitter splitter;
 
@@ -33,7 +33,7 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford.Tests
         [Test]
         public async Task ProcessX()
         {
-            const string sentence = "Actually I used it today for ~1.5 hours, and now, 3 hours after I am back, my left hand is still shaking.";
+            string sentence = "Actually I used it today for ~1.5 hours, and now, 3 hours after I am back, my left hand is still shaking.";
             var result = await splitter.Process(new ParseRequest(sentence) { Date = DateTime.Now }).ConfigureAwait(false);
             var data = result.GetReview(ActualWordsHandler.Instance.WordsHandler);
             Assert.AreEqual(1, data.Sentences.Count);

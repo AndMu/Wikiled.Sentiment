@@ -37,11 +37,10 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
             Guard.NotNull(() => wordsHandlersManager, wordsHandlersManager);
             Guard.NotNullOrEmpty(() => resources, resources);
             this.wordsHandlersManager = wordsHandlersManager;
-
             modelsDirectory = new DirectoryInfo(resources + @"\models");
             if (!modelsDirectory.Exists)
             {
-                throw new ArgumentOutOfRangeException("resources", resources);
+                throw new ArgumentOutOfRangeException(nameof(resources), resources);
             }
 
             pipelineHolder = new Lazy<AnnotationPipeline>(InitPipeline);

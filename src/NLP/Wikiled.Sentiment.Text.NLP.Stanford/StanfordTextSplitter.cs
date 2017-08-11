@@ -4,9 +4,6 @@ using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.NLP.Stanford
 {
-    /// <summary>
-    /// This class is limited by internal threadpool. You can't parralerize it further as it consumes a lot of memory
-    /// </summary>
     public class StanfordTextSplitter : BaseTextSplitter
     {
         private readonly StanfordNLPProxy detector;

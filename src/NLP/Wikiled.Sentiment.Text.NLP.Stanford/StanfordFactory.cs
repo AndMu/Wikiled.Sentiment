@@ -3,7 +3,6 @@ using System.IO;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.Text.Configuration;
-using Wikiled.Sentiment.Text.Parser.Cache;
 using Wikiled.Text.Analysis.Cache;
 
 namespace Wikiled.Sentiment.Text.NLP.Stanford
