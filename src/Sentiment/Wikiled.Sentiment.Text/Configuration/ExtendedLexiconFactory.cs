@@ -5,7 +5,6 @@ using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Cache;
 using Wikiled.Core.Utility.Resources;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.WordNet.InformationContent;
 using Wikiled.Text.Analysis.Dictionary;
@@ -19,50 +18,19 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         private readonly string path;
 
+        private Lazy<IRelatednessMesaure> relatedness;
+
         private Lazy<IInformationContentResnik> resnik;
 
         private Lazy<IWordNetEngine> wordNet;
 
         private Lazy<IWordsHandler> wordsHandler;
 
-        private Lazy<IRelatednessMesaure> relatedness;
-
         public ExtendedLexiconFactory(IConfigurationHandler configuration)
         {
             Guard.NotNull(() => configuration, configuration);
             path = configuration.ResolvePath("Resources");
             ResourcesPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library\Standard"));
-        }   
-
-        public void Construct()
-        {
-            if (!CanBeConstructed)
-            {
-                throw new InvalidOperationException("Lexicon can't be constructed");
-            }
-
-            log.Debug("Construct lexicon using path: {0}", ResourcesPath);
-            resnik = new Lazy<IInformationContentResnik>(() =>
-            {
-                var info = new DirectoryInfo(Path.Combine(WordNetInfoContentPath, "ic-brown-resnik-add1.dat"));
-                return InformationContentResnik.Load(info.FullName);
-            });
-
-            wordNet = new Lazy<IWordNetEngine>(() =>
-            {
-                var info = new DirectoryInfo(WordNetPath);
-                return new WordNetEngine(info.FullName);
-            });
-
-            wordsHandler = new Lazy<IWordsHandler>(() =>
-            {
-                var handler = new WordsDataLoader(ResourcesPath, new EnglishDictionary(ResourcesPath, WordNetEngine));
-                handler.Load();
-                return handler;
-            });
-
-            relatedness = new Lazy<IRelatednessMesaure>(() => new JcnMeasure(new RuntimeCache(new MemoryCache("Data"), TimeSpan.FromMinutes(1)), Resnik, WordNetEngine));
-            IsConstructed = true;
         }
 
         public bool CanBeConstructed
@@ -95,18 +63,52 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         public bool IsConstructed { get; private set; }
 
-        public string WordNetPath => Path.Combine(path, @"Wordnet 3.0");
-
-        public string WordNetInfoContentPath => Path.Combine(path, @"WordNet-InfoContent-3.0");
-
-        public string ResourcesPath { get; }
-
-        public IRelatednessMesaure RelatednessMesaure => relatedness.Value;
-
-        public IWordsHandler WordsHandler => wordsHandler.Value;
+        public IRelatednessMesaure RelatednessMeasure => relatedness.Value;
 
         public IInformationContentResnik Resnik => resnik.Value;
 
+        public string ResourcesPath { get; }
+
         public IWordNetEngine WordNetEngine => wordNet.Value;
+
+        public string WordNetInfoContentPath => Path.Combine(path, @"WordNet-InfoContent-3.0");
+
+        public string WordNetPath => Path.Combine(path, @"Wordnet 3.0");
+
+        public IWordsHandler WordsHandler => wordsHandler.Value;
+
+        public void Construct()
+        {
+            if (!CanBeConstructed)
+            {
+                throw new InvalidOperationException("Lexicon can't be constructed");
+            }
+
+            log.Debug("Construct lexicon using path: {0}", ResourcesPath);
+            resnik = new Lazy<IInformationContentResnik>(
+                () =>
+                    {
+                        var info = new DirectoryInfo(Path.Combine(WordNetInfoContentPath, "ic-brown-resnik-add1.dat"));
+                        return InformationContentResnik.Load(info.FullName);
+                    });
+
+            wordNet = new Lazy<IWordNetEngine>(
+                () =>
+                    {
+                        var info = new DirectoryInfo(WordNetPath);
+                        return new WordNetEngine(info.FullName);
+                    });
+
+            wordsHandler = new Lazy<IWordsHandler>(
+                () =>
+                    {
+                        var handler = new WordsDataLoader(ResourcesPath, new EnglishDictionary(ResourcesPath, WordNetEngine));
+                        handler.Load();
+                        return handler;
+                    });
+
+            relatedness = new Lazy<IRelatednessMesaure>(() => new JcnMeasure(new RuntimeCache(new MemoryCache("Data"), TimeSpan.FromMinutes(1)), Resnik, WordNetEngine));
+            IsConstructed = true;
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace Wikiled.Sentiment.Text.Configuration
 {
     public interface IExtendedLexiconFactory : ILexiconFactory
     {
-        IRelatednessMesaure RelatednessMesaure { get; }
+        IRelatednessMesaure RelatednessMeasure { get; }
 
         IInformationContentResnik Resnik { get; }
 

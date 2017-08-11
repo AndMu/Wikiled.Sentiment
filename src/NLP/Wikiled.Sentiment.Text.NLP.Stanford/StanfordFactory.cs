@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
             DirectoryInfo info = new DirectoryInfo(configuration.GetConfiguration("Stanford"));
             if (!info.Exists)
             {
-                throw new ArgumentOutOfRangeException("Directory not exist " + info.FullName);
+                throw new ArgumentOutOfRangeException("Directory does not exist " + info.FullName);
             }
 
             return new StanfordSplitterFactory(
