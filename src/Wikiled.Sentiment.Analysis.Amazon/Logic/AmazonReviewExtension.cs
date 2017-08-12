@@ -1,9 +1,8 @@
 ﻿using System;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Amazon
+namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     public static class AmazonReviewExtension
     {

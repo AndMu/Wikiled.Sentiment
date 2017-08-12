@@ -1,4 +1,4 @@
-﻿namespace Wikiled.Sentiment.Analysis.Amazon
+﻿namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     public enum ProductCategory
     {

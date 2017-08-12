@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NLog;
 using StackExchange.Redis;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Redis.Keys;
@@ -7,7 +6,7 @@ using Wikiled.Redis.Logic;
 using Wikiled.Redis.Persistency;
 using Wikiled.Redis.Serialization;
 
-namespace Wikiled.Sentiment.Analysis.Amazon
+namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     public class AnalysedDocRepository : IRepository
     {

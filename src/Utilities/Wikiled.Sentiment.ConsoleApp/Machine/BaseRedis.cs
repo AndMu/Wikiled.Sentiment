@@ -8,7 +8,7 @@ using Wikiled.Core.Utility.Logging;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Amazon;
+using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Data.Review;

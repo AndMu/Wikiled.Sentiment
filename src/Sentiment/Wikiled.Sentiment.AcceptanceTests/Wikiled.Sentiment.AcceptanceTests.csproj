@@ -303,6 +303,10 @@
       <Project>{322E93A6-79EA-46B7-89E4-5DBDC68DF875}</Project>
       <Name>Wikiled.Sentiment.Text.NLP.Stanford</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
+      <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
+      <Name>Wikiled.Sentiment.Analysis.Amazon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Wikiled.Sentiment.Analysis\Wikiled.Sentiment.Analysis.csproj">
       <Project>{94F548E6-9EF6-4B06-8898-985D446701AB}</Project>
       <Name>Wikiled.Sentiment.Analysis</Name>

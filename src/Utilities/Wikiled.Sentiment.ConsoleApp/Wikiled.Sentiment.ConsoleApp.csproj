@@ -313,25 +313,10 @@
     <Compile Include="Machine\RawTestingCommand.cs" />
     <Compile Include="Machine\RawTrainingCommand.cs" />
     <Compile Include="Machine\RetrainTrainingCommand.cs" />
-    <Compile Include="Machine\Parser\SentimentTokenizeCommand.cs" />
     <Compile Include="Machine\TestingCommand.cs" />
     <Compile Include="Machine\TrainingCommand.cs" />
-    <Compile Include="Machine\TrumpTesting.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unpacking\AmazonLemmaExtract.cs" />
-    <Compile Include="Unpacking\AmazonParser.cs" />
-    <Compile Include="Unpacking\AmazonParserLogic.cs" />
-    <Compile Include="Unpacking\AmazonParserRedis.cs" />
-    <Compile Include="Unpacking\AmazonProductExtract.cs" />
-    <Compile Include="Unpacking\AmazonSentiment.cs" />
-    <Compile Include="Unpacking\AmazonTextExtractClean.cs" />
-    <Compile Include="Unpacking\AmazonTextExtract.cs" />
-    <Compile Include="Unpacking\ArffMerge.cs" />
-    <Compile Include="Unpacking\ArffSort.cs" />
-    <Compile Include="Unpacking\BaseArffCommand.cs" />
-    <Compile Include="Unpacking\ContextVectorUnpackingCommand.cs" />
-    <Compile Include="Unpacking\CsvUnpackingCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -358,6 +343,10 @@
     <ProjectReference Include="..\..\Sentiment\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj">
       <Project>{D57137FD-0DF5-4F85-BFB0-3CD62CFDBD81}</Project>
       <Name>Wikiled.Sentiment.Text</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
+      <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
+      <Name>Wikiled.Sentiment.Analysis.Amazon</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

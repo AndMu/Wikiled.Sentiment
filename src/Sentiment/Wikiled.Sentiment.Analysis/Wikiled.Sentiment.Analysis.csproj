@@ -225,15 +225,6 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Amazon\AmazonRepository.cs" />
-    <Compile Include="Amazon\AmazonReview.cs" />
-    <Compile Include="Amazon\AmazonReviewExtension.cs" />
-    <Compile Include="Amazon\AmazonTextData.cs" />
-    <Compile Include="Amazon\AnalysedDocRepository.cs" />
-    <Compile Include="Amazon\ProductData.cs" />
-    <Compile Include="Amazon\AmazonReviewData.cs" />
-    <Compile Include="Amazon\ProductCategory.cs" />
-    <Compile Include="Amazon\UserData.cs" />
     <Compile Include="Anomaly\IProcessingDataAnomaly.cs" />
     <Compile Include="Anomaly\NullProcessingDataAnomaly.cs" />
     <Compile Include="Anomaly\ProcessingDataAnomaly.cs" />

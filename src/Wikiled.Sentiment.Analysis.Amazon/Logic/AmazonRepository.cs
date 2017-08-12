@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -11,7 +10,7 @@ using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
 using Wikiled.Redis.Persistency;
 
-namespace Wikiled.Sentiment.Analysis.Amazon
+namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     public class AmazonRepository : IRepository
     {
