@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 
-namespace Wikiled.Sentiment.Analysis.Amazon
+namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     [ProtoContract]
     public class ProductData

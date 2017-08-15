@@ -1,6 +1,6 @@
 ﻿using Wikiled.Core.Utility.Arguments;
 
-namespace Wikiled.Sentiment.Analysis.Amazon
+namespace Wikiled.Sentiment.Analysis.Amazon.Logic
 {
     public class AmazonReview
     {

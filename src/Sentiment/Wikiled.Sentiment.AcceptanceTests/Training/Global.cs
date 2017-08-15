@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
-using Wikiled.Sentiment.Analysis.Amazon;
+using Wikiled.Sentiment.Analysis.Amazon.Logic;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Training
 {
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
             logger.Info("Starting training...");
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            await Task.WhenAll(ElectronicBaseLine.Train(), VideoBaseLine.Train());
+            await Task.WhenAll(ElectronicBaseLine.Train(), VideoBaseLine.Train()).ConfigureAwait(false);
             timer.Stop();
             Console.WriteLine("Training took: {0}", timer.Elapsed);
         }

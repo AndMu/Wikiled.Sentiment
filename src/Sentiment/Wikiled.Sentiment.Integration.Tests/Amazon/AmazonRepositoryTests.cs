@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Amazon;
+using Wikiled.Sentiment.Analysis.Amazon.Logic;
 
 namespace Wikiled.Sentiment.Integration.Tests.Amazon
 {

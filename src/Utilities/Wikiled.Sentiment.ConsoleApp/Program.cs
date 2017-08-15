@@ -5,8 +5,6 @@ using NLog;
 using Wikiled.Sentiment.ConsoleApp.Machine;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Helpers;
-using Wikiled.Sentiment.ConsoleApp.Machine.Parser;
-using Wikiled.Sentiment.ConsoleApp.Unpacking;
 
 namespace Wikiled.Sentiment.ConsoleApp
 {
@@ -42,10 +40,6 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new RawTrainingCommand();
                 }
-                else if (string.Compare(args[0], "lemma", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonLemmaExtract();
-                }
                 else if (string.Compare(args[0], "testing", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new TestingCommand();
@@ -54,57 +48,13 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new RawTestingCommand();
                 }
-                else if (string.Compare(args[0], "tokenize", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new SentimentTokenizeCommand();
-                }
                 else if (string.Compare(args[0], "extract", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new TrainingCommand();
                 }
-                else if (string.Compare(args[0], "trumpTest", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new TrumpTesting();
-                }
                 else if (string.Compare(args[0], "retrain", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new RetrainTrainingCommand();
-                }
-                else if (string.Compare(args[0], "amazon", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonParser();
-                }
-                else if (string.Compare(args[0], "amazonredis", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonParserRedis();
-                }
-                else if (string.Compare(args[0], "amazontext", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonTextExtract();
-                }
-                else if (string.Compare(args[0], "amazontextex", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonTextExtractClean();
-                }
-                else if (string.Compare(args[0], "amazonProduct", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new AmazonProductExtract();
-                }
-                else if (string.Compare(args[0], "vector", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new ContextVectorUnpackingCommand();
-                }
-                else if (string.Compare(args[0], "unpackcsv", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new CsvUnpackingCommand();
-                }
-                else if (string.Compare(args[0], "arffsort", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new ArffSort();
-                }
-                else if (string.Compare(args[0], "merge", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new ArffMerge();
                 }
                 else
                 {

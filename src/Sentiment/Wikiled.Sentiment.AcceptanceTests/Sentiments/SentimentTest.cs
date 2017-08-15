@@ -9,7 +9,7 @@ using NUnit.Framework;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
-using Wikiled.Sentiment.Analysis.Amazon;
+using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Extensions;
