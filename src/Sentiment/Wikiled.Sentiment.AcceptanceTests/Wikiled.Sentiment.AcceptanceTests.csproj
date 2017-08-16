@@ -227,8 +227,8 @@
     <Reference Include="Wikiled.MachineLearning, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.6\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Redis, Version=2.3.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Redis.2.3.12\lib\net462\Wikiled.Redis.dll</HintPath>
+    <Reference Include="Wikiled.Redis, Version=2.3.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.14\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Text.Analysis, Version=1.1.28.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.28\lib\net462\Wikiled.Text.Analysis.dll</HintPath>

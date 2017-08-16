@@ -46,8 +46,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
         [Test]
         public async Task ProcessPerformance()
         {
-            const string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
-            const string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
+            string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
+            string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             for (int i = 0; i < 100; i++)
             {
                 var data = await splitter.Process(new ParseRequest(sentence + " " + sentence2) { Date = DateTime.Now }).ConfigureAwait(false);
@@ -59,8 +59,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
         [Test]
         public async Task Process()
         {
-            const string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
-            const string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
+            string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
+            string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             var result = await splitter.Process(new ParseRequest(sentence + " " + sentence2) { Date = DateTime.Now }).ConfigureAwait(false);
             var data = result.GetReview(ActualWordsHandler.Instance.WordsHandler);
 
