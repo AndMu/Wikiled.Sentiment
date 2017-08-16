@@ -301,10 +301,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NLP\Wikiled.Sentiment.Text.NLP.Stanford\Wikiled.Sentiment.Text.NLP.Stanford.csproj">
-      <Project>{322E93A6-79EA-46B7-89E4-5DBDC68DF875}</Project>
-      <Name>Wikiled.Sentiment.Text.NLP.Stanford</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Sentiment\Wikiled.Sentiment.Analysis\Wikiled.Sentiment.Analysis.csproj">
       <Project>{94F548E6-9EF6-4B06-8898-985D446701AB}</Project>
       <Name>Wikiled.Sentiment.Analysis</Name>

@@ -8,11 +8,11 @@ using Wikiled.Core.Utility.Serialization;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Text.Analysis.POS;
-using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private SplitterHelper splitter;
+        private ISplitterHelper splitter;
 
         public bool Redis { get; set; }
 
@@ -49,8 +49,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 cacheFactory = new RedisDocumentCacheFactory(redis);
             }
 
-            splitter = new SplitterHelper(cacheFactory, new ConfigurationHandler(), new StanfordFactory(cacheFactory));
-            splitter.Load(Tagger);
+            splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
             log.Info("Processing...");
             var review = string.IsNullOrEmpty(Positive)
                              ? GetAllReviews()
@@ -58,7 +57,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             Process(review, splitter);
         }
 
-        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, SplitterHelper splitter);
+        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);
 
         private IObservable<IParsedDocumentHolder> GetAllReviews()
         {

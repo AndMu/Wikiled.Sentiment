@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, SplitterHelper splitter)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             TestingClient client = new TestingClient(splitter, reviews, SvmPath);
             client.UseBagOfWords = UseBagOfWords;

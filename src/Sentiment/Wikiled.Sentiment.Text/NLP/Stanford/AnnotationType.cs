@@ -11,10 +11,6 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
     {
         private AnnotationType()
         {
-            var loadingType = typeof(com.sun.codemodel.@internal.ClassType); // IKVM.OpenJDK.Tools
-            loadingType = typeof(com.sun.org.apache.xalan.@internal.xsltc.trax.TransformerFactoryImpl); // IKVM.OpenJDK.XML.Transform
-            loadingType= typeof(com.sun.org.glassfish.external.amx.AMX); // IKVM.OpenJDK.XML.WebService
-
             PartOfSpeech = new CoreAnnotations.PartOfSpeechAnnotation().getClass();
             Sentence = new CoreAnnotations.SentencesAnnotation().getClass();
             Tokens = new CoreAnnotations.TokensAnnotation().getClass();
@@ -31,35 +27,34 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
             Sentiment = new SentimentCoreAnnotations.SentimentClass().getClass();
         }
 
-        public Class Sentiment { get; private set; }
-
-        public Class DocDate { get; private set; }
-
-        public Class PartOfSpeech { get; private set; }
-
-        public Class TimeExpression { get; private set; }
-
-        public Class AllTimex { get; private set; }
-
-        public Class Timex { get; private set; }
-
-        public Class NormalizedEntity { get; private set; }
-
-        public Class NamedEntity { get; private set; }
-
-        public Class Text { get; private set; }
-
-        public Class Lemma { get; private set; }
-
-        public Class CollapsedCCProcessedDependencies { get; private set; }
-
-        public Class Tree { get; private set; }
-
-        public Class Tokens { get; private set; }
-
-        public Class Sentence { get; private set; }
-
         public static AnnotationType Instance { get; } = new AnnotationType();
+
+        public Class AllTimex { get; }
+
+        public Class CollapsedCCProcessedDependencies { get; }
+
+        public Class DocDate { get; }
+
+        public Class Lemma { get; }
+
+        public Class NamedEntity { get; }
+
+        public Class NormalizedEntity { get; }
+
+        public Class PartOfSpeech { get; }
+
+        public Class Sentence { get; }
+
+        public Class Sentiment { get; }
+
+        public Class Text { get; }
+
+        public Class TimeExpression { get; }
+
+        public Class Timex { get; }
+
+        public Class Tokens { get; }
+
+        public Class Tree { get; }
     }
 }
-

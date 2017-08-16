@@ -217,6 +217,7 @@
     <Compile Include="NLP\NRC\NRCDictionaryTests.cs" />
     <Compile Include="NLP\NRC\SentimentVectorExtensionTests.cs" />
     <Compile Include="NLP\NRC\SentimentVectorTests.cs" />
+    <Compile Include="NLP\Stanford\TextSplitterTests.cs" />
     <Compile Include="NLP\Style\InquirerFingerPrintTests.cs" />
     <Compile Include="NLP\Style\Obscurity\VocabularyObscurityTests.cs" />
     <Compile Include="NLP\ParsedReviewFactoryTests.cs" />

@@ -15,11 +15,11 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
     public class TestRunner
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly SentimentTestData definition;
 
         private readonly TestHelper helper;
-
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly SemaphoreSlim semaphore;
 
@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
 
-        public SplitterHelper Active { get; }
+        public ISplitterHelper Active { get; }
 
         public IObservable<IParsedDocumentHolder> Load()
         {

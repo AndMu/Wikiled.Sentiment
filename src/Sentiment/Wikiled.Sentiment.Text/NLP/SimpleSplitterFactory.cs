@@ -14,17 +14,17 @@ namespace Wikiled.Sentiment.Text.NLP
             wordsHandler = factory.WordsHandler;
         }
 
-        public void Construct()
-        {
-            TextSplitter = ConstructSingle();
-            IsConstructed = true;
-        }
-
         public bool CanConstruct => !IsConstructed;
 
         public bool IsConstructed { get; private set; }
 
         public ITextSplitter TextSplitter { get; private set; }
+
+        public void Construct()
+        {
+            TextSplitter = ConstructSingle();
+            IsConstructed = true;
+        }
 
         public ITextSplitter ConstructSingle()
         {

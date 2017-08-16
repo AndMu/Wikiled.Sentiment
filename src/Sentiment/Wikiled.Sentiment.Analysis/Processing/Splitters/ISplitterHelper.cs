@@ -1,4 +1,3 @@
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -11,6 +10,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         int Parallel { get; }
 
-        void Load(POSTaggerType tagger = POSTaggerType.Stanford);
+        void Load();
     }
 }

@@ -287,10 +287,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NLP\Wikiled.Sentiment.Text.NLP.Stanford\Wikiled.Sentiment.Text.NLP.Stanford.csproj">
-      <Project>{322E93A6-79EA-46B7-89E4-5DBDC68DF875}</Project>
-      <Name>Wikiled.Sentiment.Text.NLP.Stanford</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
       <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
       <Name>Wikiled.Sentiment.Analysis.Amazon</Name>

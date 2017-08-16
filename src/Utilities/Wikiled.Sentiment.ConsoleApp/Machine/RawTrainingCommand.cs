@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public bool UseAll { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, SplitterHelper splitter)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
             TrainingClient client = new TrainingClient(splitter, reviews, @".\Svm");

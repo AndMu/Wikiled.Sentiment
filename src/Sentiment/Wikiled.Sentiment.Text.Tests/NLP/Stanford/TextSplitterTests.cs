@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Cache;
 
-namespace Wikiled.Sentiment.Text.NLP.Stanford.Tests
+namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
 {
     [TestFixture]
     [Timeout(1000 * 60 * 10)]

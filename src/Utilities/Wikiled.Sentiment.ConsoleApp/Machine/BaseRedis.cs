@@ -10,6 +10,7 @@ using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP.Stanford;
@@ -48,7 +49,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public int? Years { get; set; }
 
-        protected SplitterHelper Helper { get; set; }
+        protected ISplitterHelper Helper { get; set; }
 
         public override void Execute()
         {
@@ -65,10 +66,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 var redisDocumentFactory = new RedisDocumentCacheFactory(basicRedisManager);
                 source = redisDocumentFactory.Create(POSTaggerType.Stanford);
                 amazonRepository = new AmazonRepository(basicRedisManager);
-                Helper = new SplitterHelper(
-                    redisDocumentFactory,
-                    new ConfigurationHandler(),
-                    new StanfordFactory(redisDocumentFactory));
+                Helper = new SplitterFactory(redisDocumentFactory, new ConfigurationHandler()).Create(POSTaggerType.Stanford);
                 log.Info("Loading libraries...");
                 Helper.Load();
                 ProcessingPath = string.IsNullOrEmpty(SvmPath) ? @".\Svm" : SvmPath;

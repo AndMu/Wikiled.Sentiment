@@ -6,10 +6,10 @@ using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Amazon;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
-using Wikiled.Text.Analysis.POS;
-using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
@@ -25,18 +25,16 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             AmazonRepository = new AmazonRepository(Redis);
             var cacheFactory = new RedisDocumentCacheFactory(Redis);
             Cache = cacheFactory.Create(POSTaggerType.Stanford);
-            CachedSplitterHelper = new SplitterHelper(cacheFactory, configuration, new StanfordFactory(cacheFactory));
-            CachedSplitterHelper.Load();
+            CachedSplitterHelper = new SplitterFactory(cacheFactory, configuration).Create(POSTaggerType.Stanford);
             var localCache = new LocalCacheFactory();
-            NonCachedSplitterHelper = new SplitterHelper(localCache, configuration, new StanfordFactory(localCache));
-            NonCachedSplitterHelper.Load();
+            NonCachedSplitterHelper = new SplitterFactory(localCache, configuration).Create(POSTaggerType.Stanford);
         }
 
         public ICachedDocumentsSource Cache { get; }
 
-        public SplitterHelper CachedSplitterHelper { get; }
+        public ISplitterHelper CachedSplitterHelper { get; }
 
-        public SplitterHelper NonCachedSplitterHelper { get; }
+        public ISplitterHelper NonCachedSplitterHelper { get; }
 
         public IRedisLink Redis { get; }
 
