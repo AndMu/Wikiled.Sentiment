@@ -22,17 +22,24 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         public ISplitterHelper Create(POSTaggerType value)
         {
+            ISplitterHelper instance;
             switch (value)
             {
                 case POSTaggerType.Simple:
-                    return new SimpleSplitterHelper(configuration);
+                    instance = new SimpleSplitterHelper(configuration);
+                    break;
                 case POSTaggerType.Stanford:
-                    return new StanfordSplitterHelper(cacheFactory, configuration);
+                    instance = new StanfordSplitterHelper(cacheFactory, configuration);
+                    break;
                 case POSTaggerType.SharpNLP:
-                    return new OpenNlpSplitterHelper(cacheFactory, configuration);
+                    instance = new OpenNlpSplitterHelper(cacheFactory, configuration);
+                    break;
                 default:
                     throw new NotSupportedException(value.ToString());
             }
+
+            instance.Load();
+            return instance;
         }
     }
 }

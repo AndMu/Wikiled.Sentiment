@@ -18,19 +18,19 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
     [TestFixture]
     public class AspectsTests
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private static readonly SentimentAspectData[] aspectData =
-        {
-            new SentimentAspectData(
-                new SentimentTestData("B0002L5R78", 7581), 
-                new TopItems {Total = 10, Items = new[] {"new"}}, // attributes 
-                new TopItems {Total = 10, Items = new[] {"cable"}}),// features
-            new SentimentAspectData(
-                new SentimentTestData("B00002EQCW", 228), 
-                new TopItems {Total = 10, Items = new[] {"small"}}, // attributes 
-                new TopItems {Total = 10, Items = new[] {"switch"}}) // features
-        };
+            {
+                new SentimentAspectData(
+                    new SentimentTestData("B0002L5R78", 7581),
+                    new TopItems { Total = 10, Items = new[] { "new" } }, // attributes 
+                    new TopItems { Total = 10, Items = new[] { "cable" } }), // features
+                new SentimentAspectData(
+                    new SentimentTestData("B00002EQCW", 228),
+                    new TopItems { Total = 10, Items = new[] { "small" } }, // attributes 
+                    new TopItems { Total = 10, Items = new[] { "switch" } }) // features
+            };
+
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         [TestCaseSource(nameof(aspectData))]
         public async Task ProductTest(SentimentAspectData data)
@@ -40,9 +40,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             TestRunner runner = new TestRunner(TestHelper.Instance, data.Sentiment);
 
             SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2, Environment.ProcessorCount / 2);
-            var result = runner.Load().ObserveOn(TaskPoolScheduler.Default)
-                .Select(review => ProcessItem(semaphore, aspectHandler, review))
-                .Merge();
+            var result = runner.Load().ObserveOn(TaskPoolScheduler.Default).Select(review => ProcessItem(semaphore, aspectHandler, review)).Merge();
 
             await result;
 
@@ -51,8 +49,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
             var features = aspectHandler.GetFeatures(10).ToArray();
             var attributes = aspectHandler.GetAttributes(10).ToArray();
-            //Assert.AreEqual(data.Features.Total, features.Length);
-            //Assert.AreEqual(data.Attributes.Total, attributes.Length);
             for (int i = 0; i < data.Features.Items.Length; i++)
             {
                 Assert.AreEqual(data.Features.Items[i], features[i].Text.ToLower());
@@ -64,10 +60,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             }
         }
 
-        private static async Task<IParsedDocumentHolder> ProcessItem(
-            SemaphoreSlim semaphore, 
-            MainAspectHandler aspectHandler,
-            IParsedDocumentHolder review)
+        private static async Task<IParsedDocumentHolder> ProcessItem(SemaphoreSlim semaphore, MainAspectHandler aspectHandler, IParsedDocumentHolder review)
         {
             try
             {

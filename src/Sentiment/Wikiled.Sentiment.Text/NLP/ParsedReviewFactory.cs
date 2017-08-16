@@ -12,9 +12,9 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         private readonly IWordsHandler manager;
 
-        private ParsedReview review;
-
         private readonly Document document;
+
+        private ParsedReview review;
 
         public ParsedReviewFactory(IWordsHandler manager, Document document)
         {

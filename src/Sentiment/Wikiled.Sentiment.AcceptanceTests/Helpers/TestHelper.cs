@@ -3,7 +3,6 @@ using NUnit.Framework;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Amazon;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
@@ -30,6 +29,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             NonCachedSplitterHelper = new SplitterFactory(localCache, configuration).Create(POSTaggerType.Stanford);
         }
 
+        public static TestHelper Instance { get; } = new TestHelper();
+
+        public AmazonRepository AmazonRepository { get; }
+
         public ICachedDocumentsSource Cache { get; }
 
         public ISplitterHelper CachedSplitterHelper { get; }
@@ -37,9 +40,5 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         public ISplitterHelper NonCachedSplitterHelper { get; }
 
         public IRedisLink Redis { get; }
-
-        public AmazonRepository AmazonRepository { get; }
-
-        public static TestHelper Instance { get; } = new TestHelper();
     }
 }
