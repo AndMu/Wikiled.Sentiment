@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         [Test]
         public async Task BasicSentiment()
         {
-            var text = ":confused: I do";
+            var text = "EMOTICON_confused I do";
             var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             var review = result.GetReview(handler);
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);

@@ -17,7 +17,7 @@ using Wikiled.Sentiment.Text.Extensions;
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
     [TestFixture]
-    public class SentimentTest
+    public class SentimentTests
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 

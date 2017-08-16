@@ -251,7 +251,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sentiments\NlpTests.cs" />
     <Compile Include="Sentiments\RegressionTests.cs" />
-    <Compile Include="Sentiments\SentimentTest.cs" />
+    <Compile Include="Sentiments\SentimentTests.cs" />
     <Compile Include="Sentiments\Word2VecTests.cs" />
     <Compile Include="Training\CrossDomainTests.cs" />
     <Compile Include="Training\Global.cs" />

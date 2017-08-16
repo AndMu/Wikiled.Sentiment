@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
     public class TestHelper
     {
-        public TestHelper(string server = "gitlab", int port = 6373)
+        public TestHelper(string server = "192.168.0.147", int port = 6373)
         {
             ConfigurationHandler configuration = new ConfigurationHandler();
             configuration.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources"));
