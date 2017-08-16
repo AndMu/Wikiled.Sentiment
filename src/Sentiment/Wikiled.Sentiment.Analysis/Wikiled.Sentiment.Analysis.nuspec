@@ -4,9 +4,13 @@
     <id>Wikiled.Sentiment.Analysis</id>
     <version>1.0.0</version>
     <authors>Wikiled</authors>
-    <description>Sentiment Library</description>    
+    <description>Sentiment Library</description>
+    <dependencies>
+      <dependency id="Wikiled.OpenNLP" />
+    </dependencies>
   </metadata>
   <files>
+    <file src="bin\Release\Wikiled.Sentiment.Analysis.pdb" target="lib\net462" />
     <file src="bin\Release\Wikiled.Sentiment.Text.dll" target="lib\net462" />
     <file src="bin\Release\Wikiled.Sentiment.Text.pdb" target="lib\net462" />     
   </files>
