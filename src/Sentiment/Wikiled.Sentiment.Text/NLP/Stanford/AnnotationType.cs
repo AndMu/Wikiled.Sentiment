@@ -15,7 +15,6 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
             Sentence = new CoreAnnotations.SentencesAnnotation().getClass();
             Tokens = new CoreAnnotations.TokensAnnotation().getClass();
             Tree = new TreeCoreAnnotations.TreeAnnotation().getClass();
-            CollapsedCCProcessedDependencies = new SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation().getClass();
             Lemma = new CoreAnnotations.LemmaAnnotation().getClass();
             Text = new CoreAnnotations.TextAnnotation().getClass();
             NamedEntity = new CoreAnnotations.NamedEntityTagAnnotation().getClass();

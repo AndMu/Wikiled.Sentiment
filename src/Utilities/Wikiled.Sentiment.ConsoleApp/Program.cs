@@ -44,6 +44,10 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new TestingCommand();
                 }
+                else if (string.Compare(args[0], "boot", StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    command = new BoostrapCommand();
+                }
                 else if (string.Compare(args[0], "rawTest", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new RawTestingCommand();

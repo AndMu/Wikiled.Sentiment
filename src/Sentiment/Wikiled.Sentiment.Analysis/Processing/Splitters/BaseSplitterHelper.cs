@@ -7,7 +7,7 @@ using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 
-namespace Wikiled.Sentiment.Analysis.Processing
+namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
     public abstract class BaseSplitterHelper : ISplitterHelper
     {

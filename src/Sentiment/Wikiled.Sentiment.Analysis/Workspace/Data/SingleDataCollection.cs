@@ -15,12 +15,10 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
 {
     internal class SingleDataCollection : IDataCollection
     {
-        public event EventHandler<ModificationEventArgs> Changed;
-
-        private readonly Dictionary<string, bool> addedFiles = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        private readonly Dictionary<string, bool> addedFiles = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        
         private bool isReady;
 
         private PrecisionRecallCalculator<PositivityType> positiveNegativeStats = new PrecisionRecallCalculator<PositivityType>();
@@ -36,6 +34,8 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
             Init();
         }
 
+        public event EventHandler<ModificationEventArgs> Changed;
+
         public double Accuracy => positiveNegativeStats.GetAccuracy(PositivityType);
 
         public ItemConfiguration Configuration { get; }
@@ -50,12 +50,12 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
         {
             get
             {
-                if(Stars > 3.5)
+                if (Stars > 3.5)
                 {
                     return PositivityType.Positive;
                 }
 
-                if(Stars < 2.5)
+                if (Stars < 2.5)
                 {
                     return PositivityType.Negative;
                 }
@@ -74,14 +74,14 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
         {
             Guard.NotNull(() => files, files);
             log.Debug("AddFiles: <{0}>", files.Length);
-            if(files.Length == 0)
+            if (files.Length == 0)
             {
                 return;
             }
 
             files = AddFileInternal(files);
-            if(files.Length > 0 &&
-               isReady)
+            if (files.Length > 0 &&
+                isReady)
             {
                 Configuration.Files.AddRange(files);
                 FireChanged(Modification.AddedItems);
@@ -92,13 +92,13 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
         {
             log.Debug("AddFolder {0}", folder);
             var files = Directory.EnumerateFiles(folder).ToArray();
-            if(files.Length > 0)
+            if (files.Length > 0)
             {
                 log.Debug("AddFolder - found {0} files", files.Length);
                 AddFileInternal(files);
             }
 
-            if(isReady)
+            if (isReady)
             {
                 Configuration.Folders.Add(folder);
                 FireChanged(Modification.AddedItems);
@@ -129,7 +129,7 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
             {
                 Items.Add(data);
             }
-            
+
             RecalculateStats();
         }
 
@@ -137,15 +137,15 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
         {
             List<SingleProcessingData> items = new List<SingleProcessingData>(files.Length);
             List<string> filtered = new List<string>();
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                if(addedFiles.ContainsKey(file))
+                if (addedFiles.ContainsKey(file))
                 {
                     log.Info("File <{0}> is already added", file);
                     continue;
                 }
 
-                if(!File.Exists(file))
+                if (!File.Exists(file))
                 {
                     log.Warn("File <{0}> not found", file);
                     continue;
@@ -165,8 +165,8 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
 
         private void FireChanged(Modification modification)
         {
-            if(!suspendEvents &&
-               isReady)
+            if (!suspendEvents &&
+                isReady)
             {
                 Changed?.Invoke(this, new ModificationEventArgs(modification));
             }
@@ -174,7 +174,7 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
 
         private void Init()
         {
-            foreach(var folder in Configuration.Folders)
+            foreach (var folder in Configuration.Folders)
             {
                 AddFolder(folder);
             }
@@ -186,7 +186,7 @@ namespace Wikiled.Sentiment.Analysis.Workspace.Data
         private void RecalculateStats()
         {
             positiveNegativeStats = new PrecisionRecallCalculator<PositivityType>();
-            foreach(var singleProcessingData in Items)
+            foreach (var singleProcessingData in Items)
             {
                 positiveNegativeStats.Add(
                     PositivityType,

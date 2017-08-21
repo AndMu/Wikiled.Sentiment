@@ -9,10 +9,10 @@ using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Inquirer;
 using Wikiled.Sentiment.Text.NLP.NRC;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Reflection.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Extensions

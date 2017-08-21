@@ -6,7 +6,6 @@ using NLog;
 using Polly.Retry;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Amazon;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
