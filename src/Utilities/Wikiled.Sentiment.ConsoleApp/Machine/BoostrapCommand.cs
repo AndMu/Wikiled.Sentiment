@@ -82,7 +82,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 }
             }
 
-            log.Info(performance);
+            log.Info($"Precision (Positive): {performance.GetPrecision(PositivityType.Positive)} Precision (Negative): {performance.GetPrecision(PositivityType.Negative)} Precision (Neutral): {performance.GetPrecision(PositivityType.Neutral)}");
         }
 
         private static PositivityType? GetPositivityType(ValueTuple<long?, double?, PositivityType?, string> item)
