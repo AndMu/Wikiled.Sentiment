@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,6 @@ using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 

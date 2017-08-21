@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -23,7 +24,7 @@ using Wikiled.Text.Analysis.Twitter;
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    /// boot -Words=words.csv -Path="c:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
+    /// boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
     public class BoostrapCommand : Command
     {
@@ -50,25 +51,26 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         {
             LoadDefault();
             LoadBootstrap();
-            monitor = new PerformanceMonitor(0, 5000);
-            var reviews = ReadFiles();
-
-            var subscriptioMessage = reviews.ToObservable()
-                                            .ObserveOn(TaskPoolScheduler.Default)
-                                            .Select(item => Observable.Start(async () => await ProcessReview(item).ConfigureAwait(false), TaskPoolScheduler.Default))
-                                            .Merge()
-                                            .Merge()
-                                            .Where(item => item.Text != null);
-
-
-            performance = new PrecisionRecallCalculator<PositivityType>();
-            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+            monitor = new PerformanceMonitor(0);
+            using(Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
             {
-                subscriptioMessage.Do(
-                    item =>
+                var reviews = ReadFiles();
+                var subscriptioMessage = reviews.ToObservable()
+                                                .ObserveOn(TaskPoolScheduler.Default)
+                                                .Select(item => Observable.Start(async () => await ProcessReview(item).ConfigureAwait(false), TaskPoolScheduler.Default))
+                                                .Merge()
+                                                .Merge()
+                                                .Where(item => item.Text != null);
+
+
+                performance = new PrecisionRecallCalculator<PositivityType>();
+                using(var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+                {
+                    subscriptioMessage.Do(
+                        item =>
                         {
                             var calculated = GetPositivityType(item);
-                            if (item.Original.HasValue)
+                            if(item.Original.HasValue)
                             {
                                 performance.Add(item.Original.Value, calculated);
                             }
@@ -77,6 +79,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                             streamWrite.Flush();
 
                         }).Wait();
+                }
             }
         }
 
@@ -208,7 +211,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         if (!exist.ContainsKey(text))
                         {
                             exist[text] = text;
-                            monitor.CountTotal();
+                            monitor.ManualyCount();
                             yield return (id, positivity, text);
                         }
                     }

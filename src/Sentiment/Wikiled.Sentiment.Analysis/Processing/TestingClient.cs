@@ -146,7 +146,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private async Task<ParsingResult> Process(IParsedDocumentHolder document)
         {
-            monitor.CountTotal();
+            monitor.ManualyCount();
             var parsed = await RetrieveData(document).ConfigureAwait(false);
             monitor.Increment();
             if (parsed != null)

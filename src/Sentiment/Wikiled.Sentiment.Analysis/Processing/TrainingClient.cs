@@ -117,7 +117,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             try
             {
-                monitor.CountTotal();
+                monitor.ManualyCount();
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
                 var review = doc.GetReview(splitter.DataLoader);
                 if (review != null)
@@ -143,7 +143,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private async Task<IParsedReview> ProcessSingleItem(IParsedDocumentHolder reviewHolder)
         {
             var doc = reviewHolder.Original;
-            monitor.CountTotal();
+            monitor.ManualyCount();
             if (doc == null)
             {
                 return null;
