@@ -81,6 +81,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         }).Wait();
                 }
             }
+
+            log.Info(performance);
         }
 
         private static PositivityType? GetPositivityType(ValueTuple<long?, double?, PositivityType?, string> item)
