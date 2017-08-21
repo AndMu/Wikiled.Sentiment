@@ -7,9 +7,9 @@ namespace Wikiled.Sentiment.Text.Sentiment
 {
     public class SentimentValueData
     {
-        private readonly double value;
-
         private readonly List<SentimentValueData> other = new List<SentimentValueData>();
+
+        private readonly double value;
 
         public SentimentValueData(double value, SentimentSource sentimentSource = SentimentSource.None)
         {
@@ -23,18 +23,21 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public double Value
         {
-            get { return (value + other.Sum(item => item.value))/(1 + other.Count); }
+            get
+            {
+                return (value + other.Sum(item => item.value)) / (1 + other.Count);
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{Value:F2}, {SentimentSource}";
         }
 
         public void Add(SentimentValueData value)
         {
             Guard.NotNull(() => value, value);
             other.Add(value);
-        }
-
-        public override string ToString()
-        {
-            return $"{Value:F2}, {SentimentSource}";
         }
     }
 }

@@ -4,6 +4,7 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Collection;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.Twitter;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
@@ -92,6 +93,16 @@ namespace Wikiled.Sentiment.Text.Parser
                 {
                     AddValue(item.Key, value);
                 }
+            }
+
+            foreach (var emoji in EmojiSentiment.Positive)
+            {
+                AddValue(emoji.AsShortcode(), new SentimentValueData(2));
+            }
+
+            foreach (var emoji in EmojiSentiment.Negative)
+            {
+                AddValue(emoji.AsShortcode(), new SentimentValueData(-2));
             }
         }
 

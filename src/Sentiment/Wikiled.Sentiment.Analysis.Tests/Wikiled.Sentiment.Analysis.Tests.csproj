@@ -116,10 +116,6 @@
       <HintPath>..\..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SmartThreadPool, Version=2.2.4.0, Culture=neutral, PublicKeyToken=1126fe8b671e8a79, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SmartThreadPool.dll.2.2.4\lib\net45\SmartThreadPool.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Snappy.NET, Version=1.1.1.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Snappy.NET.1.1.1.8\lib\net45\Snappy.NET.dll</HintPath>
       <Private>True</Private>
@@ -177,8 +173,8 @@
     <Reference Include="Wikiled.Redis, Version=2.3.14.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Redis.2.3.14\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.1.28.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.28\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.33\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

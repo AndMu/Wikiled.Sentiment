@@ -7,7 +7,6 @@ using System.Xml.XPath;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Persitency;
 using Wikiled.Text.Analysis.Resources;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
@@ -37,23 +36,23 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public string Repair(string sentence)
         {
-            foreach(var sentenceRepair in repairs)
+            foreach (var sentenceRepair in repairs)
             {
                 sentence = sentenceRepair.Repair(sentence);
             }
 
-            const ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
-            foreach(var emoticon in emoticons)
+            ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
+            foreach (var emoticon in emoticons)
             {
                 sentence = RepairByLevel(emoticon.Value * 2, emoticon.Key, sentence);
             }
 
-            foreach(var slang in slangs)
+            foreach (var slang in slangs)
             {
                 sentence = sentence.ReplaceString(slang.Key, slang.Value, option);
             }
 
-            foreach(var emoticon in idioms)
+            foreach (var emoticon in idioms)
             {
                 sentence = RepairByLevel(emoticon.Value, emoticon.Key, sentence);
             }
@@ -66,29 +65,29 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
             XDocument document = XDocument.Load(Path.Combine(resourcesPath, "Repair.xml"));
             var items = from item in document.XPathSelectElements("//Rules/Rule")
                         select item;
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 var test = item.Element("Test");
-                if(test == null)
+                if (test == null)
                 {
                     throw new NullReferenceException("test");
                 }
 
                 var match = item.Element("Match");
-                if(match == null)
+                if (match == null)
                 {
                     throw new NullReferenceException("match");
                 }
 
                 var replace = item.Element("Replace");
-                if(replace == null)
+                if (replace == null)
                 {
                     throw new NullReferenceException("Replace");
                 }
 
                 var repair = new SentenceRepair(wordsHandlers.Extractor.Dictionary, test.Value, match.Value, replace.Value);
                 var verify = item.Element("Verify");
-                if(verify != null)
+                if (verify != null)
                 {
                     repair.VerifyDictionary = verify.Value.Split(';')
                                                     .Select(int.Parse)
@@ -105,7 +104,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void ReadEmoticons()
         {
-            using(ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "EmoticonLookupTable.txt")))
+            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "EmoticonLookupTable.txt")))
             {
                 emoticons = data.ReadData<string, int>(StringComparer.OrdinalIgnoreCase);
             }
@@ -113,7 +112,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void ReadIdioms()
         {
-            using(ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "IdiomLookupTable.txt")))
+            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "IdiomLookupTable.txt")))
             {
                 idioms = data.ReadData<string, int>(StringComparer.OrdinalIgnoreCase);
             }
@@ -121,12 +120,12 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void ReadSlang()
         {
-            using(ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "SlangLookupTable.txt")))
+            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "SlangLookupTable.txt")))
             {
                 slangs = data.ReadData<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach(var item in slangs.ToArray())
+                foreach (var item in slangs.ToArray())
                 {
-                    if(wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Key, "JJ")))
+                    if (wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Key, "JJ")))
                     {
                         slangs.Remove(item.Key);
                     }
@@ -138,7 +137,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         {
             string replaceValue = null;
             const ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
-            switch(level)
+            switch (level)
             {
                 case 0:
                     replaceValue = "xxxneutralxxx";

@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Persitency;
 using Wikiled.Text.Analysis.Resources;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
@@ -26,6 +25,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [TestCase("bad", "NN", -2)]
         [TestCase("director", "NN", 0)]
         [TestCase("unfulfilled", "NN", -1)]
+        [TestCase("EMOTICON_Joy", "NN", 2)]
         public void MeasureSentiment(string word, string pos, int sentiment)
         {
             var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, pos);
