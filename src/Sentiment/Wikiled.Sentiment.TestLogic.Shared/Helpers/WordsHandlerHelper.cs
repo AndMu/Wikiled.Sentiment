@@ -2,6 +2,7 @@
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
@@ -16,7 +17,10 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             Handler.Setup(item => item.Extractor).Returns(RawTextExractor.Object);
             Loader = new Mock<DocumentLoader>();
             RawTextExractor.Setup(item => item.GetWord(It.IsAny<string>())).Returns((string myval) => myval);
+            InquirerManager = new Mock<IInquirerManager>();
         }
+
+        public Mock<IInquirerManager> InquirerManager { get; }
 
         public Mock<IWordsHandler> Handler { get; }
 

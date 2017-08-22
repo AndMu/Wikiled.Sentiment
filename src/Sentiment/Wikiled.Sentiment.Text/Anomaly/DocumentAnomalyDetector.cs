@@ -17,10 +17,11 @@ using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.NLP.NRC;
 using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Reflection.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Logic;
+using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Inquirer.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.Anomaly
 {
@@ -30,9 +31,11 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private static readonly IMapCategory MapFull = new CategoriesMapper().Construct<TextBlock>();
+        private static readonly IMapCategory mapFull = new CategoriesMapper().Construct<TextBlock>();
 
         private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
+
+        private readonly IInquirerManager inquirer;
 
         private readonly SentenceItem[] sentences;
 
@@ -44,11 +47,13 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private double windowSize;
 
-        public DocumentAnomalyDetector(IWordsHandler wordsHandler, IParsedReview document)
+        public DocumentAnomalyDetector(IInquirerManager inquirer, IWordsHandler wordsHandler, IParsedReview document)
         {
             Guard.NotNull(() => wordsHandler, wordsHandler);
             Guard.NotNull(() => document, document);
+            Guard.NotNull(() => inquirer, inquirer);
             this.wordsHandler = wordsHandler;
+            this.inquirer = inquirer;
             Document = document.GenerateDocument(NullRatingAdjustment.Instance);
             sentences = Document.Sentences.ToArray();
             AnomalyThreshold = 0.1;
@@ -245,12 +250,12 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private VectorData GetVector(IEnumerable<SentenceItem> normalBlock, NormalizationType normalization)
         {
-            TextBlock normal = new TextBlock(wordsHandler, normalBlock.ToArray(), true);
+            TextBlock normal = new TextBlock(inquirer, wordsHandler, normalBlock.ToArray(), true);
             DataTree tree;
             switch (AnomalyVectorType)
             {
                 case AnomalyVectorType.Full:
-                    tree = new DataTree(normal, MapFull);
+                    tree = new DataTree(normal, mapFull);
                     break;
                 case AnomalyVectorType.Inquirer:
                     tree = normal.InquirerFinger.InquirerProbabilities;

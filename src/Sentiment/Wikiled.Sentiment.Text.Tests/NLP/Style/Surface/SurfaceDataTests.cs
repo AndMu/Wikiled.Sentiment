@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style.Surface
         public async Task GetDataFirst()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
-            TextBlock block = new TextBlock(helper.Handler.Object, document.Sentences.ToArray());
+            TextBlock block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
             Assert.AreEqual(119.12, Math.Round(block.Surface.Sentence.AverageLength, 2));
             Assert.AreEqual(4.3734, Math.Round(block.Surface.Words.AverageLength, 4));
             Assert.AreEqual(1.3834, Math.Round(block.Surface.Words.AverageSyllables, 4));
@@ -48,7 +48,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style.Surface
         public async Task GetDataSecond()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument("cv001_19502.txt").ConfigureAwait(false);
-            TextBlock block = new TextBlock(helper.Handler.Object, document.Sentences.ToArray());
+            TextBlock block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
             Assert.AreEqual(110.92, Math.Round(block.Surface.Sentence.AverageLength, 2));
             Assert.AreEqual(4.3375, Math.Round(block.Surface.Words.AverageLength, 4));
             Assert.AreEqual(1.3625, Math.Round(block.Surface.Words.AverageSyllables, 4));

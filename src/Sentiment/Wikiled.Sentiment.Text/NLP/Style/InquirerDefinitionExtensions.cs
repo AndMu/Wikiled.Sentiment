@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Sentiment.Text.NLP.Inquirer;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {

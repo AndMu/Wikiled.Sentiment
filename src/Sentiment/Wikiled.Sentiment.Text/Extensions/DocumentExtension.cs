@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.NLP.Inquirer;
-using Wikiled.Sentiment.Text.NLP.NRC;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Reflection.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
+using PositivityType = Wikiled.Arff.Persistence.PositivityType;
 
 namespace Wikiled.Sentiment.Text.Extensions
 {
@@ -108,58 +105,6 @@ namespace Wikiled.Sentiment.Text.Extensions
             }
 
             return list;
-        }
-
-        public static IList<double> GetSentimentCategoryDensity(
-            this Document document,
-            bool sentenceLevel,
-            SentimentCategory category)
-        {
-            return GetConditionDensity(
-                document,
-                sentenceLevel,
-                wordItem =>
-                    {
-                        var record = NRCDictionary.Instance.FindRecord(wordItem);
-                        return record != null && record.HasValue(category);
-                    });
-        }
-
-        public static IList<double> GetStyleDensity(this Document document, bool sentenceLevel, IDataItem leaf)
-        {
-            return GetStyleDensity(document, sentenceLevel, new[] { leaf });
-        }
-
-        public static IList<double> GetStyleDensity(this Document document, bool sentenceLevel, IDataTree tree)
-        {
-            return GetStyleDensity(document, sentenceLevel, tree?.AllLeafs.ToArray() ?? new IDataItem[] { });
-        }
-
-        public static IList<double> GetStyleDensity(this Document document, bool sentenceLevel, IDataItem[] leafs)
-        {
-            var table = leafs
-                .Where(item => item != null)
-                .Select(item => item.Name)
-                .ToDictionary(item => item, StringComparer.OrdinalIgnoreCase);
-
-            return GetConditionDensity(
-                document,
-                sentenceLevel,
-                wordItem =>
-                    {
-                        if (leafs.Length == 0)
-                        {
-                            return false;
-                        }
-
-                        InquirerManager inquirer = InquirerManager.GetLoaded();
-                        InquirerDefinition definition = inquirer.GetDefinitions(wordItem.Text);
-
-                        return (from record in definition.Records
-                                from category in record.RawCategories
-                                where table.ContainsKey(category)
-                                select category).Any();
-                    });
         }
 
         public static IList<SentimentDataItem> GetWordSentimentData(this Document document)

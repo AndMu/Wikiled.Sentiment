@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Helpers;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
-using Wikiled.Sentiment.Text.Reflection;
+using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Surface
 {
@@ -16,69 +15,60 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Surface
             Text = text;
         }
 
-        public void Load()
-        {
-            data.PercentOfPunctuation = (double)TotalPunctuation / (double)Text.TotalCharacters;
-            data.PercentOfSemicolons = (double)TotalSemicolons / (double)Text.TotalCharacters;
-            data.PercentOfCommas = (double)TotalCommas / (double)Text.TotalCharacters;
-        }
+        /// <summary>
+        ///     Percentage of all characters that are commas
+        /// </summary>
+        [InfoField("Percentage of commas")]
+        public double PercentOfCommas => data.PercentOfCommas;
 
-        public TextBlock Text { get; private set; }
+        /// <summary>
+        ///     Percentage of all characters that are punctuation characters
+        /// </summary>
+        [InfoField("Percentage of punctuation")]
+        public double PercentOfPunctuation => data.PercentOfPunctuation;
+
+        /// <summary>
+        ///     Percentage of all characters that are semicolons
+        /// </summary>
+        [InfoField("Percentage of semicolons")]
+        public double PercentOfSemicolons => data.PercentOfSemicolons;
+
+        public TextBlock Text { get; }
+
+        private int TotalCommas
+        {
+            get
+            {
+                return Text.Sentences.Sum(item => item.CountCommas());
+            }
+        }
 
         private int TotalPunctuation
         {
-            get { return Text.Sentences.Sum(item => item.CountPunctuations()); }
+            get
+            {
+                return Text.Sentences.Sum(item => item.CountPunctuations());
+            }
         }
 
         private int TotalSemicolons
         {
-            get { return Text.Sentences.Sum(item => item.CountSemicolons()); }
-        }
-
-        private int TotalCommas
-        {
-            get { return Text.Sentences.Sum(item => item.CountCommas()); }
-        }
-
-        /// <summary>
-        /// Percentage of all characters that are punctuation characters
-        /// </summary>
-        [InfoField("Percentage of punctuation")]
-        public double PercentOfPunctuation
-        {
             get
             {
-                return data.PercentOfPunctuation;
-            }
-        }
-
-        /// <summary>
-        /// Percentage of all characters that are semicolons
-        /// </summary>
-        [InfoField("Percentage of semicolons")]
-        public double PercentOfSemicolons
-        {
-            get
-            {
-                return data.PercentOfSemicolons;
-            }
-        }
-
-        /// <summary>
-        /// Percentage of all characters that are commas
-        /// </summary>
-        [InfoField("Percentage of commas")]
-        public double PercentOfCommas
-        {
-            get
-            {
-                return data.PercentOfCommas;
+                return Text.Sentences.Sum(item => item.CountSemicolons());
             }
         }
 
         public CharactersSurfaceData GetData()
         {
             return (CharactersSurfaceData)data.Clone();
+        }
+
+        public void Load()
+        {
+            data.PercentOfPunctuation = TotalPunctuation / (double)Text.TotalCharacters;
+            data.PercentOfSemicolons = TotalSemicolons / (double)Text.TotalCharacters;
+            data.PercentOfCommas = TotalCommas / (double)Text.TotalCharacters;
         }
     }
 }

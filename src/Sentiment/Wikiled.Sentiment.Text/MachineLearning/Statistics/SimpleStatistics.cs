@@ -65,12 +65,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             }
         }
 
-        public IEnumerable<double> DataBag
-        {
-            get { return dataBag; }
-        }
+        public IEnumerable<double> DataBag => dataBag;
 
-        public int Count { get { return dataBag.Count; } }
+        public int Count => dataBag.Count;
 
         public int BucketCount { get; set; }
     }

@@ -14,6 +14,7 @@ using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Tokenizer;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Anomaly
 {
@@ -21,13 +22,15 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
     {
         private const double Cutoff = 0.2;
 
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private readonly IInquirerManager inquirer;
+
         private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
 
         private readonly Dictionary<SingleProcessingData, double> allTableDistance = new Dictionary<SingleProcessingData, double>();
 
         private readonly IWordsHandler handler;
-
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<SingleProcessingData, VectorData> table = new Dictionary<SingleProcessingData, VectorData>();
 
@@ -35,12 +38,14 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
 
         private readonly SimpleWordsExtraction wordsExtraction;
 
-        public ProcessingDataAnomaly(IWordsHandler handler, IProcessingData originalData)
+        public ProcessingDataAnomaly(IWordsHandler handler, IProcessingData originalData, IInquirerManager inquirer)
         {
             Guard.NotNull(() => handler, handler);
+            Guard.NotNull(() => inquirer, inquirer);
             Guard.NotNull(() => originalData, originalData);
             wordsExtraction = new SimpleWordsExtraction(SentenceTokenizer.Create(handler, true, false));
             OriginalData = originalData;
+            this.inquirer = inquirer;
             this.handler = handler;
         }
 
@@ -106,6 +111,7 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
                     ParsedReviewFactory factory = new ParsedReviewFactory(handler, review.Document);
                     var parsed = factory.Create();
                     DocumentAnomalyDetector dectector = new DocumentAnomalyDetector(
+                        inquirer,
                         handler,
                         parsed);
                     VectorData fullVector = dectector.GetDocumentVector(NormalizationType.None);

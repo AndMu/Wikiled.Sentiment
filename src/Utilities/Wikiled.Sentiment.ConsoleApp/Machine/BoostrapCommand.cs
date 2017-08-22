@@ -17,12 +17,12 @@ using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.NLP.Inquirer;
 using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Twitter;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
@@ -50,8 +50,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<PositivityType> performance;
 
+        private IInquirerManager inquirer;
+
         public override void Execute()
         {
+            inquirer = new InquirerManager();
+            inquirer.Load();
             LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
@@ -150,7 +154,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
             var originalSentimentValue = originalReview.CalculateRawRating();
 
-            InquirerManager inquirer = InquirerManager.GetLoaded();
             var records = bootReview.Items
                                     .Select(item => inquirer.GetWordDefinitions(item))
                                     .SelectMany(item => item.Records)

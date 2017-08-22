@@ -34,41 +34,23 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
         {
         }
 
-        public int WindowsSize
-        {
-            get { return 0; }
-        }
+        public int WindowsSize => 0;
 
         public double Value { get;  }
 
-        public int TotalWords
-        {
-            get { return 0; }
-        }
+        public int TotalWords => 0;
 
-        public int TotalOccurences
-        {
-            get { return 0; }
-        }
+        public int TotalOccurences => 0;
 
-        public DescriptiveStatistics Statistics
-        {
-            get { return null; }
-        }
+        public DescriptiveStatistics Statistics => null;
 
-        public IEnumerable<string> BucketLabels { get { return null; } }
+        public IEnumerable<string> BucketLabels => null;
 
-        public IEnumerable<double> DataBag
-        {
-            get { return null; }
-        }
+        public IEnumerable<double> DataBag => null;
 
-        public Histogram Histogram { get { return null; } }
+        public Histogram Histogram => null;
 
-        public int Count
-        {
-            get { return 0; }
-        }
+        public int Count => 0;
 
         public int BucketCount
         {

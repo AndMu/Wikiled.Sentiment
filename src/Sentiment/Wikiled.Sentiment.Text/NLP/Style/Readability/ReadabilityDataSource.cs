@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Helpers;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Readability
 {

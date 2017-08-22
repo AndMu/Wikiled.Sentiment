@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.Text.Async;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Reflection.Data;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Inquirer.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.NLP.NRC
 {

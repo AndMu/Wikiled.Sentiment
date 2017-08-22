@@ -273,20 +273,23 @@
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Wikiled.Arff, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Arff.1.0.17\lib\net462\Wikiled.Arff.dll</HintPath>
+    <Reference Include="Wikiled.Arff, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Arff.1.0.18\lib\net462\Wikiled.Arff.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Core.Utility, Version=2.1.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.16\lib\net462\Wikiled.Core.Utility.dll</HintPath>
+    <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.MachineLearning, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Redis, Version=2.3.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Redis.2.3.15\lib\net462\Wikiled.Redis.dll</HintPath>
+    <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Text.Analysis, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.33\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.7\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="xom, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
@@ -314,13 +317,11 @@
     <Compile Include="Extensions\WordItemExtensionTests.cs" />
     <Compile Include="Features\DetectionDataTests.cs" />
     <Compile Include="Features\FeatureIndicatorTests.cs" />
-    <Compile Include="Helpers\CalculatorTests.cs" />
     <Compile Include="MachineLearning\ExtractReviewTextVectorTests.cs" />
     <Compile Include="MachineLearning\ExtractSentenceTextVectorTests.cs" />
     <Compile Include="MachineLearning\Statistics\SentenceDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\Statistics\WordDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\TrainedSentimentProviderTests.cs" />
-    <Compile Include="NLP\Inquirer\InquirerManagerTests.cs" />
     <Compile Include="NLP\NRC\NRCDictionaryTests.cs" />
     <Compile Include="NLP\NRC\SentimentVectorExtensionTests.cs" />
     <Compile Include="NLP\NRC\SentimentVectorTests.cs" />
@@ -347,11 +348,6 @@
     <Compile Include="Parser\SentimentDataHolderTests.cs" />
     <Compile Include="Parser\SimpleWordsExtractionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\CategoriesMapperTests.cs" />
-    <Compile Include="Reflection\DataTreeTests.cs" />
-    <Compile Include="Reflection\TestData\AnotherMainItem.cs" />
-    <Compile Include="Reflection\TestData\MainItem.cs" />
-    <Compile Include="Reflection\TestData\ThirdMainItem.cs" />
     <Compile Include="Sentiment\ContextSentimentCalculatorTests.cs" />
     <Compile Include="Sentiment\RatingDataTests.cs" />
     <Compile Include="Sentiment\SentimentValueTests.cs" />

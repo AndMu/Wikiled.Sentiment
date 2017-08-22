@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Arff.Persistence;
-using Wikiled.Sentiment.Text.NLP.Inquirer;
+using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Reflection.Data;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Data;
+using Wikiled.Text.Inquirer.Logic;
+using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Inquirer.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {
@@ -17,9 +18,13 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         private readonly Dictionary<WordEx, Dictionary<string, bool>> wordLevelFingerPrint = new Dictionary<WordEx, Dictionary<string, bool>>();
 
-        public InquirerFingerPrint(TextBlock text)
+        private readonly IInquirerManager inquirer;
+
+        public InquirerFingerPrint(IInquirerManager inquirer, TextBlock text)
         {
+            Guard.NotNull(() => inquirer, inquirer);
             Text = text;
+            this.inquirer = inquirer;
         }
 
         [InfoCategory("Inquirer Based Info")]
@@ -41,7 +46,6 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public void Load()
         {
-            InquirerManager inquirer = InquirerManager.GetLoaded();
             Dictionary<string, int> map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             foreach (var property in mapDefinition.ActualProperties)
             {

@@ -61,15 +61,12 @@ namespace Wikiled.Sentiment.Text.Persitency
             return string.Format("{0}:{1}:{2}", item.Date, item.Tag, item.File);
         }
 
-        public IEnumerable<string> IndexKeys
-        {
-            get { return table.Keys; }
-        }
+        public IEnumerable<string> IndexKeys => table.Keys;
 
         [XmlArray("Records"), XmlArrayItem("Record")]
         public T[] Records
         {
-            get { return tableIndex.Values.ToArray(); }
+            get => tableIndex.Values.ToArray();
             set
             {
                 table.Clear();

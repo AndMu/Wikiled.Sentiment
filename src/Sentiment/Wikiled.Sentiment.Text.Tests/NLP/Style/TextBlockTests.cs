@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         public async Task GetDataFirst()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
-            TextBlock block = new TextBlock(helper.Handler.Object, document.Sentences.ToArray());
+            TextBlock block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
             Assert.AreEqual(350, block.TotalLemmas);
             Assert.AreEqual(350, block.TotalWordTokens);
         }

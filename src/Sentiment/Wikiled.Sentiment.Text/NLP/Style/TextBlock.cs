@@ -7,8 +7,9 @@ using Wikiled.Sentiment.Text.NLP.Style.Obscurity;
 using Wikiled.Sentiment.Text.NLP.Style.Readability;
 using Wikiled.Sentiment.Text.NLP.Style.Surface;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Reflection;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Logic;
+using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {
@@ -19,9 +20,11 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         private readonly Dictionary<string, List<WordEx>> wordDictionary = new Dictionary<string, List<WordEx>>(StringComparer.OrdinalIgnoreCase);
 
-        public TextBlock(IWordsHandler handler, SentenceItem[] sentences,  bool load = true)
+        public TextBlock(IInquirerManager inquirer, IWordsHandler handler, SentenceItem[] sentences, bool load = true)
         {
             Guard.NotEmpty(() => sentences, sentences);
+            Guard.NotNull(() => handler, handler);
+            Guard.NotNull(() => inquirer, inquirer);
             Sentences = sentences;
             Surface = new SurfaceData(this);
             Readability = new ReadabilityDataSource(this);
@@ -33,11 +36,11 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             foreach (var word in Words)
             {
                 if (word.Text.HasLetters() ||
-                    (word.Text.Length > 0 && char.IsDigit(word.Text[0])))
+                    word.Text.Length > 0 && char.IsDigit(word.Text[0]))
                 {
                     pure.Add(word);
                 }
-                
+
                 lemmaDictionary.GetSafeCreate(handler.Extractor.GetWord(word.Text)).Add(word);
                 wordDictionary.GetSafeCreate(word.Text).Add(word);
             }
@@ -45,13 +48,40 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             PureWords = pure.ToArray();
             VocabularyObscurity = new VocabularyObscurity(this);
             SyntaxFeatures = new SyntaxFeatures(handler, this);
-            InquirerFinger = new InquirerFingerPrint(this);
+            InquirerFinger = new InquirerFingerPrint(inquirer, this);
 
             if (load)
             {
                 Load();
             }
         }
+
+        [InfoCategory("Inquirer Based Info", IsCollapsed = true)]
+        public InquirerFingerPrint InquirerFinger { get; }
+
+        public WordEx[] PureWords { get; }
+
+        [InfoCategory("Readability")]
+        public ReadabilityDataSource Readability { get; }
+
+        public SentenceItem[] Sentences { get; }
+
+        [InfoCategory("Text Surface")]
+        public SurfaceData Surface { get; }
+
+        [InfoCategory("Syntax Features")]
+        public SyntaxFeatures SyntaxFeatures { get; }
+
+        public int TotalCharacters { get; private set; }
+
+        public int TotalLemmas => lemmaDictionary.Count;
+
+        public int TotalWordTokens => wordDictionary.Count;
+
+        [InfoCategory("Vocabulary Obscurity")]
+        public VocabularyObscurity VocabularyObscurity { get; }
+
+        public WordEx[] Words { get; }
 
         public void Load()
         {
@@ -62,32 +92,5 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             VocabularyObscurity.Load();
             Readability.Load();
         }
-
-        [InfoCategory("Inquirer Based Info", IsCollapsed = true)]
-        public InquirerFingerPrint InquirerFinger { get; }
-
-        [InfoCategory("Syntax Features")]
-        public SyntaxFeatures SyntaxFeatures { get; }
-
-        [InfoCategory("Vocabulary Obscurity")]
-        public VocabularyObscurity VocabularyObscurity { get; }
-
-        [InfoCategory("Readability")]
-        public ReadabilityDataSource Readability { get; }
-
-        [InfoCategory("Text Surface")]
-        public SurfaceData Surface { get; }
-
-        public SentenceItem[] Sentences { get; }
-
-        public WordEx[] PureWords { get; }
-
-        public WordEx[] Words { get; }
-
-        public int TotalCharacters { get; private set; }
-       
-        public int TotalLemmas => lemmaDictionary.Count;
-
-        public int TotalWordTokens => wordDictionary.Count;
     }
 }

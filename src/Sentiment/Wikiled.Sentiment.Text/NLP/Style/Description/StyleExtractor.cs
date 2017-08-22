@@ -3,6 +3,7 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.NLP.NRC;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Description
 {
@@ -12,17 +13,22 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Description
 
         private readonly IWordsHandler handler;
 
-        public StyleExtractor(IWordsHandler handler, Document document)
+        private readonly IInquirerManager inquirer;
+
+        public StyleExtractor(IInquirerManager inquirer, IWordsHandler handler, Document document)
         {
             Guard.NotNull(() => handler, handler);
+            Guard.NotNull(() => inquirer, inquirer);
             Guard.NotNull(() => document, document);
+            this.inquirer = inquirer;
             this.document = document;
+            this.inquirer = inquirer;
             this.handler = handler;
         }
 
         public DocumentStyle Extract()
         {
-            TextBlock text = new TextBlock(handler, document.Sentences.ToArray());
+            TextBlock text = new TextBlock(inquirer, handler, document.Sentences.ToArray());
             var style = new DocumentStyle();
             style.Obscrunity = text.VocabularyObscurity.GetData();
             style.CharactersSurface = text.Surface.Characters.GetData();
@@ -33,7 +39,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Description
 
             foreach (var sentence in document.Sentences.Where(item => item.Words.Count > 0))
             {
-                text = new TextBlock(handler, new [] { sentence }, false);
+                text = new TextBlock(inquirer, handler, new [] { sentence }, false);
                 var sentenceStyle = new SentenceStyle();
                 sentenceStyle.Sentence = sentence;
                 style.Sentences.Add(sentenceStyle);

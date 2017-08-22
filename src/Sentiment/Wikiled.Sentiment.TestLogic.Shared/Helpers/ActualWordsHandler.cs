@@ -4,6 +4,7 @@ using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
@@ -21,7 +22,13 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             ((WordsDataLoader)WordsHandler).Repair = null;
             TextSplitter = new SimpleTextSplitter(WordsHandler);
             Loader = new DocumentLoader(TextSplitter, WordsHandler);
+            InquirerManager = new InquirerManager();
+            InquirerManager.Load();
         }
+
+        public static ActualWordsHandler Instance { get; } = new ActualWordsHandler();
+
+        public IInquirerManager InquirerManager { get; }
 
         public ConfigurationHandler Configuration { get; }
 
@@ -30,7 +37,5 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public DocumentLoader Loader { get; }
 
         public ITextSplitter TextSplitter { get; } 
-
-        public static ActualWordsHandler Instance { get; } = new ActualWordsHandler();
     }
 }

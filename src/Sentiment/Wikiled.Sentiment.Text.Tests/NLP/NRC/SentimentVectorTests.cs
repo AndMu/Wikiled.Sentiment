@@ -2,7 +2,6 @@
 using System.Linq;
 using NUnit.Framework;
 using Wikiled.Sentiment.Text.NLP.NRC;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.NLP.NRC

@@ -2,8 +2,8 @@
 using Wikiled.Arff.Normalization;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Sentiment.Text.Anomaly;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Reflection.Data;
+using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Inquirer.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.NLP.NRC
 {

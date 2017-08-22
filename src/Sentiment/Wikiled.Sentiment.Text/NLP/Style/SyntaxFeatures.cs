@@ -3,13 +3,12 @@ using System.Linq;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Collection;
 using Wikiled.Core.Utility.Extensions;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Reflection;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {

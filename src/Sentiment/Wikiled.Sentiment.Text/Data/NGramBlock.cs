@@ -55,10 +55,7 @@ namespace Wikiled.Sentiment.Text.Data
                 PopuplateMasks();
                 return posMask;
             }
-            set
-            {
-                posMask = value;    
-            }
+            set => posMask = value;
         }
 
         [DataMember]
@@ -69,10 +66,7 @@ namespace Wikiled.Sentiment.Text.Data
                 PopuplateMasks();
                 return wordMask;
             }
-            set
-            {
-                wordMask = value;
-            }
+            set => wordMask = value;
         }
     }
 }

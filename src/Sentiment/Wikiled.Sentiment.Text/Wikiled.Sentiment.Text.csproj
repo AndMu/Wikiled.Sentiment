@@ -293,11 +293,11 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Wikiled.Arff, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Arff.1.0.17\lib\net462\Wikiled.Arff.dll</HintPath>
+    <Reference Include="Wikiled.Arff, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Arff.1.0.18\lib\net462\Wikiled.Arff.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Core.Utility, Version=2.1.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.16\lib\net462\Wikiled.Core.Utility.dll</HintPath>
+    <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.MachineLearning, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Wikiled.MachineLearning.dll</HintPath>
@@ -305,11 +305,14 @@
     <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.15.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.15\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Redis, Version=2.3.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Redis.2.3.15\lib\net462\Wikiled.Redis.dll</HintPath>
+    <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Text.Analysis, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.33\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.7\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="xom, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
@@ -361,7 +364,6 @@
     <Compile Include="Features\IFeatureIndicator.cs" />
     <Compile Include="Features\Results\IdentificationResult.cs" />
     <Compile Include="Features\Results\IIdentificationResult.cs" />
-    <Compile Include="Helpers\Calculator.cs" />
     <Compile Include="Helpers\ParsingException.cs" />
     <Compile Include="Helpers\WordsDictionary.cs" />
     <Compile Include="MachineLearning\MachineDetectionResult.cs" />
@@ -405,29 +407,6 @@
     <Compile Include="Persitency\SingleFilePersistencyHandler.cs" />
     <Compile Include="Persitency\WrappedPersistency.cs" />
     <Compile Include="Persitency\WrappedPersistencyItem.cs" />
-    <Compile Include="Reflection\CategoriesMapper.cs" />
-    <Compile Include="Reflection\ChildMapCategory.cs" />
-    <Compile Include="Reflection\CollectionMapCategory.cs" />
-    <Compile Include="Reflection\Data\DataItem.cs" />
-    <Compile Include="Reflection\Data\DataTree.cs" />
-    <Compile Include="Reflection\Data\DictionaryDataItemFactory.cs" />
-    <Compile Include="Reflection\Data\IDataItem.cs" />
-    <Compile Include="Reflection\Data\IDataItemFactory.cs" />
-    <Compile Include="Reflection\Data\IDataTree.cs" />
-    <Compile Include="Reflection\Data\IItemProbability.cs" />
-    <Compile Include="Reflection\Data\ItemProbability.cs" />
-    <Compile Include="Reflection\Data\MapFieldDataItem.cs" />
-    <Compile Include="Reflection\Data\MapFieldDataItemFactory.cs" />
-    <Compile Include="Reflection\EnumerableMapCategory.cs" />
-    <Compile Include="Reflection\IgnoreAttribute.cs" />
-    <Compile Include="Reflection\IMapCategory.cs" />
-    <Compile Include="Reflection\IMapField.cs" />
-    <Compile Include="Reflection\InfoArrayCategoryAttribute.cs" />
-    <Compile Include="Reflection\InfoCategoryAttribute.cs" />
-    <Compile Include="Reflection\InfoFieldAttribute.cs" />
-    <Compile Include="Reflection\ItemProbabilityHolder.cs" />
-    <Compile Include="Reflection\MapCategory.cs" />
-    <Compile Include="Reflection\MapField.cs" />
     <Compile Include="Sentiment\ContextSentimentFactory.cs" />
     <Compile Include="Sentiment\IContextSentiment.cs" />
     <Compile Include="Sentiment\IContextSentimentFactory.cs" />
@@ -439,7 +418,6 @@
     <Compile Include="Words\PhraseContructor.cs" />
     <Compile Include="Words\SentenceExtensions.cs" />
     <Compile Include="Words\WordTypeResolver.cs" />
-    <EmbeddedResource Include="Resources\Dictionary\inquirer.dat" />
     <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
     <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
     <EmbeddedResource Include="Resources\Dictionary\NRC.txt" />
@@ -453,8 +431,6 @@
     <EmbeddedResource Include="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
     <EmbeddedResource Include="Resources\POS\Noun.txt" />
     <EmbeddedResource Include="Resources\POS\Preposition.txt" />
-    <Compile Include="NLP\Inquirer\DataItem.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\AffectionData.cs" />
     <Compile Include="NLP\NRC\ISentimentDimension.cs" />
     <Compile Include="NLP\NRC\NRCDictionary.cs" />
     <Compile Include="NLP\NRC\NRCRecord.cs" />
@@ -490,38 +466,6 @@
     <Compile Include="NLP\Style\Surface\SurfaceData.cs" />
     <Compile Include="NLP\Style\SyntaxFeatures.cs" />
     <Compile Include="NLP\Style\Obscurity\VocabularyObscurity.cs" />
-    <Compile Include="NLP\Inquirer\InquirerDescription.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\ActivityData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\CognitiveOrientationData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\CommunicationProcessData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\FeelingData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\InstitutionData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\LocationData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\MotivationData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\NegationInterjectionsData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\ObjectData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\BroadData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\OtherProcessData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\PronounData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\SocialData.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\StatementData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\EnlightenmentData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\LasswellDescription.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\PowerData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\RectitudeData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\RemainingData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\Respect Data.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\SkillData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\WealthData.cs" />
-    <Compile Include="NLP\Inquirer\Lasswell\WellBeingData.cs" />
-    <Compile Include="NLP\Inquirer\SocialCognition\AdjectiveData.cs" />
-    <Compile Include="NLP\Inquirer\SocialCognition\VerbData.cs" />
-    <Compile Include="NLP\Inquirer\InquirerDefinition.cs" />
-    <Compile Include="NLP\Inquirer\InquirerDefinitionFactory.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\HarwardDescription.cs" />
-    <Compile Include="NLP\Inquirer\InquirerRecord.cs" />
-    <Compile Include="NLP\Inquirer\InquirerManager.cs" />
-    <Compile Include="NLP\Inquirer\Harvard\SentimentData.cs" />
     <Compile Include="NLP\ISplitterFactory.cs" />
     <Compile Include="NLP\ParsedReviewFactory.cs" />
     <Compile Include="NLP\Repair\NullSentenceRepairHandler.cs" />
