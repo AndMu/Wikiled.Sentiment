@@ -158,11 +158,11 @@ namespace Wikiled.Sentiment.Text.Parser
         public void Reset()
         {
             sentiment = new SentimentDataHolder();
-            invertors = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.InvertorWords.txt");
-            stop = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.StopWords.txt");
-            questions = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.QuestionWords.txt");
-            var sentiments = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.Sentiments.txt");
-            quantifiers = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.Quantifiers.txt");
+            invertors = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.InvertorWords.txt");
+            stop = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.StopWords.txt");
+            questions = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.QuestionWords.txt");
+            var sentiments = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.Sentiments.txt");
+            quantifiers = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.Quantifiers.txt");
             AspectDectector = NullAspectDectector.Instance;
             sentiment.PopulateEmotionsData(sentiments.RawData);
         }
