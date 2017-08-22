@@ -7,9 +7,9 @@ using Wikiled.Sentiment.Text.NLP.Style.Obscurity;
 using Wikiled.Sentiment.Text.NLP.Style.Readability;
 using Wikiled.Sentiment.Text.NLP.Style.Surface;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.Reflection;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Logic;
-using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {
@@ -20,11 +20,10 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         private readonly Dictionary<string, List<WordEx>> wordDictionary = new Dictionary<string, List<WordEx>>(StringComparer.OrdinalIgnoreCase);
 
-        public TextBlock(IInquirerManager inquirer, IWordsHandler handler, SentenceItem[] sentences, bool load = true)
+        public TextBlock(IWordsHandler handler, SentenceItem[] sentences, bool load = true)
         {
             Guard.NotEmpty(() => sentences, sentences);
             Guard.NotNull(() => handler, handler);
-            Guard.NotNull(() => inquirer, inquirer);
             Sentences = sentences;
             Surface = new SurfaceData(this);
             Readability = new ReadabilityDataSource(this);
@@ -48,7 +47,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             PureWords = pure.ToArray();
             VocabularyObscurity = new VocabularyObscurity(this);
             SyntaxFeatures = new SyntaxFeatures(handler, this);
-            InquirerFinger = new InquirerFingerPrint(inquirer, this);
+            InquirerFinger = new InquirerFingerPrint(handler.InquirerManager, this);
 
             if (load)
             {

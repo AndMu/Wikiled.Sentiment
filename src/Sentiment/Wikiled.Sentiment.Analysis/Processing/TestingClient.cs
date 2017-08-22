@@ -21,8 +21,9 @@ using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.NLP.NRC;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -165,7 +166,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 var review = parsed.GetReview(splitter.DataLoader);
                 var doc = holder.Original;
                 RatingAdjustment adjustment = new RatingAdjustment(review, perspective);
-                SentimentVector.Extract(review.Items);
+                splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, review.Items);
                 var document = review.GenerateDocument(adjustment);
                 AspectSentiment.Process(review);
                 if (doc.Stars != null)

@@ -7,8 +7,8 @@ using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.Reflection;
 using Wikiled.Text.Analysis.Structure;
-using Wikiled.Text.Inquirer.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {

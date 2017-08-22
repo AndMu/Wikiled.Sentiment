@@ -2,8 +2,9 @@
 using System.Linq;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Sentiment.Text.NLP.NRC;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
 {
@@ -11,10 +12,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning
     {
         private readonly IParsedReview review;
 
-        public ExtractReviewTextVector(IParsedReview review)
+        private readonly INRCDictionary dictionary;
+
+        public ExtractReviewTextVector(INRCDictionary dictionary, IParsedReview review)
         {
             Guard.NotNull(() => review, review);
+            Guard.NotNull(() => dictionary, dictionary);
             this.review = review;
+            this.dictionary = dictionary;
         }
 
         protected override RatingData GetRating()
@@ -24,8 +29,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         protected override void Additional()
         {
-            SentimentVector vector = new SentimentVector();
-            vector.Extract(review.Items);
+            SentimentVector vector = dictionary.Extract(review.Items);
             foreach (var probability in vector.GetOccurences().Where(item => item.Probability > 0))
             {
                 AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability);

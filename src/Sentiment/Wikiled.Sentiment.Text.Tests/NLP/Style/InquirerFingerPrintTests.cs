@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP.Style;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.Text.Tests.NLP.Style
 {
     [TestFixture]
     public class InquirerFingerPrintTests
     {
-        private WordsHandlerHelper helper;
-
-        [SetUp]
-        public void Setup()
-        {
-            helper = new WordsHandlerHelper();
-        }
-
         [Test]
         public async Task GetDataFirst()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
-            var block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
+            var block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
             Assert.AreEqual(178, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
             Assert.AreEqual("PLACE", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(1).First().Name);
             Assert.AreEqual(0.0, Math.Round((double)block.InquirerFinger.InquirerProbabilities.AllLeafs.First().Value, 2));
@@ -42,7 +36,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         public async Task GetDataSecond()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument("cv001_19502.txt").ConfigureAwait(false);
-            var block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
+            var block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
             Assert.AreEqual(178, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
             Assert.AreEqual("PLACE", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(1).First().Name);
             Assert.AreEqual(0.0, Math.Round((double)block.InquirerFinger.InquirerProbabilities.AllLeafs.First().Value, 2));

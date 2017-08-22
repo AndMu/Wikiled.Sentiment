@@ -15,7 +15,9 @@ using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.Frequency;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Resources;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
@@ -43,6 +45,10 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
+        private readonly Lazy<INRCDictionary> nrcDictionary;
+
+        private readonly Lazy<IInquirerManager> inquirerManager;
+
         public WordsDataLoader(string path, IWordsDictionary dictionary)
         {
             Guard.NotNullOrEmpty(() => path, path);
@@ -53,7 +59,22 @@ namespace Wikiled.Sentiment.Text.Parser
             AspectFactory = new MainAspectHandlerFactory(this);
             Reset();
             repair = new SentenceRepairHandler(Path.Combine(path, "Repair"), this);
+
+            inquirerManager = new Lazy<IInquirerManager>(
+                () =>
+                {
+                    var instance = new InquirerManager();
+                    instance.Load();
+                    return instance;
+                });
+
+            nrcDictionary = new Lazy<INRCDictionary>(() => new NRCDictionary());
         }
+
+        public IInquirerManager InquirerManager => inquirerManager.Value;
+
+        public INRCDictionary NRCDictionary => nrcDictionary.Value;
+
 
         public IAspectDectector AspectDectector
         {

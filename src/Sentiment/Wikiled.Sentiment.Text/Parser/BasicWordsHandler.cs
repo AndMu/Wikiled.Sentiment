@@ -7,7 +7,9 @@ using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Inquirer.Logic;
 using WordsDictionary = Wikiled.Sentiment.Text.Helpers.WordsDictionary;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -26,6 +28,10 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private WordsDictionary stop;
 
+        private readonly Lazy<INRCDictionary> dictionary;
+
+        private readonly Lazy<IInquirerManager> inquirerManager;
+
         public BasicWordsHandler(IPOSTagger posTagger)
         {
             Guard.NotNull(() => posTagger, posTagger);
@@ -33,6 +39,15 @@ namespace Wikiled.Sentiment.Text.Parser
             WordFactory = new WordOccurenceFactory(this);
             AspectFactory = new MainAspectHandlerFactory(this);
             Reset();
+            inquirerManager = new Lazy<IInquirerManager>(
+                () =>
+                {
+                    var instance = new InquirerManager();
+                    instance.Load();
+                    return instance;
+                });
+
+            dictionary =  new Lazy<INRCDictionary>(() => new NRCDictionary());
         }
 
         public IAspectDectector AspectDectector
@@ -46,6 +61,10 @@ namespace Wikiled.Sentiment.Text.Parser
         public bool DisableFeatureSentiment { get; set; }
 
         public bool DisableInvertors { get; set; }
+
+        public IInquirerManager InquirerManager => inquirerManager.Value;
+
+        public INRCDictionary NRCDictionary => dictionary.Value;
 
         public IRawTextExtractor Extractor { get; } = new RawWordExtractor(BasicEnglishDictionary.Instance, MemoryCache.Default);
 
@@ -133,11 +152,11 @@ namespace Wikiled.Sentiment.Text.Parser
         public void Reset()
         {
             sentiment = new SentimentDataHolder();
-            invertors = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.InvertorWords.txt");
-            stop = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.StopWords.txt");
-            questions = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.QuestionWords.txt");
-            var sentiments = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.Sentiments.txt");
-            quantifiers = WordsDictionary.ConstructFromInternalStream(@"Resources.Dictionary.Quantifiers.txt");
+            invertors = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.InvertorWords.txt");
+            stop = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.StopWords.txt");
+            questions = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.QuestionWords.txt");
+            var sentiments = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.Sentiments.txt");
+            quantifiers = WordsDictionary.ConstructFromInternalStream(@"Resources.NRCDictionary.Quantifiers.txt");
             AspectDectector = NullAspectDectector.Instance;
             sentiment.PopulateEmotionsData(sentiments.RawData);
         }

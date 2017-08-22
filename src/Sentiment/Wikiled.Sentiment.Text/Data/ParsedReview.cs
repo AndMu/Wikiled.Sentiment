@@ -7,6 +7,7 @@ using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Data
@@ -19,7 +20,7 @@ namespace Wikiled.Sentiment.Text.Data
 
         private readonly string text;
 
-        internal ParsedReview(Document document)
+        internal ParsedReview(INRCDictionary dictionary, Document document)
         {
             Guard.NotNull(() => document, document);
             if (document.DocumentTime.HasValue &&
@@ -30,7 +31,7 @@ namespace Wikiled.Sentiment.Text.Data
 
             this.document = document;
             text = document.Text;
-            Vector = new ExtractReviewTextVector(this);
+            Vector = new ExtractReviewTextVector(dictionary, this);
         }
 
         public ISentence CurrentSentence { get; private set; }

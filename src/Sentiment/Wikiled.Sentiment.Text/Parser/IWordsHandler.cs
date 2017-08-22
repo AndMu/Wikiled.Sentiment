@@ -4,12 +4,18 @@ using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public interface IWordsHandler
     {
         bool DisableInvertors { get; set; }
+
+        IInquirerManager InquirerManager { get; }
+
+        INRCDictionary NRCDictionary { get; }
 
         ISentenceRepairHandler Repair { get; }
 

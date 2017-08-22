@@ -1,5 +1,5 @@
-﻿using Wikiled.Sentiment.Text.NLP.NRC;
-using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
+﻿using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
+using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Description
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
@@ -20,11 +21,14 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 
         private IParsedReview review;
 
+        private Mock<IParsedReview> reviewMock;
+
         private SimpleTextSplitter splitter;
 
         [SetUp]
         public void Setup()
         {
+            reviewMock = new Mock<IParsedReview>();
             splitter = new SimpleTextSplitter(ActualWordsHandler.Instance.WordsHandler);
             ActualWordsHandler.Instance.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] {}, new IWordItem[] {});
         }
@@ -38,7 +42,8 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(null));
+            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.NRCDictionary, null));
+            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(null, reviewMock.Object));
         }
 
         [TestCase(true, true, 2, "my", "like")]
@@ -58,7 +63,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 
             var data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
             review = data.GetReview(ActualWordsHandler.Instance.WordsHandler);
-            instance = new ExtractReviewTextVector(review);
+            instance = new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.NRCDictionary, review);
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);

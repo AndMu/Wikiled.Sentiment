@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         public async Task GetDataFirst()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
-            TextBlock block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
+            TextBlock block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
             Assert.AreEqual(0.0712, Math.Round(block.SyntaxFeatures.AdjectivesPercentage, 4));
             Assert.AreEqual(0.0712, Math.Round(block.SyntaxFeatures.AdverbsPercentage, 4));
             Assert.AreEqual(0.0188, Math.Round(block.SyntaxFeatures.QuestionPercentage, 4));
@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         public async Task GetDataSecond()
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument("cv001_19502.txt").ConfigureAwait(false);
-            TextBlock block = new TextBlock(helper.InquirerManager.Object, helper.Handler.Object, document.Sentences.ToArray());
+            TextBlock block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
             Assert.AreEqual(0.0732, Math.Round(block.SyntaxFeatures.AdjectivesPercentage, 4));
             Assert.AreEqual(0.0691, Math.Round(block.SyntaxFeatures.AdverbsPercentage, 4));
             Assert.AreEqual(0.0203, Math.Round(block.SyntaxFeatures.QuestionPercentage, 4));

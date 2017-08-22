@@ -4,7 +4,7 @@ using Wikiled.Arff.Normalization;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
-using Wikiled.Text.Inquirer.Reflection.Data;
+using Wikiled.Text.Analysis.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.Anomaly
 {

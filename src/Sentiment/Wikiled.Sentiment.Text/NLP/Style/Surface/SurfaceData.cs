@@ -1,5 +1,5 @@
 ﻿using Wikiled.Core.Utility.Arguments;
-using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Analysis.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Surface
 {

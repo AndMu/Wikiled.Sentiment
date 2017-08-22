@@ -10,18 +10,19 @@ using Wikiled.Arff.Normalization;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Core.Utility.Serialization;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.MachineLearning.Clustering;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Sentiment.Text.NLP.NRC;
 using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.Reflection;
+using Wikiled.Text.Analysis.Reflection.Data;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Logic;
-using Wikiled.Text.Inquirer.Reflection;
-using Wikiled.Text.Inquirer.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.Anomaly
 {
@@ -35,8 +36,6 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
 
-        private readonly IInquirerManager inquirer;
-
         private readonly SentenceItem[] sentences;
 
         private readonly IWordsHandler wordsHandler;
@@ -47,13 +46,11 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private double windowSize;
 
-        public DocumentAnomalyDetector(IInquirerManager inquirer, IWordsHandler wordsHandler, IParsedReview document)
+        public DocumentAnomalyDetector(IWordsHandler wordsHandler, IParsedReview document)
         {
             Guard.NotNull(() => wordsHandler, wordsHandler);
             Guard.NotNull(() => document, document);
-            Guard.NotNull(() => inquirer, inquirer);
             this.wordsHandler = wordsHandler;
-            this.inquirer = inquirer;
             Document = document.GenerateDocument(NullRatingAdjustment.Instance);
             sentences = Document.Sentences.ToArray();
             AnomalyThreshold = 0.1;
@@ -243,14 +240,13 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         private DataTree GetTree(TextBlock block)
         {
-            SentimentVector vector = new SentimentVector();
-            vector.Extract(block.Words);
+            SentimentVector vector = wordsHandler.NRCDictionary.Extract(block.Words);
             return vector.GetTree();
         }
 
         private VectorData GetVector(IEnumerable<SentenceItem> normalBlock, NormalizationType normalization)
         {
-            TextBlock normal = new TextBlock(inquirer, wordsHandler, normalBlock.ToArray(), true);
+            TextBlock normal = new TextBlock(wordsHandler, normalBlock.ToArray(), true);
             DataTree tree;
             switch (AnomalyVectorType)
             {

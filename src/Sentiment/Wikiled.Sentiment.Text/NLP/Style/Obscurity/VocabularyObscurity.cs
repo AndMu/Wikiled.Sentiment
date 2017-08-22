@@ -1,6 +1,6 @@
 ﻿using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.NLP.Frequency;
-using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Analysis.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Obscurity
 {

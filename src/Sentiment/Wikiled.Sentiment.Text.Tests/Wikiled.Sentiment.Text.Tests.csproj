@@ -78,8 +78,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Alglib2, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Alglib2.dll</HintPath>
+    <Reference Include="Alglib2, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Alglib2.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core, Version=4.1.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Core.4.1.1\lib\net45\Castle.Core.dll</HintPath>
@@ -279,17 +279,17 @@
     <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.MachineLearning, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Wikiled.MachineLearning.dll</HintPath>
+    <Reference Include="Wikiled.MachineLearning, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.33\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.4\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.7\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.8\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="xom, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
@@ -322,9 +322,8 @@
     <Compile Include="MachineLearning\Statistics\SentenceDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\Statistics\WordDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\TrainedSentimentProviderTests.cs" />
-    <Compile Include="NLP\NRC\NRCDictionaryTests.cs" />
-    <Compile Include="NLP\NRC\SentimentVectorExtensionTests.cs" />
-    <Compile Include="NLP\NRC\SentimentVectorTests.cs" />
+    <Compile Include="NLP\NRCDictionaryExtensionTests.cs" />
+    <Compile Include="NLP\NRC\NRCDictionaryExtensionTests.cs" />
     <Compile Include="NLP\Stanford\TextSplitterTests.cs" />
     <Compile Include="NLP\Style\InquirerFingerPrintTests.cs" />
     <Compile Include="NLP\Style\Obscurity\VocabularyObscurityTests.cs" />

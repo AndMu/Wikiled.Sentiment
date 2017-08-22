@@ -16,7 +16,8 @@ using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.NLP.NRC;
+using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
@@ -131,7 +132,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 if (review != null)
                 {
                     featureExtractor.Process(review);
-                    sentimentVector.Extract(review.Items);
+                    splitter.DataLoader.NRCDictionary.ExtractToVector(sentimentVector, review.Items);
                 }
 
                 return review;

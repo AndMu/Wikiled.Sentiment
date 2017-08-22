@@ -92,8 +92,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Alglib2, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Alglib2.dll</HintPath>
+    <Reference Include="Alglib2, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Alglib2.dll</HintPath>
     </Reference>
     <Reference Include="Crc32C.NET, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Crc32C.NET.1.0.5.0\lib\net20\Crc32C.NET.dll</HintPath>
@@ -299,20 +299,20 @@
     <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.MachineLearning, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.7\lib\net462\Wikiled.MachineLearning.dll</HintPath>
+    <Reference Include="Wikiled.MachineLearning, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.15\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
+    <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.17\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.1.33.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.1.33\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.2.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.4\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.7\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.8\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="xom, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
@@ -379,8 +379,8 @@
     <Compile Include="MachineLearning\SentimentSource.cs" />
     <Compile Include="MachineLearning\TextVectorCell.cs" />
     <Compile Include="MachineLearning\TrainedSentimentProvider.cs" />
-    <Compile Include="NLP\NRC\SentimentVectorExtension.cs" />
-    <Compile Include="NLP\NRC\WordNRCRecord.cs" />
+    <Compile Include="NLP\NRCDictionaryExtension.cs" />
+    <Compile Include="NLP\SentimentVectorExtension.cs" />
     <Compile Include="NLP\Stanford\AnnotationType.cs" />
     <Compile Include="NLP\Stanford\StanfordNLPProxy.cs" />
     <Compile Include="NLP\Stanford\StanfordSplitterFactory.cs" />
@@ -420,7 +420,6 @@
     <Compile Include="Words\WordTypeResolver.cs" />
     <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
     <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
-    <EmbeddedResource Include="Resources\Dictionary\NRC.txt" />
     <EmbeddedResource Include="Resources\Dictionary\Quantifiers.txt" />
     <EmbeddedResource Include="Resources\Dictionary\QuestionWords.txt" />
     <EmbeddedResource Include="Resources\Dictionary\Sentiments.txt" />
@@ -431,11 +430,6 @@
     <EmbeddedResource Include="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
     <EmbeddedResource Include="Resources\POS\Noun.txt" />
     <EmbeddedResource Include="Resources\POS\Preposition.txt" />
-    <Compile Include="NLP\NRC\ISentimentDimension.cs" />
-    <Compile Include="NLP\NRC\NRCDictionary.cs" />
-    <Compile Include="NLP\NRC\NRCRecord.cs" />
-    <Compile Include="NLP\NRC\SentimentCategory.cs" />
-    <Compile Include="NLP\NRC\SentimentVector.cs" />
     <Compile Include="NLP\OpenNLP\OpenNlpSplitterFactory.cs" />
     <Compile Include="NLP\OpenNLP\SentenceData.cs" />
     <Compile Include="NLP\OpenNLP\OpenNLPTextSplitter.cs" />

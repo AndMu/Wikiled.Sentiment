@@ -2,7 +2,7 @@
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Words;
-using Wikiled.Text.Inquirer.Reflection;
+using Wikiled.Text.Analysis.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Surface
 {

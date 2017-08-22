@@ -24,8 +24,6 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IInquirerManager inquirer;
-
         private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
 
         private readonly Dictionary<SingleProcessingData, double> allTableDistance = new Dictionary<SingleProcessingData, double>();
@@ -38,14 +36,12 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
 
         private readonly SimpleWordsExtraction wordsExtraction;
 
-        public ProcessingDataAnomaly(IWordsHandler handler, IProcessingData originalData, IInquirerManager inquirer)
+        public ProcessingDataAnomaly(IWordsHandler handler, IProcessingData originalData)
         {
             Guard.NotNull(() => handler, handler);
-            Guard.NotNull(() => inquirer, inquirer);
             Guard.NotNull(() => originalData, originalData);
             wordsExtraction = new SimpleWordsExtraction(SentenceTokenizer.Create(handler, true, false));
             OriginalData = originalData;
-            this.inquirer = inquirer;
             this.handler = handler;
         }
 
@@ -111,7 +107,6 @@ namespace Wikiled.Sentiment.Analysis.Anomaly
                     ParsedReviewFactory factory = new ParsedReviewFactory(handler, review.Document);
                     var parsed = factory.Create();
                     DocumentAnomalyDetector dectector = new DocumentAnomalyDetector(
-                        inquirer,
                         handler,
                         parsed);
                     VectorData fullVector = dectector.GetDocumentVector(NormalizationType.None);
