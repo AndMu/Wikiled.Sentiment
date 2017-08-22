@@ -47,7 +47,13 @@ namespace Wikiled.Sentiment.Text.Parser
                     return instance;
                 });
 
-            dictionary =  new Lazy<INRCDictionary>(() => new NRCDictionary());
+            dictionary = new Lazy<INRCDictionary>(
+                () =>
+                {
+                    var instance = new NRCDictionary();
+                    instance.Load();
+                    return instance;
+                });
         }
 
         public IAspectDectector AspectDectector
