@@ -322,7 +322,6 @@
     <Compile Include="MachineLearning\Statistics\SentenceDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\Statistics\WordDistributionCalculatorTests.cs" />
     <Compile Include="MachineLearning\TrainedSentimentProviderTests.cs" />
-    <Compile Include="NLP\NRCDictionaryExtensionTests.cs" />
     <Compile Include="NLP\NRC\NRCDictionaryExtensionTests.cs" />
     <Compile Include="NLP\Stanford\TextSplitterTests.cs" />
     <Compile Include="NLP\Style\InquirerFingerPrintTests.cs" />

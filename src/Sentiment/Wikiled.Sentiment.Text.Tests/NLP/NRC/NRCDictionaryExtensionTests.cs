@@ -35,6 +35,30 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         }
 
         [Test]
+        public void TestInverted()
+        {
+            var record = dictionary.Object.FindRecord(
+                new TestWordItem
+                {
+                    Text = "kill",
+                    Relationship = new TestWordItemRelationship
+                                   {
+                                       Inverted = new TestWordItem()
+                                   }
+                });
+            Assert.IsTrue(record.IsAnger);
+            Assert.IsFalse(record.IsAnticipation);
+            Assert.IsFalse(record.IsDisgust);
+            Assert.IsFalse(record.IsFear);
+            Assert.IsTrue(record.IsJoy);
+            Assert.IsFalse(record.IsNegative);
+            Assert.IsFalse(record.IsPositive);
+            Assert.IsFalse(record.IsSadness);
+            Assert.IsFalse(record.IsSurprise);
+            Assert.IsFalse(record.IsTrust);
+        }
+
+        [Test]
         public void Extract()
         {
             var vector = dictionary.Object.Extract(new[] { new WordEx(new SimpleWord("kill")) });
