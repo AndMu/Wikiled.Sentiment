@@ -15,9 +15,9 @@ namespace Wikiled.Sentiment.Text.Data
     {
         private readonly List<ISentence> allSentences = new List<ISentence>();
 
-        private readonly string text;
-
         private readonly Document document;
+
+        private readonly string text;
 
         internal ParsedReview(Document document)
         {
@@ -33,19 +33,22 @@ namespace Wikiled.Sentiment.Text.Data
             Vector = new ExtractReviewTextVector(this);
         }
 
-        public IList<ISentence> Sentences { get { return allSentences.Where(item => item.Parts.Any()).ToList(); } }
-
         public ISentence CurrentSentence { get; private set; }
 
-        public Document GenerateDocument(IRatingAdjustment adjustment)
-        {
-            return DocumentFromReviewFactory.Instance.ReparseDocument(this, document, adjustment);
-        }
+        public DateTime Date { get; }
 
         public IEnumerable<IWordItem> Items =>
             from sentence in Sentences
             from item in sentence.Occurrences.GetImportant()
             select item;
+
+        public IList<ISentence> Sentences
+        {
+            get
+            {
+                return allSentences.Where(item => item.Parts.Any()).ToList();
+            }
+        }
 
         public string Text
         {
@@ -69,21 +72,6 @@ namespace Wikiled.Sentiment.Text.Data
 
         public ExtractTextVectorBase Vector { get; }
 
-        public DateTime Date { get; }
-
-        public void Reset()
-        {
-            foreach (var sentence in Sentences)
-            {
-                foreach (var wordOccurrence in sentence.Occurrences)
-                {
-                    wordOccurrence.Reset();
-                    Phrase parent = wordOccurrence.Parent as Phrase;
-                    parent?.Reset();
-                }
-            }
-        }
-
         public void AddNewSentence(SentenceItem sentence)
         {
             CurrentSentence = new Sentence(this, sentence);
@@ -101,12 +89,30 @@ namespace Wikiled.Sentiment.Text.Data
             return RatingData.Accumulate(allSentences.Select(item => item.CalculateRating()));
         }
 
+        public Document GenerateDocument(IRatingAdjustment adjustment)
+        {
+            return DocumentFromReviewFactory.Instance.ReparseDocument(this, document, adjustment);
+        }
+
         public SentimentValue[] GetAllSentiments()
         {
             return (from item in Items
                     where item.Relationship.Sentiment != null
                     select item.Relationship.Sentiment)
                 .ToArray();
+        }
+
+        public void Reset()
+        {
+            foreach (var sentence in Sentences)
+            {
+                foreach (var wordOccurrence in sentence.Occurrences)
+                {
+                    wordOccurrence.Reset();
+                    Phrase parent = wordOccurrence.Parent as Phrase;
+                    parent?.Reset();
+                }
+            }
         }
     }
 }

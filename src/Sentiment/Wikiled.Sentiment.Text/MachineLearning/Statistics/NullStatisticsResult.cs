@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             get { return 0; }
         }
 
-        public double Value { get; private set; }
+        public double Value { get;  }
 
         public int TotalWords
         {

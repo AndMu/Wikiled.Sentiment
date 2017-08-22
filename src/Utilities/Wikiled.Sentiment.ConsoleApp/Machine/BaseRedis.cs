@@ -51,6 +51,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         protected ISplitterHelper Helper { get; set; }
 
+        private PerformanceMonitor loadReviews;
+
         public override void Execute()
         {
             log.Info("Training Operation...");
@@ -82,7 +84,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 }
 
                 log.Info("Processing path: {0}", ProcessingPath);
-                Processing(LoadReviews());
+                loadReviews = new PerformanceMonitor(1000);
+                using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(loadReviews)))
+                {
+                    Processing(LoadReviews());
+                }
             }
         }
 
@@ -115,15 +121,15 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 log.Info("Selecting all documents....");
                 reviews = amazonRepository.LoadAll(Category);
             }
-
-            var monitor = new PerformanceMonitor(1000);
-            return reviews.Select(review => Select(monitor, review)).Merge();
+            
+            return reviews.Select(Select).Merge();
         }
 
-        private async Task<IParsedDocumentHolder> Select(PerformanceMonitor monitor, AmazonReview review)
+        private async Task<IParsedDocumentHolder> Select(AmazonReview review)
         {
+            loadReviews.ManualyCount();
             var parsed = await source.GetById(review.Id).ConfigureAwait(false);
-            monitor.Increment();
+            loadReviews.Increment();
             return new ParsedDocumentHolder(
                 review.CreateDocument(),
                 parsed);

@@ -2,7 +2,6 @@
 using System.Linq;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Text.NLP.Inquirer.Harvard;
 using Wikiled.Sentiment.Text.Reflection;
 using Wikiled.Sentiment.Text.Reflection.Data;

@@ -60,9 +60,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             set { statistics.BucketCount = value; }
         }
 
-        public int WindowsSize { get; private set; }
+        public int WindowsSize { get;  }
 
-        public double Value { get; private set; }
+        public double Value { get;  }
 
         public int TotalWords
         {

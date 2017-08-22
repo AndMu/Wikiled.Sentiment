@@ -28,11 +28,11 @@ namespace Wikiled.Sentiment.Text.Anomaly
     {
         private const int MovingAverage = 3;
 
-        private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private static readonly IMapCategory MapFull = new CategoriesMapper().Construct<TextBlock>();
+
+        private readonly CosineSimilarityDistance distanceLogic = new CosineSimilarityDistance();
 
         private readonly SentenceItem[] sentences;
 
@@ -61,13 +61,11 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         public double AnomalyThreshold
         {
-            get
-            {
-                return anomalyThreshold;
-            }
+            get => anomalyThreshold;
             set
             {
-                if (value <= 0 || value > 1)
+                if (value <= 0 ||
+                    value > 1)
                 {
                     throw new ArgumentOutOfRangeException("AnomalyThreshold");
                 }
@@ -98,13 +96,11 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
         public double WindowSize
         {
-            get
-            {
-                return windowSize;
-            }
+            get => windowSize;
             set
             {
-                if (value <= 0 || value > 1)
+                if (value <= 0 ||
+                    value > 1)
                 {
                     throw new ArgumentOutOfRangeException("WindowSize");
                 }
@@ -127,8 +123,8 @@ namespace Wikiled.Sentiment.Text.Anomaly
             var ratings = sentences.Select(item => item.CalculateSentiment())
                                    .MovingAverage(3)
                                    .ToArray();
-            ClusterRegion[] clusters = ClusterFlow.GetRegions(ratings, MovingAverage);
 
+            ClusterRegion[] clusters = ClusterFlow.GetRegions(ratings, MovingAverage);
             ConcurrentBag<IItemProbability<SentenceItem[]>> list = new ConcurrentBag<IItemProbability<SentenceItem[]>>();
             IEnumerable<SentenceItem[]> sentenceClusters = UseSentimentClusters
                                                                ? GetSentencesBlockForRegions(clusters)
@@ -137,30 +133,30 @@ namespace Wikiled.Sentiment.Text.Anomaly
                 sentenceClusters,
                 AsyncSettings.DefaultParallel,
                 segment =>
-                {
-                    if (segment.Length == 0)
                     {
-                        return;
-                    }
-
-                    VectorData currentVector = GetVector(segment, NormalizationType.L2);
-                    var remainingSentences = sentences.Where(item => !segment.Contains(item)).ToArray();
-                    if (remainingSentences.Length == 0)
-                    {
-                        return;
-                    }
-
-                    VectorData remainingVector = RemainingVector ??
-                                                 GetVector(remainingSentences, NormalizationType.L2);
-                    double distance = distanceLogic.Measure(
-                        currentVector,
-                        remainingVector);
-                    list.Add(
-                        new ItemProbability<SentenceItem[]>(segment)
+                        if (segment.Length == 0)
                         {
-                            Probability = Math.Abs(distance)
-                        });
-                });
+                            return;
+                        }
+
+                        VectorData currentVector = GetVector(segment, NormalizationType.L2);
+                        var remainingSentences = sentences.Where(item => !segment.Contains(item)).ToArray();
+                        if (remainingSentences.Length == 0)
+                        {
+                            return;
+                        }
+
+                        VectorData remainingVector = RemainingVector ??
+                                                     GetVector(remainingSentences, NormalizationType.L2);
+                        double distance = distanceLogic.Measure(
+                            currentVector,
+                            remainingVector);
+                        list.Add(
+                            new ItemProbability<SentenceItem[]>(segment)
+                                {
+                                    Probability = Math.Abs(distance)
+                                });
+                    });
 
             var processed = list.OrderBy(item => item.Probability);
             Reset();
@@ -228,13 +224,6 @@ namespace Wikiled.Sentiment.Text.Anomaly
             }
         }
 
-        private void Reset()
-        {
-            Anomaly = new SentenceItem[] {};
-            WithoutAnomaly = sentences;
-            anomalyLookup = null;
-        }
-
         private IEnumerable<SentenceItem[]> GetSentencesBlock()
         {
             return sentences.WindowedEx(
@@ -275,6 +264,13 @@ namespace Wikiled.Sentiment.Text.Anomaly
 
             VectorData vector = tree.CreateVector(normalization);
             return vector;
+        }
+
+        private void Reset()
+        {
+            Anomaly = new SentenceItem[] { };
+            WithoutAnomaly = sentences;
+            anomalyLookup = null;
         }
     }
 }

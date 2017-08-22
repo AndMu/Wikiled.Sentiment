@@ -6,7 +6,6 @@ using Wikiled.Sentiment.Text.NLP.Inquirer;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Reflection;
 using Wikiled.Sentiment.Text.Reflection.Data;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
@@ -32,7 +31,6 @@ namespace Wikiled.Sentiment.Text.NLP.Style
         {
             Dictionary<string, bool> data;
             wordLevelFingerPrint.TryGetValue(word, out data);
-
             return data == null
                 ? null
                 : new InquirerData
@@ -58,7 +56,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             map["Negative"] = 0;
             foreach (var wordEx in Text.Words)
             {
-                InquirerDefinition definition = inquirer.GetDefinitions(wordEx);
+                InquirerDefinition definition = inquirer.GetWordDefinitions(wordEx);
                 Dictionary<string, bool> table = new Dictionary<string, bool>();
                 wordLevelFingerPrint[wordEx] = table;
                 foreach (var inquirerRecord in definition.Records)

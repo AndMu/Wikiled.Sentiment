@@ -383,6 +383,7 @@
     <Compile Include="NLP\Stanford\StanfordNLPProxy.cs" />
     <Compile Include="NLP\Stanford\StanfordSplitterFactory.cs" />
     <Compile Include="NLP\Stanford\StanfordTextSplitter.cs" />
+    <Compile Include="NLP\Style\InquirerManagerExtension.cs" />
     <Compile Include="Parser\ISentimentProvider.cs" />
     <Compile Include="Parser\QueueTextSplitter.cs" />
     <Compile Include="Persitency\BaseWrappedPersistencyItem.cs" />

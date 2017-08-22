@@ -1,13 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using Wikiled.Core.Utility.Extensions;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Extensions
 {
     public static class WordItemExtension
     {
+        public static IEnumerable<string> GetPossibleText(this IWordItem word)
+        {
+            yield return word.Text;
+
+            if (!string.IsNullOrEmpty(word.Stemmed) &&
+                word.Stemmed != word.Text)
+            {
+                yield return word.Stemmed;
+            }
+
+            if (word.Entity == NamedEntities.Hashtag &&
+                word.Text.Length > 1)
+            {
+                yield return word.Text.Substring(1);
+            }
+        }
+
         public static bool IsConjunction(this IWordItem word)
         {
             return word.POS.WordType == WordType.Conjunction ||

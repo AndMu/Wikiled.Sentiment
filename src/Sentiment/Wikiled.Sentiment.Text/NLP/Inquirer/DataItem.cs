@@ -11,19 +11,19 @@ namespace Wikiled.Sentiment.Text.NLP.Inquirer
 
         public abstract string Name { get; }
 
-        public bool HasData
+        public virtual bool HasData
         {
             get
             {
                 if (properties == null)
                 {
                     properties = GetType().GetProperties()
-                        .Where(property => Attribute.IsDefined(property, typeof (InfoFieldAttribute)))
+                        .Where(property => Attribute.IsDefined(property, typeof(InfoFieldAttribute)))
                         .ToArray();
                 }
 
                 return properties
-                    .Select(propertyInfo => (bool?) propertyInfo.GetValue(this, null))
+                    .Select(propertyInfo => (bool?)propertyInfo.GetValue(this, null))
                     .Any(value => value == true);
             }
         }

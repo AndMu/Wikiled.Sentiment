@@ -20,23 +20,11 @@ namespace Wikiled.Sentiment.Text.Reflection
             this.propertyInfo = propertyInfo;
         }
 
-        public int Order => attribute.Order;
+        public IMapCategory Category { get; }
 
-        public Type ValueType => propertyInfo.PropertyType;
+        public string Description => attribute.Description;
 
         public bool IsOptional => attribute.IsOptional;
-
-        public T GetValue<T>(object instance)
-        {
-            return (T)propertyInfo.GetValue(instance, null);
-        }
-
-        public void SetValue(object instance, object value)
-        {
-            propertyInfo.SetValue(instance, value, null);
-        }
-
-        public IMapCategory Category { get; }
 
         public string Name
         {
@@ -52,6 +40,18 @@ namespace Wikiled.Sentiment.Text.Reflection
             }
         }
 
-        public string Description => attribute.Description;
+        public int Order => attribute.Order;
+
+        public Type ValueType => propertyInfo.PropertyType;
+
+        public T GetValue<T>(object instance)
+        {
+            return (T)propertyInfo.GetValue(instance, null);
+        }
+
+        public void SetValue(object instance, object value)
+        {
+            propertyInfo.SetValue(instance, value, null);
+        }
     }
 }

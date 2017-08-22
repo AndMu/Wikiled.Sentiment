@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text;
@@ -16,6 +17,8 @@ using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP.Inquirer;
+using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -52,7 +55,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
-            using(Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
+            List<PositivityType?> types = new List<PositivityType?>();
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
             {
                 var reviews = ReadFiles();
                 var subscriptioMessage = reviews.ToObservable()
@@ -64,25 +68,32 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
 
                 performance = new PrecisionRecallCalculator<PositivityType>();
-                using(var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+                using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
                     subscriptioMessage.Do(
                         item =>
                         {
                             var calculated = GetPositivityType(item);
-                            if(item.Original.HasValue)
+                            types.Add(calculated);
+                            var original = 9;
+                            if (item.Original.HasValue)
                             {
+                                original = (int)item.Original.Value;
                                 performance.Add(item.Original.Value, calculated);
                             }
 
-                            streamWrite.WriteLine($"{item.Id}\t{(int)calculated}\tt{item.Text}");
+                            streamWrite.WriteLine($"{item.Id}\t{original}\t{(int)calculated}\tt{item.Text}");
                             streamWrite.Flush();
 
                         }).Wait();
                 }
             }
 
+            log.Info($"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
             log.Info($"Precision (Positive): {performance.GetPrecision(PositivityType.Positive)} Precision (Negative): {performance.GetPrecision(PositivityType.Negative)} Precision (Neutral): {performance.GetPrecision(PositivityType.Neutral)}");
+            log.Info($"Recall (Positive): {performance.GetRecall(PositivityType.Positive)} Recall (Negative): {performance.GetRecall(PositivityType.Negative)} Recall (Neutral): {performance.GetRecall(PositivityType.Neutral)}");
+            log.Info($"Accuracy (Positive): {performance.GetAccuracy(PositivityType.Positive)} Accuracy (Negative): {performance.GetAccuracy(PositivityType.Negative)} Accuracy (Neutral): {performance.GetAccuracy(PositivityType.Neutral)}");
+            log.Info($"F1 (Positive): {performance.F1(PositivityType.Positive)} F1 (Negative): {performance.F1(PositivityType.Negative)} F1 (Neutral): {performance.F1(PositivityType.Neutral)}");
         }
 
         private static PositivityType? GetPositivityType(ValueTuple<long?, double?, PositivityType?, string> item)
@@ -100,12 +111,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             {
                 calculated = PositivityType.Neutral;
             }
+
             return calculated;
         }
 
         private void LoadBootstrap()
         {
-            log.Debug("Loading text splitter for bootstrapping");
+            log.Info("Loading text splitter for bootstrapping");
             var config = new ConfigurationHandler();
             var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
@@ -117,7 +129,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private void LoadDefault()
         {
-            log.Debug("Loading default text splitter");
+            log.Info("Loading default text splitter");
             var config = new ConfigurationHandler();
             var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
             defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
@@ -137,10 +149,27 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             var bootAllSentiments = bootReview.GetAllSentiments();
 
             var originalSentimentValue = originalReview.CalculateRawRating();
+
+            InquirerManager inquirer = InquirerManager.GetLoaded();
+            var records = bootReview.Items
+                                    .Select(item => inquirer.GetWordDefinitions(item))
+                                    .SelectMany(item => item.Records)
+                                    .ToArray();
+
             monitor.Increment();
 
+            (long? Id, double? Stars, PositivityType? Original, string Text) nullData = (null, null, null, null);
+            
+            
             if (bootSentimentValue.StarsRating.HasValue)
             {
+                if (originalSentimentValue.StarsRating.HasValue &&
+                    originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
+                {
+                    // disagreement between lexicons
+                    return nullData;
+                }
+
                 if (bootAllSentiments.Length > 2)
                 {
                     return (data.Id, bootSentimentValue.StarsRating.Value, data.Positivity, data.Text);
@@ -148,10 +177,16 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
             else if (!originalSentimentValue.StarsRating.HasValue && !data.Text.Contains("!"))
             {
+                if (records.Length == 0 ||
+                    records.Any(item => item.Description.Harward.Sentiment.HasData))
+                {
+                    return nullData;
+                }
+
                 return (data.Id, null, data.Positivity, data.Text);
             }
 
-            return (null, null, null, null);
+            return nullData;
         }
 
         private IEnumerable<(long? Id, PositivityType? Positivity, string Text)> ReadFiles()

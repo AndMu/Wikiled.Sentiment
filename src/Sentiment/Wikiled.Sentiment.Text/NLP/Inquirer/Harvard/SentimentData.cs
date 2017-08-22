@@ -67,5 +67,7 @@ namespace Wikiled.Sentiment.Text.NLP.Inquirer.Harvard
         public bool IsSubmit { get; private set; }
 
         public override string Name => "Sentiment";
+
+        public override bool HasData => Type != PositivityType.Neutral || base.HasData;
     }
 }

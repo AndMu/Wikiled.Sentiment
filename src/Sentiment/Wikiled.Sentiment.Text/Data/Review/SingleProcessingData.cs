@@ -29,17 +29,23 @@ namespace Wikiled.Sentiment.Text.Data.Review
             }
         }
 
-        public void InitDocument(IParsedReview review)
-        {
-            Review = review;
-            Document = Review.GenerateDocument(NullRatingAdjustment.Instance);
-            Document.Stars = Stars;
-        }
+        [XmlAttribute]
+        public DateTime Date { get; set; }
 
-        public void InitDocument(IWordsExtraction extraction)
-        {
-            Document = extraction.GetDocument(Text.SanitizeXmlString());
-        }
+        [XmlElement]
+        public Document Document { get; set; }
+
+        [XmlIgnore]
+        public string OriginalText { get; }
+
+        public string[] Other { get; set; }
+
+        [XmlIgnore]
+        public IParsedReview Review { get; private set; }
+
+        public double Stars { get; set; }
+
+        public string Text { get; set; }
 
         public override string ToString()
         {
@@ -56,22 +62,16 @@ namespace Wikiled.Sentiment.Text.Data.Review
             return Text.Substring(0, 100).Replace("\r", string.Empty).Replace("\n", string.Empty) + "...";
         }
 
-        [XmlIgnore]
-        public string OriginalText { get; }
+        public void InitDocument(IParsedReview review)
+        {
+            Review = review;
+            Document = Review.GenerateDocument(NullRatingAdjustment.Instance);
+            Document.Stars = Stars;
+        }
 
-        [XmlIgnore]
-        public IParsedReview Review { get; private set; }
-
-        [XmlAttribute]
-        public DateTime Date { get; set; }
-
-        [XmlElement]
-        public Document Document { get; set; }
-
-        public string[] Other { get; set; }
-
-        public string Text { get; set; }
-
-        public double Stars { get; set; }
+        public void InitDocument(IWordsExtraction extraction)
+        {
+            Document = extraction.GetDocument(Text.SanitizeXmlString());
+        }
     }
 }

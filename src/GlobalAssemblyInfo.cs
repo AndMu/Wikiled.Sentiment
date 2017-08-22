@@ -5,7 +5,7 @@ using System.Reflection;
 // associated with an assembly.
 [assembly: AssemblyCompany("Wikiled Ltd.")]
 [assembly: AssemblyProduct("Wikiled pSenti")]
-[assembly: AssemblyCopyright("Copyright © Wikiled Ltd. 2016")]
+[assembly: AssemblyCopyright("Copyright © Wikiled Ltd. 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,5 +18,5 @@ using System.Reflection;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("2.1.*")]
-[assembly: AssemblyFileVersion ("2.1.0.0")]
+[assembly: AssemblyVersion("999.999.999.999")]
+[assembly: AssemblyFileVersion("999.999.999.999")]

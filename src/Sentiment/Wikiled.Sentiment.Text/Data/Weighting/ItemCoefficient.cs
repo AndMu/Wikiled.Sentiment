@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.Text.Data.Weighting
             return new ItemCoefficient(Text, value);
         }
 
-        public string Text { get; private set; }
+        public string Text { get;  }
 
         public double Value { get; protected set; }
     }

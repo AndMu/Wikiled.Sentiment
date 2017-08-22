@@ -1,5 +1,4 @@
 ﻿using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Helpers;
 
 namespace Wikiled.Sentiment.Text.NLP.Inquirer
 {
@@ -13,8 +12,8 @@ namespace Wikiled.Sentiment.Text.NLP.Inquirer
             Records = records;
         }
 
-        public string Word { get; private set; }
+        public string Word { get; }
 
-        public InquirerRecord[] Records { get; private set; }
+        public InquirerRecord[] Records { get; }
     }
 }

@@ -75,22 +75,30 @@ namespace Wikiled.Sentiment.Analysis.Processing
             log.Info("Starting Training");
 
             monitor = new PerformanceMonitor(100);
-            var selected = data
-                .SelectMany(item => Observable.Start(() => AdditionalProcessing(item)))
-                .Merge();
-            await selected.LastOrDefaultAsync();
+
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
+            {
+                var selectedData = data
+                    .SelectMany(item => Observable.Start(() => AdditionalProcessing(item)))
+                    .Merge();
+                await selectedData.LastOrDefaultAsync();
+            }
 
             monitor = new PerformanceMonitor(100);
-            SelectAdditional();
+            IArffDataSet arff;
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
+            {
+                SelectAdditional();
+                arff = ArffDataSet.Create<PositivityType>("MAIN");
+                var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
+                arffProcess = factory.Create(arff);
+                var selected = data
+                    .SelectMany(item => Observable.Start(() => ProcessSingleItem(item)))
+                    .Merge();
 
-            var arff = ArffDataSet.Create<PositivityType>("MAIN");
-            var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory) new ProcessArffFactory();
-            arffProcess = factory.Create(arff);
-            selected = data
-                .SelectMany(item => Observable.Start(() => ProcessSingleItem(item)))
-                .Merge();
+                await selected.LastOrDefaultAsync();
+            }
 
-            await selected.LastOrDefaultAsync();
             data = null;
             log.Info("Cleaning up ARFF");
             if (!UseAll)

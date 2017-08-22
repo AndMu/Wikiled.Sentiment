@@ -17,10 +17,10 @@ namespace Wikiled.Sentiment.Text.NLP.Inquirer
         }
 
         [InfoCategory("Harward")]
-        public HarwardDescription Harward { get; private set; }
+        public HarwardDescription Harward { get; }
 
         [InfoCategory("Lasswell")]
-        public LasswellDescription Lasswell { get; private set; }
+        public LasswellDescription Lasswell { get; }
 
         [InfoField("General Information", IsOptional = true)]
         public string Information { get; set; }
