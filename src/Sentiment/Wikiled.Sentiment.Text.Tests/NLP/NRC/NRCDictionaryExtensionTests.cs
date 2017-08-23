@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
             dictionary = new Mock<INRCDictionary>();
             dictionary.Setup(item => item.FindRecord("kill"))
                       .Returns(
-                          new NRCRecord
+                          new NRCRecord("Test")
                           {
                               IsFear = true,
                               IsSadness = true
@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
 
             dictionary.Setup(item => item.FindRecord("love"))
                       .Returns(
-                          new NRCRecord
+                          new NRCRecord("Test")
                           {
                               IsJoy = true
                           });

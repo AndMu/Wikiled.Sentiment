@@ -1,5 +1,5 @@
-﻿using Wikiled.Sentiment.Text.WordNet.InformationContent;
-using Wikiled.Text.Analysis.WordNet.Engine;
+﻿using Wikiled.Text.Analysis.WordNet.Engine;
+using Wikiled.Text.Analysis.WordNet.InformationContent;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {

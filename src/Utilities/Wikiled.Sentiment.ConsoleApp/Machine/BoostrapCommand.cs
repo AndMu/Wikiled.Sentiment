@@ -17,6 +17,7 @@ using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
@@ -50,12 +51,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<PositivityType> performance;
 
-        private IInquirerManager inquirer;
-
         public override void Execute()
         {
-            inquirer = new InquirerManager();
-            inquirer.Load();
             LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
@@ -155,9 +152,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             var originalSentimentValue = originalReview.CalculateRawRating();
 
             var records = bootReview.Items
-                                    .Select(item => inquirer.GetWordDefinitions(item))
+                                    .Select(item => defaultSplitter.DataLoader.InquirerManager.GetWordDefinitions(item))
                                     .SelectMany(item => item.Records)
                                     .ToArray();
+
+            var nrcRecords = bootReview.Items
+                                       .Select(item => defaultSplitter.DataLoader.NRCDictionary.FindRecord(item))
+                                       .Where(item => item != null)
+                                       .ToArray();
 
             monitor.Increment();
 
@@ -180,7 +182,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
             else if (!originalSentimentValue.StarsRating.HasValue && !data.Text.Contains("!"))
             {
-                if (records.Length == 0 ||
+                if (nrcRecords.Any(item => item.HasAnyValue) ||
                     records.Any(item => item.Description.Harward.Sentiment.HasData))
                 {
                     return nullData;

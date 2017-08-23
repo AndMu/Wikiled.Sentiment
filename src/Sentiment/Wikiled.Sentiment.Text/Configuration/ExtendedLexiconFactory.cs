@@ -6,9 +6,9 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Cache;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.WordNet.InformationContent;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.WordNet.Engine;
+using Wikiled.Text.Analysis.WordNet.InformationContent;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
