@@ -73,29 +73,17 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
             Assert.AreEqual(1, vector.Total);
             Assert.AreEqual(2, vector.TotalSum);
 
-            vector = dictionary.Object.Extract(new[] { new WordEx(new SimpleWord("kill")) });
-            Assert.AreEqual(0, vector.Anger);
-            Assert.AreEqual(0, vector.Anticipation);
-            Assert.AreEqual(0, vector.Disgust);
-            Assert.AreEqual(2, vector.Fear);
-            Assert.AreEqual(0, vector.Joy);
-            Assert.AreEqual(0, vector.Trust);
-            Assert.AreEqual(2, vector.Sadness);
-            Assert.AreEqual(0, vector.Surprise);
-            Assert.AreEqual(2, vector.Total);
-            Assert.AreEqual(4, vector.TotalSum);
-
             vector = dictionary.Object.Extract(new[] { new WordEx(new SimpleWord("love")) });
             Assert.AreEqual(0, vector.Anger);
             Assert.AreEqual(0, vector.Anticipation);
             Assert.AreEqual(0, vector.Disgust);
-            Assert.AreEqual(2, vector.Fear);
+            Assert.AreEqual(0, vector.Fear);
             Assert.AreEqual(1, vector.Joy);
-            Assert.AreEqual(2, vector.Sadness);
+            Assert.AreEqual(0, vector.Sadness);
             Assert.AreEqual(0, vector.Surprise);
             Assert.AreEqual(0, vector.Trust);
-            Assert.AreEqual(3, vector.Total);
-            Assert.AreEqual(5, vector.TotalSum);
+            Assert.AreEqual(1, vector.Total);
+            Assert.AreEqual(1, vector.TotalSum);
         }
 
         [Test]

@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
             TextBlock block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
-            Assert.AreEqual(350, block.TotalLemmas);
+            Assert.AreEqual(324, block.TotalLemmas);
             Assert.AreEqual(350, block.TotalWordTokens);
         }
     }
