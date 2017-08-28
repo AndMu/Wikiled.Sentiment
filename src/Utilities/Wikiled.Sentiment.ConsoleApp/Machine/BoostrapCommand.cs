@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Arff.Persistence;
@@ -23,7 +24,6 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Twitter;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
@@ -51,6 +51,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<PositivityType> performance;
 
+        private SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
+
         public override void Execute()
         {
             LoadDefault();
@@ -62,13 +64,18 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 var reviews = ReadFiles();
                 var subscriptioMessage = reviews.ToObservable()
                                                 .ObserveOn(TaskPoolScheduler.Default)
-                                                .Select(item => Observable.Start(async () => await ProcessReview(item).ConfigureAwait(false), TaskPoolScheduler.Default))
+                                                .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                 .Merge()
                                                 .Merge()
-                                                .Where(item => item.Text != null);
+                                                .Where(item => item.Text != null && (item.Stars == null || item.Stars == 5 || item.Stars == 1));
 
 
                 performance = new PrecisionRecallCalculator<PositivityType>();
+                Dictionary<PositivityType, int> countTable = new Dictionary<PositivityType, int>();
+                countTable[PositivityType.Negative] = 0;
+                countTable[PositivityType.Positive] = 0;
+                countTable[PositivityType.Neutral] = 0;
+                var difference = 2;
                 using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
                     subscriptioMessage.Do(
@@ -77,14 +84,22 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                             var calculated = GetPositivityType(item);
                             types.Add(calculated);
                             var original = 9;
-                            if (item.Original.HasValue)
+                            if (calculated.HasValue)
                             {
-                                original = (int)item.Original.Value;
-                                performance.Add(item.Original.Value, calculated);
-                            }
+                                var min = countTable.Values.Min() * difference + 10;
+                                if (countTable[calculated.Value] <= min)
+                                {
+                                    countTable[calculated.Value] = countTable[calculated.Value] + 1;
+                                    if (item.Original.HasValue)
+                                    {
+                                        original = (int)item.Original.Value;
+                                        performance.Add(item.Original.Value, calculated);
+                                    }
 
-                            streamWrite.WriteLine($"{item.Id}\t{original}\t{(int)calculated}\tt{item.Text}");
-                            streamWrite.Flush();
+                                    streamWrite.WriteLine($"{item.Id}\t{original}\t{(int)calculated}\t{item.Text}");
+                                    streamWrite.Flush();
+                                }
+                            }
 
                         }).Wait();
                 }
@@ -138,62 +153,71 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private async Task<(long? Id, double? Stars, PositivityType? Original, string Text)> ProcessReview((long? Id, PositivityType? Positivity, string Text) data)
         {
-            var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
-            var original = bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
-            await Task.WhenAll(main, original).ConfigureAwait(false);
-
-            var mainResult = main.Result;
-            var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
-            var bootReview = original.Result.GetReview(bootStrapSplitter.DataLoader);
-
-            var bootSentimentValue = bootReview.CalculateRawRating();
-            var bootAllSentiments = bootReview.GetAllSentiments();
-
-            var originalSentimentValue = originalReview.CalculateRawRating();
-
-            var records = bootReview.Items
-                                    .Select(item => defaultSplitter.DataLoader.InquirerManager.GetWordDefinitions(item))
-                                    .SelectMany(item => item.Records)
-                                    .ToArray();
-
-            var nrcRecords = bootReview.Items
-                                       .Select(item => defaultSplitter.DataLoader.NRCDictionary.FindRecord(item))
-                                       .Where(item => item != null)
-                                       .ToArray();
-
-            monitor.Increment();
-
-            (long? Id, double? Stars, PositivityType? Original, string Text) nullData = (null, null, null, null);
-            
-            
-            if (bootSentimentValue.StarsRating.HasValue)
+            await semaphore.WaitAsync().ConfigureAwait(false);
+            try
             {
-                if (originalSentimentValue.StarsRating.HasValue &&
-                    originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
+                var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
+                var original = bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
+                await Task.WhenAll(main, original).ConfigureAwait(false);
+
+                var mainResult = main.Result;
+                var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
+                var bootReview = original.Result.GetReview(bootStrapSplitter.DataLoader);
+
+                var bootSentimentValue = bootReview.CalculateRawRating();
+                var bootAllSentiments = bootReview.GetAllSentiments();
+
+                var originalSentimentValue = originalReview.CalculateRawRating();
+
+                var records = bootReview.Items
+                                        .Select(item => defaultSplitter.DataLoader.InquirerManager.GetWordDefinitions(item))
+                                        .SelectMany(item => item.Records)
+                                        .ToArray();
+
+                var nrcRecords = bootReview.Items
+                                           .Select(item => defaultSplitter.DataLoader.NRCDictionary.FindRecord(item))
+                                           .Where(item => item != null)
+                                           .ToArray();
+
+
+                (long? Id, double? Stars, PositivityType? Original, string Text) nullData = (null, null, null, null);
+
+
+                if (bootSentimentValue.StarsRating.HasValue)
                 {
-                    // disagreement between lexicons
-                    return nullData;
+                    if (originalSentimentValue.StarsRating.HasValue &&
+                        originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
+                    {
+                        // disagreement between lexicons
+                        return nullData;
+                    }
+
+                    if (bootAllSentiments.Length > 2)
+                    {
+                        return (data.Id, bootSentimentValue.StarsRating.Value, data.Positivity, data.Text);
+                    }
+                }
+                else if (!originalSentimentValue.StarsRating.HasValue && !data.Text.Contains("!"))
+                {
+                    if (nrcRecords.Any(item => item.HasAnyValue))
+                    //||
+                    //records.Any(item => item.Description.Harward.Sentiment.HasData))
+                    {
+                        return nullData;
+                    }
+
+                    return (data.Id, null, data.Positivity, data.Text);
                 }
 
-                if (bootAllSentiments.Length > 2)
-                {
-                    return (data.Id, bootSentimentValue.StarsRating.Value, data.Positivity, data.Text);
-                }
+                return nullData;
+
             }
-            else if (!originalSentimentValue.StarsRating.HasValue && !data.Text.Contains("!"))
+            finally
             {
-                if (nrcRecords.Any(item => item.HasAnyValue) ||
-                    records.Any(item => item.Description.Harward.Sentiment.HasData))
-                {
-                    return nullData;
-                }
-
-                return (data.Id, null, data.Positivity, data.Text);
+                monitor.Increment();
+                semaphore.Release();
             }
-
-            return nullData;
         }
-
         private IEnumerable<(long? Id, PositivityType? Positivity, string Text)> ReadFiles()
         {
             MessageCleanup cleanup = new MessageCleanup();
