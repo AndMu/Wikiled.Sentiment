@@ -258,7 +258,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
+    <ProjectReference Include="..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
       <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
       <Name>Wikiled.Sentiment.Analysis.Amazon</Name>
     </ProjectReference>

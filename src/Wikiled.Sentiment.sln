@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.Acceptanc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.TestLogic.Shared", "Sentiment\Wikiled.Sentiment.TestLogic.Shared\Wikiled.Sentiment.TestLogic.Shared.csproj", "{3CCDA69F-3F28-4C8A-B212-8EE4FE240239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.Analysis.Amazon", "Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj", "{3AB414D2-AC66-4807-87BC-C5A3301A98D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.Analysis.Amazon", "Sentiment\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj", "{3AB414D2-AC66-4807-87BC-C5A3301A98D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

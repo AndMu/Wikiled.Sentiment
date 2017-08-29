@@ -18,8 +18,6 @@ using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.NLP.Style;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -49,7 +47,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         [Required]
         public string Words { get; set; }
 
-        private PrecisionRecallCalculator<PositivityType> performance;
+        private PrecisionRecallCalculator<bool> performance;
 
         private SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
@@ -67,49 +65,33 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                 .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                 .Merge()
                                                 .Merge()
-                                                .Where(item => item.Text != null && (item.Stars == null || item.Stars == 5 || item.Stars == 1));
+                                                .Where(item => item.Text != null && (item.Stars == 5 || item.Stars < 2));
 
-
-                performance = new PrecisionRecallCalculator<PositivityType>();
-                Dictionary<PositivityType, int> countTable = new Dictionary<PositivityType, int>();
-                countTable[PositivityType.Negative] = 0;
-                countTable[PositivityType.Positive] = 0;
-                countTable[PositivityType.Neutral] = 0;
-                var difference = 2;
+                performance = new PrecisionRecallCalculator<bool>();
+                var groups = subscriptioMessage.ToEnumerable().GroupBy(GetPositivityType).ToArray();
+                var result = groups.SelectMany(item => item);
                 using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
-                    subscriptioMessage.Do(
-                        item =>
+                    foreach (var item in result)
+                    {
+                        var calculated = GetPositivityType(item);
+                        types.Add(calculated);
+                        if (calculated.HasValue)
                         {
-                            var calculated = GetPositivityType(item);
-                            types.Add(calculated);
-                            var original = 9;
-                            if (calculated.HasValue)
+                            if (item.Original.HasValue)
                             {
-                                var min = countTable.Values.Min() * difference + 10;
-                                if (countTable[calculated.Value] <= min)
-                                {
-                                    countTable[calculated.Value] = countTable[calculated.Value] + 1;
-                                    if (item.Original.HasValue)
-                                    {
-                                        original = (int)item.Original.Value;
-                                        performance.Add(item.Original.Value, calculated);
-                                    }
-
-                                    streamWrite.WriteLine($"{item.Id}\t{original}\t{(int)calculated}\t{item.Text}");
-                                    streamWrite.Flush();
-                                }
+                                performance.Add(item.Original.Value == PositivityType.Positive, calculated == PositivityType.Positive);
                             }
 
-                        }).Wait();
+                            streamWrite.WriteLine($"{item.Id}\t{calculated.Value.ToString().ToLower()}\t{item.Text}");
+                            streamWrite.Flush();
+                        }
+                    }
                 }
             }
 
             log.Info($"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
-            log.Info($"Precision (Positive): {performance.GetPrecision(PositivityType.Positive)} Precision (Negative): {performance.GetPrecision(PositivityType.Negative)} Precision (Neutral): {performance.GetPrecision(PositivityType.Neutral)}");
-            log.Info($"Recall (Positive): {performance.GetRecall(PositivityType.Positive)} Recall (Negative): {performance.GetRecall(PositivityType.Negative)} Recall (Neutral): {performance.GetRecall(PositivityType.Neutral)}");
-            log.Info($"Accuracy (Positive): {performance.GetAccuracy(PositivityType.Positive)} Accuracy (Negative): {performance.GetAccuracy(PositivityType.Negative)} Accuracy (Neutral): {performance.GetAccuracy(PositivityType.Neutral)}");
-            log.Info($"F1 (Positive): {performance.F1(PositivityType.Positive)} F1 (Negative): {performance.F1(PositivityType.Negative)} F1 (Neutral): {performance.F1(PositivityType.Neutral)}");
+            log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
         }
 
         private static PositivityType? GetPositivityType(ValueTuple<long?, double?, PositivityType?, string> item)
@@ -119,13 +101,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             {
                 calculated = PositivityType.Positive;
             }
-            else if (item.Item2 < 3)
-            {
-                calculated = PositivityType.Negative;
-            }
             else
             {
-                calculated = PositivityType.Neutral;
+                calculated = PositivityType.Negative;
             }
 
             return calculated;
@@ -169,17 +147,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
                 var originalSentimentValue = originalReview.CalculateRawRating();
 
-                var records = bootReview.Items
-                                        .Select(item => defaultSplitter.DataLoader.InquirerManager.GetWordDefinitions(item))
-                                        .SelectMany(item => item.Records)
-                                        .ToArray();
-
-                var nrcRecords = bootReview.Items
-                                           .Select(item => defaultSplitter.DataLoader.NRCDictionary.FindRecord(item))
-                                           .Where(item => item != null)
-                                           .ToArray();
-
-
                 (long? Id, double? Stars, PositivityType? Original, string Text) nullData = (null, null, null, null);
 
 
@@ -196,17 +163,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     {
                         return (data.Id, bootSentimentValue.StarsRating.Value, data.Positivity, data.Text);
                     }
-                }
-                else if (!originalSentimentValue.StarsRating.HasValue && !data.Text.Contains("!"))
-                {
-                    if (nrcRecords.Any(item => item.HasAnyValue))
-                    //||
-                    //records.Any(item => item.Description.Harward.Sentiment.HasData))
-                    {
-                        return nullData;
-                    }
-
-                    return (data.Id, null, data.Positivity, data.Text);
                 }
 
                 return nullData;

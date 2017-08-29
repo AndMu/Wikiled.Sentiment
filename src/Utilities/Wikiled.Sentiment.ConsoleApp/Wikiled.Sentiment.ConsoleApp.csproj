@@ -315,7 +315,7 @@
       <Project>{D57137FD-0DF5-4F85-BFB0-3CD62CFDBD81}</Project>
       <Name>Wikiled.Sentiment.Text</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
+    <ProjectReference Include="..\..\Sentiment\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
       <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
       <Name>Wikiled.Sentiment.Analysis.Amazon</Name>
     </ProjectReference>
