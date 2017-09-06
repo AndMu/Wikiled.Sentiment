@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<bool> performance;
 
-        private SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
         public override void Execute()
         {
@@ -65,7 +65,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                 .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                 .Merge()
                                                 .Merge()
-                                                .Where(item => item.Text != null && (item.Stars == 5 || item.Stars < 2));
+                                                .Where(item => item.Text != null && (item.Stars == 5 || item.Stars < 3));
 
                 performance = new PrecisionRecallCalculator<bool>();
                 var groups = subscriptioMessage.ToEnumerable().GroupBy(GetPositivityType).ToArray();
