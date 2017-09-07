@@ -17,6 +17,7 @@ using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.ConsoleApp.Machine.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
@@ -26,17 +27,21 @@ using Wikiled.Text.Analysis.Twitter;
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    /// boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
+    ///     boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
     public class BoostrapCommand : Command
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
         private ISplitterHelper bootStrapSplitter;
 
         private ISplitterHelper defaultSplitter;
 
         private PerformanceMonitor monitor;
+
+        private PrecisionRecallCalculator<bool> performance;
 
         [Required]
         public string Destination { get; set; }
@@ -47,10 +52,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         [Required]
         public string Words { get; set; }
 
-        private PrecisionRecallCalculator<bool> performance;
-
-        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
-
         public override void Execute()
         {
             LoadDefault();
@@ -60,30 +61,30 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
             {
                 var reviews = ReadFiles();
-                var subscriptioMessage = reviews.ToObservable()
-                                                .ObserveOn(TaskPoolScheduler.Default)
-                                                .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
-                                                .Merge()
-                                                .Merge()
-                                                .Where(item => item.Text != null && (item.Stars == 5 || item.Stars < 3));
+                var subscriptionMessage = reviews.ToObservable()
+                                                 .ObserveOn(TaskPoolScheduler.Default)
+                                                 .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
+                                                 .Merge()
+                                                 .Merge()
+                                                 .Where(item => item != null)
+                                                 .Where(item => item.Stars == 5 || item.Stars <= 3);
 
                 performance = new PrecisionRecallCalculator<bool>();
-                var groups = subscriptioMessage.ToEnumerable().GroupBy(GetPositivityType).ToArray();
+                var groups = subscriptionMessage.ToEnumerable().GroupBy(item => item.CalculatedPositivity).ToArray();
                 var result = groups.SelectMany(item => item);
                 using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
                     foreach (var item in result)
                     {
-                        var calculated = GetPositivityType(item);
-                        types.Add(calculated);
-                        if (calculated.HasValue)
+                        types.Add(item.CalculatedPositivity);
+                        if (item.CalculatedPositivity.HasValue)
                         {
                             if (item.Original.HasValue)
                             {
-                                performance.Add(item.Original.Value == PositivityType.Positive, calculated == PositivityType.Positive);
+                                performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
                             }
 
-                            streamWrite.WriteLine($"{item.Id}\t{calculated.Value.ToString().ToLower()}\t{item.Text}");
+                            streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
                             streamWrite.Flush();
                         }
                     }
@@ -92,21 +93,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
             log.Info($"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
             log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
-        }
-
-        private static PositivityType? GetPositivityType(ValueTuple<long?, double?, PositivityType?, string> item)
-        {
-            PositivityType? calculated;
-            if (item.Item2 > 3)
-            {
-                calculated = PositivityType.Positive;
-            }
-            else
-            {
-                calculated = PositivityType.Negative;
-            }
-
-            return calculated;
         }
 
         private void LoadBootstrap()
@@ -129,7 +115,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
         }
 
-        private async Task<(long? Id, double? Stars, PositivityType? Original, string Text)> ProcessReview((long? Id, PositivityType? Positivity, string Text) data)
+        private async Task<SemEvalData> ProcessReview(SemEvalData data)
         {
             await semaphore.WaitAsync().ConfigureAwait(false);
             try
@@ -146,27 +132,23 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 var bootAllSentiments = bootReview.GetAllSentiments();
 
                 var originalSentimentValue = originalReview.CalculateRawRating();
-
-                (long? Id, double? Stars, PositivityType? Original, string Text) nullData = (null, null, null, null);
-
-
                 if (bootSentimentValue.StarsRating.HasValue)
                 {
                     if (originalSentimentValue.StarsRating.HasValue &&
                         originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
                     {
                         // disagreement between lexicons
-                        return nullData;
+                        return null;
                     }
 
                     if (bootAllSentiments.Length > 2)
                     {
-                        return (data.Id, bootSentimentValue.StarsRating.Value, data.Positivity, data.Text);
+                        data.Stars = bootSentimentValue.StarsRating.Value;
+                        return data;
                     }
                 }
 
-                return nullData;
-
+                return null;
             }
             finally
             {
@@ -174,7 +156,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 semaphore.Release();
             }
         }
-        private IEnumerable<(long? Id, PositivityType? Positivity, string Text)> ReadFiles()
+
+        private IEnumerable<SemEvalData> ReadFiles()
         {
             MessageCleanup cleanup = new MessageCleanup();
             Dictionary<string, string> exist = new Dictionary<string, string>();
@@ -182,7 +165,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             {
                 using (var streamRead = new StreamReader(file, Encoding.UTF8))
                 {
-                    string line = string.Empty;
+                    string line;
                     while ((line = streamRead.ReadLine()) != null)
                     {
                         long? id = null;
@@ -234,7 +217,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         {
                             exist[text] = text;
                             monitor.ManualyCount();
-                            yield return (id, positivity, text);
+                            yield return new SemEvalData(id, positivity, text);
                         }
                     }
                 }

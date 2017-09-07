@@ -284,6 +284,7 @@
     <Compile Include="Machine\BaseRawCommand.cs" />
     <Compile Include="Machine\BaseRedis.cs" />
     <Compile Include="Machine\BoostrapCommand.cs" />
+    <Compile Include="Machine\Data\SemEvalData.cs" />
     <Compile Include="Machine\ExtractSentiment.cs" />
     <Compile Include="Machine\RawTestingCommand.cs" />
     <Compile Include="Machine\RawTrainingCommand.cs" />
