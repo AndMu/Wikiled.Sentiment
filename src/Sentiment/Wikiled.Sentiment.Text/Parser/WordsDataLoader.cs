@@ -8,7 +8,6 @@ using Wikiled.Core.Utility.Helpers;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
@@ -16,6 +15,7 @@ using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.Frequency;
 using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Resources;
 using Wikiled.Text.Inquirer.Logic;
 
@@ -24,6 +24,10 @@ namespace Wikiled.Sentiment.Text.Parser
     public class WordsDataLoader : IWordsHandler
     {
         private readonly string datasetPath;
+
+        private readonly Lazy<IInquirerManager> inquirerManager;
+
+        private readonly Lazy<INRCDictionary> nrcDictionary;
 
         private IAspectDectector aspectDectector;
 
@@ -45,10 +49,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
-        private readonly Lazy<INRCDictionary> nrcDictionary;
-
-        private readonly Lazy<IInquirerManager> inquirerManager;
-
         public WordsDataLoader(string path, IWordsDictionary dictionary)
         {
             Guard.NotNullOrEmpty(() => path, path);
@@ -62,30 +62,22 @@ namespace Wikiled.Sentiment.Text.Parser
 
             inquirerManager = new Lazy<IInquirerManager>(
                 () =>
-                {
-                    var instance = new InquirerManager();
-                    instance.Load();
-                    return instance;
-                });
+                    {
+                        var instance = new InquirerManager();
+                        instance.Load();
+                        return instance;
+                    });
 
             nrcDictionary = new Lazy<INRCDictionary>(
                 () =>
-                {
-                    var instance = new NRCDictionary();
-                    instance.Load();
-                    return instance;
-                });
+                    {
+                        var instance = new NRCDictionary();
+                        instance.Load();
+                        return instance;
+                    });
         }
 
-        public IInquirerManager InquirerManager => inquirerManager.Value;
-
-        public INRCDictionary NRCDictionary => nrcDictionary.Value;
-
-        public IAspectDectector AspectDectector
-        {
-            get => aspectDectector;
-            set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value));
-        }
+        public IAspectDectector AspectDectector { get => aspectDectector; set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value)); }
 
         public IMainAspectHandlerFactory AspectFactory { get; }
 
@@ -95,15 +87,15 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public IRawTextExtractor Extractor { get; }
 
+        public IInquirerManager InquirerManager => inquirerManager.Value;
+
         public bool IsDisableInvertorSentiment { get; set; }
+
+        public INRCDictionary NRCDictionary => nrcDictionary.Value;
 
         public IPOSTagger PosTagger { get; } = new NaivePOSTagger(new BNCList(), WordTypeResolver.Instance);
 
-        public ISentenceRepairHandler Repair
-        {
-            get => repair ?? NullSentenceRepairHandler.Instance;
-            set => repair = value;
-        }
+        public ISentenceRepairHandler Repair { get => repair ?? NullSentenceRepairHandler.Instance; set => repair = value; }
 
         public ISentimentDataHolder SentimentDataHolder { get; private set; }
 
@@ -152,7 +144,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
                 return true;
             }
-            
+
             var evaluationValue = new WordRepairRuleEngine(word, FindRepairRule(word)).Evaluate();
             if (evaluationValue.HasValue)
             {

@@ -2,8 +2,8 @@
 using System.Linq;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Text.NLP
 {

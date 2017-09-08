@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             client.Init();
             client.Process().LastOrDefaultAsync().Wait();
             client.Save(Out);
-            log.Info($"Testing performance {client.GetPerformanceDescritpion()}");
+            log.Info($"Testing performance {client.GetPerformanceDescription()}");
         }
     }
 }

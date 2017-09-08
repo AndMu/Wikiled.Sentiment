@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Words
@@ -22,30 +22,13 @@ namespace Wikiled.Sentiment.Text.Words
             Stemmed = raw;
         }
 
-        public static WordOccurrence CreateBasic(string text, BasePOSType pos)
+        public IEnumerable<IWordItem> AllWords
         {
-            var item = new WordOccurrence(text, text, pos);
-            item.Relationship = new WordItemRelationships(null, item);
-            return item;
+            get
+            {
+                yield return this;
+            }
         }
-
-        public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
-        {
-            Guard.NotNull(() => wordsHandlers, wordsHandlers);
-            string rawWord = string.IsNullOrEmpty(raw) ?  wordsHandlers.Extractor.GetWord(text) : raw;
-            var item = new WordOccurrence(text, rawWord, pos);
-            item.Relationship = new WordItemRelationships(wordsHandlers, item);
-            item.IsSentiment = wordsHandlers.IsSentiment(item);
-            item.IsFeature = wordsHandlers.IsFeature(item);
-            item.IsTopAttribute = wordsHandlers.AspectDectector.IsAttribute(item);
-            item.QuantValue = wordsHandlers.MeasureQuantifier(item);
-            item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
-            item.IsQuestion = wordsHandlers.IsQuestion(item);
-            item.IsStopWord = wordsHandlers.IsStop(item);
-            return item;
-        }
-
-        public IEnumerable<IWordItem> AllWords { get { yield return this; } }
 
         public NamedEntities Entity
         {
@@ -73,7 +56,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         public bool IsQuestion { get; private set; }
 
-        public bool IsSentiment  { get; private set; }
+        public bool IsSentiment { get; private set; }
 
         public bool IsSimple => true;
 
@@ -83,25 +66,42 @@ namespace Wikiled.Sentiment.Text.Words
 
         public string NormalizedEntity { get; set; }
 
+        public IWordItem Parent { get; set; }
+
         public BasePOSType POS { get; }
 
         public double? QuantValue { get; private set; }
 
         public IWordItemRelationships Relationship { get; private set; }
 
-        public int WordIndex { get; set; }
-
-        public void Reset()
-        {
-            Parent?.Reset();
-            Relationship?.Reset();
-        }
+        public string Stemmed { get; }
 
         public string Text { get; }
 
-        public string Stemmed { get; }
+        public int WordIndex { get; set; }
 
-        public IWordItem Parent { get; set; }
+        public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
+        {
+            Guard.NotNull(() => wordsHandlers, wordsHandlers);
+            string rawWord = string.IsNullOrEmpty(raw) ? wordsHandlers.Extractor.GetWord(text) : raw;
+            var item = new WordOccurrence(text, rawWord, pos);
+            item.Relationship = new WordItemRelationships(wordsHandlers, item);
+            item.IsSentiment = wordsHandlers.IsSentiment(item);
+            item.IsFeature = wordsHandlers.IsFeature(item);
+            item.IsTopAttribute = wordsHandlers.AspectDectector.IsAttribute(item);
+            item.QuantValue = wordsHandlers.MeasureQuantifier(item);
+            item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
+            item.IsQuestion = wordsHandlers.IsQuestion(item);
+            item.IsStopWord = wordsHandlers.IsStop(item);
+            return item;
+        }
+
+        public static WordOccurrence CreateBasic(string text, BasePOSType pos)
+        {
+            var item = new WordOccurrence(text, text, pos);
+            item.Relationship = new WordItemRelationships(null, item);
+            return item;
+        }
 
         public override string ToString()
         {
@@ -111,6 +111,12 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             return $"Word: [{Text}] [{POS.Tag}]";
+        }
+
+        public void Reset()
+        {
+            Parent?.Reset();
+            Relationship?.Reset();
         }
     }
 }

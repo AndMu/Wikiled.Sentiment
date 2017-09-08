@@ -136,7 +136,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         private string RepairByLevel(int level, string value, string sentence)
         {
             string replaceValue = null;
-            const ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
+            ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
             switch (level)
             {
                 case 0:

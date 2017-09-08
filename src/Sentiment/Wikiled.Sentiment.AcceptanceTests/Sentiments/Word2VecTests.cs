@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.Init();
             await testing.Process().LastOrDefaultAsync();
             testing.Save(Path.Combine(TestContext.CurrentContext.TestDirectory, "Word2Vec"));
-            Assert.AreEqual(data.Performance, testing.GetPerformanceDescritpion());
+            Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
             Assert.AreEqual(data.Errors, testing.Errors);
         }
     }

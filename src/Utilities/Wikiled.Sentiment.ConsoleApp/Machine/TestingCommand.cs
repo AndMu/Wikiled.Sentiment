@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             client.Init();
             client.Process().LastOrDefaultAsync().Wait();
             client.Holder.Save(name + ".csv");
-            log.Info("Completed. Performance: {0}", client.GetPerformanceDescritpion());
+            log.Info("Completed. Performance: {0}", client.GetPerformanceDescription());
         }
     }
 }

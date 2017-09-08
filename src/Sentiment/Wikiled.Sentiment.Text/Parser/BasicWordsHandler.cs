@@ -16,6 +16,10 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public class BasicWordsHandler : IWordsHandler
     {
+        private readonly Lazy<INRCDictionary> dictionary;
+
+        private readonly Lazy<IInquirerManager> inquirerManager;
+
         private IAspectDectector aspectDectector;
 
         private WordsDictionary invertors;
@@ -28,10 +32,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private WordsDictionary stop;
 
-        private readonly Lazy<INRCDictionary> dictionary;
-
-        private readonly Lazy<IInquirerManager> inquirerManager;
-
         public BasicWordsHandler(IPOSTagger posTagger)
         {
             Guard.NotNull(() => posTagger, posTagger);
@@ -41,26 +41,22 @@ namespace Wikiled.Sentiment.Text.Parser
             Reset();
             inquirerManager = new Lazy<IInquirerManager>(
                 () =>
-                {
-                    var instance = new InquirerManager();
-                    instance.Load();
-                    return instance;
-                });
+                    {
+                        var instance = new InquirerManager();
+                        instance.Load();
+                        return instance;
+                    });
 
             dictionary = new Lazy<INRCDictionary>(
                 () =>
-                {
-                    var instance = new NRCDictionary();
-                    instance.Load();
-                    return instance;
-                });
+                    {
+                        var instance = new NRCDictionary();
+                        instance.Load();
+                        return instance;
+                    });
         }
 
-        public IAspectDectector AspectDectector
-        {
-            get => aspectDectector;
-            set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value));
-        }
+        public IAspectDectector AspectDectector { get => aspectDectector; set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value)); }
 
         public IMainAspectHandlerFactory AspectFactory { get; }
 
@@ -68,13 +64,13 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public bool DisableInvertors { get; set; }
 
-        public IInquirerManager InquirerManager => inquirerManager.Value;
-
-        public INRCDictionary NRCDictionary => dictionary.Value;
-
         public IRawTextExtractor Extractor { get; } = new RawWordExtractor(BasicEnglishDictionary.Instance, MemoryCache.Default);
 
+        public IInquirerManager InquirerManager => inquirerManager.Value;
+
         public bool IsDisableInvertorSentiment { get; set; }
+
+        public INRCDictionary NRCDictionary => dictionary.Value;
 
         public IPOSTagger PosTagger { get; }
 

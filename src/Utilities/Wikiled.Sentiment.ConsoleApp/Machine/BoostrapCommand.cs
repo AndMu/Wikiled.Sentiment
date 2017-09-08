@@ -66,28 +66,27 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                  .Merge()
                                                  .Merge()
-                                                 .Where(item => item != null)
-                                                 .Where(item => item.Stars == 5 || item.Stars <= 3);
+                                                 .Where(item => item?.Stars != null)
+                                                 .Where(item => item.Stars == 5 || item.Stars < 1.1);
 
                 performance = new PrecisionRecallCalculator<bool>();
-                var groups = subscriptionMessage.ToEnumerable().GroupBy(item => item.CalculatedPositivity).ToArray();
-                var result = groups.SelectMany(item => item);
                 using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
-                    foreach (var item in result)
-                    {
-                        types.Add(item.CalculatedPositivity);
-                        if (item.CalculatedPositivity.HasValue)
-                        {
-                            if (item.Original.HasValue)
+                    subscriptionMessage.Do(
+                        item =>
                             {
-                                performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
-                            }
+                                types.Add(item.CalculatedPositivity);
+                                if (item.CalculatedPositivity.HasValue)
+                                {
+                                    if (item.Original.HasValue)
+                                    {
+                                        performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
+                                    }
 
-                            streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
-                            streamWrite.Flush();
-                        }
-                    }
+                                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
+                                    streamWrite.Flush();
+                                }
+                            }).Wait();
                 }
             }
 

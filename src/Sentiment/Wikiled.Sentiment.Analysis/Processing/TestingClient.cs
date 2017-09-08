@@ -86,7 +86,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool UseBagOfWords { get; set; }
 
-        public string GetPerformanceDescritpion()
+        public string GetPerformanceDescription()
         {
             return string.Format($"{Performance.GetTotalAccuracy()} RMSE:{statistics.CalculateRmse():F2}");
         }

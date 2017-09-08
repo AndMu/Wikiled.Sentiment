@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.Init();
             await testing.Process().LastOrDefaultAsync();
             Assert.AreEqual(data.Errors, testing.Errors);
-            Assert.AreEqual(data.Performance, testing.GetPerformanceDescritpion());
+            Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
         }
     }
 }

@@ -60,11 +60,9 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static Tuple<IWordItem, double> GetInvertedTarget(this IWordItem word)
         {
-            Func<IWordItem, bool> foward =
-                item => item.IsTopAttribute || item.IsSentiment || item.IsFeature || item.POS.WordType == WordType.Verb;
-            Func<IWordItem, bool> backward =
-                item => item.IsTopAttribute || item.IsSentiment || item.IsFeature;
-            return word.Relationship.DistanceToNearest(foward, backward);
+            bool Forward(IWordItem item) => item.IsTopAttribute || item.IsSentiment || item.IsFeature || item.POS.WordType == WordType.Verb;
+            bool Backward(IWordItem item) => item.IsTopAttribute || item.IsSentiment || item.IsFeature;
+            return word.Relationship.DistanceToNearest(Forward, Backward);
         }
 
         public static IWordItem GetInverted(this IWordItem word)
@@ -80,7 +78,13 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static bool CanNotBeAttribute(this IWordItem word)
         {
-            return word.IsFixed ||
+            if (word.Text.ToLower().Contains("emoticon_"))
+            {
+                return false;
+            }
+
+            return
+                word.IsFixed ||
                    word.IsQuestion ||
                    word.IsInvertor ||
                    word.IsStopWord ||
@@ -104,7 +108,9 @@ namespace Wikiled.Sentiment.Text.Extensions
                 return false;
             }
 
-            // it was succesfuly trimmed
+            var text = word.Text.ToLower();
+
+            // it was successfully trimmed
             return word.IsVerbLook() ||
                    word.IsConjunction() ||
                    !word.Text.HasLetters() ||
@@ -126,17 +132,18 @@ namespace Wikiled.Sentiment.Text.Extensions
                    word.Entity == NamedEntities.Time ||
                    word.Text.Length < 2 || // feature is at least 3 letters 
                    word.IsItemBelonging() ||
-                   word.Text.IsEnding("thing") || // things are too generic to be features
-                   string.Compare(word.Text, "everyone", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "someone", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "anyone", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "one", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "two", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "three", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "four", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "five", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "use", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Text, "about", StringComparison.OrdinalIgnoreCase) == 0 ||
+                   text.IsEnding("thing") || // things are too generic to be features
+                   text.Contains("emoticon_") ||
+                   text == "everyone" ||
+                   text == "someone" ||
+                   text == "anyone" ||
+                   text == "one" ||
+                   text == "two" ||
+                   text == "three" ||
+                   text == "four" ||
+                   text == "five" ||
+                   text == "use" ||
+                   text == "about" ||
                    word.POS.Tag == "IN" ||
                    string.Compare(word.Stemmed, "other", StringComparison.OrdinalIgnoreCase) == 0 ||
                    string.Compare(word.Stemmed, "thing", StringComparison.OrdinalIgnoreCase) == 0;

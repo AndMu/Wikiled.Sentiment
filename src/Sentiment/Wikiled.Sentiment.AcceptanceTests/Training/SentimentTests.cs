@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         {
             log.Info("TrainedElectronicsSentimentDetection: {0} {1}", product, performance);
             var testingClient = await Global.ElectronicBaseLine.Test(product, ProductCategory.Electronics).ConfigureAwait(false);
-            Assert.AreEqual(performance, testingClient.GetPerformanceDescritpion());
+            Assert.AreEqual(performance, testingClient.GetPerformanceDescription());
         }
     }
 }
