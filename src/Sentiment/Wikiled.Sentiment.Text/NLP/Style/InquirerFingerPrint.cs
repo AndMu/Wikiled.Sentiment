@@ -49,10 +49,13 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             Dictionary<string, int> map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             foreach (var property in mapDefinition.ActualProperties)
             {
-                IMapField field = mapDefinition[property];
-                if (field.ValueType == typeof(bool))
+                var fields = mapDefinition[property];
+                foreach (var field in fields)
                 {
-                    map[property] = 0;
+                    if (field.ValueType == typeof(bool))
+                    {
+                        map[property] = 0;
+                    }
                 }
             }
 

@@ -47,8 +47,8 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="ParallelExtensionsExtras, Version=1.2.3.0, Culture=neutral, PublicKeyToken=665f4d61f853b5a9, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ParallelExtensionsExtras.1.2.0.0\lib\net40\ParallelExtensionsExtras.dll</HintPath>
@@ -109,14 +109,17 @@
     <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
+    <Reference Include="Wikiled.FlatBuffers, Version=2.3.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.17\lib\net462\Wikiled.FlatBuffers.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.2.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.12\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Redis, Version=2.3.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.17\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Inquirer">
-      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.8\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.2.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.17\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.18\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

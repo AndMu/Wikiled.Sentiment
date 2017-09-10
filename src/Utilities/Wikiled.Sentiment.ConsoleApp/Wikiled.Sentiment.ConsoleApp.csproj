@@ -260,20 +260,23 @@
     <Reference Include="Wikiled.Core.Utility, Version=2.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Core.Utility.2.1.17\lib\net462\Wikiled.Core.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="Wikiled.FlatBuffers, Version=2.3.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.17\lib\net462\Wikiled.FlatBuffers.dll</HintPath>
+    </Reference>
     <Reference Include="Wikiled.MachineLearning, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.17\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Redis, Version=2.3.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Redis.2.3.16\lib\net462\Wikiled.Redis.dll</HintPath>
+    <Reference Include="Wikiled.Redis, Version=2.3.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Redis.2.3.17\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.2.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.12\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.2.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.2.17\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.8\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
+    <Reference Include="Wikiled.Text.Inquirer, Version=1.0.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.18\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
