@@ -48,6 +48,10 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new BoostrapCommand();
                 }
+                else if (string.Compare(args[0], "bootimdb", StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    command = new ImdbBoostrapCommand();
+                }
                 else if (string.Compare(args[0], "rawTest", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new RawTestingCommand();

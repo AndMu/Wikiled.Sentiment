@@ -43,8 +43,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<bool> performance;
 
+        private MessageCleanup cleanup = new MessageCleanup();
+
+        private Dictionary<string, string> exist = new Dictionary<string, string>();
+
         [Required]
         public string Destination { get; set; }
+
+        public string IsImdb { get; set; }
 
         [Required]
         public string Path { get; set; }
@@ -52,13 +58,16 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         [Required]
         public string Words { get; set; }
 
+        public virtual int MinimumSentimentWords { get; } = 3;
+
         public override void Execute()
         {
             LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
             List<PositivityType?> types = new List<PositivityType?>();
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
+            using (Observable.Interval(TimeSpan.FromSeconds(30))
+                             .Subscribe(item => log.Info(monitor)))
             {
                 var reviews = ReadFiles();
                 var subscriptionMessage = reviews.ToObservable()
@@ -73,25 +82,89 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
                 {
                     subscriptionMessage.Do(
-                        item =>
-                            {
-                                types.Add(item.CalculatedPositivity);
-                                if (item.CalculatedPositivity.HasValue)
-                                {
-                                    if (item.Original.HasValue)
-                                    {
-                                        performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
-                                    }
+                                           item =>
+                                           {
+                                               types.Add(item.CalculatedPositivity);
+                                               if (item.CalculatedPositivity.HasValue)
+                                               {
+                                                   if (item.Original.HasValue)
+                                                   {
+                                                       performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
+                                                   }
 
-                                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
-                                    streamWrite.Flush();
-                                }
-                            }).Wait();
+                                                   streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString() .ToLower()}\t{item.Text}");
+                                                   streamWrite.Flush();
+                                               }
+                                           })
+                                       .Wait();
                 }
             }
 
-            log.Info($"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
+            log.Info(
+                $"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
             log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
+        }
+
+        protected virtual IEnumerable<EvalData> GetDataPacket(string file)
+        {
+            using (var streamRead = new StreamReader(file, Encoding.UTF8))
+            {
+                string line;
+                while ((line = streamRead.ReadLine()) != null)
+                {
+                    long? id = null;
+                    PositivityType? positivity = null;
+                    var blocks = line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries);
+                    if (blocks.Length < 3)
+                    {
+                        log.Error($"Error: {line}");
+                        yield break;
+                    }
+
+                    long idValue;
+                    if (long.TryParse(blocks[0], out idValue))
+                    {
+                        id = idValue;
+                    }
+
+                    var textBlock = blocks[blocks.Length - 1];
+                    var sentiment = blocks[blocks.Length - 2];
+                    if (sentiment == "positive")
+                    {
+                        positivity = PositivityType.Positive;
+                    }
+                    else if (sentiment == "negative")
+                    {
+                        positivity = PositivityType.Negative;
+                    }
+                    else if (sentiment == "neutral")
+                    {
+                        positivity = PositivityType.Neutral;
+                    }
+                    else
+                    {
+                        int value;
+                        if (int.TryParse(sentiment, out value))
+                        {
+                            positivity = value > 0 ? PositivityType.Positive : value < 0 ? PositivityType.Negative : PositivityType.Neutral;
+                        }
+                    }
+
+                    if (textBlock[0] == '\"' &&
+                        textBlock[textBlock.Length - 1] == '\"')
+                    {
+                        textBlock = textBlock.Substring(1, textBlock.Length - 2);
+                    }
+
+                    var text = cleanup.Cleanup(textBlock);
+                    if (!exist.ContainsKey(text))
+                    {
+                        exist[text] = text;
+                        monitor.ManualyCount();
+                        yield return new EvalData(id.ToString(), positivity, text);
+                    }
+                }
+            }
         }
 
         private void LoadBootstrap()
@@ -114,14 +187,16 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
         }
 
-        private async Task<SemEvalData> ProcessReview(SemEvalData data)
+        private async Task<EvalData> ProcessReview(EvalData data)
         {
-            await semaphore.WaitAsync().ConfigureAwait(false);
+            await semaphore.WaitAsync()
+                           .ConfigureAwait(false);
             try
             {
                 var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
                 var original = bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
-                await Task.WhenAll(main, original).ConfigureAwait(false);
+                await Task.WhenAll(main, original)
+                          .ConfigureAwait(false);
 
                 var mainResult = main.Result;
                 var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
@@ -140,7 +215,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         return null;
                     }
 
-                    if (bootAllSentiments.Length > 2)
+                    if (bootAllSentiments.Length >= MinimumSentimentWords)
                     {
                         data.Stars = bootSentimentValue.StarsRating.Value;
                         return data;
@@ -156,69 +231,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
         }
 
-        private IEnumerable<SemEvalData> ReadFiles()
+        private IEnumerable<EvalData> ReadFiles()
         {
-            MessageCleanup cleanup = new MessageCleanup();
-            Dictionary<string, string> exist = new Dictionary<string, string>();
             foreach (var file in Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories))
             {
-                using (var streamRead = new StreamReader(file, Encoding.UTF8))
+                foreach (var semEvalData in GetDataPacket(file))
                 {
-                    string line;
-                    while ((line = streamRead.ReadLine()) != null)
-                    {
-                        long? id = null;
-                        PositivityType? positivity = null;
-                        var blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (blocks.Length < 3)
-                        {
-                            log.Error($"Error: {line}");
-                            continue;
-                        }
-
-                        long idValue;
-                        if (long.TryParse(blocks[0], out idValue))
-                        {
-                            id = idValue;
-                        }
-
-                        var textBlock = blocks[blocks.Length - 1];
-                        var sentiment = blocks[blocks.Length - 2];
-                        if (sentiment == "positive")
-                        {
-                            positivity = PositivityType.Positive;
-                        }
-                        else if (sentiment == "negative")
-                        {
-                            positivity = PositivityType.Negative;
-                        }
-                        else if (sentiment == "neutral")
-                        {
-                            positivity = PositivityType.Neutral;
-                        }
-                        else
-                        {
-                            int value;
-                            if (int.TryParse(sentiment, out value))
-                            {
-                                positivity = value > 0 ? PositivityType.Positive : value < 0 ? PositivityType.Negative : PositivityType.Neutral;
-                            }
-                        }
-
-                        if (textBlock[0] == '\"' &&
-                            textBlock[textBlock.Length - 1] == '\"')
-                        {
-                            textBlock = textBlock.Substring(1, textBlock.Length - 2);
-                        }
-
-                        var text = cleanup.Cleanup(textBlock);
-                        if (!exist.ContainsKey(text))
-                        {
-                            exist[text] = text;
-                            monitor.ManualyCount();
-                            yield return new SemEvalData(id, positivity, text);
-                        }
-                    }
+                    yield return semEvalData;
                 }
             }
         }

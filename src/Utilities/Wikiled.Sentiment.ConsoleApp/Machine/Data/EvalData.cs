@@ -2,16 +2,16 @@
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine.Data
 {
-    public class SemEvalData
+    public class EvalData
     {
-        public SemEvalData(long? id, PositivityType? original, string text)
+        public EvalData(string id, PositivityType? original, string text)
         {
             Id = id;
             Original = original;
             Text = text;
         }
 
-        public long? Id { get; }
+        public string Id { get; }
 
         public double? Stars { get; set; }
 
