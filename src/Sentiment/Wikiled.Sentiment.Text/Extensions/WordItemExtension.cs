@@ -79,9 +79,14 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static bool CanNotBeAttribute(this IWordItem word)
         {
-            if (word.Text.ToLower().Contains("emoticon_"))
+            if (word.Text.Contains("emoticon_"))
             {
                 return false;
+            }
+
+            if (IsNoise(word))
+            {
+                return true;
             }
 
             return
@@ -111,14 +116,9 @@ namespace Wikiled.Sentiment.Text.Extensions
 
             var text = word.Text.ToLower();
 
-            if (word.Inquirer?.Records.Any(
-                    item =>
-                        item.Description.Syntactic.Determiner.IsDeterminer ||
-                        item.Description.Syntactic.Interrogative.IsInterrogatives ||
-                        item.Description.Syntactic.Verb.IsVerb ||
-                        item.Description.Syntactic.Conjunction.IsConjunction) == true)
+            if (IsNoise(word))
             {
-                return false;
+                return true;
             }
 
             // it was successfully trimmed
@@ -146,6 +146,22 @@ namespace Wikiled.Sentiment.Text.Extensions
                    text.IsEnding("thing") || // things are too generic to be features
                    text.Contains("emoticon_") ||
                    word.POS.Tag == "IN";
+        }
+
+        private static bool IsNoise(IWordItem word)
+        {
+            if (word.Inquirer?.Records.Any(
+                    item =>
+                        item.Description.Syntactic.Determiner.IsDeterminer ||
+                        item.Description.Syntactic.Interrogative.IsInterrogatives ||
+                        item.Description.Syntactic.Verb.IsVerb ||
+                        item.Description.Syntactic.Conjunction.IsConjunction) ==
+                true)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public static string GenerateMask(this IWordItem wordItem, bool pure)
