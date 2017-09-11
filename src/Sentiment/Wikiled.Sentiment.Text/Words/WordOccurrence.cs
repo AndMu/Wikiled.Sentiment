@@ -86,8 +86,9 @@ namespace Wikiled.Sentiment.Text.Words
         public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
         {
             Guard.NotNull(() => wordsHandlers, wordsHandlers);
-            text = text.ToLower();
-            string rawWord = string.IsNullOrEmpty(raw) ? wordsHandlers.Extractor.GetWord(text) : raw.ToLower();
+            text = text?.ToLower();
+            string rawWord = string.IsNullOrEmpty(raw) ? wordsHandlers.Extractor.GetWord(text) : raw;
+            rawWord = rawWord?.ToLower();
             var item = new WordOccurrence(text, rawWord, pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
             item.IsSentiment = wordsHandlers.IsSentiment(item);

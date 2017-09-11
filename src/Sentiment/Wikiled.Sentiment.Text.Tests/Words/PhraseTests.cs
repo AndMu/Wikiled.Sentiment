@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             helper = new WordsHandlerHelper();
-            helper.RawTextExractor.Setup(item => item.GetWord("Test")).Returns("T");
+            helper.RawTextExractor.Setup(item => item.GetWord("test")).Returns("T");
             helper.Handler.Setup(item => item.IsSentiment(It.IsAny<WordOccurrence>())).Returns(true);
             helper.Handler.Setup(item => item.IsStop(It.IsAny<WordOccurrence>())).Returns(false);
             helper.Handler.Setup(item => item.MeasureQuantifier(It.IsAny<WordOccurrence>())).Returns(2);
@@ -54,8 +54,8 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             instance.Add(WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.NN));
             instance.Add(WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.NN));
 
-            Assert.AreEqual("Test Test", instance.Text);
-            Assert.AreEqual("T T", instance.Stemmed);
+            Assert.AreEqual("test test", instance.Text);
+            Assert.AreEqual("t t", instance.Stemmed);
             Assert.AreEqual("NN", instance.POS.Tag);
             Assert.IsNotNull(instance.Relationship);
             Assert.IsFalse(instance.IsSentiment);

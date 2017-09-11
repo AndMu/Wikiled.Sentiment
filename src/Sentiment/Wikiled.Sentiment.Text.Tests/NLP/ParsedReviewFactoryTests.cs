@@ -96,7 +96,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             Assert.AreEqual(3, review.Sentences[0].Occurrences.Count());
             var phrases = review.Items.GetPhrases().ToArray();
 
-            Assert.AreEqual("One Two", phrases[0].Text);
+            Assert.AreEqual("one two", phrases[0].Text);
             Assert.AreEqual(2, phrases[0].AllWords.Count());
             var words = review.Items.ToArray();
             Assert.AreEqual(phrases[0], words[0].Parent);
