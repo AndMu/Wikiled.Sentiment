@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
             new SentimentTestData("B0026127Y8", 928, 0, "Total:<853> Positive:<69.69%> Negative:<76.54%> F1:<0.81> RMSE:1.48") {Category = ProductCategory.Video},
             new SentimentTestData("B009GN6F5Q", 472, 0, "Total:<390> Positive:<79.12%> Negative:<71.79%> F1:<0.83> RMSE:1.31") {Category = ProductCategory.Video},
-            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<343> Positive:<59.67%> Negative:<72.09%> F1:<0.73> RMSE:1.50") {Category = ProductCategory.Video},
+            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<345> Positive:<59.27%> Negative:<72.09%> F1:<0.73> RMSE:1.51") {Category = ProductCategory.Video},
 
             new SentimentTestData("B00004SGFS", 381, 0, "Total:<375> Positive:<93.27%> Negative:<81.82%> F1:<0.96> RMSE:0.95") {Category = ProductCategory.Kitchen},
             new SentimentTestData("B000PYF768", 507, 0, "Total:<479> Positive:<90.43%> Negative:<72.50%> F1:<0.94> RMSE:1.02") {Category = ProductCategory.Kitchen},

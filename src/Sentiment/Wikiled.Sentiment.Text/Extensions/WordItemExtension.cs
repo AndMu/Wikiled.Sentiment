@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
@@ -110,6 +111,16 @@ namespace Wikiled.Sentiment.Text.Extensions
 
             var text = word.Text.ToLower();
 
+            if (word.Inquirer?.Records.Any(
+                    item =>
+                        item.Description.Syntactic.Determiner.IsDeterminer ||
+                        item.Description.Syntactic.Interrogative.IsInterrogatives ||
+                        item.Description.Syntactic.Verb.IsVerb ||
+                        item.Description.Syntactic.Conjunction.IsConjunction) == true)
+            {
+                return false;
+            }
+
             // it was successfully trimmed
             return word.IsVerbLook() ||
                    word.IsConjunction() ||
@@ -134,19 +145,7 @@ namespace Wikiled.Sentiment.Text.Extensions
                    word.IsItemBelonging() ||
                    text.IsEnding("thing") || // things are too generic to be features
                    text.Contains("emoticon_") ||
-                   text == "everyone" ||
-                   text == "someone" ||
-                   text == "anyone" ||
-                   text == "one" ||
-                   text == "two" ||
-                   text == "three" ||
-                   text == "four" ||
-                   text == "five" ||
-                   text == "use" ||
-                   text == "about" ||
-                   word.POS.Tag == "IN" ||
-                   string.Compare(word.Stemmed, "other", StringComparison.OrdinalIgnoreCase) == 0 ||
-                   string.Compare(word.Stemmed, "thing", StringComparison.OrdinalIgnoreCase) == 0;
+                   word.POS.Tag == "IN";
         }
 
         public static string GenerateMask(this IWordItem wordItem, bool pure)
