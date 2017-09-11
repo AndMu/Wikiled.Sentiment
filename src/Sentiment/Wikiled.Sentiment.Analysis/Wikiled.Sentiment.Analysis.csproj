@@ -232,6 +232,7 @@
     <Compile Include="Processing\ProcessingDataExtension.cs" />
     <Compile Include="Processing\IDataFilter.cs" />
     <Compile Include="Processing\Splitters\BaseSplitterHelper.cs" />
+    <Compile Include="Processing\Splitters\LightSplitterHelper.cs" />
     <Compile Include="Processing\Splitters\OpenNlpSplitterHelper.cs" />
     <Compile Include="Processing\Splitters\SimpleSplitterHelper.cs" />
     <Compile Include="Processing\Splitters\StanfordSplitterHelper.cs" />

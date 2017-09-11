@@ -203,27 +203,28 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                            .ConfigureAwait(false);
             try
             {
-                var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
-                var original = bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
-                await Task.WhenAll(main, original)
-                          .ConfigureAwait(false);
+                //var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
+                var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
+                //await Task.WhenAll(main, original)
+                //          .ConfigureAwait(false);
 
-                var mainResult = main.Result;
-                var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
-                var bootReview = original.Result.GetReview(bootStrapSplitter.DataLoader);
+
+                //var mainResult = main.Result;
+                //var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
+                var bootReview = original.GetReview(bootStrapSplitter.DataLoader);
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments();
 
-                var originalSentimentValue = originalReview.CalculateRawRating();
+                //var originalSentimentValue = originalReview.CalculateRawRating();
                 if (bootSentimentValue.StarsRating.HasValue)
                 {
-                    if (originalSentimentValue.StarsRating.HasValue &&
-                        originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
-                    {
-                        // disagreement between lexicons
-                        return null;
-                    }
+                    //if (originalSentimentValue.StarsRating.HasValue &&
+                    //    originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
+                    //{
+                    //    // disagreement between lexicons
+                    //    return null;
+                    //}
 
                     if (bootAllSentiments.Length >= Minimum)
                     {
