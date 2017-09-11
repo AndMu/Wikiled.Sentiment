@@ -58,7 +58,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                 if (definition.Cached)
                 {
                     var parsed = await retryPolicy.ExecuteAsync(() => helper.Cache.GetById(review.Id)).ConfigureAwait(false);
-                    return new ParsedDocumentHolder(doc, parsed);
+                    if (parsed != null)
+                    {
+                        return new ParsedDocumentHolder(doc, parsed);
+                    }
                 }
 
                 return new ParsingDocumentHolder(Active.Splitter, new SingleProcessingData(doc));
