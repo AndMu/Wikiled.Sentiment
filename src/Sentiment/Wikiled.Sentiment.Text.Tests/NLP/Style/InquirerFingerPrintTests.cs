@@ -15,8 +15,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument().ConfigureAwait(false);
             var block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
-            Assert.AreEqual(190, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
-            int index = 12;
+            Assert.AreEqual(205, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
+            int index = 27;
             Assert.AreEqual("PLACE", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(1 + index).First().Name);
             Assert.AreEqual(0.0, Math.Round((double)block.InquirerFinger.InquirerProbabilities.AllLeafs.First().Value, 2));
             Assert.AreEqual("Hostile", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(36 + index).First().Name);
@@ -36,8 +36,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style
         {
             var document = await ActualWordsHandler.Instance.Loader.InitDocument("cv001_19502.txt").ConfigureAwait(false);
             var block = new TextBlock(ActualWordsHandler.Instance.WordsHandler, document.Sentences.ToArray());
-            int index = 12;
-            Assert.AreEqual(190, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
+            int index = 27;
+            Assert.AreEqual(205, block.InquirerFinger.InquirerProbabilities.AllLeafs.Count());
             Assert.AreEqual("PLACE", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(1 + index).First().Name);
             Assert.AreEqual(0.0, Math.Round((double)block.InquirerFinger.InquirerProbabilities.AllLeafs.First().Value, 2));
             Assert.AreEqual("Hostile", block.InquirerFinger.InquirerProbabilities.AllLeafs.Skip(36 + index).First().Name);
