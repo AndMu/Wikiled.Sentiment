@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {

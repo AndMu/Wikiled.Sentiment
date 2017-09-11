@@ -1,6 +1,7 @@
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.Text.Words
 {
@@ -31,6 +32,8 @@ namespace Wikiled.Sentiment.Text.Words
         IWordItem Parent { get; set; }
 
         double? QuantValue { get; }
+
+        InquirerDefinition Inquirer { get; }
 
         IWordItemRelationships Relationship { get; }
 

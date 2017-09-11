@@ -33,24 +33,24 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        private readonly MessageCleanup cleanup = new MessageCleanup();
+
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
         private ISplitterHelper bootStrapSplitter;
 
         private ISplitterHelper defaultSplitter;
 
+        private Dictionary<string, string> exist;
+
         private PerformanceMonitor monitor;
 
         private PrecisionRecallCalculator<bool> performance;
 
-        private MessageCleanup cleanup = new MessageCleanup();
-
-        private Dictionary<string, string> exist = new Dictionary<string, string>();
-
         [Required]
         public string Destination { get; set; }
 
-        public string IsImdb { get; set; }
+        public int Minimum { get; set; } = 3;
 
         [Required]
         public string Path { get; set; }
@@ -58,14 +58,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         [Required]
         public string Words { get; set; }
 
-        public virtual int MinimumSentimentWords { get; } = 3;
-
         public override void Execute()
         {
             LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
-            List<PositivityType?> types = new List<PositivityType?>();
+            exist = new Dictionary<string, string>();
+            List<EvalData> types;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(monitor)))
             {
@@ -79,29 +78,22 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Where(item => item.Stars == 5 || item.Stars < 1.1);
 
                 performance = new PrecisionRecallCalculator<bool>();
-                using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+                types = SaveResult(subscriptionMessage).ToList();
+                foreach (var item in types)
                 {
-                    subscriptionMessage.Do(
-                                           item =>
-                                           {
-                                               types.Add(item.CalculatedPositivity);
-                                               if (item.CalculatedPositivity.HasValue)
-                                               {
-                                                   if (item.Original.HasValue)
-                                                   {
-                                                       performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
-                                                   }
-
-                                                   streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString() .ToLower()}\t{item.Text}");
-                                                   streamWrite.Flush();
-                                               }
-                                           })
-                                       .Wait();
+                    if (item.CalculatedPositivity.HasValue)
+                    {
+                        if (item.Original.HasValue &&
+                            item.Original.Value != PositivityType.Neutral)
+                        {
+                            performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
+                        }
+                    }
                 }
             }
 
             log.Info(
-                $"Total (Positive): {types.Count(item => item == PositivityType.Positive)} Total (Negative): {types.Count(item => item == PositivityType.Negative)} Total (Neutral): {types.Count(item => item == PositivityType.Neutral)}");
+                $"Total (Positive): {types.Count(item => item.CalculatedPositivity == PositivityType.Positive)} Total (Negative): {types.Count(item => item.CalculatedPositivity == PositivityType.Negative)} Total (Neutral): {types.Count(item => item.CalculatedPositivity == PositivityType.Neutral)}");
             log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
         }
 
@@ -114,7 +106,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 {
                     long? id = null;
                     PositivityType? positivity = null;
-                    var blocks = line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries);
+                    var blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                     if (blocks.Length < 3)
                     {
                         log.Error($"Error: {line}");
@@ -160,10 +152,28 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     if (!exist.ContainsKey(text))
                     {
                         exist[text] = text;
-                        monitor.ManualyCount();
                         yield return new EvalData(id.ToString(), positivity, text);
                     }
                 }
+            }
+        }
+
+        protected virtual IEnumerable<EvalData> SaveResult(IObservable<EvalData> subscriptionMessage)
+        {
+            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+            {
+                return subscriptionMessage.Select(
+                                       item =>
+                                           {
+                                               if (item.CalculatedPositivity.HasValue)
+                                               {
+                                                   streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
+                                                   streamWrite.Flush();
+                                               }
+
+                                               return item;
+                                           })
+                                   .ToEnumerable().ToArray();
             }
         }
 
@@ -215,7 +225,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         return null;
                     }
 
-                    if (bootAllSentiments.Length >= MinimumSentimentWords)
+                    if (bootAllSentiments.Length >= Minimum)
                     {
                         data.Stars = bootSentimentValue.StarsRating.Value;
                         return data;
@@ -237,6 +247,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             {
                 foreach (var semEvalData in GetDataPacket(file))
                 {
+                    monitor.ManualyCount();
                     yield return semEvalData;
                 }
             }

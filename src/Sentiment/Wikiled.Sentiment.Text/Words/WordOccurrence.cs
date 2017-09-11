@@ -5,6 +5,7 @@ using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.Text.Words
 {
@@ -80,6 +81,8 @@ namespace Wikiled.Sentiment.Text.Words
 
         public int WordIndex { get; set; }
 
+        public InquirerDefinition Inquirer { get; private set; }
+
         public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
         {
             Guard.NotNull(() => wordsHandlers, wordsHandlers);
@@ -93,6 +96,7 @@ namespace Wikiled.Sentiment.Text.Words
             item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
             item.IsQuestion = wordsHandlers.IsQuestion(item);
             item.IsStopWord = wordsHandlers.IsStop(item);
+            item.Inquirer = wordsHandlers.InquirerManager.GetDefinitions(text);
             return item;
         }
 

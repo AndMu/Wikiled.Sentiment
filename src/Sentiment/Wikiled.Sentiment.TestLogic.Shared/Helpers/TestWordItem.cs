@@ -1,8 +1,9 @@
 ﻿using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
-using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
@@ -40,6 +41,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public bool IsSimple { get; protected set; }
 
         public double? QuantValue { get; set; }
+
+        public InquirerDefinition Inquirer { get; set; }
 
         public IWordItemRelationships Relationship { get; set; }
 

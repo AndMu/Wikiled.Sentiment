@@ -5,9 +5,6 @@
     <version>1.0.0</version>
     <authors>Wikiled</authors>
     <description>Sentiment Library</description>
-    <dependencies>
-      <dependency id="Wikiled.OpenNLP" />
-    </dependencies>
   </metadata>
   <files>
     <file src="bin\Release\Wikiled.Sentiment.Analysis.pdb" target="lib\net462" />

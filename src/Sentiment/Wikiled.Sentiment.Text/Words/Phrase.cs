@@ -4,9 +4,10 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Inquirer.Data;
 
 namespace Wikiled.Sentiment.Text.Words
 {
@@ -83,6 +84,8 @@ namespace Wikiled.Sentiment.Text.Words
                 return occurrences.Max(item => item.QuantValue);
             }
         }
+
+        public InquirerDefinition Inquirer { get; }
 
         public IWordItemRelationships Relationship { get; private set; }
 

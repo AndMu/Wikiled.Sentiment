@@ -52,13 +52,6 @@ namespace Wikiled.Sentiment.Text.Parser
         public WordsDataLoader(string path, IWordsDictionary dictionary)
         {
             Guard.NotNullOrEmpty(() => path, path);
-            datasetPath = path;
-            AspectDectector = NullAspectDectector.Instance;
-            Extractor = new RawWordExtractor(dictionary, MemoryCache.Default);
-            WordFactory = new WordOccurenceFactory(this);
-            AspectFactory = new MainAspectHandlerFactory(this);
-            Reset();
-            repair = new SentenceRepairHandler(Path.Combine(path, "Repair"), this);
 
             inquirerManager = new Lazy<IInquirerManager>(
                 () =>
@@ -75,6 +68,14 @@ namespace Wikiled.Sentiment.Text.Parser
                         instance.Load();
                         return instance;
                     });
+
+            datasetPath = path;
+            AspectDectector = NullAspectDectector.Instance;
+            Extractor = new RawWordExtractor(dictionary, MemoryCache.Default);
+            WordFactory = new WordOccurenceFactory(this);
+            AspectFactory = new MainAspectHandlerFactory(this);
+            Reset();
+            repair = new SentenceRepairHandler(Path.Combine(path, "Repair"), this);
         }
 
         public IAspectDectector AspectDectector { get => aspectDectector; set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value)); }

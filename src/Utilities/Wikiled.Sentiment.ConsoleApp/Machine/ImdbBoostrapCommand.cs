@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Linq;
 using Wikiled.Arff.Persistence;
+using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.ConsoleApp.Machine.Data;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
@@ -10,7 +13,28 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// </summary>
     public class ImdbBoostrapCommand : BoostrapCommand
     {
-        public override int MinimumSentimentWords { get; } = 4;
+        private string negativeResult;
+
+        private string positiveResult;
+
+        public override void Execute()
+        {
+            positiveResult = System.IO.Path.Combine(Destination, "pos");
+            negativeResult = System.IO.Path.Combine(Destination, "neg");
+            if (Directory.Exists(negativeResult))
+            {
+                Directory.Delete(negativeResult, true);
+            }
+
+            if (Directory.Exists(positiveResult))
+            {
+                Directory.Delete(positiveResult, true);
+            }
+
+            negativeResult.EnsureDirectoryExistence();
+            positiveResult.EnsureDirectoryExistence();
+            base.Execute();
+        }
 
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {
@@ -28,6 +52,28 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
 
             yield return new EvalData(id, positivity, text);
+        }
+
+        protected override IEnumerable<EvalData> SaveResult(IObservable<EvalData> subscriptionMessage)
+        {
+
+            return subscriptionMessage
+                .Select(
+                    item =>
+                        {
+                            if (item.CalculatedPositivity == PositivityType.Positive)
+                            {
+                                File.WriteAllText(System.IO.Path.Combine(positiveResult, item.Id + ".txt"), item.Text);
+                            }
+
+                            if (item.CalculatedPositivity == PositivityType.Negative)
+                            {
+                                File.WriteAllText(System.IO.Path.Combine(negativeResult, item.Id + ".txt"), item.Text);
+                            }
+
+                            return item;
+                        })
+                .ToEnumerable();
         }
     }
 }
