@@ -54,26 +54,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             yield return new EvalData(id, positivity, text);
         }
 
-        protected override IEnumerable<EvalData> SaveResult(IObservable<EvalData> subscriptionMessage)
+        protected override void SaveResult(EvalData[] subscriptionMessage)
         {
+            foreach (var item in subscriptionMessage)
+            {
+                if (item.CalculatedPositivity == PositivityType.Positive)
+                {
+                    File.WriteAllText(System.IO.Path.Combine(positiveResult, item.Id + ".txt"), item.Text);
+                }
 
-            return subscriptionMessage
-                .Select(
-                    item =>
-                        {
-                            if (item.CalculatedPositivity == PositivityType.Positive)
-                            {
-                                File.WriteAllText(System.IO.Path.Combine(positiveResult, item.Id + ".txt"), item.Text);
-                            }
-
-                            if (item.CalculatedPositivity == PositivityType.Negative)
-                            {
-                                File.WriteAllText(System.IO.Path.Combine(negativeResult, item.Id + ".txt"), item.Text);
-                            }
-
-                            return item;
-                        })
-                .ToEnumerable();
+                if (item.CalculatedPositivity == PositivityType.Negative)
+                {
+                    File.WriteAllText(System.IO.Path.Combine(negativeResult, item.Id + ".txt"), item.Text);
+                }
+            }
         }
     }
 }

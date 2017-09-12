@@ -39,8 +39,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private ISplitterHelper bootStrapSplitter;
 
-        private ISplitterHelper defaultSplitter;
-
         private Dictionary<string, string> exist;
 
         private PerformanceMonitor monitor;
@@ -52,6 +50,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public int Minimum { get; set; } = 3;
 
+        public double? BalancedTop { get; set; }
+
         [Required]
         public string Path { get; set; }
 
@@ -60,11 +60,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public override void Execute()
         {
-            LoadDefault();
             LoadBootstrap();
             monitor = new PerformanceMonitor(0);
             exist = new Dictionary<string, string>();
-            List<EvalData> types;
+            EvalData[] types;
+            int positive = 0;
+            int negative = 0;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(monitor)))
             {
@@ -78,7 +79,21 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Where(item => item.Stars == 5 || item.Stars < 1.1);
 
                 performance = new PrecisionRecallCalculator<bool>();
-                types = SaveResult(subscriptionMessage).ToList();
+                types = subscriptionMessage.ToEnumerable().ToArray();
+                positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);
+                negative = types.Count(item => item.CalculatedPositivity == PositivityType.Negative);
+                log.Info($"Total (Positive): {positive} Total (Negative): {negative}");
+                if (BalancedTop.HasValue)
+                {
+                    var cutoff = positive > negative ? negative : positive;
+                    cutoff = (int)( BalancedTop.Value * cutoff);
+                    var negativeItems = types.OrderBy(item => item.Stars).Take(cutoff);
+                    var positiveItems = types.OrderByDescending(item => item.Stars).Take(cutoff);
+                    types = negativeItems.Union(positiveItems).OrderBy(item => Guid.NewGuid()).ToArray();
+                    log.Info($"After balancing Total (Positive): {cutoff} Total (Negative): {cutoff}");
+                }
+
+                SaveResult(types);
                 foreach (var item in types)
                 {
                     if (item.CalculatedPositivity.HasValue)
@@ -92,8 +107,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 }
             }
 
-            log.Info(
-                $"Total (Positive): {types.Count(item => item.CalculatedPositivity == PositivityType.Positive)} Total (Negative): {types.Count(item => item.CalculatedPositivity == PositivityType.Negative)} Total (Neutral): {types.Count(item => item.CalculatedPositivity == PositivityType.Neutral)}");
             log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
         }
 
@@ -158,22 +171,15 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
         }
 
-        protected virtual IEnumerable<EvalData> SaveResult(IObservable<EvalData> subscriptionMessage)
+        protected virtual void SaveResult(EvalData[] subscriptionMessage)
         {
             using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
             {
-                return subscriptionMessage.Select(
-                                       item =>
-                                           {
-                                               if (item.CalculatedPositivity.HasValue)
-                                               {
-                                                   streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
-                                                   streamWrite.Flush();
-                                               }
-
-                                               return item;
-                                           })
-                                   .ToEnumerable().ToArray();
+                foreach (var item in subscriptionMessage)
+                {
+                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
+                    streamWrite.Flush();
+                }
             }
         }
 
@@ -189,43 +195,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             adjuster.Adjust(Words);
         }
 
-        private void LoadDefault()
-        {
-            log.Info("Loading default text splitter");
-            var config = new ConfigurationHandler();
-            var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
-            defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
-        }
-
         private async Task<EvalData> ProcessReview(EvalData data)
         {
             await semaphore.WaitAsync()
                            .ConfigureAwait(false);
             try
             {
-                //var main = defaultSplitter.Splitter.Process(new ParseRequest(data.Text));
-                var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text));
-                //await Task.WhenAll(main, original)
-                //          .ConfigureAwait(false);
-
-
-                //var mainResult = main.Result;
-                //var originalReview = mainResult.GetReview(defaultSplitter.DataLoader);
+                var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
                 var bootReview = original.GetReview(bootStrapSplitter.DataLoader);
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments();
 
-                //var originalSentimentValue = originalReview.CalculateRawRating();
                 if (bootSentimentValue.StarsRating.HasValue)
                 {
-                    //if (originalSentimentValue.StarsRating.HasValue &&
-                    //    originalSentimentValue.IsPositive != bootSentimentValue.IsPositive)
-                    //{
-                    //    // disagreement between lexicons
-                    //    return null;
-                    //}
-
                     if (bootAllSentiments.Length >= Minimum)
                     {
                         data.Stars = bootSentimentValue.StarsRating.Value;
