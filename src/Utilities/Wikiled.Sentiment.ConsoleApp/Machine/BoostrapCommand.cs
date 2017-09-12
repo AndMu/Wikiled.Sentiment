@@ -50,6 +50,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public int Minimum { get; set; } = 3;
 
+        public bool UseInvert { get; set; }
+
         public double? BalancedTop { get; set; }
 
         [Required]
@@ -189,7 +191,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
             bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
-            bootStrapSplitter.DataLoader.DisableFeatureSentiment = true;
+            bootStrapSplitter.DataLoader.DisableFeatureSentiment = !UseInvert;
             var adjuster = new WeightSentimentAdjuster(bootStrapSplitter.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Words);
         }
