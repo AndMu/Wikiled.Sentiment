@@ -86,28 +86,25 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 if (BalancedTop.HasValue)
                 {
                     var cutoff = positive > negative ? negative : positive;
-                    cutoff = (int)( BalancedTop.Value * cutoff);
+                    cutoff = (int)(BalancedTop.Value * cutoff);
                     var negativeItems = types.OrderBy(item => item.Stars).Take(cutoff);
                     var positiveItems = types.OrderByDescending(item => item.Stars).Take(cutoff);
                     types = negativeItems.Union(positiveItems).OrderBy(item => Guid.NewGuid()).ToArray();
                     log.Info($"After balancing Total (Positive): {cutoff} Total (Negative): {cutoff}");
                 }
 
-                SaveResult(types);
                 foreach (var item in types)
                 {
-                    if (item.CalculatedPositivity.HasValue)
+                    if (item.Original.HasValue &&
+                        item.Original.Value != PositivityType.Neutral)
                     {
-                        if (item.Original.HasValue &&
-                            item.Original.Value != PositivityType.Neutral)
-                        {
-                            performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
-                        }
+                        performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
                     }
                 }
-            }
 
-            log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
+                log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
+                SaveResult(types);
+            }
         }
 
         protected virtual IEnumerable<EvalData> GetDataPacket(string file)

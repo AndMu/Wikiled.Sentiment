@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             var attributes = context.GetAttributes().ToArray();
             var features = context.GetFeatures().ToArray();
             Assert.AreEqual(1, attributes.Length);
-            Assert.AreEqual("good", attributes[0].Text);
+            Assert.AreEqual("like", attributes[0].Text);
             Assert.AreEqual(2, features.Length);
             Assert.IsTrue(features.Any(item => item.Text == "school"));
             Assert.IsTrue(features.Any(item => item.Text == "teacher"));
