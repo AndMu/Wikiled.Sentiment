@@ -42,11 +42,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             PositivityType? positivity = null;
             var id = System.IO.Path.GetFileNameWithoutExtension(path);
             var text = File.ReadAllText(path);
-            if (path.Contains(@"\pos\"))
+            if (path.Contains(@"\pos"))
             {
                 positivity = PositivityType.Positive;
             }
-            else if (path.Contains(@"\neg\"))
+            else if (path.Contains(@"\neg"))
             {
                 positivity = PositivityType.Negative;
             }

@@ -82,7 +82,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 types = subscriptionMessage.ToEnumerable().ToArray();
                 positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);
                 negative = types.Count(item => item.CalculatedPositivity == PositivityType.Negative);
-                log.Info($"Total (Positive): {positive} Total (Negative): {negative}");
+                var positiveOrg = types.Count(item => item.Original == PositivityType.Positive);
+                var negativeOrg = types.Count(item => item.Original == PositivityType.Negative);
+                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg})");
                 if (BalancedTop.HasValue)
                 {
                     var cutoff = positive > negative ? negative : positive;
