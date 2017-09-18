@@ -113,7 +113,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         protected virtual IEnumerable<EvalData> GetDataPacket(string file)
         {
-            using (var streamRead = new StreamReader(file, Encoding.UTF8))
+            using (var streamRead = new StreamReader(file))
             {
                 string line;
                 while ((line = streamRead.ReadLine()) != null)
