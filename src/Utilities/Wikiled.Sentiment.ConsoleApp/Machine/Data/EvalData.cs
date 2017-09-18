@@ -15,7 +15,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine.Data
 
         public double? Stars { get; set; }
 
-        public PositivityType? CalculatedPositivity => !Stars.HasValue ? (PositivityType?)null : Stars > 3 ? PositivityType.Positive : PositivityType.Negative;
+        public bool? IsNeutral { get; set; }
+
+        public PositivityType? CalculatedPositivity => IsNeutral == true ? PositivityType.Neutral : !Stars.HasValue ? (PositivityType?)null : Stars > 3 ? PositivityType.Positive : PositivityType.Negative;
 
         public PositivityType? Original { get; }
 
