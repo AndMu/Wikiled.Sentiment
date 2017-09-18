@@ -43,7 +43,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PerformanceMonitor monitor;
 
+        private ISplitterHelper defaultSplitter;
+
         private PrecisionRecallCalculator<bool> performance;
+
+        private PrecisionRecallCalculator<bool> performanceSub;
 
         [Required]
         public string Destination { get; set; }
@@ -51,6 +55,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         public int Minimum { get; set; } = 3;
 
         public bool UseInvert { get; set; }
+
+        public bool Neutral { get; set; }
 
         public double? BalancedTop { get; set; }
 
@@ -62,12 +68,17 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public override void Execute()
         {
-            LoadBootstrap();
+            List<Task> initTasks = new List<Task>();
+            initTasks.Add(Task.Run(() => LoadBootstrap()));
+            if (Neutral)
+            {
+                initTasks.Add(Task.Run(() => LoadDefault()));
+            }
+
+            Task.WhenAll(initTasks).Wait();
             monitor = new PerformanceMonitor(0);
             exist = new Dictionary<string, string>();
             EvalData[] types;
-            int positive = 0;
-            int negative = 0;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(monitor)))
             {
@@ -77,24 +88,39 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                  .Merge()
                                                  .Merge()
-                                                 .Where(item => item?.Stars != null)
-                                                 .Where(item => item.Stars == 5 || item.Stars < 1.1);
+                                                 .Where(item => item != null)
+                                                 .Where(item => item.Stars == 5 || item.Stars < 1.1 || item.IsNeutral == true);
 
                 performance = new PrecisionRecallCalculator<bool>();
+                performanceSub = new PrecisionRecallCalculator<bool>();
                 types = subscriptionMessage.ToEnumerable().ToArray();
-                positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);
-                negative = types.Count(item => item.CalculatedPositivity == PositivityType.Negative);
+                var positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);
+                var negative = types.Count(item => item.CalculatedPositivity == PositivityType.Negative);
+                var neutral = types.Count(item => item.CalculatedPositivity == PositivityType.Neutral);
                 var positiveOrg = types.Count(item => item.Original == PositivityType.Positive);
                 var negativeOrg = types.Count(item => item.Original == PositivityType.Negative);
-                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg})");
+                var neutralOrg = types.Count(item => item.Original == PositivityType.Neutral);
+                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg}) Total (Negative): {neutral}({neutralOrg})");
                 if (BalancedTop.HasValue)
                 {
                     var cutoff = positive > negative ? negative : positive;
+                    if (Neutral)
+                    {
+                        cutoff = cutoff > neutral ? neutral : cutoff;
+                    }
+
                     cutoff = (int)(BalancedTop.Value * cutoff);
-                    var negativeItems = types.OrderBy(item => item.Stars).Take(cutoff);
-                    var positiveItems = types.OrderByDescending(item => item.Stars).Take(cutoff);
-                    types = negativeItems.Union(positiveItems).OrderBy(item => Guid.NewGuid()).ToArray();
-                    log.Info($"After balancing Total (Positive): {cutoff} Total (Negative): {cutoff}");
+                    var negativeItems = types.Where(item => item.Stars.HasValue).OrderBy(item => item.Stars).Take(cutoff);
+                    var positiveItems = types.Where(item => item.Stars.HasValue).OrderByDescending(item => item.Stars).Take(cutoff);
+                    var select = negativeItems.Union(positiveItems);
+                    if (Neutral)
+                    {
+                        var neutralItems = types.Where(item => item.IsNeutral == true).OrderBy(item => Guid.NewGuid()).Take(cutoff);
+                        select = select.Union(neutralItems);
+                    }
+
+                    types = select.OrderBy(item => Guid.NewGuid()).ToArray();
+                    log.Info($"After balancing took: {cutoff}");
                 }
 
                 foreach (var item in types)
@@ -102,13 +128,22 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     if (item.Original.HasValue &&
                         item.Original.Value != PositivityType.Neutral)
                     {
-                        performance.Add(item.Original.Value == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
+                        performance.Add(item.Original == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
                     }
+
+                    performanceSub.Add(item.Original == PositivityType.Neutral, item.CalculatedPositivity.HasValue ? false : item.IsNeutral);
                 }
 
                 log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
-                SaveResult(types);
+                if (Neutral)
+                {
+                    log.Info($"{performanceSub.GetTotalAccuracy()} Precision (true - Subjective): {performanceSub.GetPrecision(true)} Precision (false - Subjective): {performanceSub.GetPrecision(false)}");
+                }
+
             }
+
+            log.Info("Saving results...");
+            SaveResult(types);
         }
 
         protected virtual IEnumerable<EvalData> GetDataPacket(string file)
@@ -196,6 +231,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             adjuster.Adjust(Words);
         }
 
+        private void LoadDefault()
+        {
+            log.Info("Loading default text splitter");
+            var config = new ConfigurationHandler();
+            var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
+            defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
+        }
+
         private async Task<EvalData> ProcessReview(EvalData data)
         {
             await semaphore.WaitAsync()
@@ -213,6 +256,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     if (bootAllSentiments.Length >= Minimum)
                     {
                         data.Stars = bootSentimentValue.StarsRating.Value;
+                        return data;
+                    }
+                }
+                else if (Neutral)
+                {
+                    // check also using default lexicon
+                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                    var originalReview = main.GetReview(defaultSplitter.DataLoader);
+                    var originalRating = originalReview.CalculateRawRating();
+                    //main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)
+
+                    if (!originalRating.StarsRating.HasValue)
+                    {
+                        data.IsNeutral = true;
                         return data;
                     }
                 }
