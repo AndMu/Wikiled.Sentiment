@@ -145,8 +145,8 @@ namespace Wikiled.Sentiment.Text.Words
             var max = 2;
             IWordItemRelationships current = this;
             double i = 0;
-            const double weightSentiment = 0.9;
-            const double weightFeature = 2;
+            double weightSentiment = 0.9;
+            double weightFeature = 2;
             double weight = 1;
             var stopWeight = 0.5;
             Tuple<IWordItem, double> found = null;

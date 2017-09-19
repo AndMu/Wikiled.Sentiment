@@ -23,56 +23,56 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TrainingClient
     {
-        private IObservable<IParsedDocumentHolder> data;
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private readonly AnalyseReviews analyze;
+
+        private readonly MainAspectHandler featureExtractor;
+
+        private readonly SentimentVector sentimentVector;
 
         private readonly ISplitterHelper splitter;
 
         private readonly string svmPath;
 
-        private readonly AnalyseReviews analyse;
-
         private IProcessArff arffProcess;
 
-        private readonly MainAspectHandler featureExtractor;
+        private IObservable<IParsedDocumentHolder> data;
+
+        private PerformanceMonitor monitor;
 
         private int negative;
 
         private int positive;
-
-        private readonly SentimentVector sentimentVector;
-
-        private PerformanceMonitor monitor;
 
         public TrainingClient(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, string svmPath)
         {
             Guard.NotNull(() => splitter, splitter);
             Guard.NotNull(() => reviews, reviews);
             Guard.NotNull(() => svmPath, svmPath);
-        
+
             this.splitter = splitter;
             data = reviews;
             this.svmPath = svmPath;
             SentimentVector = new SentimentVector();
             splitter.Load();
-            analyse = new AnalyseReviews(splitter.DataLoader);
+            analyze = new AnalyseReviews(splitter.DataLoader);
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
             sentimentVector = new SentimentVector();
         }
 
-        public SentimentVector SentimentVector { get; }
-
         public string OverrideAspects { get; set; }
 
-        public bool UseBagOfWords { get; set; }
+        public SentimentVector SentimentVector { get; }
 
         public bool UseAll { get; set; }
 
+        public bool UseBagOfWords { get; set; }
+
         public async Task Train()
         {
-            analyse.SvmPath = svmPath;
-            analyse.InitEnvironment();
+            analyze.SvmPath = svmPath;
+            analyze.InitEnvironment();
             log.Info("Starting Training");
 
             monitor = new PerformanceMonitor(100);
@@ -107,14 +107,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 arffProcess.CleanupDataHolder(3, 10);
             }
 
-            analyse.TrainingHeader.Normalization = NormalizationType.L2;
-            arffProcess.Normalize(analyse.TrainingHeader.Normalization);
-            analyse.SetArff(arff);
-            analyse.Positive = positive;
-            analyse.Negative = negative;
+            analyze.TrainingHeader.Normalization = NormalizationType.L2;
+            arffProcess.Normalize(analyze.TrainingHeader.Normalization);
+            analyze.SetArff(arff);
+            analyze.Positive = positive;
+            analyze.Negative = negative;
             try
             {
-                await analyse.SetMainSvm().ConfigureAwait(false);
+                await analyze.SetMainSvm().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -203,12 +203,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
             var features = featureExtractor.GetFeatures(100).ToArray();
             var attributes = featureExtractor.GetAttributes(100).ToArray();
             var document = serializer.Serialize(features, attributes);
-            var featuresFile = Path.Combine(analyse.SvmPath, "aspects.xml");
+            var featuresFile = Path.Combine(analyze.SvmPath, "aspects.xml");
             document.Save(featuresFile);
             if (!string.IsNullOrEmpty(OverrideAspects))
             {
                 log.Info($"Overriding aspects with {OverrideAspects}");
-                File.Copy(featuresFile, Path.Combine(analyse.SvmPath, "aspects_detected.xml"), true);
+                File.Copy(featuresFile, Path.Combine(analyze.SvmPath, "aspects_detected.xml"), true);
                 File.Copy(OverrideAspects, featuresFile, true);
                 XDocument featuresXml = XDocument.Load(featuresFile);
                 var aspect = serializer.Deserialize(featuresXml);
@@ -218,7 +218,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             splitter.DataLoader.AspectDectector = new AspectDectector(features, attributes);
             var vector = sentimentVector.GetVector(NormalizationType.None);
-            vector.XmlSerialize().Save(Path.Combine(analyse.SvmPath, "sentiment_vector.xml"));
+            vector.XmlSerialize().Save(Path.Combine(analyze.SvmPath, "sentiment_vector.xml"));
             log.Info("Extracting features... DONE!");
         }
     }

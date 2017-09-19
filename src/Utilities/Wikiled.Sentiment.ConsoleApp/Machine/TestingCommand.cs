@@ -36,6 +36,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                             monitor.ManualyCount();
                             return item;
                         });
+
                 client = new TestingClient(splitter, reviews, SvmPath);
                 client.UseBagOfWords = UseBagOfWords;
                 client.Init();

@@ -39,6 +39,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public bool UseBagOfWords { get; set; }
 
+        public bool UseInvert { get; set; }
+
         public POSTaggerType Tagger { get; set; } = POSTaggerType.Stanford;
 
         public override void Execute()
@@ -55,11 +57,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
 
             splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
+            splitter.DataLoader.DisableFeatureSentiment = !UseInvert;
             log.Info("Processing...");
 
             if (!string.IsNullOrEmpty(Weights))
             {
-                log.Info("Adjusting Embeddings sentiments...");
+                log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
                 if (FullWeightReset)
                 {
                     log.Info("Full weight reset");

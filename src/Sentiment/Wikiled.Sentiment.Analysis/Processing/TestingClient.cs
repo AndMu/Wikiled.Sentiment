@@ -124,7 +124,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
-            log.Info("Tokenizing...");
+            log.Info("Processing...");
         }
 
         public IObservable<ParsingResult> Process()
