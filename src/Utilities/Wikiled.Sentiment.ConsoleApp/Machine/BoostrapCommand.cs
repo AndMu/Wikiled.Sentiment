@@ -100,7 +100,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 var positiveOrg = types.Count(item => item.Original == PositivityType.Positive);
                 var negativeOrg = types.Count(item => item.Original == PositivityType.Negative);
                 var neutralOrg = types.Count(item => item.Original == PositivityType.Neutral);
-                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg}) Total (Negative): {neutral}({neutralOrg})");
+                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg}) Total (Neutral): {neutral}({neutralOrg})");
                 if (BalancedTop.HasValue)
                 {
                     var cutoff = positive > negative ? negative : positive;
@@ -131,7 +131,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                         performance.Add(item.Original == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
                     }
 
-                    performanceSub.Add(item.Original == PositivityType.Neutral, item.CalculatedPositivity.HasValue ? false : item.IsNeutral);
+                    performanceSub.Add(item.Original == PositivityType.Neutral, item.CalculatedPositivity == PositivityType.Neutral);
                 }
 
                 log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
