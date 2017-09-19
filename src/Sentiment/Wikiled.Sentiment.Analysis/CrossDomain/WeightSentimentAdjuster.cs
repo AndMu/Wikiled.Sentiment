@@ -31,7 +31,6 @@ namespace Wikiled.Sentiment.Analysis.CrossDomain
             {
                 var items = line.Split(',');
                 var word = items[0].Trim();
-                word = Regex.Replace(word, @"\:\b(\S+?)\b\:", "EMOTICON_$1", RegexOptions.IgnoreCase);
                 var weight = double.Parse(items[1]);
                 if (!sentimentDataHolder.Adjust(word, weight))
                 {

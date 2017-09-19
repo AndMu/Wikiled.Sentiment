@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Analysis.Workspace
             configurationPath = Path.Combine(ProjectPath, "configuration.xml");
             trainingPath = Path.Combine(ProjectPath, "trainingData.xml");
             testingPath = Path.Combine(ProjectPath, "testingData.xml");
-            AspectsHandler = new AspectsHandler(Path.Combine(ProjectPath, "features.xml"), wordsHandlerSource);
+            AspectsHandler = new AspectsHandler(Path.Combine(ProjectPath, "aspects.xml"), wordsHandlerSource);
         }
 
         public virtual string DataPath => Path.Combine(ProjectPath, SvmFolder);

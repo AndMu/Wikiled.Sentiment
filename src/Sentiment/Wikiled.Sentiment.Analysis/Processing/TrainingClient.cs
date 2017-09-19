@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public SentimentVector SentimentVector { get; }
 
-        public string OverrideFeatures { get; set; }
+        public string OverrideAspects { get; set; }
 
         public bool UseBagOfWords { get; set; }
 
@@ -198,18 +198,18 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private void SelectAdditional()
         {
-            log.Info("Extracting features...");
+            log.Info("Extracting aspects...");
             AspectSerializer serializer = new AspectSerializer(splitter.DataLoader);
             var features = featureExtractor.GetFeatures(100).ToArray();
             var attributes = featureExtractor.GetAttributes(100).ToArray();
             var document = serializer.Serialize(features, attributes);
-            var featuresFile = Path.Combine(analyse.SvmPath, "features.xml");
+            var featuresFile = Path.Combine(analyse.SvmPath, "aspects.xml");
             document.Save(featuresFile);
-            if (!string.IsNullOrEmpty(OverrideFeatures))
+            if (!string.IsNullOrEmpty(OverrideAspects))
             {
-                log.Info($"Overriding features with {OverrideFeatures}");
-                File.Copy(featuresFile, Path.Combine(analyse.SvmPath, "features_detected.xml"), true);
-                File.Copy(OverrideFeatures, featuresFile, true);
+                log.Info($"Overriding aspects with {OverrideAspects}");
+                File.Copy(featuresFile, Path.Combine(analyse.SvmPath, "aspects_detected.xml"), true);
+                File.Copy(OverrideAspects, featuresFile, true);
                 XDocument featuresXml = XDocument.Load(featuresFile);
                 var aspect = serializer.Deserialize(featuresXml);
                 features = aspect.AllFeatures.ToArray();

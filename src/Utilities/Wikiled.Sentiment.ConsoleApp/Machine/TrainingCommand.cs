@@ -1,19 +1,34 @@
 ﻿using System;
+using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    ///     training [-Year=2000 -Years=2] -Port=6379 [-SvmPath=.\SvmTwo] -Category=Electronics
+    /// train -Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml" -Redis [-Features=c:\out\features_my.xml] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset]
     /// </summary>
-    public class TrainingCommand : BaseRedis
+    internal class TrainingCommand : BaseRawCommand
     {
-        public override bool IsTraining => true;
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        protected override void Processing(IObservable<IParsedDocumentHolder> reviews)
+        /// <summary>
+        /// Path to Feautres/Aspects
+        /// </summary>
+        public string Features { get; set; }
+
+        /// <summary>
+        /// Do you want to use all words of filter using threshold (min 3 reviews with words and words with 10 occurrences)
+        /// </summary>
+        public bool UseAll { get; set; }
+
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
-            TrainingClient client = new TrainingClient(Helper, reviews, ProcessingPath);
+            log.Info("Training Operation...");
+            TrainingClient client = new TrainingClient(splitter, reviews, @".\Svm");
+            client.OverrideAspects = Features;
+            client.UseBagOfWords = UseBagOfWords;
+            client.UseAll = UseAll;
             client.Train().Wait();
         }
     }

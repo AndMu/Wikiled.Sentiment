@@ -1,59 +1,54 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Reactive.Linq;
 using NLog;
-using Wikiled.Sentiment.Analysis.CrossDomain;
+using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    /// testing [-Year=2000 -Years=2] [-Raw=true] [-Word2Vec=C:\data.csv] [-Server=docs] -Port=6380 [-SvmPath=.\SvmTwo] -Category=Electronics
+    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-SvmPath=.\Svm] -Out=.\results
     /// </summary>
-    public class TestingCommand : BaseRedis
+    public class TestingCommand : BaseRawCommand
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public bool Raw { get; set; }
+        /// <summary>
+        /// Path to pretrained data. If empty will use as basic lexicon
+        /// </summary>
+        public string SvmPath { get; set; }
 
-        public string Word2Vec { get; set; }
+        [Required]
+        public string Out { get; set; }
 
-        public override bool IsTraining => false;
-
-        protected override void Processing(IObservable<IParsedDocumentHolder> reviews)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
-            TestingClient client = new TestingClient(Helper, reviews, ProcessingPath);
-            var name = Category.ToString();
-            if (Year != null)
+            var monitor = new PerformanceMonitor(0);
+            TestingClient client;
+            using (Observable.Interval(TimeSpan.FromSeconds(30))
+                             .Subscribe(item => log.Info(monitor)))
             {
-                name += $"_{Year}";
+                reviews = reviews.Select(
+                    item =>
+                        {
+                            monitor.ManualyCount();
+                            return item;
+                        });
+                client = new TestingClient(splitter, reviews, SvmPath);
+                client.UseBagOfWords = UseBagOfWords;
+                client.Init();
+                client.Process().Select(
+                    item =>
+                        {
+                            monitor.Increment();
+                            return item;
+                        }).LastOrDefaultAsync().Wait();
             }
 
-            if (Years != null)
-            {
-                name += $"_{Years}";
-            }
-
-            if (Raw)
-            {
-                log.Info("Using Raw testing");
-                client.DisableAspects = true;
-                client.DisableSvm = true;
-                name += "_Raw";
-            }
-
-            if (!string.IsNullOrEmpty(Word2Vec))
-            {
-                log.Info("Adjusting Word2Vec sentiments...");
-                name += "_Word2Vec";
-                var adjuster = new WeightSentimentAdjuster(Helper.DataLoader.SentimentDataHolder);
-                adjuster.Adjust(Word2Vec);
-            }
-
-            client.Init();
-            client.Process().LastOrDefaultAsync().Wait();
-            client.Holder.Save(name + ".csv");
-            log.Info("Completed. Performance: {0}", client.GetPerformanceDescription());
+            client.Save(Out);
+            log.Info($"Testing performance {client.GetPerformanceDescription()}");
         }
     }
 }

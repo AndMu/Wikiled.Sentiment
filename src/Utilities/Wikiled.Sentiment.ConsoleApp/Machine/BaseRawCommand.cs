@@ -7,6 +7,7 @@ using Wikiled.Core.Utility.Resources;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
+using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
@@ -21,6 +22,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private ISplitterHelper splitter;
+
+        public string Weights { get; set; }
+
+        public bool FullWeightReset { get; set; }
 
         public bool Redis { get; set; }
 
@@ -51,6 +56,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
             splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
             log.Info("Processing...");
+
+            if (!string.IsNullOrEmpty(Weights))
+            {
+                log.Info("Adjusting Embeddings sentiments...");
+                if (FullWeightReset)
+                {
+                    log.Info("Full weight reset");
+                    splitter.DataLoader.SentimentDataHolder.Clear();
+                }
+
+                var adjuster = new WeightSentimentAdjuster(splitter.DataLoader.SentimentDataHolder);
+                adjuster.Adjust(Weights);
+            }
+
             var review = string.IsNullOrEmpty(Positive)
                              ? GetAllReviews()
                              : GetNegativeReviews().Merge(GetPositiveReviews());

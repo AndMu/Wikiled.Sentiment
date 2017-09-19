@@ -11,7 +11,6 @@ using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
-using Wikiled.Core.Utility.Logging;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Svm.Extensions;
@@ -46,8 +45,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private int error;
 
-        private PerformanceMonitor monitor;
-
         private ITrainingPerspective perspective;
 
         public TestingClient(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, string svmPath = null)
@@ -74,7 +71,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public int Errors => error;
 
-        public string FeaturesPath { get; set; }
+        public string AspectPath { get; set; }
 
         public ResultsHolder Holder { get; } = new ResultsHolder();
 
@@ -109,13 +106,22 @@ namespace Wikiled.Sentiment.Analysis.Processing
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 
-            if (!DisableAspects)
+            if (!DisableAspects &&
+                (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))
             {
-                string path = string.IsNullOrEmpty(FeaturesPath) ? Path.Combine(SvmPath, "features.xml") : FeaturesPath;
-                XDocument features = XDocument.Load(path);
-                var aspect = splitter.DataLoader.AspectFactory.ConstructSerializer().Deserialize(features);
-                splitter.DataLoader.AspectDectector = aspect;
-                splitter.DataLoader.DisableFeatureSentiment = true;
+                string path = string.IsNullOrEmpty(AspectPath) ? Path.Combine(SvmPath, "aspects.xml") : AspectPath;
+                if (File.Exists(path))
+                {
+                    log.Info("Loading {0} aspects", path);
+                    XDocument features = XDocument.Load(path);
+                    var aspect = splitter.DataLoader.AspectFactory.ConstructSerializer().Deserialize(features);
+                    splitter.DataLoader.AspectDectector = aspect;
+                    splitter.DataLoader.DisableFeatureSentiment = true;
+                }
+                else
+                {
+                    log.Warn("{0} aspects file not found", path);
+                }
             }
 
             log.Info("Tokenizing...");
@@ -123,7 +129,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public IObservable<ParsingResult> Process()
         {
-            monitor = new PerformanceMonitor(1000);
             var documentSelector = reviews.Where(item => item != null)
                                           .SelectMany(item => Observable.Start(() => Process(item)))
                                           .Merge();
@@ -147,9 +152,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private async Task<ParsingResult> Process(IParsedDocumentHolder document)
         {
-            monitor.ManualyCount();
             var parsed = await RetrieveData(document).ConfigureAwait(false);
-            monitor.Increment();
             if (parsed != null)
             {
                 result.Add(parsed.Document);

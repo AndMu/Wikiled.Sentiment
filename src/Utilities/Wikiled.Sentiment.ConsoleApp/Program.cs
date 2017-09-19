@@ -32,17 +32,9 @@ namespace Wikiled.Sentiment.ConsoleApp
             try
             {
                 Command command;
-                if (string.Compare(args[0], "training", StringComparison.InvariantCultureIgnoreCase) == 0)
+                if (string.Compare(args[0], "train", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
                     command = new TrainingCommand();
-                }
-                else if (string.Compare(args[0], "raw", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new RawTrainingCommand();
-                }
-                else if (string.Compare(args[0], "testing", StringComparison.InvariantCultureIgnoreCase) == 0)
-                {
-                    command = new TestingCommand();
                 }
                 else if (string.Compare(args[0], "boot", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
@@ -52,9 +44,9 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new ImdbBoostrapCommand();
                 }
-                else if (string.Compare(args[0], "rawTest", StringComparison.InvariantCultureIgnoreCase) == 0)
+                else if (string.Compare(args[0], "test", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
-                    command = new RawTestingCommand();
+                    command = new TestingCommand();
                 }
                 else if (string.Compare(args[0], "extract", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {

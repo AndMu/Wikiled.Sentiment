@@ -265,8 +265,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
                     var originalReview = main.GetReview(defaultSplitter.DataLoader);
                     var originalRating = originalReview.CalculateRawRating();
-                    //main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)
-
+                    
+                    // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)
                     if (!originalRating.StarsRating.HasValue)
                     {
                         data.IsNeutral = true;
