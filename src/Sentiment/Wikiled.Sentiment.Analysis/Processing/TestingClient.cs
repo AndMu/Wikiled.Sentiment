@@ -140,6 +140,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public void Save(string path)
         {
             path.EnsureDirectoryExistence();
+            log.Info("Saving results [{0}]...", path);
             result.ToArray().XmlSerialize().Save(Path.Combine(path, "result.xml"));
             var aspectSentiments = AspectSentiment.GetResults();
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
@@ -174,7 +175,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 AspectSentiment.Process(review);
                 if (doc.Stars != null)
                 {
-                    Holder.AddResult(doc.Id, doc.Stars.Value, adjustment.Rating.StarsRating);
+                    Holder.AddResult(new ResultRecord(doc.Id, doc.Stars.Value, adjustment.Rating.StarsRating));
                 }
                 else
                 {

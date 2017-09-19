@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                             return item;
                         }).LastOrDefaultAsync().Wait();
             }
-
+            
             client.Save(Out);
             log.Info($"Testing performance {client.GetPerformanceDescription()}");
         }

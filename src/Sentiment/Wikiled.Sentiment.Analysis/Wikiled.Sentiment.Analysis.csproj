@@ -262,6 +262,7 @@
     <Compile Include="Review\SentimentStrength.cs" />
     <Compile Include="Review\StrengthDetector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stats\ResultRecord.cs" />
     <Compile Include="Stats\ResultsHolder.cs" />
     <Compile Include="Subjectivity\SubjectivityDetector.cs" />
     <Compile Include="Svm\ISvmDetector.cs" />

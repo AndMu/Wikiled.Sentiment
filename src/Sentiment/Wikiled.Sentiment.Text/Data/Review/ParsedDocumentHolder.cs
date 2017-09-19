@@ -16,11 +16,11 @@ namespace Wikiled.Sentiment.Text.Data.Review
             Original = original;
         }
 
+        public Document Original { get; }
+
         public Task<Document> GetParsed()
         {
             return Task.FromResult(parsed);
         }
-
-        public Document Original { get; }
     }
 }

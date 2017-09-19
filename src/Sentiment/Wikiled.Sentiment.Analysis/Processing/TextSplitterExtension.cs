@@ -16,9 +16,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
             return Observable.Create<IParsedDocumentHolder>(
                 observer =>
                 {
-                    foreach (var line in GetReview(path))
+                    foreach (var document in GetReview(path))
                     {
-                        var item = new SingleProcessingData(new Document(line));
+                        var item = new SingleProcessingData(document);
                         if (positive)
                         {
                             item.Stars = 5;
@@ -60,20 +60,24 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 });
         }
 
-        private static IEnumerable<string> GetReview(string path)
+        private static IEnumerable<Document> GetReview(string path)
         {
+            var dirName = Path.GetDirectoryName(path);
             if (File.Exists(path))
             {
                 foreach (var line in File.ReadLines(path))
                 {
-                    yield return line;
+                    yield return new Document(line);
                 }
             }
             else
             {
                 foreach (var file in Directory.EnumerateFiles(path))
                 {
-                    yield return File.ReadAllText(file);
+                    yield return new Document(File.ReadAllText(file))
+                                     {
+                                         Id = $"{dirName}_{Path.GetFileNameWithoutExtension(file)}"
+                                     };
                 }
             }
         }
