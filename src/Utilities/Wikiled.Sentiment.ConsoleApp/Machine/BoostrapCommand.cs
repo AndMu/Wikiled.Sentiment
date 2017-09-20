@@ -130,7 +130,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 foreach (var item in types)
                 {
                     if (item.Original.HasValue &&
-                        item.Original.Value != PositivityType.Neutral)
+                        item.Original.Value != PositivityType.Neutral &&
+                        item.IsNeutral != true)
                     {
                         performance.Add(item.Original == PositivityType.Positive, item.CalculatedPositivity == PositivityType.Positive);
                     }
