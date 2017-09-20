@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Linq;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.ConsoleApp.Machine.Data;

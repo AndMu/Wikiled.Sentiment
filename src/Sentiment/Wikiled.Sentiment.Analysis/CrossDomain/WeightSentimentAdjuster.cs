@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Parser;
@@ -18,6 +17,8 @@ namespace Wikiled.Sentiment.Analysis.CrossDomain
             this.sentimentDataHolder = sentimentDataHolder;
         }
 
+        public double Multiplier { get; set; } = 1;
+
         public void Adjust(string weightFile)
         {
             Guard.NotNullOrEmpty(() => weightFile, weightFile);
@@ -32,7 +33,7 @@ namespace Wikiled.Sentiment.Analysis.CrossDomain
                 var items = line.Split(',');
                 var word = items[0].Trim();
                 var weight = double.Parse(items[1]);
-                if (!sentimentDataHolder.Adjust(word, weight))
+                if (!sentimentDataHolder.Adjust(word, weight * Multiplier))
                 {
                     sentimentDataHolder.AddValue(word, new SentimentValueData(weight, SentimentSource.Word2Vec));
                 }

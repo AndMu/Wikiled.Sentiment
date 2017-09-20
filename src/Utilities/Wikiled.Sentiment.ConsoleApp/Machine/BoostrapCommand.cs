@@ -56,7 +56,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public bool UseInvert { get; set; }
 
+        public bool KeepDefaultLexicon { get; set; }
+
         public bool Neutral { get; set; }
+
+        public double Multiplier { get; set; } = 1;
 
         public double? BalancedTop { get; set; }
 
@@ -89,7 +93,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Merge()
                                                  .Merge()
                                                  .Where(item => item != null)
-                                                 .Where(item => item.Stars == 5 || item.Stars < 1.1 || item.IsNeutral == true);
+                                                 .Where(item => item.Stars == 5 || item.Stars <= 1 || item.IsNeutral == true);
 
                 performance = new PrecisionRecallCalculator<bool>();
                 performanceSub = new PrecisionRecallCalculator<bool>();
@@ -225,9 +229,15 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             var config = new ConfigurationHandler();
             var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
-            bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
+            if (!KeepDefaultLexicon)
+            {
+                log.Info("Removing default lexicon");
+                bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
+            }
+
             bootStrapSplitter.DataLoader.DisableFeatureSentiment = !UseInvert;
             var adjuster = new WeightSentimentAdjuster(bootStrapSplitter.DataLoader.SentimentDataHolder);
+            adjuster.Multiplier = Multiplier;
             adjuster.Adjust(Words);
         }
 
