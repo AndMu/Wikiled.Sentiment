@@ -498,7 +498,6 @@
     <Compile Include="MachineLearning\IMachineSentiment.cs" />
     <Compile Include="Data\IParsedReview.cs" />
     <Compile Include="Words\IPhrase.cs" />
-    <Compile Include="Data\IReview.cs" />
     <Compile Include="Data\ISentence.cs" />
     <Compile Include="Data\ISentencePart.cs" />
     <Compile Include="Words\IWordItem.cs" />
