@@ -285,8 +285,10 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Machine\BaseRawCommand.cs" />
+    <Compile Include="Machine\SemEvalBoostrapCommand.cs" />
+    <Compile Include="Machine\SingleBoostrapCommand.cs" />
     <Compile Include="Machine\ImdbBoostrapCommand.cs" />
-    <Compile Include="Machine\BoostrapCommand.cs" />
+    <Compile Include="Machine\BaseBoostrapCommand.cs" />
     <Compile Include="Machine\Data\EvalData.cs" />
     <Compile Include="Machine\TestingCommand.cs" />
     <Compile Include="Machine\TrainingCommand.cs" />

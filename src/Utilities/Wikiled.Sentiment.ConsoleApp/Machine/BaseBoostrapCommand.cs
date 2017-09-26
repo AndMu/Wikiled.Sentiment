@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -26,20 +25,13 @@ using Wikiled.Text.Analysis.Twitter;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
-    /// <summary>
-    ///     boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
-    /// </summary>
-    public class BoostrapCommand : Command
+    public abstract class BaseBoostrapCommand : Command
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
-
-        private readonly MessageCleanup cleanup = new MessageCleanup();
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
         private ISplitterHelper bootStrapSplitter;
-
-        private Dictionary<string, string> exist;
 
         private PerformanceMonitor monitor;
 
@@ -54,13 +46,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public int Minimum { get; set; } = 3;
 
-        public bool UseInvert { get; set; }
-
-        public bool KeepDefaultLexicon { get; set; }
+        public bool InvertOff { get; set; }
 
         public bool Neutral { get; set; }
-
-        public double Multiplier { get; set; } = 1;
 
         public double? BalancedTop { get; set; }
 
@@ -81,7 +69,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
             Task.WhenAll(initTasks).Wait();
             monitor = new PerformanceMonitor(0);
-            exist = new Dictionary<string, string>();
             EvalData[] types;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(monitor)))
@@ -151,78 +138,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             SaveResult(types);
         }
 
-        protected virtual IEnumerable<EvalData> GetDataPacket(string file)
-        {
-            using (var streamRead = new StreamReader(file))
-            {
-                string line;
-                while ((line = streamRead.ReadLine()) != null)
-                {
-                    long? id = null;
-                    PositivityType? positivity = null;
-                    var blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (blocks.Length < 3)
-                    {
-                        log.Error($"Error: {line}");
-                        yield break;
-                    }
+        protected abstract IEnumerable<EvalData> GetDataPacket(string file);
 
-                    long idValue;
-                    if (long.TryParse(blocks[0], out idValue))
-                    {
-                        id = idValue;
-                    }
-
-                    var textBlock = blocks[blocks.Length - 1];
-                    var sentiment = blocks[blocks.Length - 2];
-                    if (sentiment == "positive")
-                    {
-                        positivity = PositivityType.Positive;
-                    }
-                    else if (sentiment == "negative")
-                    {
-                        positivity = PositivityType.Negative;
-                    }
-                    else if (sentiment == "neutral")
-                    {
-                        positivity = PositivityType.Neutral;
-                    }
-                    else
-                    {
-                        int value;
-                        if (int.TryParse(sentiment, out value))
-                        {
-                            positivity = value > 0 ? PositivityType.Positive : value < 0 ? PositivityType.Negative : PositivityType.Neutral;
-                        }
-                    }
-
-                    if (textBlock[0] == '\"' &&
-                        textBlock[textBlock.Length - 1] == '\"')
-                    {
-                        textBlock = textBlock.Substring(1, textBlock.Length - 2);
-                    }
-
-                    var text = cleanup.Cleanup(textBlock);
-                    if (!exist.ContainsKey(text))
-                    {
-                        exist[text] = text;
-                        yield return new EvalData(id.ToString(), positivity, text);
-                    }
-                }
-            }
-        }
-
-        protected virtual void SaveResult(EvalData[] subscriptionMessage)
-        {
-            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
-            {
-                foreach (var item in subscriptionMessage)
-                {
-                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
-                    streamWrite.Flush();
-                }
-            }
-        }
+        protected abstract void SaveResult(EvalData[] subscriptionMessage);
 
         private void LoadBootstrap()
         {
@@ -230,15 +148,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             var config = new ConfigurationHandler();
             var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
-            if (!KeepDefaultLexicon)
-            {
-                log.Info("Removing default lexicon");
-                bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
-            }
-
-            bootStrapSplitter.DataLoader.DisableFeatureSentiment = !UseInvert;
+            log.Info("Removing default lexicon");
+            bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
+            bootStrapSplitter.DataLoader.DisableFeatureSentiment = InvertOff;
             var adjuster = new WeightSentimentAdjuster(bootStrapSplitter.DataLoader.SentimentDataHolder);
-            adjuster.Multiplier = Multiplier;
             adjuster.Adjust(Words);
         }
 
@@ -276,7 +189,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
                     var originalReview = main.GetReview(defaultSplitter.DataLoader);
                     var originalRating = originalReview.CalculateRawRating();
-                    
+
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)
                     if (!originalRating.StarsRating.HasValue)
                     {
@@ -296,13 +209,31 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private IEnumerable<EvalData> ReadFiles()
         {
-            foreach (var file in Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories))
+            if (File.Exists(Path))
             {
-                foreach (var semEvalData in GetDataPacket(file))
+                foreach (var evalData in ReadFile(Path))
                 {
-                    monitor.ManualyCount();
-                    yield return semEvalData;
+                    yield return evalData;
                 }
+            }
+            else
+            {
+                foreach (var file in Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories))
+                {
+                    foreach (var evalData in ReadFile(file))
+                    {
+                        yield return evalData;
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<EvalData> ReadFile(string file)
+        {
+            foreach (var semEvalData in GetDataPacket(file))
+            {
+                monitor.ManualyCount();
+                yield return semEvalData;
             }
         }
     }

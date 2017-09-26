@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             trainingLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, @"SVM", product);
         }
 
-        public async Task Train()
+        public Task Train()
         {
             logger.Info("Trainning...");
             Helper = new TestHelper();
@@ -45,7 +45,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             logger.Info("Loading data...");
             TrainingClient trainingClient = new TrainingClient(Training.Active, Training.Load(), trainingLocation);
             logger.Info("Training...");
-            await trainingClient.Train().ConfigureAwait(false);
+            return trainingClient.Train();
         }
 
         public async Task<TestingClient> Test(string testProduct, ProductCategory testCategory)

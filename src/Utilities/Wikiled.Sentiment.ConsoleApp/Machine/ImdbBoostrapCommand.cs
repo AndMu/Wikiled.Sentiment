@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Extensions;
@@ -10,30 +9,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     ///     bootimdb -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
-    public class ImdbBoostrapCommand : BoostrapCommand
+    public class ImdbBoostrapCommand : BaseBoostrapCommand
     {
         private string negativeResult;
 
         private string positiveResult;
-
-        public override void Execute()
-        {
-            positiveResult = System.IO.Path.Combine(Destination, "pos");
-            negativeResult = System.IO.Path.Combine(Destination, "neg");
-            if (Directory.Exists(negativeResult))
-            {
-                Directory.Delete(negativeResult, true);
-            }
-
-            if (Directory.Exists(positiveResult))
-            {
-                Directory.Delete(positiveResult, true);
-            }
-
-            negativeResult.EnsureDirectoryExistence();
-            positiveResult.EnsureDirectoryExistence();
-            base.Execute();
-        }
 
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {
@@ -55,6 +35,21 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         protected override void SaveResult(EvalData[] subscriptionMessage)
         {
+            positiveResult = System.IO.Path.Combine(Destination, "pos");
+            negativeResult = System.IO.Path.Combine(Destination, "neg");
+            if (Directory.Exists(negativeResult))
+            {
+                Directory.Delete(negativeResult, true);
+            }
+
+            if (Directory.Exists(positiveResult))
+            {
+                Directory.Delete(positiveResult, true);
+            }
+
+            negativeResult.EnsureDirectoryExistence();
+            positiveResult.EnsureDirectoryExistence();
+
             foreach (var item in subscriptionMessage)
             {
                 if (item.CalculatedPositivity == PositivityType.Positive)

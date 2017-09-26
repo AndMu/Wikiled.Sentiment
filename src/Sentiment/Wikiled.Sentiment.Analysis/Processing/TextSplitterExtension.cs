@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Wikiled.Core.Utility.Serialization;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
@@ -67,16 +68,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 foreach (var line in File.ReadLines(path))
                 {
-                    yield return new Document(line);
+                    yield return new Document(line.SanitizeXmlString());
                 }
             }
             else
             {
                 foreach (var file in Directory.EnumerateFiles(path))
                 {
-                    yield return new Document(File.ReadAllText(file))
+                    FileInfo fileInfo = new FileInfo(file);
+                    yield return new Document(File.ReadAllText(file).SanitizeXmlString())
                                      {
-                                         Id = $"{dirName}_{Path.GetFileNameWithoutExtension(file)}"
+                                         Id = $"{fileInfo.Directory.Name}_{Path.GetFileNameWithoutExtension(fileInfo.Name)}"
                                      };
                 }
             }

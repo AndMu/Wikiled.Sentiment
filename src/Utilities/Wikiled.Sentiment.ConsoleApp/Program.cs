@@ -36,9 +36,13 @@ namespace Wikiled.Sentiment.ConsoleApp
                 {
                     command = new TrainingCommand();
                 }
+                else if (string.Compare(args[0], "semboot", StringComparison.InvariantCultureIgnoreCase) == 0)
+                {
+                    command = new SemEvalBoostrapCommand();
+                }
                 else if (string.Compare(args[0], "boot", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {
-                    command = new BoostrapCommand();
+                    command = new SingleBoostrapCommand();
                 }
                 else if (string.Compare(args[0], "bootimdb", StringComparison.InvariantCultureIgnoreCase) == 0)
                 {

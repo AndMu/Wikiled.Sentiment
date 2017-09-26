@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public bool UseBagOfWords { get; set; }
 
-        public bool UseInvert { get; set; }
+        public bool InvertOff { get; set; }
 
         public POSTaggerType Tagger { get; set; } = POSTaggerType.Stanford;
 
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
 
             splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
-            splitter.DataLoader.DisableFeatureSentiment = !UseInvert;
+            splitter.DataLoader.DisableFeatureSentiment = InvertOff;
             log.Info("Processing...");
 
             if (!string.IsNullOrEmpty(Weights))
