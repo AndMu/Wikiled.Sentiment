@@ -20,13 +20,22 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         [SetUp]
         public void Setup()
         {
-            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment\words.csv");
             handler = new BasicWordsHandler(new NaivePOSTagger(null, WordTypeResolver.Instance));
             textSplitter = new SimpleTextSplitter(handler);
+        }
+
+        [Test]
+        public async Task Adjusted()
+        {
             handler.SentimentDataHolder.Clear();
             handler.DisableFeatureSentiment = true;
             var adjuster = new WeightSentimentAdjuster(handler.SentimentDataHolder);
+            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment\words.csv");
             adjuster.Adjust(words);
+            var text = "I Veto it";
+            var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = result.GetReview(handler);
+            Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
         [Test]
