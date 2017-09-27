@@ -1,5 +1,4 @@
-# Wikiled.Sentiment
-C# pSenti Sentiment Analysis Library
+# C# pSenti Sentiment Analysis Library
 
 Nuget library
 
