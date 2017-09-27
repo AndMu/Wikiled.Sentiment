@@ -9,7 +9,7 @@ Install-Package Wikiled.Sentiment
 ```
 ## Resources
 
-Both Standalone and library require [resources](src/Resources/)
+Both Standalone and library requires [resources](src/Resources/)
 In app.config/Wikiled.Sentiment.ConsoleApp.config:
 
 ```
