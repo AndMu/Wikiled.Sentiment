@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -22,10 +23,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         /// </summary>
         public bool UseAll { get; set; }
 
+        [Required]
+        public string Model { get; set; } = @".\Svm";
+
         protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(splitter, reviews, @".\Svm");
+            TrainingClient client = new TrainingClient(splitter, reviews, Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

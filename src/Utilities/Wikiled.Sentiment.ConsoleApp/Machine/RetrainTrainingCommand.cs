@@ -10,7 +10,7 @@ using Wikiled.Sentiment.Text.MachineLearning;
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    /// retrain -SvmPath=.\SvmTwo
+    /// retrain -Trained=.\SvmTwo
     /// </summary>
     public class RetrainTrainingCommand : Command
     {

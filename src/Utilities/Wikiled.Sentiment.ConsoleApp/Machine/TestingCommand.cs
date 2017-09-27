@@ -9,7 +9,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
     /// <summary>
-    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-SvmPath=.\Svm] -Out=.\results
+    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Trained=.\Svm] -Out=.\results
     /// </summary>
     public class TestingCommand : BaseRawCommand
     {
@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         /// <summary>
         /// Path to pretrained data. If empty will use as basic lexicon
         /// </summary>
-        public string SvmPath { get; set; }
+        public string Trained { get; set; }
 
         [Required]
         public string Out { get; set; }
@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                             return item;
                         });
 
-                client = new TestingClient(splitter, reviews, SvmPath);
+                client = new TestingClient(splitter, reviews, Trained);
                 client.UseBagOfWords = UseBagOfWords;
                 client.Init();
                 client.Process().Select(
