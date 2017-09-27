@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Wikiled.Arff.Persistence;
 using Wikiled.Sentiment.ConsoleApp.Machine.Data;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
@@ -10,10 +9,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// </summary>
     public class SingleBoostrapCommand : ImdbBoostrapCommand
     {
+        private int id = 0;
+
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {
             path = path.ToLower();
-            var id = 0;
             foreach (var line in File.ReadLines(path))
             {
                 id++;

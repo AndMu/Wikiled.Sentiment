@@ -21,7 +21,6 @@ using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
-using Wikiled.Text.Analysis.Twitter;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
 {
@@ -41,10 +40,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<bool> performanceSub;
 
+        public int Minimum { get; set; } = 3;
+
         [Required]
         public string Destination { get; set; }
-
-        public int Minimum { get; set; } = 3;
 
         public bool InvertOff { get; set; }
 
@@ -80,11 +79,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                                                  .Merge()
                                                  .Merge()
                                                  .Where(item => item != null)
-                                                 .Where(item => item.Stars == 5 || item.Stars <= 1 || item.IsNeutral == true);
+                                                 .Where(item => item.Stars == 5 || item.Stars == 1 || item.IsNeutral == true);
 
                 performance = new PrecisionRecallCalculator<bool>();
                 performanceSub = new PrecisionRecallCalculator<bool>();
-                types = subscriptionMessage.ToEnumerable().ToArray();
+                types = subscriptionMessage.ToEnumerable().Where(item => item.Stars.HasValue && item.TotalSentiments >= Minimum).ToArray();
                 var positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);
                 var negative = types.Count(item => item.CalculatedPositivity == PositivityType.Negative);
                 var neutral = types.Count(item => item.CalculatedPositivity == PositivityType.Neutral);
@@ -101,8 +100,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                     }
 
                     cutoff = (int)(BalancedTop.Value * cutoff);
-                    var negativeItems = types.Where(item => item.Stars.HasValue).OrderBy(item => item.Stars).Take(cutoff);
-                    var positiveItems = types.Where(item => item.Stars.HasValue).OrderByDescending(item => item.Stars).Take(cutoff);
+                    var negativeItems = types.OrderBy(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
+                    var positiveItems = types.OrderByDescending(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
                     var select = negativeItems.Union(positiveItems);
                     if (Neutral)
                     {
@@ -173,20 +172,19 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 var bootReview = original.GetReview(bootStrapSplitter.DataLoader);
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
-                var bootAllSentiments = bootReview.GetAllSentiments();
+                var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
 
                 if (bootSentimentValue.StarsRating.HasValue)
                 {
-                    if (bootAllSentiments.Length >= Minimum)
-                    {
-                        data.Stars = bootSentimentValue.StarsRating.Value;
-                        return data;
-                    }
+                    data.Stars = bootSentimentValue.StarsRating.Value;
+                    data.TotalSentiments = bootAllSentiments.Length;
+                    return data;
                 }
                 else if (Neutral)
                 {
                     // check also using default lexicon
-                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text))
+                                                    .ConfigureAwait(false);
                     var originalReview = main.GetReview(defaultSplitter.DataLoader);
                     var originalRating = originalReview.CalculateRawRating();
 

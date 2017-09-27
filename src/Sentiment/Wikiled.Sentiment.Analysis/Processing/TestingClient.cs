@@ -175,7 +175,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 AspectSentiment.Process(review);
                 if (doc.Stars != null)
                 {
-                    Holder.AddResult(new ResultRecord(doc.Id, doc.Stars.Value, adjustment.Rating.StarsRating));
+                    Holder.AddResult(new ResultRecord(doc.Id, doc.Stars.Value, adjustment.Rating.StarsRating, review.GetAllSentiments().Length));
                 }
                 else
                 {

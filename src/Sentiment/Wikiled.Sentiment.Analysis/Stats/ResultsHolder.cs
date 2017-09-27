@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Analysis.Stats
             Guard.NotNullOrEmpty(() => name, name);
             using (var writer = new StreamWriter(name, false))
             {
-                writer.WriteLine("Id,Original,Calculated");
+                writer.WriteLine("Id,Original,Calculated,Total");
                 foreach (var result in results)
                 {
                     writer.WriteLine(result);

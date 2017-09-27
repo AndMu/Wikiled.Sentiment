@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Extensions;
@@ -30,7 +31,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 positivity = PositivityType.Negative;
             }
 
-            yield return new EvalData(id, positivity, text);
+            yield return new EvalData(id + $"_{positivity}", positivity, text);
         }
 
         protected override void SaveResult(EvalData[] subscriptionMessage)
@@ -52,16 +53,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
             foreach (var item in subscriptionMessage)
             {
-                if (item.CalculatedPositivity == PositivityType.Positive)
-                {
-                    File.WriteAllText(System.IO.Path.Combine(positiveResult, item.Id + ".txt"), item.Text);
-                }
-
-                if (item.CalculatedPositivity == PositivityType.Negative)
-                {
-                    File.WriteAllText(System.IO.Path.Combine(negativeResult, item.Id + ".txt"), item.Text);
-                }
+                string place = item.CalculatedPositivity == PositivityType.Positive ? positiveResult : negativeResult;
+                var file = System.IO.Path.Combine(place, item.Id + ".txt");
+                SaveFile(file, item);
             }
+        }
+
+        private static void SaveFile(string file, EvalData item)
+        {
+            if (File.Exists(file))
+            {
+                throw new ApplicationException($"File already exist: {file}");
+            }
+
+            File.WriteAllText(file, item.Text);
         }
     }
 }
