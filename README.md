@@ -1,4 +1,4 @@
-# C# *pSenti* Sentiment Analysis Library
+# *pSenti* Sentiment Analysis Library (C#)
 
 Nuget library
 
@@ -9,7 +9,7 @@ Install-Package Wikiled.Sentiment
 ```
 ## Resources
 
-Both Standalone and library require [resources](src\Resources\)
+Both Standalone and library require ![resources](src\Resources\)
 In app.config/Wikiled.Sentiment.ConsoleApp.config:
 
 ```
