@@ -75,7 +75,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 adjuster.Adjust(Weights);
             }
 
-            IObservable<IParsedDocumentHolder> review = null;
+            IObservable<IParsedDocumentHolder> review;
 
             if (!string.IsNullOrEmpty(Input))
             {
@@ -83,7 +83,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             }
             else if (string.IsNullOrEmpty(Positive))
             {
-                GetAllReviews();
+                review = GetAllReviews();
             }
             else
             {
