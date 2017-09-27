@@ -8,6 +8,18 @@ Nuget library
 ```
 Install-Package Wikiled.Sentiment
 ```
+## Resources
+
+Both Standalone and library require [resources](src\Resources\)
+In app.config/Wikiled.Sentiment.ConsoleApp.config:
+
+```
+<appSettings>
+<add key="resources" value="..\..\..\..\Resources" />
+<add key="Stanford" value="..\..\..\..\Resources\Stanford" />
+<add key="Lexicon" value="Library\Standard" />
+</appSettings>
+```
 
 ## Standalone application - *pSenti*
 
