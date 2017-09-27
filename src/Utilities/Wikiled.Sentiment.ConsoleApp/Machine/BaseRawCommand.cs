@@ -37,6 +37,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         public string Negative { get; set; }
 
+        public string Input { get; set; }
+
         public bool UseBagOfWords { get; set; }
 
         public bool InvertOff { get; set; }
@@ -73,9 +75,21 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
                 adjuster.Adjust(Weights);
             }
 
-            var review = string.IsNullOrEmpty(Positive)
-                             ? GetAllReviews()
-                             : GetNegativeReviews().Merge(GetPositiveReviews());
+            IObservable<IParsedDocumentHolder> review = null;
+
+            if (!string.IsNullOrEmpty(Input))
+            {
+                review = GetOtherReviews();
+            }
+            else if (string.IsNullOrEmpty(Positive))
+            {
+                GetAllReviews();
+            }
+            else
+            {
+                review = GetNegativeReviews().Merge(GetPositiveReviews());
+            }
+                             
             Process(review, splitter);
         }
 
@@ -98,6 +112,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         {
             log.Info("Negative {0}", Negative);
             return splitter.Splitter.GetParsedReviewHolders(Negative, false);
+        }
+
+        private IObservable<IParsedDocumentHolder> GetOtherReviews()
+        {
+            log.Info("Other {0}", Positive);
+            return splitter.Splitter.GetParsedReviewHolders(Positive, null);
         }
     }
 }

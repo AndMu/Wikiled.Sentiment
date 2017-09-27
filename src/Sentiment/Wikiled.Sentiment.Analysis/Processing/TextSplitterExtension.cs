@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public static class TextSplitterExtension
     {
-        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, string path, bool positive)
+        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, string path, bool? positive)
         {
             return Observable.Create<IParsedDocumentHolder>(
                 observer =>
@@ -20,12 +20,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     foreach (var document in GetReview(path))
                     {
                         var item = new SingleProcessingData(document);
-                        if (positive)
+                        if (positive == true)
                         {
                             item.Stars = 5;
                             item.Document.Stars = 5;
                         }
-                        else
+                        else if (positive == false)
                         {
                             item.Stars = 1;
                             item.Document.Stars = 1;
@@ -53,6 +53,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     foreach (var processingData in data.Negative)
                     {
                         processingData.Stars = 1;
+                        observer.OnNext(new ParsingDocumentHolder(splitter, processingData));
+                    }
+
+                    foreach (var processingData in data.Neutral)
+                    {
                         observer.OnNext(new ParsingDocumentHolder(splitter, processingData));
                     }
 
