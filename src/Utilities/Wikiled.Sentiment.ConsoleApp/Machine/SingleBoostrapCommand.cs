@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Wikiled.Sentiment.ConsoleApp.Machine.Data;
 
 namespace Wikiled.Sentiment.ConsoleApp.Machine
@@ -14,7 +15,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {
             path = path.ToLower();
-            foreach (var line in File.ReadLines(path))
+            foreach (var line in File.ReadLines(path).Where(item => !string.IsNullOrWhiteSpace(item)))
             {
                 id++;
                 yield return new EvalData(id.ToString(), null, line);

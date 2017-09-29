@@ -228,7 +228,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private IEnumerable<EvalData> ReadFile(string file)
         {
-            foreach (var semEvalData in GetDataPacket(file))
+            foreach (var semEvalData in GetDataPacket(file).Where(item => item != null))
             {
                 monitor.ManualyCount();
                 yield return semEvalData;

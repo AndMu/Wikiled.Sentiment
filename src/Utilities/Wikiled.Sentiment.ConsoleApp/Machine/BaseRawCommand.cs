@@ -117,7 +117,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
             log.Info("Other {0}", Positive);
-            return splitter.Splitter.GetParsedReviewHolders(Positive, null);
+            return splitter.Splitter.GetParsedReviewHolders(Input, null);
         }
     }
 }

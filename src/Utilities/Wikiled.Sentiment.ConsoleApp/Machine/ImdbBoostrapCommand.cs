@@ -22,6 +22,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             PositivityType? positivity = null;
             var id = System.IO.Path.GetFileNameWithoutExtension(path);
             var text = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(text))
+            {
+                yield break;
+            }
+
             if (path.Contains(@"\pos"))
             {
                 positivity = PositivityType.Positive;
@@ -30,6 +35,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
             {
                 positivity = PositivityType.Negative;
             }
+
 
             yield return new EvalData(id + $"_{positivity}", positivity, text);
         }
