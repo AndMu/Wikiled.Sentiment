@@ -5,7 +5,7 @@ using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     /// <summary>
     /// train -Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml" -Redis [-Features=c:\out\features_my.xml] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset]

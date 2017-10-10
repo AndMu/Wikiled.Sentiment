@@ -7,7 +7,7 @@ using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     /// <summary>
     /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Trained=.\Svm] -Out=.\results

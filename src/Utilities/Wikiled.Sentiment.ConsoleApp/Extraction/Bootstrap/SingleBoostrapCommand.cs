@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Wikiled.Sentiment.ConsoleApp.Machine.Data;
+using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     /// <summary>
     ///     boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt

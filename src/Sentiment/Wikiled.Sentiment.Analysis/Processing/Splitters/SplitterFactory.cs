@@ -6,7 +6,7 @@ using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
-    public class SplitterFactory
+    public class SplitterFactory : ISplitterFactory
     {
         private readonly ICacheFactory cacheFactory;
 

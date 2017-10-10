@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NLog;
-using Wikiled.Sentiment.ConsoleApp.Machine;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Helpers;
+using Wikiled.Sentiment.ConsoleApp.Analysis;
+using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
 
 namespace Wikiled.Sentiment.ConsoleApp
 {

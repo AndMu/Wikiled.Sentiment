@@ -5,10 +5,10 @@ using System.IO;
 using System.Text;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Sentiment.ConsoleApp.Machine.Data;
+using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Text.Analysis.Twitter;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     /// <summary>
     ///     semboot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt

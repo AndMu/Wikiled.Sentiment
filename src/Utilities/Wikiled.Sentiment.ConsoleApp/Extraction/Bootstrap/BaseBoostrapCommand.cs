@@ -17,13 +17,13 @@ using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
-using Wikiled.Sentiment.ConsoleApp.Machine.Data;
+using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     public abstract class BaseBoostrapCommand : Command
     {

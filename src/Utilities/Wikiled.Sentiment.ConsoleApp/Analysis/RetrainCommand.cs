@@ -8,7 +8,7 @@ using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.MachineLearning;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     /// <summary>
     /// retrain -Trained=.\SvmTwo

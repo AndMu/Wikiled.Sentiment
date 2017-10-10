@@ -1,6 +1,6 @@
 ﻿using Wikiled.Arff.Persistence;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine.Data
+namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data
 {
     public class EvalData
     {

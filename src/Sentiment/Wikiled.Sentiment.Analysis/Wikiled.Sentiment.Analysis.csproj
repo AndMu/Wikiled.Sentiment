@@ -227,6 +227,10 @@
     <Compile Include="Processing\Context\WordVectorsData.cs" />
     <Compile Include="Processing\IProcessingData.cs" />
     <Compile Include="Processing\IReviewSource.cs" />
+    <Compile Include="Processing\Pipeline\IPipelineStep.cs" />
+    <Compile Include="Processing\Pipeline\PipelineStep.cs" />
+    <Compile Include="Processing\Pipeline\ProcessingPipeline.cs" />
+    <Compile Include="Processing\Splitters\ISplitterFactory.cs" />
     <Compile Include="Processing\Splitters\ISplitterHelper.cs" />
     <Compile Include="Processing\ParsingResult.cs" />
     <Compile Include="Processing\ProcessingDataExtension.cs" />

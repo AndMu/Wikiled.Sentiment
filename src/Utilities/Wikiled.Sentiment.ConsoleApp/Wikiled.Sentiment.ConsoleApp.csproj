@@ -284,15 +284,16 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Machine\BaseRawCommand.cs" />
-    <Compile Include="Machine\SemEvalBoostrapCommand.cs" />
-    <Compile Include="Machine\SingleBoostrapCommand.cs" />
-    <Compile Include="Machine\ImdbBoostrapCommand.cs" />
-    <Compile Include="Machine\BaseBoostrapCommand.cs" />
-    <Compile Include="Machine\Data\EvalData.cs" />
-    <Compile Include="Machine\TestingCommand.cs" />
-    <Compile Include="Machine\TrainCommand.cs" />
-    <Compile Include="Machine\RetrainCommand.cs" />
+    <Compile Include="Extraction\ExtractAttributesCommand.cs" />
+    <Compile Include="Analysis\BaseRawCommand.cs" />
+    <Compile Include="Extraction\Bootstrap\SemEvalBoostrapCommand.cs" />
+    <Compile Include="Extraction\Bootstrap\SingleBoostrapCommand.cs" />
+    <Compile Include="Extraction\Bootstrap\ImdbBoostrapCommand.cs" />
+    <Compile Include="Extraction\Bootstrap\BaseBoostrapCommand.cs" />
+    <Compile Include="Extraction\Bootstrap\Data\EvalData.cs" />
+    <Compile Include="Analysis\TestingCommand.cs" />
+    <Compile Include="Analysis\TrainCommand.cs" />
+    <Compile Include="Analysis\RetrainCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

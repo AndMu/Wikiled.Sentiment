@@ -15,7 +15,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
-namespace Wikiled.Sentiment.ConsoleApp.Machine
+namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     public abstract class BaseRawCommand : Command
     {
