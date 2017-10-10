@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Extensions;
@@ -10,11 +11,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     ///     bootimdb -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
+    [Description("Bootstrap training dataset from IMDB")]
     public class ImdbBoostrapCommand : BaseBoostrapCommand
     {
         private string negativeResult;
 
         private string positiveResult;
+
+        public override string Name { get; } = "bootimdb";
 
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {

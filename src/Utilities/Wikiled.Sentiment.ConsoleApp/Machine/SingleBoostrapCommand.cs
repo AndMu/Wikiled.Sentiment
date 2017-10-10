@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Wikiled.Sentiment.ConsoleApp.Machine.Data;
@@ -8,9 +9,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     ///     boot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
+    [Description("Bootstrap training dataset from single file")]
     public class SingleBoostrapCommand : ImdbBoostrapCommand
     {
         private int id = 0;
+
+        public override string Name { get; } = "boot";
 
         protected override IEnumerable<EvalData> GetDataPacket(string path)
         {

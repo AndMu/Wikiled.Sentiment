@@ -291,8 +291,8 @@
     <Compile Include="Machine\BaseBoostrapCommand.cs" />
     <Compile Include="Machine\Data\EvalData.cs" />
     <Compile Include="Machine\TestingCommand.cs" />
-    <Compile Include="Machine\TrainingCommand.cs" />
-    <Compile Include="Machine\RetrainTrainingCommand.cs" />
+    <Compile Include="Machine\TrainCommand.cs" />
+    <Compile Include="Machine\RetrainCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using NLog;
@@ -12,6 +13,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     ///     semboot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
     /// </summary>
+    [Description("Bootstrap training dataset from SemEval-2017")]
     public class SemEvalBoostrapCommand : BaseBoostrapCommand
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
@@ -19,6 +21,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
         private readonly MessageCleanup cleanup = new MessageCleanup();
 
         private Dictionary<string, string> exist;
+
+        public override string Name { get; } = "semboot";
 
         public override void Execute()
         {

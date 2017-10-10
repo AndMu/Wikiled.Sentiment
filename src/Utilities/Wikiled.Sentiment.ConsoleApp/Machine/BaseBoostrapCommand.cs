@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
 
         private PrecisionRecallCalculator<bool> performanceSub;
 
+        [Description("Minimum sentiment words occurence")]
         public int Minimum { get; set; } = 3;
 
         [Required]

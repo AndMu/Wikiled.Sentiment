@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using NLog;
@@ -12,7 +13,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     /// retrain -Trained=.\SvmTwo
     /// </summary>
-    public class RetrainTrainingCommand : Command
+    [Description("pSenti retrain command")]
+    public class RetrainCommand : Command
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 

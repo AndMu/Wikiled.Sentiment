@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reactive.Linq;
 using NLog;
@@ -11,9 +12,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Trained=.\Svm] -Out=.\results
     /// </summary>
+    [Description("pSenti testing")]
     public class TestingCommand : BaseRawCommand
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        public override string Name { get; } = "test";
 
         /// <summary>
         /// Path to pretrained data. If empty will use as basic lexicon

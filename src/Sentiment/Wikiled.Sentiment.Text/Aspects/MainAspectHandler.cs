@@ -57,13 +57,16 @@ namespace Wikiled.Sentiment.Text.Aspects
         private static WordOccurenceTracker GetTracker(ConcurrentDictionary<string, WordOccurenceTracker> table,
             IWordItem wordItem)
         {
-            WordOccurenceTracker tracker;
-            if (table.TryGetWordValue(wordItem, out tracker))
+            if (table.TryGetWordValue(wordItem, out var tracker))
+            {
                 return tracker;
+            }
 
             tracker = new WordOccurenceTracker();
             if (!table.TryAdd(wordItem.Text, tracker))
+            {
                 table.TryGetWordValue(wordItem, out tracker);
+            }
 
             return tracker;
         }
@@ -79,20 +82,19 @@ namespace Wikiled.Sentiment.Text.Aspects
             var tableOfWords = new Dictionary<string, IWordItem>(StringComparer.OrdinalIgnoreCase);
             foreach (var wordItem in words)
             {
-                IWordItem previous;
-                if (!tableOfWords.TryGetValue(wordItem.Stemmed, out previous) ||
+                if (!tableOfWords.TryGetValue(wordItem.Stemmed, out var previous) ||
                     (previous.Text.Length > wordItem.Text.Length))
+                {
                     tableOfWords[wordItem.Stemmed] = wordItem;
+                }
             }
 
-            log.Debug("GetWords - occurences:{0} words:{1} tableOfWords:{2}", occurences.Length, words.Length,
-                tableOfWords.Count);
+            log.Debug("GetWords - occurences:{0} words:{1} tableOfWords:{2}", occurences.Length, words.Length, tableOfWords.Count);
             var phrases = occurences.SelectMany(item => item.Value.GetPhrases(cutOff));
             return tableOfWords.Values.Union(phrases);
         }
 
-        private void ProcessFeatures(ConcurrentDictionary<string, WordOccurenceTracker> table,
-            IEnumerable<IWordItem> features)
+        private void ProcessFeatures(ConcurrentDictionary<string, WordOccurenceTracker> table, IEnumerable<IWordItem> features)
         {
             foreach (var wordItem in features)
             {

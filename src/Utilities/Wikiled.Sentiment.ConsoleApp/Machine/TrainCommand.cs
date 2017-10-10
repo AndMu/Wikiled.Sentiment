@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -9,7 +10,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Machine
     /// <summary>
     /// train -Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml" -Redis [-Features=c:\out\features_my.xml] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset]
     /// </summary>
-    internal class TrainingCommand : BaseRawCommand
+    [Description("pSenti training command")]
+    internal class TrainCommand : BaseRawCommand
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
