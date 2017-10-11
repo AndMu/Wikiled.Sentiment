@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reactive.Concurrency;
 using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
@@ -32,7 +33,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(splitter, reviews), Model);
+            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews), Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

@@ -65,15 +65,23 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
             log.Info("Starting Training");
-            await pipeline.ProcessStep().Select(AdditionalProcessing);
+            using(Observable.Interval(TimeSpan.FromSeconds(30))
+                           .Subscribe(item => log.Info(pipeline.Monitor)))
+            {
+                await pipeline.ProcessStep().Select(AdditionalProcessing);
+            }
 
             SelectAdditional();
             var arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 
-            await pipeline.ProcessStep().Select(ProcessSingleItem);
-            
+            using (Observable.Interval(TimeSpan.FromSeconds(30))
+                             .Subscribe(item => log.Info(pipeline.Monitor)))
+            {
+                await pipeline.ProcessStep().Select(ProcessSingleItem);
+            }
+
             log.Info("Cleaning up ARFF");
             if (!UseAll)
             {

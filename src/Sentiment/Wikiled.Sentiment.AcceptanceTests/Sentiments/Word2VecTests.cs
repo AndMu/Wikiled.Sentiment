@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -69,7 +70,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.CachedSplitterHelper.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            TestingClient testing = new TestingClient(new ProcessingPipeline(runner.Active, runner.Load()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.Init();

@@ -1,4 +1,5 @@
-﻿using System.Reactive.Linq;
+﻿using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
@@ -41,7 +42,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("RawSentimentDetection: {0}", data);
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             await runner.Load().LastOrDefaultAsync();
-            TestingClient testing = new TestingClient(new ProcessingPipeline(runner.Active, runner.Load()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.Init();
