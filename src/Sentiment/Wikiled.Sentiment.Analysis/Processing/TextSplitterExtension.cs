@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using NLog;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -15,64 +12,51 @@ namespace Wikiled.Sentiment.Analysis.Processing
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, string path, bool? positive)
+        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, string path, bool? positive)
         {
+            log.Info("Reading: {0}", path);
             if (string.IsNullOrEmpty(path))
             {
                 log.Warn("One of paths is empty");
-                return Observable.Empty<IParsedDocumentHolder>();
+                yield break;
             }
 
-            return Observable.Create<IParsedDocumentHolder>(
-                observer =>
+            foreach (var document in GetReview(path))
+            {
+                var item = new SingleProcessingData(document);
+                if (positive == true)
                 {
-                    foreach (var document in GetReview(path))
-                    {
-                        var item = new SingleProcessingData(document);
-                        if (positive == true)
-                        {
-                            item.Stars = 5;
-                            item.Document.Stars = 5;
-                        }
-                        else if (positive == false)
-                        {
-                            item.Stars = 1;
-                            item.Document.Stars = 1;
-                        }
-                        
-                        observer.OnNext(new ParsingDocumentHolder(splitter, item));
-                    }
+                    item.Stars = 5;
+                    item.Document.Stars = 5;
+                }
+                else if (positive == false)
+                {
+                    item.Stars = 1;
+                    item.Document.Stars = 1;
+                }
 
-                    observer.OnCompleted();
-                    return Disposable.Empty;
-                });
+                yield return new ParsingDocumentHolder(splitter, item);
+            }
         }
 
-        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, ProcessingData data)
+        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, ProcessingData data)
         {
-            return Observable.Create<IParsedDocumentHolder>(
-                observer =>
-                {
-                    foreach (var processingData in data.Positive)
-                    {
-                        processingData.Stars = 5;
-                        observer.OnNext(new ParsingDocumentHolder(splitter, processingData));
-                    }
+            foreach (var processingData in data.Positive)
+            {
+                processingData.Stars = 5;
+                yield return new ParsingDocumentHolder(splitter, processingData);
+            }
 
-                    foreach (var processingData in data.Negative)
-                    {
-                        processingData.Stars = 1;
-                        observer.OnNext(new ParsingDocumentHolder(splitter, processingData));
-                    }
+            foreach (var processingData in data.Negative)
+            {
+                processingData.Stars = 1;
+                yield return new ParsingDocumentHolder(splitter, processingData);
+            }
 
-                    foreach (var processingData in data.Neutral)
-                    {
-                        observer.OnNext(new ParsingDocumentHolder(splitter, processingData));
-                    }
-
-                    observer.OnCompleted();
-                    return Disposable.Empty;
-                });
+            foreach (var processingData in data.Neutral)
+            {
+                yield return new ParsingDocumentHolder(splitter, processingData);
+            }
         }
 
         private static IEnumerable<Document> GetReview(string path)

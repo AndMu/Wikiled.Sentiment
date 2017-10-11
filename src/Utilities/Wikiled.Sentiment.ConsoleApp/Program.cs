@@ -6,6 +6,7 @@ using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Helpers;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
+using Wikiled.Sentiment.ConsoleApp.Extraction;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
 
 namespace Wikiled.Sentiment.ConsoleApp
@@ -24,6 +25,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             commandsList.Add(new ImdbBoostrapCommand());
             commandsList.Add(new TestingCommand());
             commandsList.Add(new RetrainCommand());
+            commandsList.Add(new ExtractAttributesCommand());
             var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
 
             var fPreviousExecutionState =

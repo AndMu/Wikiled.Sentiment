@@ -25,7 +25,9 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             Guard.NotNull(() => scheduler, scheduler);
             this.scheduler = scheduler;
             Splitter = splitter;
-            this.reviews = reviews;
+            var replay = reviews.Replay();
+            this.reviews = replay;
+            replay.Connect();
         }
 
         public ISplitterHelper Splitter { get; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reactive.Concurrency;
@@ -29,10 +30,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
+        protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             TestingClient client;
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews);
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default));
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {

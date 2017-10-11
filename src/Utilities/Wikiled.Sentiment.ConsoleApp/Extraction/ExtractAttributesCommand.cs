@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using NLog;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Logging;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
-using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
@@ -22,57 +21,44 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private PerformanceMonitor monitor;
+        private MainAspectHandler featureExtractor;
 
         private ISplitterHelper splitter;
 
-        public override void Execute()
-        {
-            //log.Info("Starting...");
-            //splitter = new SplitterFactory(new LocalCacheFactory(), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
-
-            //monitor = new PerformanceMonitor(100);
-            //IObservable<IParsedDocumentHolder> data = null;
-
-            //using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
-            //{
-            //    var selectedData = data
-            //        .SelectMany(item => Observable.Start(() => AdditionalProcessing(item)))
-            //        .Merge();
-            //    selectedData.LastOrDefaultAsync().Wait();
-            //}
-
-            throw new System.NotImplementedException();
-        }
-
         public override string Name { get; } = "extract";
 
+        public string Input { get; set; }
 
-        private async Task<IParsedReview> AdditionalProcessing(IParsedDocumentHolder reviewHolder)
+        public override void Execute()
         {
-            throw new System.NotImplementedException();
-            //try
-            //{
-            //    monitor.ManualyCount();
-            //    var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-            //    var review = doc.GetReview(splitter.DataLoader);
-            //    if (review != null)
-            //    {
-            //        featureExtractor.Process(review);
-            //    }
+            log.Info("Starting...");
+            featureExtractor = new MainAspectHandler(new AspectContextFactory());
+            splitter = new MainSplitterFactory(new LocalCacheFactory(), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
+            var pipeline = new ProcessingPipeline(
+                TaskPoolScheduler.Default,
+                splitter,
+                GetReviews()
+                    .ToObservable(TaskPoolScheduler.Default));
+            using (Observable.Interval(TimeSpan.FromSeconds(30))
+                             .Subscribe(item => log.Info(pipeline.Monitor)))
+            {
+                pipeline.ProcessStep()
+                        .Select(item => Observable.Start(() => Processing(item)))
+                        .Merge()
+                        .LastOrDefaultAsync()
+                        .Wait();
+            }
+        }
 
-            //    return review;
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.Error(ex);
-            //}
-            //finally
-            //{
-            //    monitor.Increment();
-            //}
+        private IEnumerable<IParsedDocumentHolder> GetReviews()
+        {
+            log.Info("Input {0}", Input);
+            return splitter.Splitter.GetParsedReviewHolders(Input, null);
+        }
 
-            //return null;
+        private void Processing(ProcessingContext reviewHolder)
+        {
+            featureExtractor.Process(reviewHolder.Review);
         }
     }
 }

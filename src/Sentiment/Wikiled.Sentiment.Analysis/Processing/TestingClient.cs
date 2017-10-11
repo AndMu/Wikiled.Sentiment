@@ -125,7 +125,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public IObservable<ProcessingContext> Process()
         {
-            var documentSelector = pipeline.ProcessStep().Select(RetrieveData);
+            var documentSelector = pipeline.ProcessStep().Select(item => Observable.Start(() => RetrieveData(item))).Merge();
             return documentSelector
                 .Where(item => item != null)
                 .SubscribeOn(TaskPoolScheduler.Default);

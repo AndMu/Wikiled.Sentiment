@@ -1,7 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
@@ -30,10 +31,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
+        protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews), Model);
+            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default)), Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;
