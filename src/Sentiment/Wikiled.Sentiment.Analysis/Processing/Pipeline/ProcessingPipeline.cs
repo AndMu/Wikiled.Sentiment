@@ -1,51 +1,71 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Logging;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Text.Analysis.POS;
+using Wikiled.Sentiment.Text.Extensions;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {
-    public class ProcessingPipeline
+    public class ProcessingPipeline : IProcessingPipeline
     {
-        private ISplitterFactory factory;
-
         private PerformanceMonitor monitor;
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public ProcessingPipeline(ISplitterFactory factory)
+        private readonly IObservable<IParsedDocumentHolder> reviews;
+
+        public ProcessingPipeline(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews)
         {
-            Guard.NotNull(() => factory, factory);
-            this.factory = factory;
+            Guard.NotNull(() => splitter, splitter);
+            Guard.NotNull(() => reviews, reviews);
+            Splitter = splitter;
+            this.reviews = reviews.Replay();
         }
 
-        public void RegisterStep(IPipelineStep step)
+        public ISplitterHelper Splitter { get; }
+
+        public IObservable<ProcessingContext> ProcessStep()
         {
-            throw new NotImplementedException();
+            monitor = new PerformanceMonitor(100);
+            var selectedData = reviews
+                .SelectMany(item => Observable.Start(() => StepProcessing(item)))
+                .Merge();
+
+            Observable.Interval(TimeSpan.FromSeconds(30))
+                      .TakeUntil(selectedData)
+                      .Select(
+                          item =>
+                          {
+                              log.Info(monitor);
+                              return item;
+                          });
+
+            return selectedData;
         }
 
-        public void Start(POSTaggerType value)
+        private async Task<ProcessingContext> StepProcessing(IParsedDocumentHolder reviewHolder)
         {
-            throw new NotImplementedException();
-            //monitor = new PerformanceMonitor(100);
-            //IObservable<IParsedDocumentHolder> data = null;
+            try
+            {
+                monitor.ManualyCount();
+                var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
+                var review = doc.GetReview(Splitter.DataLoader);
+                var context = new ProcessingContext(reviewHolder.Original, doc, review);
+                return context;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+            finally
+            {
+                monitor.Increment();
+            }
 
-            //using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
-            //{
-            //    var selectedData = data
-            //        .SelectMany(item => Observable.Start(() => AdditionalProcessing(item)))
-            //        .Merge();
-            //    selectedData.LastOrDefaultAsync().Wait();
-            //}
-        }
-
-        private void ProcessStep(IPipelineStep step)
-        {
-            
+            return null;
         }
     }
 }

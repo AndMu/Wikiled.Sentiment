@@ -9,13 +9,11 @@ using NLog;
 using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Logging;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.NLP.NRC;
 
@@ -31,32 +29,25 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private readonly SentimentVector sentimentVector;
 
-        private readonly ISplitterHelper splitter;
+        private readonly IProcessingPipeline pipeline;
 
         private readonly string svmPath;
 
         private IProcessArff arffProcess;
 
-        private IObservable<IParsedDocumentHolder> data;
-
-        private PerformanceMonitor monitor;
-
         private int negative;
 
         private int positive;
 
-        public TrainingClient(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, string svmPath)
+        public TrainingClient(IProcessingPipeline pipeline, string svmPath)
         {
-            Guard.NotNull(() => splitter, splitter);
-            Guard.NotNull(() => reviews, reviews);
+            Guard.NotNull(() => pipeline, pipeline);
             Guard.NotNull(() => svmPath, svmPath);
 
-            this.splitter = splitter;
-            data = reviews;
+            this.pipeline = pipeline;
             this.svmPath = svmPath;
             SentimentVector = new SentimentVector();
-            splitter.Load();
-            analyze = new AnalyseReviews(splitter.DataLoader);
+            analyze = new AnalyseReviews();
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
             sentimentVector = new SentimentVector();
         }
@@ -74,33 +65,15 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
             log.Info("Starting Training");
+            await pipeline.ProcessStep().Select(AdditionalProcessing);
 
-            monitor = new PerformanceMonitor(100);
+            SelectAdditional();
+            var arff = ArffDataSet.Create<PositivityType>("MAIN");
+            var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
+            arffProcess = factory.Create(arff);
 
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
-            {
-                var selectedData = data
-                    .SelectMany(item => Observable.Start(() => AdditionalProcessing(item)))
-                    .Merge();
-                await selectedData.LastOrDefaultAsync();
-            }
-
-            monitor = new PerformanceMonitor(100);
-            IArffDataSet arff;
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(monitor)))
-            {
-                SelectAdditional();
-                arff = ArffDataSet.Create<PositivityType>("MAIN");
-                var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
-                arffProcess = factory.Create(arff);
-                var selected = data
-                    .SelectMany(item => Observable.Start(() => ProcessSingleItem(item)))
-                    .Merge();
-
-                await selected.LastOrDefaultAsync();
-            }
-
-            data = null;
+            await pipeline.ProcessStep().Select(ProcessSingleItem);
+            
             log.Info("Cleaning up ARFF");
             if (!UseAll)
             {
@@ -114,7 +87,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze.Negative = negative;
             try
             {
-                await analyze.SetMainSvm().ConfigureAwait(false);
+                await analyze.TrainSvm().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -122,84 +95,52 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
         }
 
-        private async Task<IParsedReview> AdditionalProcessing(IParsedDocumentHolder reviewHolder)
+        private ProcessingContext AdditionalProcessing(ProcessingContext context)
         {
-            try
-            {
-                monitor.ManualyCount();
-                var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                var review = doc.GetReview(splitter.DataLoader);
-                if (review != null)
-                {
-                    featureExtractor.Process(review);
-                    splitter.DataLoader.NRCDictionary.ExtractToVector(sentimentVector, review.Items);
-                }
-
-                return review;
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex);
-            }
-            finally
-            {
-                monitor.Increment();
-            }
-
-            return null;
-        }
-
-        private async Task<IParsedReview> ProcessSingleItem(IParsedDocumentHolder reviewHolder)
-        {
-            var doc = reviewHolder.Original;
-            monitor.ManualyCount();
-            if (doc == null)
+            if (context.Review == null)
             {
                 return null;
             }
 
-            if (doc.Stars == 3)
+            featureExtractor.Process(context.Review);
+            pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(sentimentVector, context.Review.Items);
+            return context;
+        }
+
+        private ProcessingContext ProcessSingleItem(ProcessingContext context)
+        {
+            if (context.Original == null)
+            {
+                return null;
+            }
+
+            if (context.Original.Stars == 3)
             {
                 log.Debug("Ignoring 3 stars...");
                 return null;
             }
 
-            try
-            {
-                var parsed = await reviewHolder.GetParsed().ConfigureAwait(false);
-                var review = parsed.GetReview(splitter.DataLoader);
-                SingleProcessingData item = new SingleProcessingData();
-                item.InitDocument(review);
+            SingleProcessingData item = new SingleProcessingData();
+            item.InitDocument(context.Review);
 
-                if (doc.Stars > 3)
-                {
-                    arffProcess.PopulateArff(review, PositivityType.Positive);
-                    Interlocked.Increment(ref positive);
-                }
-                else
-                {
-                    arffProcess.PopulateArff(review, PositivityType.Negative);
-                    Interlocked.Increment(ref negative);
-                }
-
-                return review;
-            }
-            catch (Exception ex)
+            if (context.Original.Stars > 3)
             {
-                log.Error(ex);
+                arffProcess.PopulateArff(context.Review, PositivityType.Positive);
+                Interlocked.Increment(ref positive);
             }
-            finally
+            else
             {
-                monitor.Increment();
+                arffProcess.PopulateArff(context.Review, PositivityType.Negative);
+                Interlocked.Increment(ref negative);
             }
 
-            return null;
+            return context;
         }
 
         private void SelectAdditional()
         {
             log.Info("Extracting aspects...");
-            AspectSerializer serializer = new AspectSerializer(splitter.DataLoader);
+            AspectSerializer serializer = new AspectSerializer(pipeline.Splitter.DataLoader);
             var features = featureExtractor.GetFeatures(100).ToArray();
             var attributes = featureExtractor.GetAttributes(100).ToArray();
             var document = serializer.Serialize(features, attributes);
@@ -216,7 +157,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 attributes = aspect.AllAttributes.ToArray();
             }
 
-            splitter.DataLoader.AspectDectector = new AspectDectector(features, attributes);
+            pipeline.Splitter.DataLoader.AspectDectector = new AspectDectector(features, attributes);
             var vector = sentimentVector.GetVector(NormalizationType.None);
             vector.XmlSerialize().Save(Path.Combine(analyze.SvmPath, "sentiment_vector.xml"));
             log.Info("Extracting features... DONE!");

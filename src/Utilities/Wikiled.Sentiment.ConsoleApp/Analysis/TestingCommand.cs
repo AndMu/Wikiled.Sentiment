@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using NLog;
 using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
@@ -41,9 +42,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                             return item;
                         });
 
-                client = new TestingClient(splitter, reviews, Trained);
+                client = new TestingClient(new ProcessingPipeline(splitter, reviews), Trained);
                 client.UseBagOfWords = UseBagOfWords;
-                client.Init();
                 client.Process().Select(
                     item =>
                         {

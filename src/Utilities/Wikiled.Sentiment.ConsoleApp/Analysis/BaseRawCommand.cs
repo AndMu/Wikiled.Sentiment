@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 cacheFactory = new RedisDocumentCacheFactory(redis);
             }
 
-            splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
+            splitter = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
             splitter.DataLoader.DisableFeatureSentiment = InvertOff;
             log.Info("Processing...");
 

@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
@@ -42,7 +43,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                 });
 
             logger.Info("Loading data...");
-            TrainingClient trainingClient = new TrainingClient(Training.Active, Training.Load(), trainingLocation);
+            ProcessingPipeline pipeline = new ProcessingPipeline(Training.Active, Training.Load());
+            TrainingClient trainingClient = new TrainingClient(pipeline, trainingLocation);
             logger.Info("Training...");
             return trainingClient.Train();
         }
@@ -58,7 +60,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                 });
 
             logger.Info("Loading data...");
-            TestingClient testingClient = new TestingClient(testing.Active, testing.Load(), trainingLocation);
+            ProcessingPipeline pipeline = new ProcessingPipeline(testing.Active, testing.Load());
+            TestingClient testingClient = new TestingClient(pipeline, trainingLocation);
             testingClient.Init();
             await testingClient.Process().LastOrDefaultAsync();
             testingClient.Save(Path.Combine(trainingLocation, @"Result", testProduct));

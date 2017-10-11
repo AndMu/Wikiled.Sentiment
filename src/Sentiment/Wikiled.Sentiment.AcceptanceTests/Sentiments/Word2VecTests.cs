@@ -10,6 +10,7 @@ using Wikiled.Sentiment.Analysis.Amazon;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -68,7 +69,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.CachedSplitterHelper.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            TestingClient testing = new TestingClient(runner.Active, runner.Load(), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(runner.Active, runner.Load()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.Init();

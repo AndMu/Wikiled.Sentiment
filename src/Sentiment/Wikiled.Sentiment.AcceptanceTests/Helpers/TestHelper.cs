@@ -24,9 +24,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             AmazonRepository = new AmazonRepository(Redis);
             var cacheFactory = new RedisDocumentCacheFactory(Redis);
             Cache = cacheFactory.Create(POSTaggerType.Stanford);
-            CachedSplitterHelper = new SplitterFactory(cacheFactory, configuration).Create(POSTaggerType.Stanford);
+            CachedSplitterHelper = new MainSplitterFactory(cacheFactory, configuration).Create(POSTaggerType.Stanford);
             var localCache = new LocalCacheFactory();
-            NonCachedSplitterHelper = new SplitterFactory(localCache, configuration).Create(POSTaggerType.Stanford);
+            NonCachedSplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.Stanford);
         }
 
         public static TestHelper Instance { get; } = new TestHelper();

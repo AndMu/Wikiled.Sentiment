@@ -147,7 +147,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         {
             log.Info("Loading text splitter for bootstrapping");
             var config = new ConfigurationHandler();
-            var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
+            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(), config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
             log.Info("Removing default lexicon");
             bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
@@ -160,7 +160,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         {
             log.Info("Loading default text splitter");
             var config = new ConfigurationHandler();
-            var splitterFactory = new SplitterFactory(new LocalCacheFactory(), config);
+            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(), config);
             defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
         }
 

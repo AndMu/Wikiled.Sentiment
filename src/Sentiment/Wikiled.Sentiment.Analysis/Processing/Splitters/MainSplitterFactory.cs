@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Text.Analysis.Cache;
@@ -6,13 +7,15 @@ using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
-    public class SplitterFactory : ISplitterFactory
+    public class MainSplitterFactory : IMainSplitterFactory
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly ICacheFactory cacheFactory;
 
         private readonly ConfigurationHandler configuration;
 
-        public SplitterFactory(ICacheFactory cacheFactory, ConfigurationHandler configuration)
+        public MainSplitterFactory(ICacheFactory cacheFactory, ConfigurationHandler configuration)
         {
             Guard.NotNull(() => cacheFactory, cacheFactory);
             Guard.NotNull(() => configuration, configuration);
@@ -22,6 +25,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         public ISplitterHelper Create(POSTaggerType value)
         {
+            log.Debug("Create: {0}", value);
             ISplitterHelper instance;
             switch (value)
             {
@@ -38,6 +42,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
                     throw new NotSupportedException(value.ToString());
             }
 
+            log.Debug("Loading lexicon...");
             instance.Load();
             return instance;
         }

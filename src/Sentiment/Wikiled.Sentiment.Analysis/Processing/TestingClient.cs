@@ -4,7 +4,6 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using NLog;
 using Wikiled.Arff.Normalization;
@@ -15,14 +14,14 @@ using Wikiled.Core.Utility.Serialization;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Svm.Extensions;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
+using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Analysis.Stats;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -32,10 +31,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly ConcurrentBag<Document> result = new ConcurrentBag<Document>();
-
-        private readonly IObservable<IParsedDocumentHolder> reviews;
-
-        private readonly ISplitterHelper splitter;
 
         private readonly StatisticsCalculator statistics = new StatisticsCalculator();
 
@@ -47,17 +42,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private ITrainingPerspective perspective;
 
-        public TestingClient(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, string svmPath = null)
+        private readonly IProcessingPipeline pipeline;
+
+        public TestingClient(IProcessingPipeline pipeline, string svmPath = null)
         {
-            Guard.NotNull(() => splitter, splitter);
-            Guard.NotNull(() => reviews, reviews);
+            Guard.NotNull(() => pipeline, pipeline);
             if (string.IsNullOrEmpty(svmPath))
             {
                 DisableSvm = true;
             }
 
-            this.splitter = splitter;
-            this.reviews = reviews;
+            this.pipeline = pipeline;
             SvmPath = svmPath;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
             SentimentVector = new SentimentVector();
@@ -79,7 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public SentimentVector SentimentVector { get; }
 
-        public string SvmPath { get; set; }
+        public string SvmPath { get; }
 
         public bool UseBagOfWords { get; set; }
 
@@ -114,9 +109,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 {
                     log.Info("Loading {0} aspects", path);
                     XDocument features = XDocument.Load(path);
-                    var aspect = splitter.DataLoader.AspectFactory.ConstructSerializer().Deserialize(features);
-                    splitter.DataLoader.AspectDectector = aspect;
-                    splitter.DataLoader.DisableFeatureSentiment = true;
+                    var aspect = pipeline.Splitter.DataLoader.AspectFactory.ConstructSerializer().Deserialize(features);
+                    pipeline.Splitter.DataLoader.AspectDectector = aspect;
+                    pipeline.Splitter.DataLoader.DisableFeatureSentiment = true;
                 }
                 else
                 {
@@ -124,14 +119,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
+            
             log.Info("Processing...");
         }
 
-        public IObservable<ParsingResult> Process()
+        public IObservable<ProcessingContext> Process()
         {
-            var documentSelector = reviews.Where(item => item != null)
-                                          .SelectMany(item => Observable.Start(() => Process(item)))
-                                          .Merge();
+            var documentSelector = pipeline.ProcessStep().Select(RetrieveData);
             return documentSelector
                 .Where(item => item != null)
                 .SubscribeOn(TaskPoolScheduler.Default);
@@ -150,32 +144,18 @@ namespace Wikiled.Sentiment.Analysis.Processing
             arffProcess.Normalize(NormalizationType.L2);
             arff.FullSave(path);
         }
-
-        private async Task<ParsingResult> Process(IParsedDocumentHolder document)
-        {
-            var parsed = await RetrieveData(document).ConfigureAwait(false);
-            if (parsed != null)
-            {
-                result.Add(parsed.Document);
-            }
-
-            return parsed;
-        }
-
-        private async Task<ParsingResult> RetrieveData(IParsedDocumentHolder holder)
+   
+        private ProcessingContext RetrieveData(ProcessingContext context)
         {
             try
             {
-                var parsed = await holder.GetParsed().ConfigureAwait(false);
-                var review = parsed.GetReview(splitter.DataLoader);
-                var doc = holder.Original;
-                RatingAdjustment adjustment = new RatingAdjustment(review, perspective);
-                splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, review.Items);
-                var document = review.GenerateDocument(adjustment);
-                AspectSentiment.Process(review);
-                if (doc.Stars != null)
+                RatingAdjustment adjustment = new RatingAdjustment(context.Review, perspective);
+                pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
+                context.Processed = context.Review.GenerateDocument(adjustment);
+                AspectSentiment.Process(context.Review);
+                if (context.Original.Stars != null)
                 {
-                    Holder.AddResult(new ResultRecord(doc.Id, doc.Stars.Value, adjustment.Rating.StarsRating, review.GetAllSentiments().Length));
+                    Holder.AddResult(new ResultRecord(context.Original.Id, context.Original.Stars.Value, adjustment.Rating.StarsRating, context.Review.GetAllSentiments().Length));
                 }
                 else
                 {
@@ -185,33 +165,36 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 if (adjustment.Rating.StarsRating == null)
                 {
                     statistics.AddUnknown();
-                    arffProcess.PopulateArff(review, PositivityType.Negative);
+                    arffProcess.PopulateArff(context.Review, PositivityType.Negative);
                 }
                 else
                 {
-                    if (doc.Stars != null)
+                    if (context.Original.Stars != null)
                     {
-                        statistics.Add(adjustment.Rating.StarsRating.Value, doc.Stars.Value);
-                        if (doc.Stars != 3)
+                        statistics.Add(adjustment.Rating.StarsRating.Value, context.Original.Stars.Value);
+                        if (context.Original.Stars != 3)
                         {
                             Performance.Add(
-                                doc.Stars > 3,
+                                context.Original.Stars > 3,
                                 adjustment.Rating.IsPositive);
                         }
                     }
 
-                    arffProcess.PopulateArff(review, doc.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
+                    arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
-
-                return new ParsingResult(document, review);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Interlocked.Increment(ref error);
-                log.Error(ex);
+                throw;
             }
 
-            return null;
+            if (context.Processed != null)
+            {
+                result.Add(context.Processed);
+            }
+
+            return context;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
-    public interface ISplitterFactory
+    public interface IMainSplitterFactory
     {
         ISplitterHelper Create(POSTaggerType value);
     }
