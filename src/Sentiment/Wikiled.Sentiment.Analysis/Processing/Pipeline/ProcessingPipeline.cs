@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -11,37 +12,32 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {
     public class ProcessingPipeline : IProcessingPipeline
     {
-        private PerformanceMonitor monitor;
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly IObservable<IParsedDocumentHolder> reviews;
 
-        public ProcessingPipeline(ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews)
+        private readonly IScheduler scheduler;
+
+        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews)
         {
             Guard.NotNull(() => splitter, splitter);
             Guard.NotNull(() => reviews, reviews);
+            Guard.NotNull(() => scheduler, scheduler);
+            this.scheduler = scheduler;
             Splitter = splitter;
-            this.reviews = reviews.Replay();
+            this.reviews = reviews;
         }
 
         public ISplitterHelper Splitter { get; }
 
+        public PerformanceMonitor Monitor { get; private set; }
+
         public IObservable<ProcessingContext> ProcessStep()
         {
-            monitor = new PerformanceMonitor(100);
+            Monitor = new PerformanceMonitor(100);
             var selectedData = reviews
-                .SelectMany(item => Observable.Start(() => StepProcessing(item)))
+                .SelectMany(item => Observable.Start(() => StepProcessing(item), scheduler))
                 .Merge();
-
-            Observable.Interval(TimeSpan.FromSeconds(30))
-                      .TakeUntil(selectedData)
-                      .Select(
-                          item =>
-                          {
-                              log.Info(monitor);
-                              return item;
-                          });
 
             return selectedData;
         }
@@ -50,7 +46,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
         {
             try
             {
-                monitor.ManualyCount();
+                Monitor.ManualyCount();
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
                 var review = doc.GetReview(Splitter.DataLoader);
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);
@@ -62,7 +58,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             }
             finally
             {
-                monitor.Increment();
+                Monitor.Increment();
             }
 
             return null;
