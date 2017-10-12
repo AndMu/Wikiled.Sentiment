@@ -19,9 +19,9 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
 
         public IArffDataSet DataSet { get; }
 
-        public void CleanupDataHolder(int minReviewSize, int minOccurences)
+        public async Task CleanupDataHolder(int minReviewSize, int minOccurences)
         {
-            DataSet.CompactHeader(minOccurences);
+            await DataSet.CompactHeader(minOccurences).ConfigureAwait(false);
             DataSet.CompactReviews(minReviewSize);
         }
 

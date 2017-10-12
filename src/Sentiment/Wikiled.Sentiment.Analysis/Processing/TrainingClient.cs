@@ -85,7 +85,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             log.Info("Cleaning up ARFF....");
             if (!UseAll)
             {
-                arffProcess.CleanupDataHolder(3, 10);
+                await arffProcess.CleanupDataHolder(3, 10).ConfigureAwait(false);
             }
 
             analyze.TrainingHeader.Normalization = NormalizationType.L2;
