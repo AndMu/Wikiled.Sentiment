@@ -214,14 +214,8 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Anomaly\IProcessingDataAnomaly.cs" />
-    <Compile Include="Anomaly\NullProcessingDataAnomaly.cs" />
-    <Compile Include="Anomaly\ProcessingDataAnomaly.cs" />
-    <Compile Include="Anomaly\ProcessingDataAnomalyFactory.cs" />
-    <Compile Include="AnalysisException.cs" />
     <Compile Include="Processing\WeightSentimentAdjuster.cs" />
     <Compile Include="Processing\Arff\ArffExtensions.cs" />
-    <Compile Include="Processing\AnomalyDataFilter.cs" />
     <Compile Include="Processing\Context\VectorsExtractor.cs" />
     <Compile Include="Processing\Context\WordsContext.cs" />
     <Compile Include="Processing\Context\WordVectorsData.cs" />

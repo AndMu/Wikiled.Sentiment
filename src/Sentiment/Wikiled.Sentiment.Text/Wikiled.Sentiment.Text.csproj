@@ -326,10 +326,6 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Anomaly\AnomalyVector.cs" />
-    <Compile Include="Anomaly\AnomalyVectorType.cs" />
-    <Compile Include="Anomaly\DataTreeExtension.cs" />
-    <Compile Include="Anomaly\DocumentAnomalyDetector.cs" />
     <Compile Include="Aspects\Data\AspectData.cs" />
     <Compile Include="Aspects\AspectDectector.cs" />
     <Compile Include="Aspects\Data\AspectSentimentData.cs" />
@@ -355,6 +351,7 @@
     <Compile Include="Data\Review\IParsedDocumentHolder.cs" />
     <Compile Include="Data\Review\ParsedDocumentHolder.cs" />
     <Compile Include="Data\Review\ParsingDocumentHolder.cs" />
+    <Compile Include="Extensions\DataTreeExtension.cs" />
     <Compile Include="Extensions\DocumentExtension.cs" />
     <Compile Include="Aspects\IAspectContext.cs" />
     <Compile Include="Aspects\IAspectContextFactory.cs" />

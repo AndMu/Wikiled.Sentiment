@@ -1,6 +1,6 @@
 ﻿using Wikiled.Arff.Normalization;
 using Wikiled.MachineLearning.Mathematics.Vectors;
-using Wikiled.Sentiment.Text.Anomaly;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Text.NLP

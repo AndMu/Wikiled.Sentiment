@@ -6,7 +6,7 @@ using Wikiled.Core.Utility.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Text.Analysis.Reflection.Data;
 
-namespace Wikiled.Sentiment.Text.Anomaly
+namespace Wikiled.Sentiment.Text.Extensions
 {
     public static class DataTreeExtension
     {

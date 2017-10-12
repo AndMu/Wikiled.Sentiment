@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Async
 
         public void Dispose()
         {
-            if(observer != null)
+            if (observer != null)
             {
                 actionObservable.OnCompleted();
                 finished.WaitOne(500);
