@@ -9,7 +9,6 @@ using Wikiled.Sentiment.Text.NLP.Style.Surface;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Reflection;
 using Wikiled.Text.Analysis.Structure;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {

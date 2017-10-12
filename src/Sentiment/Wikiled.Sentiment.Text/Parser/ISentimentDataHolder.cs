@@ -3,8 +3,7 @@ using Wikiled.Sentiment.Text.Sentiment;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
-    public interface ISentimentDataHolder
-        : ISentimentProvider
+    public interface ISentimentDataHolder : ISentimentProvider
     {
         void AddValue(string word, SentimentValueData value);
 

@@ -473,8 +473,6 @@
     <Compile Include="Parser\Cache\CacheHeaderItem.cs" />
     <Compile Include="Parser\Cache\DocumentPersist.cs" />
     <Compile Include="Parser\Cache\DocumentPersistencyItem.cs" />
-    <Compile Include="Parser\ComparativeLevel.cs" />
-    <Compile Include="Parser\DocumentTokenizer.cs" />
     <Compile Include="Parser\ISentimentDataHolder.cs" />
     <Compile Include="Parser\ParseRequest.cs" />
     <Compile Include="Parser\SentimentDataHolder.cs" />

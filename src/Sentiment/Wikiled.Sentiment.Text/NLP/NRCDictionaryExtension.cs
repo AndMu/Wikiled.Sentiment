@@ -41,7 +41,6 @@ namespace Wikiled.Sentiment.Text.NLP
             return nrcRecord;
         }
 
-
         public static SentimentVector Extract(this INRCDictionary dictionary, IEnumerable<WordEx> words)
         {
             Guard.NotNull(() => dictionary, dictionary);
