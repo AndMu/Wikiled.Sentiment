@@ -79,16 +79,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep().Select(item => Observable.Start(() => ProcessSingleItem(item)));
+                await pipeline.ProcessStep().Select(item => Observable.Start(() => ProcessSingleItem(item))).Merge();
             }
 
-            log.Info("Cleaning up ARFF");
+            log.Info("Cleaning up ARFF....");
             if (!UseAll)
             {
                 arffProcess.CleanupDataHolder(3, 10);
             }
 
             analyze.TrainingHeader.Normalization = NormalizationType.L2;
+            log.Info("Normalizing ARFF...");
             arffProcess.Normalize(analyze.TrainingHeader.Normalization);
             analyze.SetArff(arff);
             analyze.Positive = positive;
