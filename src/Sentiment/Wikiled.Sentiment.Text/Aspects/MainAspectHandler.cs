@@ -54,8 +54,7 @@ namespace Wikiled.Sentiment.Text.Aspects
             }
         }
 
-        private static WordOccurenceTracker GetTracker(ConcurrentDictionary<string, WordOccurenceTracker> table,
-            IWordItem wordItem)
+        private static WordOccurenceTracker GetTracker(ConcurrentDictionary<string, WordOccurenceTracker> table, IWordItem wordItem)
         {
             if (table.TryGetWordValue(wordItem, out var tracker))
             {

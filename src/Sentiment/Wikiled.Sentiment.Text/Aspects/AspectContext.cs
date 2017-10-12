@@ -5,7 +5,6 @@ using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
@@ -66,7 +65,7 @@ namespace Wikiled.Sentiment.Text.Aspects
                 return;
             }
 
-            if (wordItem.POS.WordType == WordType.Adjective)
+            if (wordItem.POS.WordType == WordType.Adjective || wordItem.IsSentiment)
             {
                 if (wordItem.CanNotBeAttribute() ||
                     (wordItem.IsSentiment && !includeSentiment)) // if sentiment excluded

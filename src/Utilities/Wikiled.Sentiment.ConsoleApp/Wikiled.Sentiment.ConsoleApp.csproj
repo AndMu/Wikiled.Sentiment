@@ -265,8 +265,8 @@
     <Reference Include="Wikiled.MachineLearning, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.MachineLearning.1.0.9\lib\net462\Wikiled.MachineLearning.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.17.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.17\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
+    <Reference Include="Wikiled.MachineLearning.Svm, Version=1.1.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.MachineLearning.Svm.1.1.19\lib\net462\Wikiled.MachineLearning.Svm.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Redis, Version=2.3.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Redis.2.3.17\lib\net462\Wikiled.Redis.dll</HintPath>

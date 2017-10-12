@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using NLog;
@@ -27,12 +29,21 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
         public override string Name { get; } = "extract";
 
-        public string Input { get; set; }
+        [Description("Source of documents")]
+        [Required]
+        public string Source { get; set; }
+
+        [Description("Place to save output")]
+        [Required]
+        public string Out{ get; set; }
+
+        [Description("Include sentiment words into attributes")]
+        public bool Sentiment { get; set; }
 
         public override void Execute()
         {
             log.Info("Starting...");
-            featureExtractor = new MainAspectHandler(new AspectContextFactory());
+            featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
             splitter = new MainSplitterFactory(new LocalCacheFactory(), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
             var pipeline = new ProcessingPipeline(
                 TaskPoolScheduler.Default,
@@ -48,12 +59,17 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
                         .LastOrDefaultAsync()
                         .Wait();
             }
+
+            var file = Path.Combine(Out, "features.xml");
+            log.Info("Saving {0}...", file);
+            AspectSerializer serializer = new AspectSerializer(splitter.DataLoader);
+            serializer.Serialize(featureExtractor).Save(file);
         }
 
         private IEnumerable<IParsedDocumentHolder> GetReviews()
         {
-            log.Info("Input {0}", Input);
-            return splitter.Splitter.GetParsedReviewHolders(Input, null);
+            log.Info("Input {0}", Source);
+            return splitter.Splitter.GetParsedReviewHolders(Source, null);
         }
 
         private void Processing(ProcessingContext reviewHolder)

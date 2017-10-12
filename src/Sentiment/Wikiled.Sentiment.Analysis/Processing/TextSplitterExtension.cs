@@ -70,7 +70,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             else
             {
-                foreach (var file in Directory.EnumerateFiles(path))
+                foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
                 {
                     FileInfo fileInfo = new FileInfo(file);
                     yield return new Document(File.ReadAllText(file).SanitizeXmlString())
