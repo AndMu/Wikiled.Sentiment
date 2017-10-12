@@ -7,7 +7,6 @@ using Wikiled.Core.Utility.Resources;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;

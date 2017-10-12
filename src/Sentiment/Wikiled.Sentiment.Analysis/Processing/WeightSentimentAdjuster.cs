@@ -5,7 +5,7 @@ using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 
-namespace Wikiled.Sentiment.Analysis.CrossDomain
+namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class WeightSentimentAdjuster
     {

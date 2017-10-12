@@ -14,7 +14,6 @@ using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Tokenizer;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Anomaly
 {

@@ -2,7 +2,6 @@
 using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Resources;
-using Wikiled.Sentiment.Analysis.Workspace;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -52,8 +51,6 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             factory.Construct();
             Splitter = new QueueTextSplitter(Parallel, factory);
             DataLoader = lexiconFactory.WordsHandler;
-            var workspace = new WorkspaceInstance("Lexicon", ".", () => DataLoader);
-            workspace.Init();
         }
 
         protected abstract ISplitterFactory Construct(ILexiconFactory lexiconFactory);

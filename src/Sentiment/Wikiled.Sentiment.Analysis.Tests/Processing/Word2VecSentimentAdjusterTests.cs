@@ -2,12 +2,12 @@
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.CrossDomain;
+using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 
-namespace Wikiled.Sentiment.Analysis.Tests.CrossDomain
+namespace Wikiled.Sentiment.Analysis.Tests.Processing
 {
     [TestFixture]
     public class Word2VecSentimentAdjusterTests

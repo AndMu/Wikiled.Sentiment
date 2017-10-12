@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.CrossDomain;
+using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;

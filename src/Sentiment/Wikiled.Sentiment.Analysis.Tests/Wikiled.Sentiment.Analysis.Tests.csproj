@@ -197,7 +197,7 @@
     <Compile Include="Context\VectorsExtractorTests.cs" />
     <Compile Include="Context\WordsContextTests.cs" />
     <Compile Include="Context\WordVectorsDataTests.cs" />
-    <Compile Include="CrossDomain\Word2VecSentimentAdjusterTests.cs" />
+    <Compile Include="Processing\Word2VecSentimentAdjusterTests.cs" />
     <Compile Include="Processing\Arff\ArffExtensionsTests.cs" />
     <Compile Include="Processing\Arff\ProcessArffTests.cs" />
     <Compile Include="Processing\Pipeline\ProcessingPipelineTests.cs" />
@@ -208,14 +208,10 @@
     <Compile Include="Sentiments\RatingCalculatorTests.cs" />
     <Compile Include="Weighting\ItemCoefficientTests.cs" />
     <Compile Include="Weighting\SentimentCalculatorTest.cs" />
-    <Compile Include="Workspace\Data\DataSetTests.cs" />
-    <Compile Include="Workspace\Data\SingleDataCollectionTests.cs" />
-    <Compile Include="Workspace\WorkspaceInstanceFactoryTests.cs" />
-    <Compile Include="Workspace\WorkspaceInstanceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="CrossDomain\Electronics.csv">
+    <None Include="Processing\Electronics.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="NLog.config">
@@ -247,15 +243,6 @@
     </Content>
     <Content Include="Data\Antena.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Workspace\Data\TestData\1.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Workspace\Data\TestData\2.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Workspace\Data\TestData\3.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />

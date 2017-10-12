@@ -14,7 +14,6 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Logging;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.Sentiment.Analysis.CrossDomain;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
