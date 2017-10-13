@@ -285,7 +285,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> ReadTextData(string file)
         {
-            var stream = new DictionaryStream(file, new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(datasetPath, file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
 
