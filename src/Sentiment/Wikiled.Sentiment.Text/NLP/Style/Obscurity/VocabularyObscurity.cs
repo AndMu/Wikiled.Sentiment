@@ -6,12 +6,12 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Obscurity
 {
     public class VocabularyObscurity : IDataSource
     {
-        public VocabularyObscurity(TextBlock text)
+        public VocabularyObscurity(FrequencyListManager manager, TextBlock text)
         {
-            Internet = new SpecificObscrunity(text, FrequencyListManager.Instance.Internet);
-            BNC = new SpecificObscrunity(text, FrequencyListManager.Instance.BNC);
-            Reuters = new SpecificObscrunity(text, FrequencyListManager.Instance.Reuters);
-            Subtitles = new SpecificObscrunity(text, FrequencyListManager.Instance.Subtitles);
+            Internet = new SpecificObscrunity(text, manager.Internet);
+            BNC = new SpecificObscrunity(text, manager.BNC);
+            Reuters = new SpecificObscrunity(text, manager.Reuters);
+            Subtitles = new SpecificObscrunity(text, manager.Subtitles);
         }
 
         [InfoCategory("Reuters", Ignore = true)]

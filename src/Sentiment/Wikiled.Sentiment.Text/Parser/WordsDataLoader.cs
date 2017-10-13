@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Xml.Linq;
 using Wikiled.Core.Utility.Arguments;
@@ -12,11 +13,11 @@ using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
+using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.Frequency;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
-using Wikiled.Text.Analysis.Resources;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -74,6 +75,7 @@ namespace Wikiled.Sentiment.Text.Parser
             Extractor = new RawWordExtractor(dictionary, MemoryCache.Default);
             WordFactory = new WordOccurenceFactory(this);
             AspectFactory = new MainAspectHandlerFactory(this);
+            FrequencyListManager = new FrequencyListManager();
             Reset();
             repair = new SentenceRepairHandler(Path.Combine(path, "Repair"), this);
         }
@@ -89,6 +91,8 @@ namespace Wikiled.Sentiment.Text.Parser
         public IRawTextExtractor Extractor { get; }
 
         public IInquirerManager InquirerManager => inquirerManager.Value;
+
+        public FrequencyListManager FrequencyListManager { get; }
 
         public bool IsDisableInvertorSentiment { get; set; }
 
@@ -190,12 +194,12 @@ namespace Wikiled.Sentiment.Text.Parser
         public void Load()
         {
             SentimentDataHolder.Clear();
-            booster = ReadTextData("BoosterWordList.txt", false);
-            negating = ReadTextData("NegatingWordList.txt", true);
-            question = ReadTextData("QuestionWords.txt", true);
-            stopWords = ReadTextData("StopWords.txt", true);
-            stopPos = ReadTextData("StopPos.txt", true);
-            SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt", false));
+            booster = ReadTextData("BoosterWordList.txt");
+            negating = ReadTextData("NegatingWordList.txt");
+            question = ReadTextData("QuestionWords.txt");
+            stopWords = ReadTextData("StopWords.txt");
+            stopPos = ReadTextData("StopPos.txt");
+            SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt"));
             ReadRepairRules();
         }
 
@@ -279,9 +283,10 @@ namespace Wikiled.Sentiment.Text.Parser
             }
         }
 
-        private Dictionary<string, double> ReadTextData(string file, bool useDefault)
+        private Dictionary<string, double> ReadTextData(string file)
         {
-            return ReadTabResourceDataFile.ReadTextData(Path.Combine(datasetPath, file), useDefault);
+            var stream = new DictionaryStream(file, new FileStreamSource());
+            return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
 
         private void WriteData<T1, T2>(string file, bool useDefault, Dictionary<T1, T2> data)

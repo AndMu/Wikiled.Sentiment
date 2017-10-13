@@ -102,7 +102,7 @@ namespace Wikiled.Sentiment.Text.Configuration
             wordsHandler = new Lazy<IWordsHandler>(
                 () =>
                     {
-                        var handler = new WordsDataLoader(ResourcesPath, new EnglishDictionary(ResourcesPath, WordNetEngine));
+                        var handler = new WordsDataLoader(ResourcesPath, new BasicEnglishDictionary());
                         handler.Load();
                         return handler;
                     });

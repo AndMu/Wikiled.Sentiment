@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.Resources;
+using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
 {
@@ -16,7 +18,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         {
             var path = ActualWordsHandler.Instance.Configuration.GetConfiguration("Resources");
             path = Path.Combine(path, @"Library\Standard");
-            var data = ReadTabResourceDataFile.ReadTextData(Path.Combine(path, "EmotionLookupTable.txt"), false);
+            var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
+            var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             sentimentData = new SentimentDataHolder();
             sentimentData.PopulateEmotionsData(data);
         }

@@ -1,4 +1,6 @@
 ﻿using Wikiled.Sentiment.Text.Helpers;
+using Wikiled.Text.Analysis.Dictionary;
+using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Words;
 
 namespace Wikiled.Sentiment.Text.Words
@@ -31,18 +33,18 @@ namespace Wikiled.Sentiment.Text.Words
 
         private WordTypeResolver()
         {
-            conjunctiveAdverbs = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Conjunctions.ConjunctiveAdverb.txt");
-            coordinatingConjunctions = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Conjunctions.CoordinatingConjunction.txt");
-            subordinateConjunction = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Conjunctions.SubordinateConjunction.txt");
-            invertingConjunction = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Conjunctions.InvertingConjunction.txt");
-            regularConjunction = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Conjunctions.RegularConjunction.txt");
-            adverbs = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Adverb.txt");
-            adjective = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Adjective.txt");
-            article = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Article.txt");
-            noun = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Noun.txt");
-            preposition = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Preposition.txt");
-            pronoun = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Pronoun.txt");
-            verb = WordsDictionary.ConstructFromInternalStream(@"Resources.POS.Verb.txt");
+            conjunctiveAdverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.ConjunctiveAdverb.txt", new InternalStreamSource()));
+            coordinatingConjunctions = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.CoordinatingConjunction.txt", new InternalStreamSource()));
+            subordinateConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.SubordinateConjunction.txt", new InternalStreamSource()));
+            invertingConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.InvertingConjunction.txt", new InternalStreamSource()));
+            regularConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.RegularConjunction.txt", new InternalStreamSource()));
+            adverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adverb.txt", new InternalStreamSource()));
+            adjective = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adjective.txt", new InternalStreamSource()));
+            article = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Article.txt", new InternalStreamSource()));
+            noun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Noun.txt", new InternalStreamSource()));
+            preposition = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Preposition.txt", new InternalStreamSource()));
+            pronoun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Pronoun.txt", new InternalStreamSource()));
+            verb = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Verb.txt", new InternalStreamSource()));
         }
 
         public static IWordTypeResolver Instance { get; } = new WordTypeResolver();

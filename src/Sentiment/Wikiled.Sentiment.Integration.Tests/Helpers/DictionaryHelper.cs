@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Helpers
             configuration.SetConfiguration("resouces", path);
             LibraryPath = Path.Combine(path, @"Library\Standard\");
             Engine = new WordNetEngine(Path.Combine(path, @"Wordnet 3.0"));
-            var dictionary = new EnglishDictionary(LibraryPath, Engine);
+            var dictionary = new BasicEnglishDictionary();
             WordsHandlers = new WordsDataLoader(LibraryPath, dictionary);
             WordsHandlers.Load();
         }

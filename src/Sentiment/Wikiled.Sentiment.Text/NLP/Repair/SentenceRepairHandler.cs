@@ -7,7 +7,7 @@ using System.Xml.XPath;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.Resources;
+using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
 {
@@ -104,31 +104,24 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void ReadEmoticons()
         {
-            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "EmoticonLookupTable.txt")))
-            {
-                emoticons = data.ReadData<string, int>(StringComparer.OrdinalIgnoreCase);
-            }
+            DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "EmoticonLookupTable.txt"), new FileStreamSource());
+            emoticons = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
 
         private void ReadIdioms()
         {
-            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "IdiomLookupTable.txt")))
-            {
-                idioms = data.ReadData<string, int>(StringComparer.OrdinalIgnoreCase);
-            }
+            DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "IdiomLookupTable.txt"), new FileStreamSource());
+            idioms = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
 
         private void ReadSlang()
         {
-            using (ReadTabResourceDataFile data = new ReadTabResourceDataFile(Path.Combine(resourcesPath, "SlangLookupTable.txt")))
+            DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
+            foreach (var item in stream.ReadDataFromStream(item => item))
             {
-                slangs = data.ReadData<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var item in slangs.ToArray())
+                if (wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Word, "JJ")))
                 {
-                    if (wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Key, "JJ")))
-                    {
-                        slangs.Remove(item.Key);
-                    }
+                    slangs.Remove(item.Word);
                 }
             }
         }

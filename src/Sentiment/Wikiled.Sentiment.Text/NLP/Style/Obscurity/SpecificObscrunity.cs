@@ -37,14 +37,14 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Obscurity
                 wordsIndexes = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
                 foreach (var word in Text.Words)
                 {
-                    wordsIndexes[word.Text] = list.GetIndex(word.Text);
+                    wordsIndexes[word.Text] = list.GetIndex(word.Text).Index;
                 }
 
                 return wordsIndexes;
             }
         }
 
-        public TextBlock Text { get; private set; }
+        public TextBlock Text { get; }
 
         [InfoField("Percentage in Top 100 Words")]
         public double Top100Words => data.Top100Words;

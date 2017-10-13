@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
             }
 
             PureWords = pure.ToArray();
-            VocabularyObscurity = new VocabularyObscurity(this);
+            VocabularyObscurity = new VocabularyObscurity(handler.FrequencyListManager, this);
             SyntaxFeatures = new SyntaxFeatures(handler, this);
             InquirerFinger = new InquirerFingerPrint(handler.InquirerManager, this);
 
