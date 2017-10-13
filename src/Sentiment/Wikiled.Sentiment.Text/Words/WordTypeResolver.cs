@@ -1,5 +1,4 @@
-﻿using Wikiled.Sentiment.Text.Helpers;
-using Wikiled.Text.Analysis.Dictionary;
+﻿using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Words;
 
@@ -33,18 +32,18 @@ namespace Wikiled.Sentiment.Text.Words
 
         private WordTypeResolver()
         {
-            conjunctiveAdverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.ConjunctiveAdverb.txt", new InternalStreamSource()));
-            coordinatingConjunctions = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.CoordinatingConjunction.txt", new InternalStreamSource()));
-            subordinateConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.SubordinateConjunction.txt", new InternalStreamSource()));
-            invertingConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.InvertingConjunction.txt", new InternalStreamSource()));
-            regularConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.RegularConjunction.txt", new InternalStreamSource()));
-            adverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adverb.txt", new InternalStreamSource()));
-            adjective = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adjective.txt", new InternalStreamSource()));
-            article = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Article.txt", new InternalStreamSource()));
-            noun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Noun.txt", new InternalStreamSource()));
-            preposition = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Preposition.txt", new InternalStreamSource()));
-            pronoun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Pronoun.txt", new InternalStreamSource()));
-            verb = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Verb.txt", new InternalStreamSource()));
+            conjunctiveAdverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.ConjunctiveAdverb.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            coordinatingConjunctions = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.CoordinatingConjunction.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            subordinateConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.SubordinateConjunction.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            invertingConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.InvertingConjunction.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            regularConjunction = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Conjunctions.RegularConjunction.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            adverbs = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adverb.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            adjective = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Adjective.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            article = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Article.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            noun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Noun.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            preposition = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Preposition.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            pronoun = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Pronoun.txt", new EmbeddedStreamSource<WordTypeResolver>()));
+            verb = WordsDictionary.Construct(new DictionaryStream(@"Resources.POS.Verb.txt", new EmbeddedStreamSource<WordTypeResolver>()));
         }
 
         public static IWordTypeResolver Instance { get; } = new WordTypeResolver();
