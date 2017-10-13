@@ -52,7 +52,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Style.Surface
             Assert.AreEqual(0.0175, Math.Round(block.Surface.Characters.PercentOfCommas, 4));
             Assert.AreEqual(0, Math.Round(block.Surface.Characters.PercentOfSemicolons, 4));
             Assert.AreEqual(0.2458, Math.Round(block.Surface.Words.PercentOfLong, 4));
-            Assert.AreEqual(0.9675, Math.Round(block.Surface.Words.PercentOfTypeByToken, 4));
+            Assert.AreEqual(0.961, Math.Round(block.Surface.Words.PercentOfTypeByToken, 4));
             Assert.AreEqual(0.0375, Math.Round(block.Surface.Words.PercentOfSubordinatingConjunctions, 4));
             Assert.AreEqual(0.0333, Math.Round(block.Surface.Words.PercentOfCoordinatingConjunctions, 4));
             Assert.AreEqual(0, Math.Round(block.Surface.Sentence.PercentOfBeginningWithConjunction, 4));
