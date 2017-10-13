@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         }
 
         [TestCase("I like my school teacher and teachers.", 0, 2, "teacher")]
-        [TestCase("If ever enjoy professional basketball, with nike shoes, that will be a miracle", 1, 4, "shoes")]
+        [TestCase("If ever enjoy professional basketball, with nike shoes, that will be a miracle", 1, 3, "shoes")]
         public async Task Process(string sentence, int totalAttributes, int totalFeatures, string topAttribute)
         {
             Assert.Throws<ArgumentNullException>(() => instance.Process(null));
