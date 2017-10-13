@@ -116,9 +116,11 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void ReadSlang()
         {
+            slangs.Clear();
             DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
             foreach (var item in stream.ReadDataFromStream(item => item))
             {
+                slangs[item.Word] = item.Value;
                 if (wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Word, "JJ")))
                 {
                     slangs.Remove(item.Word);
