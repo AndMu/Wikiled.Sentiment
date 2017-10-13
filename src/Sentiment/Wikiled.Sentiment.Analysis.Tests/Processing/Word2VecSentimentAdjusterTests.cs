@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing
             Assert.Throws<ArgumentNullException>(() => instance.Adjust(null));
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.Adjust("Test"));
             instance.Adjust(
-                Path.Combine(TestContext.CurrentContext.TestDirectory, "CrossDomain", "Electronics.csv"));
+                Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
             dataHolder.Verify(item => item.Adjust(It.IsAny<string>(), It.IsAny<double>()), Times.Exactly(9));
         }
 
@@ -48,7 +48,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing
             var sentiment = holder.MeasureSentiment(new TestWordItem {Text = "affection"}).DataValue.Value;
             Assert.AreEqual(10, sentiment);
             instance = new WeightSentimentAdjuster(holder);
-            instance.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "CrossDomain", "Electronics.csv"));
+            instance.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
             sentiment = holder.MeasureSentiment(new TestWordItem {Text = "affection"}).DataValue.Value;
             Assert.AreEqual(4.5, sentiment);
         }
