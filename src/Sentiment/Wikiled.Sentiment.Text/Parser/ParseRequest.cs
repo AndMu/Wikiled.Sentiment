@@ -1,6 +1,5 @@
 ﻿using System;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
