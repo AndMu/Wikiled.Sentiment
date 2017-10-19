@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Helpers;
 using Wikiled.Sentiment.Text.Data;
 
 namespace Wikiled.Sentiment.Text.Words
