@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         };
 
         [TearDown]
-        public void TearDown()review
+        public void TearDown()
         {
             TestHelper.Instance.CachedSplitterHelper.DataLoader.Reset();
         }
