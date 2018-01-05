@@ -1,4 +1,5 @@
 ﻿using System;
+using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Text.Analysis.Structure;
 

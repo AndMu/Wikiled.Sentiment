@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.3
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A301B63-217A-4C68-95CD-86EC05EFC759}"
 EndProject
@@ -24,8 +24,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.AcceptanceTests", "Sentiment\Wikiled.Sentiment.AcceptanceTests\Wikiled.Sentiment.AcceptanceTests.csproj", "{3A6DC0B1-92E0-4343-B855-BD1B9AFF8050}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.TestLogic.Shared", "Sentiment\Wikiled.Sentiment.TestLogic.Shared\Wikiled.Sentiment.TestLogic.Shared.csproj", "{3CCDA69F-3F28-4C8A-B212-8EE4FE240239}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikiled.Sentiment.Analysis.Amazon", "Sentiment\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj", "{3AB414D2-AC66-4807-87BC-C5A3301A98D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,18 +131,6 @@ Global
 		{3CCDA69F-3F28-4C8A-B212-8EE4FE240239}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3CCDA69F-3F28-4C8A-B212-8EE4FE240239}.Release|x86.ActiveCfg = Release|Any CPU
 		{3CCDA69F-3F28-4C8A-B212-8EE4FE240239}.Release|x86.Build.0 = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Debug|x86.Build.0 = Debug|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|x86.ActiveCfg = Release|Any CPU
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,11 +144,10 @@ Global
 		{EC9E9DA8-3D16-4F17-B1EB-AB8A54260BB9} = {6A301B63-217A-4C68-95CD-86EC05EFC759}
 		{3A6DC0B1-92E0-4343-B855-BD1B9AFF8050} = {6A301B63-217A-4C68-95CD-86EC05EFC759}
 		{3CCDA69F-3F28-4C8A-B212-8EE4FE240239} = {6A301B63-217A-4C68-95CD-86EC05EFC759}
-		{3AB414D2-AC66-4807-87BC-C5A3301A98D9} = {03C3CFE6-D1AE-49C4-9553-65BA62B2DB92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {63065556-FEEF-4E1A-8EE0-A5F116155E4B}
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;packages\Unity.Interception.2.1.505.2\lib\NET35;packages\Unity.2.1.505.2\lib\NET35;packages\TransientFaultHandling.Core.5.1.1209.1\lib\NET4
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.Interception.2.1.505.0\lib\NET35;packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;packages\Unity.Interception.2.1.505.2\lib\NET35;packages\Unity.2.1.505.2\lib\NET35;packages\TransientFaultHandling.Core.5.1.1209.1\lib\NET4
+		SolutionGuid = {63065556-FEEF-4E1A-8EE0-A5F116155E4B}
 	EndGlobalSection
 EndGlobal

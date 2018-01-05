@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
+using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Training
 {

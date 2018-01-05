@@ -240,7 +240,6 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Amazon\AmazonRepositoryTests.cs" />
     <Compile Include="Analysis\ProcessArffTests.cs" />
     <Compile Include="Analysis\SimpleSentimentAnalysisTests.cs" />
     <Compile Include="Global.cs" />
@@ -262,10 +261,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wikiled.Sentiment.Analysis.Amazon\Wikiled.Sentiment.Analysis.Amazon.csproj">
-      <Project>{3AB414D2-AC66-4807-87BC-C5A3301A98D9}</Project>
-      <Name>Wikiled.Sentiment.Analysis.Amazon</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Wikiled.Sentiment.Analysis\Wikiled.Sentiment.Analysis.csproj">
       <Project>{94f548e6-9ef6-4b06-8898-985d446701ab}</Project>
       <Name>Wikiled.Sentiment.Analysis</Name>

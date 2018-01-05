@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using NUnit.Framework;
+using Wikiled.Amazon.Logic;
 using Wikiled.Core.Utility.Resources;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;

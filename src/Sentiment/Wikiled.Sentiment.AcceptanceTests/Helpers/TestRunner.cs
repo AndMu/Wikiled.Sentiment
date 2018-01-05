@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Polly.Retry;
+using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Amazon.Logic;

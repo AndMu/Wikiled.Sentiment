@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
+using Wikiled.Amazon.Logic;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Training
 {

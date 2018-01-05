@@ -1,4 +1,5 @@
-﻿using Wikiled.Sentiment.Analysis.Amazon.Logic;
+﻿
+using Wikiled.Amazon.Logic;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers.Data
 {

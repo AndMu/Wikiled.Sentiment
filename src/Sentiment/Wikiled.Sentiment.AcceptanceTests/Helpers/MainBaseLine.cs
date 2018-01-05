@@ -4,8 +4,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
+using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 

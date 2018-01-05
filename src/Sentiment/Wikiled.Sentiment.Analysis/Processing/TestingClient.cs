@@ -127,8 +127,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             var documentSelector = pipeline.ProcessStep().Select(item => Observable.Start(() => RetrieveData(item))).Merge();
             return documentSelector
-                .Where(item => item != null)
-                .SubscribeOn(TaskPoolScheduler.Default);
+                .Where(item => item != null);
         }
 
         public void Save(string path)
