@@ -18,8 +18,6 @@ namespace Wikiled.Sentiment.Text.Tests.Configuration
             mock.ReplayAll();
 
             IExtendedLexiconFactory factory = new ExtendedLexiconFactory(configuration);
-            Assert.AreEqual(@"c:\data\WordNet-InfoContent-3.0", factory.WordNetInfoContentPath);
-            Assert.AreEqual(@"c:\data\Wordnet 3.0", factory.WordNetPath);
             Assert.AreEqual(@"c:\data", factory.ResourcesPath);
             Assert.IsFalse(factory.IsConstructed);
             mock.VerifyAll();

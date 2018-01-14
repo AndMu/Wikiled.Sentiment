@@ -39,6 +39,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             {
                 client = new TestingClient(pipeline, Trained);
                 client.UseBagOfWords = UseBagOfWords;
+                client.Init();
                 client.Process().LastOrDefaultAsync().Wait();
             }
             
