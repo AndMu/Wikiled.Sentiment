@@ -215,7 +215,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Wikiled.Amazon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Amazon.1.0.2\lib\net462\Wikiled.Amazon.dll</HintPath>
+      <HintPath>..\..\packages\Wikiled.Amazon.1.0.4\lib\net462\Wikiled.Amazon.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Arff, Version=1.0.20.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Arff.1.0.20\lib\net462\Wikiled.Arff.dll</HintPath>
