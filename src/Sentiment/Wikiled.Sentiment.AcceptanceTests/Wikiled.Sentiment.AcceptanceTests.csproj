@@ -252,6 +252,7 @@
     <Compile Include="Helpers\TestHelper.cs" />
     <Compile Include="Helpers\TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\DataDownloaderTests.cs" />
     <Compile Include="Sentiments\NlpTests.cs" />
     <Compile Include="Sentiments\RegressionTests.cs" />
     <Compile Include="Sentiments\SentimentTests.cs" />

@@ -406,6 +406,7 @@
     <Compile Include="Persitency\SingleFilePersistencyHandler.cs" />
     <Compile Include="Persitency\WrappedPersistency.cs" />
     <Compile Include="Persitency\WrappedPersistencyItem.cs" />
+    <Compile Include="Resources\DataDownloader.cs" />
     <Compile Include="Sentiment\ContextSentimentFactory.cs" />
     <Compile Include="Sentiment\IContextSentiment.cs" />
     <Compile Include="Sentiment\IContextSentimentFactory.cs" />
