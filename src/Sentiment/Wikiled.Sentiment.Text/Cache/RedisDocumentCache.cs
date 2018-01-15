@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Text.Cache
             this.manager = manager;
             if (!manager.HasDefinition<Document>())
             {
-                manager.RegisterWellknown<Document>(new XmlDataSerializer()).IsSingleInstance = true;
+                manager.RegisterNormalized<Document>(new XmlDataSerializer()).IsSingleInstance = true;
             }
         }
 

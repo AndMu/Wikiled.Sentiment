@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         public bool InvertOff { get; set; }
 
-        public POSTaggerType Tagger { get; set; } = POSTaggerType.Stanford;
+        public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
         public override void Execute()
         {
