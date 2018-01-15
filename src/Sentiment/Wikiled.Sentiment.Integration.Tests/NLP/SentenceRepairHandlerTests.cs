@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         }
 
         [Test]
-        public void Enought()
+        public void Enough()
         {
             SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Instance.WordsHandlers);
             var result = handler.Repair("It is heavy enough to make it stable, but not too heavy to preclude hand use.");
