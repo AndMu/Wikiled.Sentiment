@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Text.Resources
             {
                 using (var stream = response.GetResponseStream())
                 {
-                    UnzipFromStream(stream, output, response.ContentLength);
+                    UnzipFromStream(stream, output);
                 }
             }
         }
