@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Helpers;
+using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Extraction;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
+using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.ConsoleApp
 {
@@ -18,6 +22,19 @@ namespace Wikiled.Sentiment.ConsoleApp
         static void Main(string[] args)
         {
             log.Info("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
+            ConfigurationHandler configuration = new ConfigurationHandler();
+            var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
+            if (Directory.Exists(resourcesPath))
+            {
+                log.Info("Resources folder {0} found.", resourcesPath);
+            }
+            else
+            {
+                DataDownloader dataDownloader = new DataDownloader();
+                var task = dataDownloader.DownloadFile(new Uri("http://datasets.azurewebsites.net/Resources/resourcesLight.zip"), resourcesPath);
+                task.Wait();
+            }
+
             List<Command> commandsList = new List<Command>();
             commandsList.Add(new TrainCommand());
             commandsList.Add(new SemEvalBoostrapCommand());
@@ -35,7 +52,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                 log.Error("SetThreadExecutionState failed.");
                 return;
             }
-          
+
             try
             {
                 if (args.Length == 0)
