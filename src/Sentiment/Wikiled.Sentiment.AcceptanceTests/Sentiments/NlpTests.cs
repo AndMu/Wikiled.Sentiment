@@ -10,7 +10,6 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Dictionary.Streams;
-using Wikiled.Text.Analysis.WordNet.Engine;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -28,7 +27,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources\");
             var libraryPath = Path.Combine(path, @"Library\Standard\");
-            var engine = new WordNetEngine(Path.Combine(path, @"Wordnet 3.0"));
             var dictionary = new BasicEnglishDictionary();
             wordsHandler = new WordsDataLoader(libraryPath, dictionary);
             splitter = new OpenNLPTextSplitter(wordsHandler, path, NullCachedDocumentsSource.Instance);
