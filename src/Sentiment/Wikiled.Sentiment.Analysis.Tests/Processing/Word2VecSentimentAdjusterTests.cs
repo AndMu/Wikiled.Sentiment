@@ -45,12 +45,12 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing
         {
             SentimentDataHolder holder = new SentimentDataHolder();
             holder.SetValue("affection", new SentimentValueData(10));
-            var sentiment = holder.MeasureSentiment(new TestWordItem {Text = "affection"}).DataValue.Value;
+            var sentiment = holder.MeasureSentiment(new TestWordItem { Text = "affection" }).DataValue.Value;
             Assert.AreEqual(10, sentiment);
             instance = new WeightSentimentAdjuster(holder);
             instance.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
-            sentiment = holder.MeasureSentiment(new TestWordItem {Text = "affection"}).DataValue.Value;
-            Assert.AreEqual(4.5, sentiment);
+            sentiment = holder.MeasureSentiment(new TestWordItem { Text = "affection" }).DataValue.Value;
+            Assert.AreEqual(-1, sentiment);
         }
     }
 }
