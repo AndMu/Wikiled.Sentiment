@@ -2,7 +2,7 @@
 {
     public class ResultRecord
     {
-        public ResultRecord(string id, double expected, double? actual, int totalSentiments)
+        public ResultRecord(string id, double? expected, double? actual, int totalSentiments)
         {
             Id = id;
             Expected = expected;
@@ -12,7 +12,7 @@
 
         public string Id { get; }
 
-        public double Expected { get; }
+        public double? Expected { get; }
 
         public double TotalSentiments { get; }
 
