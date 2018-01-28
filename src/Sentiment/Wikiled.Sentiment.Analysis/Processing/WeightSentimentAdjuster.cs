@@ -33,10 +33,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 var items = line.Split(',');
                 var word = items[0].Trim();
                 var weight = double.Parse(items[1]);
-                if (!sentimentDataHolder.Adjust(word, weight * Multiplier))
-                {
-                    sentimentDataHolder.AddValue(word, new SentimentValueData(weight, SentimentSource.Word2Vec));
-                }
+                sentimentDataHolder.SetValue(word, new SentimentValueData(weight, SentimentSource.Word2Vec));
             }
         }
     }

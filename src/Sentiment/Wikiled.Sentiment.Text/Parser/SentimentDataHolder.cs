@@ -14,29 +14,10 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
-        public void AddValue(string word, SentimentValueData value)
+        public void SetValue(string word, SentimentValueData value)
         {
+            EmotionsTable.Remove(word);
             AddSentimentValue(word, value);
-        }
-
-        public bool Adjust(string word, double value)
-        {
-            SentimentValueData sentimentOne;
-            SentimentValueData sentimentTwo;
-            bool found = false;
-            if (EmotionsTable.TryGetValue(word, out sentimentOne))
-            {
-                AdjustWeight(sentimentOne, value);
-                found = true;
-            }
-
-            if (EmotionsLookup.TryGetValue(word, out sentimentTwo))
-            {
-                AdjustWeight(sentimentTwo, value);
-                found = true;
-            }
-
-            return found;
         }
 
         public void Clear()
@@ -83,7 +64,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 if (item.Key[item.Key.Length - 1] == '*')
                 {
                     string word = item.Key.Substring(0, item.Key.Length - 1);
-                    AddValue(word, value);
+                    SetValue(word, value);
                     if (word.Length > 4)
                     {
                         EmotionsLookup.Add(string.Intern(word), value);
@@ -91,18 +72,18 @@ namespace Wikiled.Sentiment.Text.Parser
                 }
                 else
                 {
-                    AddValue(item.Key, value);
+                    SetValue(item.Key, value);
                 }
             }
 
             foreach (var emoji in EmojiSentiment.Positive)
             {
-                AddValue(emoji.AsShortcode(), new SentimentValueData(2));
+                SetValue(emoji.AsShortcode(), new SentimentValueData(2));
             }
 
             foreach (var emoji in EmojiSentiment.Negative)
             {
-                AddValue(emoji.AsShortcode(), new SentimentValueData(-2));
+                SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
             }
         }
 
@@ -116,10 +97,6 @@ namespace Wikiled.Sentiment.Text.Parser
             EmotionsTable[string.Intern(word)] = value;
         }
 
-        private void AdjustWeight(SentimentValueData sentiment, double value)
-        {
-            sentiment?.Add(new SentimentValueData(value));
-        }
 
         private SentimentValue MeasureLookupSentiment(IWordItem word)
         {

@@ -3,10 +3,10 @@ using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Integration.Tests.Analysis
 {
@@ -47,17 +47,18 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             handler.SentimentDataHolder.Clear();
             handler.DisableFeatureSentiment = true;
             var adjuster = new WeightSentimentAdjuster(handler.SentimentDataHolder);
+
             //adjuster.Adjust(@"e:\Source\PhDDocument\Python\Trump\result.csv");
             var POSITIVE_ADJ = new[] { "good", "lovely", "excellent", "delightful", "perfect" };
             var NEGATIVE_ADJ = new[] { "bad", "horrible", "poor", "disgusting", "unhappy" };
             foreach (var item in POSITIVE_ADJ)
             {
-                handler.SentimentDataHolder.AddValue(item, new SentimentValueData(2));
+                handler.SentimentDataHolder.SetValue(item, new SentimentValueData(2));
             }
 
             foreach (var item in NEGATIVE_ADJ)
             {
-                handler.SentimentDataHolder.AddValue(item, new SentimentValueData(-2));
+                handler.SentimentDataHolder.SetValue(item, new SentimentValueData(-2));
             }
 
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
@@ -73,7 +74,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         public async Task TestCustom(string text, double? rating, int totalSentiments)
         {
             handler.SentimentDataHolder.Clear();
-            handler.SentimentDataHolder.AddValue("hate", new SentimentValueData(2));
+            handler.SentimentDataHolder.SetValue("hate", new SentimentValueData(2));
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             var review = request.GetReview(handler);
             Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);

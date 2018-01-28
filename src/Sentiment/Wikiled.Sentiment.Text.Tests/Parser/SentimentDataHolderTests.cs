@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
@@ -36,14 +37,14 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
             Assert.AreEqual(sentiment, measurment?.DataValue.Value ?? 0);
         }
 
-        [TestCase("good", 0.5, 1.25)]
-        [TestCase("bad", 0.5, -0.75)]
-        [TestCase("good", -0.5, 0.75)]
-        [TestCase("bad", -0.5, -1.25)]
+        [TestCase("good", 0.5, 0.5)]
+        [TestCase("bad", 0.5, 0.5)]
+        [TestCase("good", -0.5, -0.5)]
+        [TestCase("bad", -0.5, -0.5)]
         public void Adjust(string word, double weight, double sentiment)
         {
             var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
-            sentimentData.Adjust(word, weight);
+            sentimentData.SetValue(word, new SentimentValueData(weight));
             var measurement = sentimentData.MeasureSentiment(wordItem);
             Assert.AreEqual(sentiment, measurement.DataValue.Value);
         }

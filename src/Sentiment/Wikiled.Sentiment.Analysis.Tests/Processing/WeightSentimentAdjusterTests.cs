@@ -10,7 +10,7 @@ using Wikiled.Sentiment.Text.Sentiment;
 namespace Wikiled.Sentiment.Analysis.Tests.Processing
 {
     [TestFixture]
-    public class Word2VecSentimentAdjusterTests
+    public class WeightSentimentAdjusterTests
     {
         private Mock<ISentimentDataHolder> dataHolder;
 
@@ -37,14 +37,14 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.Adjust("Test"));
             instance.Adjust(
                 Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
-            dataHolder.Verify(item => item.SetValue(It.IsAny<string>(), It.IsAny<SentimentValueData>()), Times.Exactly(9));
+            dataHolder.Verify(item => item.Adjust(It.IsAny<string>(), It.IsAny<double>()), Times.Exactly(9));
         }
 
         [Test]
         public void AdjustWeight()
         {
             SentimentDataHolder holder = new SentimentDataHolder();
-            holder.SetValue("affection", new SentimentValueData(10));
+            holder.AddValue("affection", new SentimentValueData(10));
             var sentiment = holder.MeasureSentiment(new TestWordItem {Text = "affection"}).DataValue.Value;
             Assert.AreEqual(10, sentiment);
             instance = new WeightSentimentAdjuster(holder);
