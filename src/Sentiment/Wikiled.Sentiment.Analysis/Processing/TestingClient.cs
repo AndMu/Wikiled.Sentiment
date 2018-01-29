@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
@@ -18,6 +17,7 @@ using Wikiled.Sentiment.Analysis.Stats;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
@@ -27,8 +27,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
     public class TestingClient
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
-
-        private readonly ConcurrentBag<Document> result = new ConcurrentBag<Document>();
 
         private readonly StatisticsCalculator statistics = new StatisticsCalculator();
 
@@ -83,7 +81,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public void Init()
         {
-            result.Clear();
             if (DisableSvm)
             {
                 perspective = NullTrainingPerspective.Instance;
@@ -94,7 +91,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 machine.FilterCoef(Path.Combine(SvmPath, "coef.txt"));
                 perspective = new SimpleTrainingPerspective(machine, machine.Header);
             }
-
+            
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
@@ -132,7 +129,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             path.EnsureDirectoryExistence();
             log.Info("Saving results [{0}]...", path);
-            result.ToArray().XmlSerialize().Save(Path.Combine(path, "result.xml"));
             var aspectSentiments = AspectSentiment.GetResults();
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             var vector = SentimentVector.GetVector(NormalizationType.None);
@@ -181,11 +177,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 Interlocked.Increment(ref error);
                 throw;
-            }
-
-            if (context.Processed != null)
-            {
-                result.Add(context.Processed);
             }
 
             return context;

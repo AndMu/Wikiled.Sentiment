@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Description
 {

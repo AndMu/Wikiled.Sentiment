@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using NLog;
-using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP.Style.Description;
+using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
@@ -20,6 +24,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        private JsonStreamingWriter resultsWriter;
+
         public override string Name { get; } = "test";
 
         /// <summary>
@@ -27,24 +33,50 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         /// </summary>
         public string Trained { get; set; }
 
+        public bool ExtractStyle { get;set; }
+
         [Required]
         public string Out { get; set; }
 
         protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             TestingClient client;
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default));
-            using (Observable.Interval(TimeSpan.FromSeconds(30))
-                             .Subscribe(item => log.Info(pipeline.Monitor)))
+            using (resultsWriter = new JsonStreamingWriter<Document>(Path.Combine(Out, "result.json")))
             {
-                client = new TestingClient(pipeline, Trained);
-                client.UseBagOfWords = UseBagOfWords;
-                client.Init();
-                client.Process().LastOrDefaultAsync().Wait();
+                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default));
+                using (Observable.Interval(TimeSpan.FromSeconds(30))
+                                 .Subscribe(item => log.Info(pipeline.Monitor)))
+                {
+                    client = new TestingClient(pipeline, Trained);
+                    client.UseBagOfWords = UseBagOfWords;
+                    client.Init();
+                    client.Process()
+                          .Select(item => Observable.Start(() => SaveDocument(splitter.DataLoader, item)))
+                          .Merge()
+                          .LastOrDefaultAsync()
+                          .Wait();
+                }
+
+                client.Save(Out);
+            }
+
+            log.Info($"Testing performance {client.GetPerformanceDescription()}");
+        }
+
+        private Document SaveDocument(IWordsHandler handler, ProcessingContext context)
+        {
+            if (ExtractStyle)
+            {
+                var extractor = new StyleExtractor(handler, context.Processed);
+                var extracted = extractor.Extract();
+                resultsWriter.WriteObject(extracted);
+            }
+            else
+            {
+                resultsWriter.WriteObject(context.Processed);
             }
             
-            client.Save(Out);
-            log.Info($"Testing performance {client.GetPerformanceDescription()}");
+            return context.Processed;
         }
     }
 }
