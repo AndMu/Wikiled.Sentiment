@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             new SentimentTestData("NotKnown", performance: "Total:<0> Positive:<0.000%> Negative:<0.000%> F1:<0.000> RMSE:NaN"),
             new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7234> Positive:<75.954%> Negative:<71.680%> F1:<0.848> RMSE:1.56"),
 
-            new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<84.772%> Negative:<60.000%> F1:<0.903> RMSE:1.34"),
+            new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<85.279%> Negative:<66.667%> F1:<0.908> RMSE:1.33"),
             new SentimentTestData("B000BAX50G", 288, 0, "Total:<266> Positive:<90.196%> Negative:<63.636%> F1:<0.941> RMSE:1.06"),
             new SentimentTestData("B000ERAON2", 440, 0, "Total:<414> Positive:<83.611%> Negative:<74.074%> F1:<0.892> RMSE:1.30"),
 
