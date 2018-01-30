@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public async Task Process(string sentence, int word, int total, string lastPhrase)
         {
             var result = await splitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = result.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
             var words = review.Items.ToArray();
             var phrases = phraseContructor.GetPhrases(words[word]).ToArray();
             Assert.AreEqual(total, phrases.Length);

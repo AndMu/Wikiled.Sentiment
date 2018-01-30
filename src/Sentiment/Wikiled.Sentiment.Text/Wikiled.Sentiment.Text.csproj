@@ -383,7 +383,10 @@
     <Compile Include="MachineLearning\SentimentSource.cs" />
     <Compile Include="MachineLearning\TextVectorCell.cs" />
     <Compile Include="MachineLearning\TrainedSentimentProvider.cs" />
+    <Compile Include="NLP\IParsedReviewManager.cs" />
+    <Compile Include="NLP\IParsedReviewManagerFactory.cs" />
     <Compile Include="NLP\NRCDictionaryExtension.cs" />
+    <Compile Include="NLP\ParsedReviewManagerFactory.cs" />
     <Compile Include="NLP\SentimentVectorExtension.cs" />
     <Compile Include="NLP\Stanford\AnnotationType.cs" />
     <Compile Include="NLP\Stanford\StanfordNLPProxy.cs" />
@@ -467,7 +470,7 @@
     <Compile Include="NLP\Style\SyntaxFeatures.cs" />
     <Compile Include="NLP\Style\Obscurity\VocabularyObscurity.cs" />
     <Compile Include="NLP\ISplitterFactory.cs" />
-    <Compile Include="NLP\ParsedReviewFactory.cs" />
+    <Compile Include="NLP\ParsedReviewManager.cs" />
     <Compile Include="NLP\Repair\NullSentenceRepairHandler.cs" />
     <Compile Include="NLP\SimpleTextSplitter.cs" />
     <Compile Include="NLP\SimpleSplitterFactory.cs" />

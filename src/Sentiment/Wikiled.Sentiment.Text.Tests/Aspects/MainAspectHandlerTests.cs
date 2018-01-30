@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Tests.Aspects
@@ -34,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         {
             Assert.Throws<ArgumentNullException>(() => instance.Process(null));
             var data = await ActualWordsHandler.Instance.TextSplitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = data.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
             instance.Process(review);
             var attributes = instance.GetAttributes(10).ToArray();
             var features = instance.GetFeatures(10).ToArray();

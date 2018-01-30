@@ -8,7 +8,7 @@ using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.NLP
 {
-    public class ParsedReviewFactory
+    public class ParsedReviewManager : IParsedReviewManager
     {
         private readonly IWordsHandler manager;
 
@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private ParsedReview review;
 
-        public ParsedReviewFactory(IWordsHandler manager, Document document)
+        public ParsedReviewManager(IWordsHandler manager, Document document)
         {
             Guard.NotNull(() => manager, manager);
             Guard.NotNull(() => document, document);
@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private IWordItem Previous => review.CurrentSentence.CurrentPart.Occurrences.Count == 0 ? null : review.CurrentSentence.CurrentPart.Occurrences[review.CurrentSentence.CurrentPart.Occurrences.Count - 1];
 
-        public ParsedReview Create()
+        public IParsedReview Create()
         {
             if (review != null)
             {

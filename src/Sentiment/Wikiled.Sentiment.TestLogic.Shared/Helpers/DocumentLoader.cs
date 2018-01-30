@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
@@ -16,7 +17,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         private readonly string path;
 
-        private IWordsHandler handler;
+        private readonly IWordsHandler handler;
 
         public DocumentLoader(ITextSplitter splitter, IWordsHandler handler)
         {
@@ -28,7 +29,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
         {
             var result = await extraction.Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
-            var review = result.GetReview(handler);
+            var review = new ParsedReviewManager(handler, result).Create();
             return review.GenerateDocument(NullRatingAdjustment.Instance);
         }
 
@@ -36,7 +37,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         {
             var document = await InitDocument().ConfigureAwait(false);
             var words = document.Words.ToArray();
-            for(int i = 0; i < words.Length; i++)
+            for (int i = 0; i < words.Length; i++)
             {
                 words[i].CalculatedValue = i % 3;
             }

@@ -62,7 +62,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             }
 
             var data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
-            review = data.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
             instance = new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.NRCDictionary, review);
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();

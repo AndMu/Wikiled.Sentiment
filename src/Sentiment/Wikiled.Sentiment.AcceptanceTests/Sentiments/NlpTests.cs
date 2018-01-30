@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
 
             var result = await splitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
-            var review = result.GetReview(wordsHandler);
+            var review = new ParsedReviewManager(wordsHandler, result).Create();
             var ratings = review.CalculateRawRating();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(disableInvert, ratings.IsPositive);
@@ -60,7 +60,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task TestPhrase()
         {
             var result = await splitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
-            ParsedReviewFactory factory = new ParsedReviewFactory(wordsHandler, result);
+            ParsedReviewManager factory = new ParsedReviewManager(wordsHandler, result);
             var review = factory.Create();
             Assert.AreEqual(4, review.Items.Count());
         }

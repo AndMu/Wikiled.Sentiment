@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Core.Utility.Extensions;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
 using Wikiled.Text.Analysis.POS;
@@ -79,11 +76,6 @@ namespace Wikiled.Sentiment.Text.Extensions
             }
 
             return document.Stars > 3 ? PositivityType.Positive : PositivityType.Negative;
-        }
-
-        public static IParsedReview GetReview(this Document document, IWordsHandler manager)
-        {
-            return new ParsedReviewFactory(manager, document).Create();
         }
 
         public static IList<SentimentDataItem> GetSentenceSentimentData(this Document document)

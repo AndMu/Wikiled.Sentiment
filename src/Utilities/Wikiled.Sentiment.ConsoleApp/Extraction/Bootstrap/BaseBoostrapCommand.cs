@@ -17,7 +17,7 @@ using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
-using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -31,6 +31,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
         private ISplitterHelper bootStrapSplitter;
+
+        private ParsedReviewManagerFactory managerFactory = new ParsedReviewManagerFactory();
 
         private PerformanceMonitor monitor;
 
@@ -170,7 +172,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             try
             {
                 var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                var bootReview = original.GetReview(bootStrapSplitter.DataLoader);
+                var bootReview = managerFactory.Create(bootStrapSplitter.DataLoader, original).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
@@ -186,7 +188,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                     // check also using default lexicon
                     var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text))
                                                     .ConfigureAwait(false);
-                    var originalReview = main.GetReview(defaultSplitter.DataLoader);
+                    var originalReview = managerFactory.Create(bootStrapSplitter.DataLoader, main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)

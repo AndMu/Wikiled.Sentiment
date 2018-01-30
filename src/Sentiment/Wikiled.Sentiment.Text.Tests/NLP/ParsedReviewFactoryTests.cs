@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void TestPhraseConversion()
         {
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             document.Sentences[0].Words[0].Phrase = "1";
             document.Sentences[0].Words[1].Phrase = "1";
 
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
 
             var data = document.XmlSerialize();
             var doc = data.XmlDeserialize<Document>();
-            factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, doc);
+            factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, doc);
             review = factory.Create();
             phrases = review.Sentences[0].Occurrences.GetPhrases().ToArray();
             Assert.AreEqual(1, phrases.Length);
@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void AddWord()
         {
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             ParsedReview review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         public void AddWordConjunction(int index, int parts)
         {
             (document.Sentences[0].Words[index]).Type = ",";
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             ParsedReview review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(parts, review.Sentences[0].Parts.Count());
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             document.Sentences[0].Words[1].Type = ",";
             document.Sentences[0].Words[2].Type = ",";
 
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             ParsedReview review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
@@ -87,7 +87,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void AddPhraseWord()
         {
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             document.Sentences[0].Words[0].Phrase = "1";
             document.Sentences[0].Words[1].Phrase = "1";
 

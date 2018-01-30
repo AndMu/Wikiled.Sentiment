@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             ActualWordsHandler.Instance.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
             ActualWordsHandler.Instance.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             var data = await splitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            review = data.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
             var sentence = review.Sentences[0];
             instance = new ExtractSentenceTextVector(sentence);
         }

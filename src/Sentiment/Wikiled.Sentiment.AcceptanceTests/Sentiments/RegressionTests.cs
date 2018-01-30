@@ -8,6 +8,7 @@ using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
+using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -42,7 +43,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("RawSentimentDetection: {0}", data);
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             await runner.Load().LastOrDefaultAsync();
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load(), new ParsedReviewManagerFactory()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.Init();

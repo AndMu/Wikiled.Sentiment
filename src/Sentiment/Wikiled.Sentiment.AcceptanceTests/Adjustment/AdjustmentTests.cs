@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
@@ -34,7 +33,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             adjuster.Adjust(words);
             var text = "I Veto it";
             var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = result.GetReview(handler);
+            var review = new ParsedReviewManager(handler, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
@@ -43,7 +42,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         {
             var text = "EMOTICON_confused I do";
             var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = result.GetReview(handler);
+            var review = new ParsedReviewManager(handler, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

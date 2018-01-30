@@ -6,7 +6,7 @@ using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Logging;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {
@@ -18,13 +18,17 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         private readonly IScheduler scheduler;
 
-        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews)
+        private readonly IParsedReviewManagerFactory factory;
+
+        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, IParsedReviewManagerFactory factory)
         {
             Guard.NotNull(() => splitter, splitter);
             Guard.NotNull(() => reviews, reviews);
             Guard.NotNull(() => scheduler, scheduler);
+            Guard.NotNull(() => factory, factory);
             this.scheduler = scheduler;
             Splitter = splitter;
+            this.factory = factory;
             var replay = reviews.Replay();
             this.reviews = replay;
             replay.Connect();
@@ -50,7 +54,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             {
                 Monitor.ManualyCount();
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                var review = doc.GetReview(Splitter.DataLoader);
+                var review = factory.Create(Splitter.DataLoader, doc).Create();
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);
                 return context;
             }

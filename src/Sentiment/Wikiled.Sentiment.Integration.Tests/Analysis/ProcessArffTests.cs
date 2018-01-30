@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
                         Text = "#Three",
                         Stemmed = "#Three"
                     }));
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             review = factory.Create();
         }
 
@@ -59,7 +59,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         public void ParseEmpty()
         {
             document.Sentences.Clear();
-            ParsedReviewFactory factory = new ParsedReviewFactory(ActualWordsHandler.Instance.WordsHandler, document);
+            ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
             review = factory.Create();
 
             instance.PopulateArff(review, PositivityType.Positive);

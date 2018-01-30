@@ -6,13 +6,13 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
-using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
+using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
+using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
+using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -27,9 +27,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("SimpleTest");
             var reviews =  TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
-            var result = (await TestHelper.Instance.CachedSplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) {Date = new DateTime(2016, 01, 01)})
-                                          .ConfigureAwait(false))
-                .GetReview(TestHelper.Instance.CachedSplitterHelper.DataLoader);
+            var doc = (await TestHelper.Instance.CachedSplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) { Date = new DateTime(2016, 01, 01) })
+                             .ConfigureAwait(false));
+            var result = new ParsedReviewManager(TestHelper.Instance.CachedSplitterHelper.DataLoader, doc).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
@@ -59,7 +59,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             ConcurrentBag<ISentence> sentences = new ConcurrentBag<ISentence>();
             var doc = await parsedDocument.GetParsed().ConfigureAwait(false);
-            var review = doc.GetReview(TestHelper.Instance.CachedSplitterHelper.DataLoader);
+            var review = new ParsedReviewManager(TestHelper.Instance.CachedSplitterHelper.DataLoader, doc).Create();
             foreach (var sentence in review.Sentences)
             {
                 var sentiments = sentence.Occurrences.Where(item => item.IsSentiment).ToArray();

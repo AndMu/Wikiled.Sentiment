@@ -10,6 +10,7 @@ using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Style.Description;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
@@ -44,7 +45,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             Out.EnsureDirectoryExistence();
             using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
-                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default));
+                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory());
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {

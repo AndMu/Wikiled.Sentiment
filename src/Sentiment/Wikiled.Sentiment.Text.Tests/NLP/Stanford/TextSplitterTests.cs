@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
@@ -36,7 +37,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
         {
             string sentence = "Actually I used it today for ~1.5 hours, and now, 3 hours after I am back, my left hand is still shaking.";
             var result = await splitter.Process(new ParseRequest(sentence) { Date = DateTime.Now }).ConfigureAwait(false);
-            var data = result.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
             Assert.AreEqual(1, data.Sentences.Count);
             Assert.AreEqual(23, data.Sentences[0].Occurrences.Count());
             Assert.AreEqual(11, data.Sentences[0].Occurrences.GetImportant().Count());
@@ -51,7 +52,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
             for (int i = 0; i < 100; i++)
             {
                 var data = await splitter.Process(new ParseRequest(sentence + " " + sentence2) { Date = DateTime.Now }).ConfigureAwait(false);
-                var review = data.GetReview(ActualWordsHandler.Instance.WordsHandler);
+                var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
                 Assert.IsNotNull(review);
             }
         }
@@ -62,7 +63,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
             string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
             string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             var result = await splitter.Process(new ParseRequest(sentence + " " + sentence2) { Date = DateTime.Now }).ConfigureAwait(false);
-            var data = result.GetReview(ActualWordsHandler.Instance.WordsHandler);
+            var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
 
             Assert.AreEqual(2, data.Sentences.Count);
             Assert.AreEqual(24, data.Sentences[0].Occurrences.Count());
