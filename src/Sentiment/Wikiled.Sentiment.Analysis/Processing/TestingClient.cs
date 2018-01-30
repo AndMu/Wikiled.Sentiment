@@ -167,7 +167,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Interlocked.Increment(ref error);
                 throw;

@@ -41,7 +41,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
                 .SelectMany(item => Observable.Start(() => StepProcessing(item), scheduler))
                 .Merge();
 
-            return selectedData;
+            return selectedData.Where(item => item != null);
         }
 
         private async Task<ProcessingContext> StepProcessing(IParsedDocumentHolder reviewHolder)
@@ -58,11 +58,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             {
                 log.Error(ex);
             }
-            finally
-            {
-                Monitor.Increment();
-            }
 
+            Monitor.Increment();
             return null;
         }
     }

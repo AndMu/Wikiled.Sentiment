@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             else
             {
                 DataDownloader dataDownloader = new DataDownloader();
-                var task = dataDownloader.DownloadFile(new Uri("http://datasets.azurewebsites.net/Resources/resourcesLight.zip"), resourcesPath);
+                var task = dataDownloader.DownloadFile(new Uri("http://datasets.azurewebsites.net/Resources/resources.zip"), resourcesPath);
                 task.Wait();
             }
 

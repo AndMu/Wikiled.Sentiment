@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
         [Description("Place to save output")]
         [Required]
-        public string Out{ get; set; }
+        public string Out { get; set; }
 
         [Description("Include sentiment words into attributes")]
         public bool Sentiment { get; set; }
@@ -54,7 +54,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
                 pipeline.ProcessStep()
-                        .Select(item => Observable.Start(() => Processing(item)))
+                        .Select(item => Observable.Start(() =>
+                        {
+                            Processing(item);
+                            pipeline.Monitor.Increment();
+                        }))
                         .Merge()
                         .LastOrDefaultAsync()
                         .Wait();

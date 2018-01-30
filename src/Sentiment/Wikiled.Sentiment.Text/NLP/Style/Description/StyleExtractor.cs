@@ -40,13 +40,17 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Description
                 sentenceStyle.WordSurface = text.Surface.Words.GetData();
                 foreach (var word in sentence.Words)
                 {
-                    var wordStyle = new WordStyle();
-                    sentenceStyle.Words.Add(wordStyle);
+                    var wordStyle = new WordStyle(word);
                     wordStyle.Inquirer = text.InquirerFinger.GetData(word);
                     var record = handler.NRCDictionary.FindRecord(word);
                     if (record != null)
                     {
                         wordStyle.NRC = record;
+                    }
+
+                    if (wordStyle.HasValue)
+                    {
+                        sentenceStyle.Words.Add(wordStyle);
                     }
                 }
             }

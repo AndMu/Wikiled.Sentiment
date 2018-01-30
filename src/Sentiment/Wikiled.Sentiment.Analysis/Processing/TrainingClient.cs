@@ -68,7 +68,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
             using(Observable.Interval(TimeSpan.FromSeconds(30))
                            .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep().Select(item => Observable.Start(() => AdditionalProcessing(item))).Merge();
+                await pipeline.ProcessStep()
+                              .Select(AdditionalProcessing)
+                              .Select(
+                                  item =>
+                                  {
+                                      pipeline.Monitor.Increment();
+                                      return item;
+                                  });
             }
 
             SelectAdditional();
@@ -79,7 +86,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep().Select(item => Observable.Start(() => ProcessSingleItem(item))).Merge();
+                await pipeline.ProcessStep()
+                              .Select(
+                                  item => Observable.Start(
+                                      () =>
+                                      {
+                                          var result = ProcessSingleItem(item);
+                                          pipeline.Monitor.Increment();
+                                          return result;
+                                      }))
+                              .Merge();
+                ;
             }
 
             log.Info("Cleaning up ARFF....");
@@ -143,6 +160,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 Interlocked.Increment(ref negative);
             }
 
+            
             return context;
         }
 
