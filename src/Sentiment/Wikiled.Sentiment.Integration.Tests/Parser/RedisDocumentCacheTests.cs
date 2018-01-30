@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using NLog;
 using NUnit.Framework;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Text.Analysis.POS;
-using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Integration.Tests.Parser
@@ -13,13 +13,18 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
     [TestFixture]
     public class RedisDocumentCacheTests
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private IRedisLink link;
 
         private RedisDocumentCache instance;
 
+        private RedisInside.Redis redis;
+
         [SetUp]
         public void Setup()
         {
+            redis = new RedisInside.Redis(i => i.Port(6666).LogTo(item => log.Debug(item)));
             link = new RedisLink("Test", new RedisMultiplexer(new RedisConfiguration("localhost", 6666)));
             link.Open();
             instance = new RedisDocumentCache(POSTaggerType.Simple, link);
@@ -29,6 +34,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         public void TearDown()
         {
             link.Close();
+            redis.Dispose();
         }
 
         [Test]

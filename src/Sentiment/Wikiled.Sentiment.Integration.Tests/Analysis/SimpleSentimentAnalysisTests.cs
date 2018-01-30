@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         {
             handler.DisableFeatureSentiment = disableInvertor;
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, request).Create();
+            var review = new ParsedReviewManager(handler, request).Create();
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
             var sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             }
 
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, request).Create();
+            var review = new ParsedReviewManager(handler, request).Create();
             Assert.IsNull(review.CalculateRawRating().StarsRating);
             var sentiments = review.GetAllSentiments();
             Assert.AreEqual(0, sentiments.Length);
@@ -77,7 +77,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             handler.SentimentDataHolder.Clear();
             handler.SentimentDataHolder.SetValue("hate", new SentimentValueData(2));
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, request).Create();
+            var review = new ParsedReviewManager(handler, request).Create();
             Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);
             var sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);

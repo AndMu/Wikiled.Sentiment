@@ -178,6 +178,9 @@
     <Reference Include="protobuf-net, Version=2.3.5.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\..\packages\protobuf-net.2.3.5\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="RedisInside, Version=3.2.100.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\redis-inside.3.2.100.0\lib\net451\RedisInside.dll</HintPath>
+    </Reference>
     <Reference Include="Snappy.NET, Version=1.1.1.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Snappy.NET.1.1.1.8\lib\net45\Snappy.NET.dll</HintPath>
       <Private>True</Private>
@@ -250,7 +253,6 @@
     </Compile>
     <Compile Include="Analysis\ProcessArffTests.cs" />
     <Compile Include="Analysis\SimpleSentimentAnalysisTests.cs" />
-    <Compile Include="Global.cs" />
     <Compile Include="Helpers\DictionaryHelper.cs" />
     <Compile Include="NLP\SentenceRepairHandlerTests.cs" />
     <Compile Include="Parser\RedisDocumentCacheTests.cs" />
