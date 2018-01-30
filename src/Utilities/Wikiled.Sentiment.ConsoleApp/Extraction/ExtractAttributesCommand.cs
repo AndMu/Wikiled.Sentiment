@@ -13,6 +13,7 @@ using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
@@ -45,11 +46,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
             splitter = new MainSplitterFactory(new LocalCacheFactory(), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
-            var pipeline = new ProcessingPipeline(
-                TaskPoolScheduler.Default,
-                splitter,
-                GetReviews()
-                    .ToObservable(TaskPoolScheduler.Default));
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, GetReviews().ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory());
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {

@@ -8,22 +8,19 @@ using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
+using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
     public class MainBaseLine
     {
+        private readonly ProductCategory category;
+
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        public TestRunner Training { get; private set; }
-
-        public TestHelper Helper { get; private set; }
-
-        private readonly string trainingLocation;
 
         private readonly string product;
 
-        private readonly ProductCategory category;
+        private readonly string trainingLocation;
 
         public MainBaseLine(string product, ProductCategory category)
         {
@@ -32,41 +29,35 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             trainingLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, @"SVM", product);
         }
 
-        public Task Train()
-        {
-            logger.Info("Trainning...");
-            Helper = new TestHelper();
-            Training = new TestRunner(
-                Helper,
-                new SentimentTestData(product)
-                {
-                    Category = category
-                });
+        public TestHelper Helper { get; private set; }
 
-            logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active, Training.Load());
-            TrainingClient trainingClient = new TrainingClient(pipeline, trainingLocation);
-            logger.Info("Training...");
-            return trainingClient.Train();
-        }
+        public TestRunner Training { get; private set; }
 
         public async Task<TestingClient> Test(string testProduct, ProductCategory testCategory)
         {
             logger.Info("Testing...");
-            TestRunner testing = new TestRunner(
-                Helper,
-                new SentimentTestData(testProduct)
-                {
-                    Category = testCategory
-                });
+            TestRunner testing = new TestRunner(Helper, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, testing.Load());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, testing.Load(), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingLocation);
             testingClient.Init();
             await testingClient.Process().LastOrDefaultAsync();
             testingClient.Save(Path.Combine(trainingLocation, @"Result", testProduct));
             return testingClient;
+        }
+
+        public Task Train()
+        {
+            logger.Info("Trainning...");
+            Helper = new TestHelper();
+            Training = new TestRunner(Helper, new SentimentTestData(product) { Category = category });
+
+            logger.Info("Loading data...");
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active, Training.Load(), new ParsedReviewManagerFactory());
+            TrainingClient trainingClient = new TrainingClient(pipeline, trainingLocation);
+            logger.Info("Training...");
+            return trainingClient.Train();
         }
     }
 }

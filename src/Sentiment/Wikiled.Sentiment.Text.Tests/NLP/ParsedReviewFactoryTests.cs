@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         public void AddWord()
         {
             ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
-            ParsedReview review = factory.Create();
+            var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
             Assert.AreEqual(3, review.Sentences[0].Occurrences.Count());
@@ -64,7 +64,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         {
             (document.Sentences[0].Words[index]).Type = ",";
             ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
-            ParsedReview review = factory.Create();
+            var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(parts, review.Sentences[0].Parts.Count());
             Assert.AreEqual(2, review.Sentences[0].Occurrences.Count());
@@ -77,7 +77,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             document.Sentences[0].Words[2].Type = ",";
 
             ParsedReviewManager factory = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, document);
-            ParsedReview review = factory.Create();
+            var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
             Assert.AreEqual(1, review.Sentences[0].Parts.First().Occurrences.GetImportant().Count());
@@ -91,7 +91,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             document.Sentences[0].Words[0].Phrase = "1";
             document.Sentences[0].Words[1].Phrase = "1";
 
-            ParsedReview review = factory.Create();
+            var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(3, review.Sentences[0].Occurrences.Count());
             var phrases = review.Items.GetPhrases().ToArray();
