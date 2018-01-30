@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Wikiled.Core.Utility.Arguments;
 
 namespace Wikiled.Sentiment.Text.Resources
@@ -16,7 +18,8 @@ namespace Wikiled.Sentiment.Text.Resources
         public JsonStreamingWriter(string path)
         {
             Guard.NotNullOrEmpty(() => path, path);
-            streamWriter = new StreamWriter(path);
+            streamWriter = new StreamWriter(path, false, Encoding.UTF8);
+            streamWriter.AutoFlush = true;
             writer = new JsonTextWriter(streamWriter);
             writer.Formatting = Formatting.Indented;
             writer.WriteStartArray();
@@ -25,8 +28,8 @@ namespace Wikiled.Sentiment.Text.Resources
         public void WriteObject<T>(T instance)
         {
             counter++;
-            var json = JsonConvert.SerializeObject(instance);
-
+            var json = JsonConvert.SerializeObject(instance, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            json = JValue.Parse(json).ToString(Formatting.Indented);
             lock (writer)
             {
                 if (counter > 1)
@@ -43,8 +46,9 @@ namespace Wikiled.Sentiment.Text.Resources
             lock (writer)
             {
                 writer.WriteEndArray();
-                streamWriter?.Dispose();
+                writer.Close();
                 ((IDisposable)writer)?.Dispose();
+                streamWriter?.Dispose();
             }
         }
     }

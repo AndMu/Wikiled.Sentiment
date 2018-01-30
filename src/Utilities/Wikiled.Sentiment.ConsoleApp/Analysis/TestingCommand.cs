@@ -6,6 +6,7 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using NLog;
+using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -41,7 +42,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             TestingClient client;
-            using (resultsWriter = new JsonStreamingWriter<Document>(Path.Combine(Out, "result.json")))
+            Out.EnsureDirectoryExistence();
+            using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
                 var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default));
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
@@ -50,11 +52,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                     client = new TestingClient(pipeline, Trained);
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
-                    client.Process()
-                          .Select(item => Observable.Start(() => SaveDocument(splitter.DataLoader, item)))
-                          .Merge()
-                          .LastOrDefaultAsync()
-                          .Wait();
+                    client.Process().Select(item => Observable.Start(() => SaveDocument(splitter.DataLoader, item))).Merge().LastOrDefaultAsync().Wait();
                 }
 
                 client.Save(Out);

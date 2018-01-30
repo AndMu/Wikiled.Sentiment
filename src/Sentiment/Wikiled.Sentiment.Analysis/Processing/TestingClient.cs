@@ -17,16 +17,16 @@ using Wikiled.Sentiment.Analysis.Stats;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP.NRC;
-using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TestingClient
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private readonly IProcessingPipeline pipeline;
 
         private readonly StatisticsCalculator statistics = new StatisticsCalculator();
 
@@ -37,8 +37,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private int error;
 
         private ITrainingPerspective perspective;
-
-        private readonly IProcessingPipeline pipeline;
 
         public TestingClient(IProcessingPipeline pipeline, string svmPath = null)
         {
@@ -54,6 +52,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
             SentimentVector = new SentimentVector();
         }
 
+        public string AspectPath { get; set; }
+
         public AspectSentimentTracker AspectSentiment { get; }
 
         public bool DisableAspects { get; set; }
@@ -61,8 +61,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public bool DisableSvm { get; set; }
 
         public int Errors => error;
-
-        public string AspectPath { get; set; }
 
         public ResultsHolder Holder { get; } = new ResultsHolder();
 
@@ -91,7 +89,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 machine.FilterCoef(Path.Combine(SvmPath, "coef.txt"));
                 perspective = new SimpleTrainingPerspective(machine, machine.Header);
             }
-            
+
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
@@ -114,15 +112,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
-            
             log.Info("Processing...");
         }
 
         public IObservable<ProcessingContext> Process()
         {
             var documentSelector = pipeline.ProcessStep().Select(item => Observable.Start(() => RetrieveData(item))).Merge();
-            return documentSelector
-                .Where(item => item != null);
+            return documentSelector.Where(item => item != null);
         }
 
         public void Save(string path)
@@ -137,7 +133,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             arffProcess.Normalize(NormalizationType.L2);
             arff.FullSave(path);
         }
-   
+
         private ProcessingContext RetrieveData(ProcessingContext context)
         {
             try
@@ -164,16 +160,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
                         statistics.Add(adjustment.Rating.StarsRating.Value, context.Original.Stars.Value);
                         if (context.Original.Stars != 3)
                         {
-                            Performance.Add(
-                                context.Original.Stars > 3,
-                                adjustment.Rating.IsPositive);
+                            Performance.Add(context.Original.Stars > 3, adjustment.Rating.IsPositive);
                         }
                     }
 
                     arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
             }
-            catch (Exception)
+            catch(Exception)
             {
                 Interlocked.Increment(ref error);
                 throw;
