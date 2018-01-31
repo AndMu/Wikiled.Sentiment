@@ -273,8 +273,8 @@
     <Reference Include="Wikiled.Redis, Version=2.4.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Redis.2.4.10\lib\net462\Wikiled.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="Wikiled.Text.Analysis, Version=1.4.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.4.7\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
+    <Reference Include="Wikiled.Text.Analysis, Version=1.4.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Wikiled.Text.Analysis.1.4.10\lib\net462\Wikiled.Text.Analysis.dll</HintPath>
     </Reference>
     <Reference Include="Wikiled.Text.Inquirer, Version=1.0.19.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Wikiled.Text.Inquirer.1.0.19\lib\net462\Wikiled.Text.Inquirer.dll</HintPath>

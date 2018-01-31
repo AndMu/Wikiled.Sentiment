@@ -8,7 +8,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         int WindowsSize { get; }
 
-        double Value { get; }
+        double? Value { get; }
 
         int TotalWords { get; }
 

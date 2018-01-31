@@ -15,6 +15,6 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         DescriptiveStatistics Statistics { get; }
 
-        void AddData(double data);
+        void AddData(double? data);
     }
 }

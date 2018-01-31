@@ -7,17 +7,19 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
     public class StatisticsResult : IStatisticsResult
     {
         private int totalWords;
+
         private int totalOccurences;
+
         private readonly SimpleStatistics statistics;
 
-        public StatisticsResult(double value, int windowsSize, params double[] dataPoints)
+        public StatisticsResult(double? value, int windowsSize, params double[] dataPoints)
         {
             Value = value;
             WindowsSize = windowsSize;
             statistics = new SimpleStatistics(dataPoints);
         }
 
-        public void AddData(double data)
+        public void AddData(double? data)
         {
             statistics.AddData(data);
         }
@@ -53,7 +55,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         public int WindowsSize { get;  }
 
-        public double Value { get;  }
+        public double? Value { get;  }
 
         public int TotalWords => totalWords;
 

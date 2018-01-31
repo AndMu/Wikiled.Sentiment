@@ -5,7 +5,7 @@ namespace Wikiled.Sentiment.Text.Structure.Sentiment
 {
     public class SentimentDataItem
     {
-        public SentimentDataItem(int index, string text, double value, SentimentLevel level)
+        public SentimentDataItem(int index, string text, double? value, SentimentLevel level)
         {
             Guard.IsValid(() => index, index, item => item >= 0, "index");
             Guard.NotNullOrEmpty(() => text, text);
@@ -32,6 +32,6 @@ namespace Wikiled.Sentiment.Text.Structure.Sentiment
 
         public string Text { get; }
 
-        public double Value { get; }
+        public double? Value { get; }
     }
 }

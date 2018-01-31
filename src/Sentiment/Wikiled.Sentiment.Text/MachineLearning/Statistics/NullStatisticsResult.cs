@@ -3,9 +3,9 @@ using MathNet.Numerics.Statistics;
 
 namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 {
-    class NullStatisticsResult : IStatisticsResult
+    public class NullStatisticsResult : IStatisticsResult
     {
-        public NullStatisticsResult(double value)
+        public NullStatisticsResult(double? value)
         {
             Value = value;
         }
@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
         {
         }
 
-        public void AddData(double data)
+        public void AddData(double? data)
         {
         }
 
@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         public int WindowsSize => 0;
 
-        public double Value { get;  }
+        public double? Value { get;  }
 
         public int TotalWords => 0;
 

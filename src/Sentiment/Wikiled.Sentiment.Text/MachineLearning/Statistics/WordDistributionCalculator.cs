@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         public WordEx MainItem { get; }
 
-        protected override double GetValue()
+        protected override double? GetValue()
         {
             return MainItem.Value;
         }

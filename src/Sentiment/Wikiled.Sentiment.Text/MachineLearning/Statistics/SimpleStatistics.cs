@@ -27,14 +27,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             }
         }
 
-        public void AddData(double data)
+        public void AddData(double? data)
         {
-            if (data == 0)
+            if (!data.HasValue || data == 0)
             {
                 return;
             }
 
-            dataBag.Add(data);
+            dataBag.Add(data.Value);
             statistics = null;
             histogram = null;
         }

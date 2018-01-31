@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         public SentenceItem Sentence { get; }
 
-        protected override double GetValue()
+        protected override double? GetValue()
         {
             return Sentence.CalculateSentiment();
         }

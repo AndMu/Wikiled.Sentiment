@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             return result;
         }
 
-        protected abstract double GetValue();
+        protected abstract double? GetValue();
 
         protected abstract void Process(Document currentDocument, StatisticsResult result);
     }
