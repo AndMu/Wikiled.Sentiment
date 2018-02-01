@@ -142,7 +142,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = context.Review.GenerateDocument(adjustment);
                 AspectSentiment.Process(context.Review);
-                Holder.AddResult(new ResultRecord(context.Original.Id, context.Original.Stars, adjustment.Rating.StarsRating, context.Review.GetAllSentiments().Length));
+                Holder.AddResult(new ResultRecord(context.Original.Id, context.Original.Stars, adjustment.Rating.StarsRating, context.Review.GetAllSentiments().Length, context.Original.DocumentTime));
                 if (context.Original.Stars == null)
                 {
                     log.Debug("Document doesn't have star assigned");
