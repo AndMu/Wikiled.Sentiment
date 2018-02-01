@@ -6,6 +6,8 @@
     <Description>Wikiled Sentiment Analysis library</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <ProjectUrl>https://github.com/AndMu/Wikiled.Sentiment</ProjectUrl>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeP2PAssets</TargetsForTfmSpecificBuildOutput>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -52,9 +54,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj">
-      <IncludeInPackage />
-    </ProjectReference>
+    <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj" PrivateAssets="All" />
   </ItemGroup>
+
+  <Target Name="IncludeP2PAssets">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Text.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Text.pdb" />
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Analysis.pdb" />
+    </ItemGroup>
+  </Target>
 
 </Project>
