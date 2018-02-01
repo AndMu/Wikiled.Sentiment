@@ -37,16 +37,15 @@ namespace Wikiled.Sentiment.Text.Aspects
             foreach (var aspect in review.Items.Where(item => item.IsFeature))
             {
                 var context = factory.Construct(aspect.Relationship);
-                lock(syncRoot)
+                lock (syncRoot)
                 {
-                    List<SentimentValue> sentiments;
-                    if (!table.TryGetWordValue(aspect, out sentiments))
+                    if (!table.TryGetWordValue(aspect, out var sentiments))
                     {
                         sentiments = new List<SentimentValue>();
                         table[aspect.Stemmed] = sentiments;
                     }
-
-                    sentiments.AddRange(context.Sentiments);
+                    
+                    sentiments.AddRange(context.Sentiments.Where(item => item.DataValue.Value != 0));
                 }
             }
         }
@@ -66,7 +65,7 @@ namespace Wikiled.Sentiment.Text.Aspects
                                 {
                                     Text = item.Key,
                                     Times = item.Value.Count,
-                                    Sentiment = RatingData.Accumulate(item.Value.Select(x => x.DataValue)).RawRating.Value
+                                    Sentiment = RatingData.Accumulate(item.Value.Select(x => x.DataValue)).RawRating
                                 }).ToArray();
             }
 

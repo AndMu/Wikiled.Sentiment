@@ -43,19 +43,32 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             foreach (var processingData in data.Positive)
             {
-                processingData.Stars = 5;
+                SetStars(processingData, 5);
                 yield return new ParsingDocumentHolder(splitter, processingData);
             }
 
             foreach (var processingData in data.Negative)
             {
-                processingData.Stars = 1;
+                SetStars(processingData, 1);
                 yield return new ParsingDocumentHolder(splitter, processingData);
             }
 
             foreach (var processingData in data.Neutral)
             {
                 yield return new ParsingDocumentHolder(splitter, processingData);
+            }
+        }
+
+        private static void SetStars(SingleProcessingData processingData, double defaultStars)
+        {
+            if (processingData.Document.Stars == null)
+            {
+                processingData.Stars = defaultStars;
+                processingData.Document.Stars = defaultStars;
+            }
+            else
+            {
+                processingData.Stars = processingData.Document.Stars.Value;
             }
         }
 

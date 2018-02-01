@@ -28,8 +28,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         /// Do you want to use all words of filter using threshold (min 3 reviews with words and words with 10 occurrences)
         /// </summary>
         public bool UseAll { get; set; }
-
-        [Required]
+        
         public string Model { get; set; } = @".\Svm";
 
         protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)

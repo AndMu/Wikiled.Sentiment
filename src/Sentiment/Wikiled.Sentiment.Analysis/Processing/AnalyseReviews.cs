@@ -63,8 +63,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     throw new ArgumentNullException(nameof(currentSet));
                 }
 
-                Guard.IsValid(() => Positive, Positive, i => i > 0, "Non zero");
-                Guard.IsValid(() => Negative, Negative, i => i > 0, "Non zero");
+                Guard.IsValid(() => Positive, Positive, i => i > 0, "Can't train. Missing positive samples");
+                Guard.IsValid(() => Negative, Negative, i => i > 0, "Can't train. Missing negative samples");
                 var dataSet = currentSet;
                 var machine = await MachineSentiment<PositivityType>.Train(dataSet, TrainingHeader, CancellationToken.None).ConfigureAwait(false);
                 machine.Save(SvmPath);
