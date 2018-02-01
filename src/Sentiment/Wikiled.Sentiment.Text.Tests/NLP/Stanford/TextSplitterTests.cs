@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Stanford;
 using Wikiled.Sentiment.Text.Parser;
@@ -22,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            string path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources\Stanford");
+            string path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\..\Resources\Stanford");
             splitter = new StanfordTextSplitter(path, ActualWordsHandler.Instance.WordsHandler, NullCachedDocumentsSource.Instance);
         }
 

@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.Text.Features
 
         private void Load()
         {
-            XDocument document = GetType().LoadXmlData("Features.Features.xml");
+            XDocument document = GetType().LoadXmlData("Resources.Features.Features.xml");
             originalData = document.XmlDeserialize<DetectionData>();
             foreach (var adjectives in originalData.Adjectives)
             {

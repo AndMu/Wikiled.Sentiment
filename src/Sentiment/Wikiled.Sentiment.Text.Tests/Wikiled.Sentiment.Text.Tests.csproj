@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net471</TargetFrameworks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,14 +18,14 @@
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
     <PackageReference Include="IKVM" version="8.1.5717.0" />
     <PackageReference Include="MathNet.Numerics" version="3.20.2" />
-    <PackageReference Include="Moq" version="4.8.1" />
+    <PackageReference Include="Moq" Version="4.7.145" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="NLog" version="4.4.12" />
     <PackageReference Include="NUnit" version="3.9.0" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
-    <PackageReference Include="Polly" version="5.7.0" />
-    <PackageReference Include="protobuf-net" version="2.3.5" />
+    <PackageReference Include="Polly" version="5.8.0" />
+    <PackageReference Include="protobuf-net" version="2.3.6" />
     <PackageReference Include="RhinoMocks" version="3.6.1" />
     <PackageReference Include="SharpZipLib" version="0.86.0" />
     <PackageReference Include="Snappy.NET" version="1.1.1.8" />
@@ -53,6 +54,57 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Wikiled.Sentiment.TestLogic.Shared\Wikiled.Sentiment.TestLogic.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv000_29416.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv001_19502.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv002_17424.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv003_12683.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv004_12641.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv005_29357.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv006_17022.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv007_4992.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv008_29326.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv009_29417.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv010_29063.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv011_13044.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv012_29411.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv013_10494.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MachineLearning\Data\cv014_15600.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

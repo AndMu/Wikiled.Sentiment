@@ -2,10 +2,54 @@
 
   <PropertyGroup>
     <TargetFrameworks>net462;net471</TargetFrameworks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Dictionary\InvertorWords.txt" />
+    <None Remove="Resources\Dictionary\IrregularForms.xml" />
+    <None Remove="Resources\Dictionary\Quantifiers.txt" />
+    <None Remove="Resources\Dictionary\QuestionWords.txt" />
+    <None Remove="Resources\Dictionary\Sentiments.txt" />
+    <None Remove="Resources\Dictionary\StopWords.txt" />
+    <None Remove="Resources\Features\Features.xml" />
+    <None Remove="Resources\POS\Adjective.txt" />
+    <None Remove="Resources\POS\Adverb.txt" />
+    <None Remove="Resources\POS\Article.txt" />
+    <None Remove="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
+    <None Remove="Resources\POS\Conjunctions\CoordinatingConjunction.txt" />
+    <None Remove="Resources\POS\Conjunctions\InvertingConjunction.txt" />
+    <None Remove="Resources\POS\Conjunctions\RegularConjunction.txt" />
+    <None Remove="Resources\POS\Conjunctions\SubordinateConjunction.txt" />
+    <None Remove="Resources\POS\Noun.txt" />
+    <None Remove="Resources\POS\Preposition.txt" />
+    <None Remove="Resources\POS\Pronoun.txt" />
+    <None Remove="Resources\POS\Verb.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
+    <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
+    <EmbeddedResource Include="Resources\Dictionary\Quantifiers.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\QuestionWords.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\Sentiments.txt" />
+    <EmbeddedResource Include="Resources\Dictionary\StopWords.txt" />
+    <EmbeddedResource Include="Resources\Features\Features.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\POS\Adjective.txt" />
+    <EmbeddedResource Include="Resources\POS\Adverb.txt" />
+    <EmbeddedResource Include="Resources\POS\Article.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\CoordinatingConjunction.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\InvertingConjunction.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\RegularConjunction.txt" />
+    <EmbeddedResource Include="Resources\POS\Conjunctions\SubordinateConjunction.txt" />
+    <EmbeddedResource Include="Resources\POS\Noun.txt" />
+    <EmbeddedResource Include="Resources\POS\Preposition.txt" />
+    <EmbeddedResource Include="Resources\POS\Pronoun.txt" />
+    <EmbeddedResource Include="Resources\POS\Verb.txt" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -21,8 +65,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="4.4.12" />
     <PackageReference Include="ParallelExtensionsExtras" Version="1.2.0.0" />
-    <PackageReference Include="Polly" Version="5.7.0" />
-    <PackageReference Include="protobuf-net" Version="2.3.5" />
+    <PackageReference Include="Polly" Version="5.8.0" />
+    <PackageReference Include="protobuf-net" Version="2.3.6" />
     <PackageReference Include="SharpZipLib" Version="0.86.0" />
     <PackageReference Include="Snappy.NET" Version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
@@ -33,6 +77,7 @@
     <PackageReference Include="System.Reactive.Linq" Version="3.1.1" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="3.1.1" />
     <PackageReference Include="System.Reactive.Windows.Threading" Version="3.1.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <PackageReference Include="Wikiled.Arff" Version="1.0.20" />
     <PackageReference Include="Wikiled.Core.Utility" Version="2.1.18" />
