@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Castle.Core" version="4.2.1" />
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
-    <PackageReference Include="Moq" Version="4.8.1" />
+    <PackageReference Include="Moq" Version="4.7.145" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="NLog" version="4.4.12" />
