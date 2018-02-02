@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Stanford
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            string path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\..\Resources\Stanford");
+            string path = Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"], @"Stanford");
             splitter = new StanfordTextSplitter(path, ActualWordsHandler.Instance.WordsHandler, NullCachedDocumentsSource.Instance);
         }
 
