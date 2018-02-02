@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Castle.Core" version="4.2.1" />
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
-    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="Moq" Version="4.8.1" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="NLog" version="4.4.12" />
@@ -37,7 +37,7 @@
     <PackageReference Include="Wikiled.Arff" version="1.0.20" />
     <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
     <PackageReference Include="Wikiled.Redis" version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.10" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.11" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.0.19" />
 
   </ItemGroup>

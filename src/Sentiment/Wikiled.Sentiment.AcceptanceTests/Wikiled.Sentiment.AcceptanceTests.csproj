@@ -46,7 +46,7 @@
     <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
     <PackageReference Include="Wikiled.MachineLearning" version="1.0.15" />
     <PackageReference Include="Wikiled.Redis" version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.10" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.11" />
   </ItemGroup>
 
   <ItemGroup>

@@ -85,7 +85,7 @@
     <PackageReference Include="Wikiled.MachineLearning.Svm" Version="1.1.19" />
     <PackageReference Include="Wikiled.OpenNLP" Version="1.5.2" />
     <PackageReference Include="Wikiled.Redis" Version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" Version="1.4.10" />
+    <PackageReference Include="Wikiled.Text.Analysis" Version="1.4.11" />
     <PackageReference Include="Wikiled.Text.Inquirer" Version="1.0.19" />
   </ItemGroup>
 
