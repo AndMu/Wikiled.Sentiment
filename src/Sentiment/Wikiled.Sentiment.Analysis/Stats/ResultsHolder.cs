@@ -21,7 +21,6 @@ namespace Wikiled.Sentiment.Analysis.Stats
             using (var writer = new StreamWriter(name, false))
             using (var csvDataOut = new CsvWriter(writer))
             {
-                writer.WriteLine("Id,Original,Calculated,Total");
                 csvDataOut.WriteField("Id");
                 csvDataOut.WriteField("Date");
                 csvDataOut.WriteField("Original");
@@ -30,7 +29,6 @@ namespace Wikiled.Sentiment.Analysis.Stats
                 csvDataOut.NextRecord();
                 foreach (var result in results)
                 {
-                    writer.WriteLine(result);
                     csvDataOut.WriteField(result.Id);
                     csvDataOut.WriteField(result.Date);
                     csvDataOut.WriteField(result.Expected);

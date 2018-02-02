@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Wikiled.Sentiment.ConsoleApp": {
+      "commandName": "Project",
+      "commandLineArgs": "test -Articles=\"e:\\DataSets\\Market\\reddit\\out.xml\" -Weights=\"e:\\DataSets\\Market\\lexicon.csv\" -Out=.\\reddit"
+    }
+  }
+}

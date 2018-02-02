@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.ConsoleApp
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             log.Info("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
             ConfigurationHandler configuration = new ConfigurationHandler();

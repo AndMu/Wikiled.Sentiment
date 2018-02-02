@@ -11,6 +11,7 @@
 
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <StartupObject>Wikiled.Sentiment.ConsoleApp.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
