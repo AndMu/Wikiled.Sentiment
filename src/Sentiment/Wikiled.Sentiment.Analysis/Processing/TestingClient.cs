@@ -13,7 +13,6 @@ using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Svm.Extensions;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
-using Wikiled.Sentiment.Analysis.Stats;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
@@ -61,8 +60,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public bool DisableSvm { get; set; }
 
         public int Errors => error;
-
-        public ResultsHolder Holder { get; } = new ResultsHolder();
 
         public PrecisionRecallCalculator<bool> Performance { get; } = new PrecisionRecallCalculator<bool>();
 
@@ -129,7 +126,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             var vector = SentimentVector.GetVector(NormalizationType.None);
             vector.XmlSerialize().Save(Path.Combine(path, "sentiment_vector.xml"));
-            Holder.Save(Path.Combine(path, "result.csv"));
             arffProcess.Normalize(NormalizationType.L2);
             arff.FullSave(path);
         }
@@ -142,7 +138,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = context.Review.GenerateDocument(adjustment);
                 AspectSentiment.Process(context.Review);
-                Holder.AddResult(new ResultRecord(context.Original.Id, context.Original.Stars, adjustment.Rating.StarsRating, context.Review.GetAllSentiments().Length, context.Original.DocumentTime));
+                context.Adjustment = adjustment;
                 if (context.Original.Stars == null)
                 {
                     log.Debug("Document doesn't have star assigned");

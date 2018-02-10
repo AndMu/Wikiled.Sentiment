@@ -65,7 +65,7 @@ namespace Wikiled.Sentiment.Text.Data.Review
         public void InitDocument(IParsedReview review)
         {
             Review = review;
-            Document = Review.GenerateDocument(NullRatingAdjustment.Instance);
+            Document = Review.GenerateDocument(new NullRatingAdjustment());
             Document.Stars = Stars;
         }
 

@@ -30,14 +30,14 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public static double Calculate(double positive, double negative)
         {
-            const int coefficient = 2;
+            int coefficient = 2;
             if (positive == 0 &&
                 negative == 0)
             {
                 return 0;
             }
 
-            const double min = 0.0001;
+            double min = 0.0001;
             positive += min;
             negative += min;
             double rating = Math.Log(positive / negative, 2);
