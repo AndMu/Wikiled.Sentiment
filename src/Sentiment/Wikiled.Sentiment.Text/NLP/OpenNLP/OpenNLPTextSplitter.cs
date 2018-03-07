@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using NLog;
-using OpenNLP.Tools.Chunker;
-using OpenNLP.Tools.PosTagger;
+using SharpNL.Analyzer;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
-using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
-using Wikiled.Text.Analysis.Tokenizer;
 
 namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 {
@@ -18,15 +14,9 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ITreebankWordTokenizer tokenizer;
-
-        private readonly EnglishMaximumEntropyPosTagger tagger;
-
-        private readonly EnglishTreebankChunker chunker;
-
         private readonly IWordsHandler handler;
 
-        private readonly ISentenceTokenizer sentenceSplitter;
+        private readonly AggregateAnalyzer analyzer;
 
         public OpenNLPTextSplitter(IWordsHandler handler, string resourcesFolder, ICachedDocumentsSource cache)
             : base(handler, cache)
@@ -35,36 +25,22 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             Guard.NotNull(() => handler, handler);
             Guard.NotNullOrEmpty(() => resourcesFolder, resourcesFolder);
             log.Debug("Creating with resource path: {0}", resourcesFolder);
-            sentenceSplitter = SentenceTokenizer.Create(handler, true, false);
-            tokenizer = new TreebankWordTokenizer();
-            tagger = new EnglishMaximumEntropyPosTagger(
-                         Path.Combine(resourcesFolder, @"Models\EnglishPOS.nbin"),
-                         Path.Combine(resourcesFolder, @"Models\Parser\tagdict"));
-            chunker = new EnglishTreebankChunker(Path.Combine(resourcesFolder, @"Models\EnglishChunk.nbin"));
             this.handler = handler;
+            analyzer = new AggregateAnalyzer
+                           {
+                               Path.Combine(resourcesFolder, @"1.5\en-sent.bin"),
+                               Path.Combine(resourcesFolder, @"1.5\en-chunker.bin"),
+                               Path.Combine(resourcesFolder, @"1.5\en-token.bin"),
+                               Path.Combine(resourcesFolder, @"1.5\en-pos-maxent.bin")
+                           };
         }
 
         protected override Document ActualProcess(ParseRequest request)
         {
-            var sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
-            var sentenceDataList = new List<SentenceData>(sentences.Length);
-
-            //// !!!!! SVARBU mulki nenaudok jokiu Parallel sitoje klasese
-            //// !!!!! uzpisi atminti - tik fixuotas poolas
-            for (int i = 0; i < sentences.Length; i++)
-            {
-                var sentenceData = new SentenceData { Text = sentences[i] };
-                sentenceData.Tokens = tokenizer.Tokenize(sentenceData.Text);
-                if (sentenceData.Tokens.Length > 0)
-                {
-                    sentenceData.Tags = tagger.Tag(sentenceData.Tokens);
-                    sentenceData.Chunks = chunker.GetChunks(sentenceData.Tokens, sentenceData.Tags).ToArray();
-                    sentenceDataList.Add(sentenceData);
-                }
-            }
-
+            var processing = new SharpNL.Document("en", request.Document.Text);
+            analyzer.Analyze(processing);
             Document document = new Document(request.Document.Text);
-            foreach (var sentenceData in sentenceDataList)
+            foreach (var sentenceData in processing.Sentences)
             {
                 if (string.IsNullOrWhiteSpace(sentenceData.Text))
                 {
@@ -76,13 +52,13 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 int index = 0;
                 foreach (var chunk in sentenceData.Chunks)
                 {
-                    if (chunk.TaggedWords.Count > 1)
+                    if (chunk.Tokens.Count > 1)
                     {
                         var phrase = chunk.Tag;
                         List<WordEx> phraseList = new List<WordEx>();
-                        foreach (var child in chunk.TaggedWords)
+                        foreach (var child in chunk.Tokens)
                         {
-                            var wordItem = handler.WordFactory.CreateWord(child.Word, child.Tag);
+                            var wordItem = handler.WordFactory.CreateWord(child.Lexeme, child.POSTag);
                             wordItem.WordIndex = index;
                             var wordEx = WordExFactory.Construct(wordItem);
                             currentSentence.Add(wordEx);
@@ -97,8 +73,8 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                     }
                     else
                     {
-                        var word = chunk.TaggedWords[0];
-                        var wordItem = handler.WordFactory.CreateWord(word.Word, word.Tag);
+                        var word = chunk.Tokens[0];
+                        var wordItem = handler.WordFactory.CreateWord(word.Lexeme, word.POSTag);
                         wordItem.WordIndex = index;
                         currentSentence.Add(WordExFactory.Construct(wordItem));
                         index++;
