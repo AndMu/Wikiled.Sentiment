@@ -3,9 +3,9 @@ using System.IO;
 using NLog;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Configuration;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 {
