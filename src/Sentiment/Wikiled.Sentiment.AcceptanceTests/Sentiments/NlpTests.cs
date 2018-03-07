@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [SetUp]
         public void Setup()
         {
-            path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources\");
+            path = Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]);
             var libraryPath = Path.Combine(path, @"Library\Standard\");
             var dictionary = new BasicEnglishDictionary();
             wordsHandler = new WordsDataLoader(libraryPath, dictionary);

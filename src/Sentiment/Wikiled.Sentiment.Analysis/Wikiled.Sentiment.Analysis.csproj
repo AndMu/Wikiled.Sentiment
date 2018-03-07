@@ -6,6 +6,8 @@
     <Description>Wikiled Sentiment Analysis library</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <ProjectUrl>https://github.com/AndMu/Wikiled.Sentiment</ProjectUrl>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeP2PAssets</TargetsForTfmSpecificBuildOutput>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,8 +26,8 @@
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="NLog" version="4.4.12" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
-    <PackageReference Include="Polly" version="5.7.0" />
-    <PackageReference Include="protobuf-net" version="2.3.5" />
+    <PackageReference Include="Polly" version="5.8.0" />
+    <PackageReference Include="protobuf-net" version="2.3.6" />
     <PackageReference Include="SharpZipLib" version="0.86.0" />
     <PackageReference Include="Snappy.NET" version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" version="1.2.6" />
@@ -35,6 +37,7 @@
     <PackageReference Include="System.Reactive.Linq" version="3.1.1" />
     <PackageReference Include="System.Reactive.PlatformServices" version="3.1.1" />
     <PackageReference Include="System.Reactive.Windows.Threading" version="3.1.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
     <PackageReference Include="Wikiled.Arff" version="1.0.20" />
     <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
@@ -42,7 +45,7 @@
     <PackageReference Include="Wikiled.MachineLearning.Svm" version="1.1.19" />
     <PackageReference Include="Wikiled.OpenNLP" version="1.5.2" />
     <PackageReference Include="Wikiled.Redis" version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.10" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.11" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.0.19" />
   </ItemGroup>
 
@@ -51,9 +54,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj">
-      <IncludeInPackage />
-    </ProjectReference>
+    <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj" PrivateAssets="All" />
   </ItemGroup>
+
+  <Target Name="IncludeP2PAssets">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Text.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Text.pdb" />
+      <BuildOutputInPackage Include="$(OutputPath)Wikiled.Sentiment.Analysis.pdb" />
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Configuration;
+using System.IO;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Core.Utility.Resources;
@@ -17,8 +18,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         public TestHelper(string server = "192.168.0.147", int port = 6373)
         {
             ConfigurationHandler configuration = new ConfigurationHandler();
-            configuration.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources"));
-            configuration.SetConfiguration("Stanford", Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\..\Resources\Stanford"));
+            configuration.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]));
+            configuration.SetConfiguration("Stanford", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"], "Stanford"));
             Redis = new RedisLink("Wikiled", new RedisMultiplexer(new RedisConfiguration(server, port)));
             Redis.Open();
             AmazonRepository = new AmazonRepository(Redis);

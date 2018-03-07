@@ -16,14 +16,14 @@
     <PackageReference Include="Castle.Core" version="4.2.1" />
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
     <PackageReference Include="Microsoft.Reactive.Testing" version="3.1.1" />
-    <PackageReference Include="Moq" version="4.8.1" />
+    <PackageReference Include="Moq" Version="4.7.145" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
     <PackageReference Include="NLog" version="4.4.12" />
     <PackageReference Include="NUnit" version="3.9.0" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
-    <PackageReference Include="Polly" version="5.7.0" />
-    <PackageReference Include="protobuf-net" version="2.3.5" />
+    <PackageReference Include="Polly" version="5.8.0" />
+    <PackageReference Include="protobuf-net" version="2.3.6" />
     <PackageReference Include="RhinoMocks" version="3.6.1" />
     <PackageReference Include="SharpZipLib" version="0.86.0" />
     <PackageReference Include="Snappy.NET" version="1.1.1.8" />
@@ -40,7 +40,7 @@
     <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
     <PackageReference Include="Wikiled.MachineLearning" version="1.0.15" />
     <PackageReference Include="Wikiled.Redis" version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.10" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.11" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,7 +54,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Processing\Electronics.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
