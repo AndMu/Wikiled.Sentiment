@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         /// <summary>
         /// Path to pretrained data. If empty will use as basic lexicon
         /// </summary>
-        public string Trained { get; set; }
+        public string Model { get; set; }
 
         public bool Debug { get; set; }
 
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
-                    client = new TestingClient(pipeline, Trained);
+                    client = new TestingClient(pipeline, Model);
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
                     client.Process()

@@ -2,6 +2,7 @@
 using System.IO;
 using NLog;
 using SharpNL.Analyzer;
+using SharpNL.Chunker;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
@@ -49,35 +50,26 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
                 var currentSentence = new SentenceItem(sentenceData.Text);
                 document.Add(currentSentence);
-                int index = 0;
+                Dictionary<int, Chunk> indexChunk = new Dictionary<int, Chunk>();
                 foreach (var chunk in sentenceData.Chunks)
                 {
-                    if (chunk.Tokens.Count > 1)
+                    for (int i = chunk.Start; i <= chunk.End; i++)
                     {
-                        var phrase = chunk.Tag;
-                        List<WordEx> phraseList = new List<WordEx>();
-                        foreach (var child in chunk.Tokens)
-                        {
-                            var wordItem = handler.WordFactory.CreateWord(child.Lexeme, child.POSTag);
-                            wordItem.WordIndex = index;
-                            var wordEx = WordExFactory.Construct(wordItem);
-                            currentSentence.Add(wordEx);
-                            phraseList.Add(wordEx);
-                            index++;
-                        }
-
-                        foreach (var wordEx in phraseList)
-                        {
-                            wordEx.Phrase = phrase;
-                        }
+                        indexChunk[i] = chunk;
                     }
-                    else
+                }
+
+                for (int i = 0; i < sentenceData.Tokens.Count; i++)
+                {
+                    indexChunk.TryGetValue(i, out var currentChunk);
+                    var word = sentenceData.Tokens[i];
+                    var wordItem = handler.WordFactory.CreateWord(word.Lexeme, word.POSTag);
+                    wordItem.WordIndex = i;
+                    var wordEx = WordExFactory.Construct(wordItem);
+                    currentSentence.Add(wordEx);
+                    if (currentChunk?.Length > 1)
                     {
-                        var word = chunk.Tokens[0];
-                        var wordItem = handler.WordFactory.CreateWord(word.Lexeme, word.POSTag);
-                        wordItem.WordIndex = index;
-                        currentSentence.Add(WordExFactory.Construct(wordItem));
-                        index++;
+                        wordEx.Phrase = currentChunk.Tag;
                     }
                 }
             }

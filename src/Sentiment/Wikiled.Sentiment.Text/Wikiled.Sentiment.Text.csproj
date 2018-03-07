@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
     <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
     <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
     <EmbeddedResource Include="Resources\Dictionary\Quantifiers.txt" />

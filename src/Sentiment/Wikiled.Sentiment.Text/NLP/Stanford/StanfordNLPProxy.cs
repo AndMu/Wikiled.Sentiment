@@ -148,7 +148,7 @@ namespace Wikiled.Sentiment.Text.NLP.Stanford
                         if (phrase != null)
                         {
                             var posPhrase = ((CoreLabel)phrase.label()).value();
-                            if (posPhrase.IndexOf('-') > 0) // we remove them temporary but later let's inculude
+                            if (posPhrase.IndexOf('-') > 0) // we remove them temporary but later inculude
                             {
                                 // look at this http://nlp.stanford.edu/fsnlp/dontpanic.pdf
                                 posPhrase = posPhrase.Substring(0, posPhrase.IndexOf('-'));

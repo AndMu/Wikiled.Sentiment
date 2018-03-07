@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
             var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
 
             Assert.AreEqual(2, data.Sentences.Count);
-            Assert.AreEqual(23, data.Sentences[0].Occurrences.Count());
+            Assert.AreEqual(24, data.Sentences[0].Occurrences.Count());
             Assert.AreEqual(13, data.Sentences[0].Occurrences.GetImportant().Count());
             Assert.AreEqual(3, data.Sentences[0].Parts.Count());
 
