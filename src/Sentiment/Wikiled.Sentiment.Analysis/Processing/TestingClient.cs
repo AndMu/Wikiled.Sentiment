@@ -10,7 +10,6 @@ using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Extensions;
 using Wikiled.Core.Utility.Serialization;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.MachineLearning.Svm.Extensions;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
@@ -35,7 +34,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private int error;
 
-        private ITrainingPerspective perspective;
+        private IMachineSentiment perspective;
 
         public TestingClient(IProcessingPipeline pipeline, string svmPath = null)
         {
@@ -78,13 +77,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             if (DisableSvm)
             {
-                perspective = NullTrainingPerspective.Instance;
+                perspective = new NullMachineSentiment();
             }
             else
             {
-                var machine = MachineSentiment<PositivityType>.Load(SvmPath);
-                machine.FilterCoef(Path.Combine(SvmPath, "coef.txt"));
-                perspective = new SimpleTrainingPerspective(machine, machine.Header);
+                perspective = MachineSentiment.Load(SvmPath);
             }
 
             arff = ArffDataSet.Create<PositivityType>("MAIN");
@@ -126,8 +123,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             var vector = SentimentVector.GetVector(NormalizationType.None);
             vector.XmlSerialize().Save(Path.Combine(path, "sentiment_vector.xml"));
-            arffProcess.Normalize(NormalizationType.L2);
-            arff.FullSave(path);
+            arff.Save(path);
         }
 
         private ProcessingContext RetrieveData(ProcessingContext context)

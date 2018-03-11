@@ -40,7 +40,6 @@ namespace Wikiled.Sentiment.ConsoleApp
             commandsList.Add(new SingleBoostrapCommand());
             commandsList.Add(new ImdbBoostrapCommand());
             commandsList.Add(new TestingCommand());
-            commandsList.Add(new RetrainCommand());
             commandsList.Add(new ExtractAttributesCommand());
             var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
 

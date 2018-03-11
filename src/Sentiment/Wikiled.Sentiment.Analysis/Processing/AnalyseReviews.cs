@@ -5,15 +5,11 @@ using System.Threading.Tasks;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Core.Utility.Arguments;
-using Wikiled.MachineLearning.Mathematics;
-using Wikiled.MachineLearning.Svm.Extensions;
-using Wikiled.MachineLearning.Svm.Logic;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.Sentiment;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
-    public class AnalyseReviews : ITrainingPerspective
+    public class AnalyseReviews 
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -21,14 +17,10 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public AnalyseReviews()
         {
-            MachineSentiment = new NullMachineSentiment();
-            TrainingHeader = TrainingHeader.CreateDefault();
-            TrainingHeader.GridSelection = true;
+            Model = new NullMachineSentiment();
         }
 
-        public static PrecisionStars GlobalStars { get; } = new PrecisionStars();
-
-        public IMachineSentiment MachineSentiment { get; private set; }
+        public IMachineSentiment Model { get; private set; }
 
         public int Negative { get; set; }
 
@@ -36,7 +28,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public string SvmPath { get; set; }
 
-        public TrainingHeader TrainingHeader { get; }
 
         public void InitEnvironment()
         {
@@ -50,7 +41,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public void SetArff(IArffDataSet dataSet)
         {
-            dataSet.FullSave(SvmPath, TrainingHeader);
             currentSet = dataSet;
         }
 
@@ -66,7 +56,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 Guard.IsValid(() => Positive, Positive, i => i > 0, "Can't train. Missing positive samples");
                 Guard.IsValid(() => Negative, Negative, i => i > 0, "Can't train. Missing negative samples");
                 var dataSet = currentSet;
-                var machine = await MachineSentiment<PositivityType>.Train(dataSet, TrainingHeader, CancellationToken.None).ConfigureAwait(false);
+                var machine = await MachineSentiment.Train(dataSet, CancellationToken.None).ConfigureAwait(false);
                 machine.Save(SvmPath);
                 LoadSvm();
                 log.Info("SVM Training Completed...");
@@ -81,8 +71,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private void LoadSvm()
         {
             log.Info("Loading SVM vectors...");
-            MachineSentiment = MachineSentiment<PositivityType>.Load(SvmPath);
-            TrainingHeader.Normalization = MachineSentiment.Header.Normalization;
+            Model = MachineSentiment.Load(SvmPath);
         }
     }
 }

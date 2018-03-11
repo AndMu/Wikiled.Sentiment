@@ -105,9 +105,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 await arffProcess.CleanupDataHolder(3, 10).ConfigureAwait(false);
             }
 
-            analyze.TrainingHeader.Normalization = NormalizationType.L2;
-            log.Info("Normalizing ARFF...");
-            arffProcess.Normalize(analyze.TrainingHeader.Normalization);
             analyze.SetArff(arff);
             analyze.Positive = positive;
             analyze.Negative = negative;

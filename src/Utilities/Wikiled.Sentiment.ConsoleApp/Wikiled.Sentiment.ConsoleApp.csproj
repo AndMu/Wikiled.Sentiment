@@ -16,8 +16,7 @@
     <PackageReference Include="IKVM" version="8.1.5717.0" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
-    <PackageReference Include="NLog" version="4.4.12" />
-    <PackageReference Include="NLog.Schema" version="4.4.12" />
+    <PackageReference Include="NLog" version="4.5.0-rc07" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
     <PackageReference Include="Polly" version="5.8.0" />
     <PackageReference Include="protobuf-net" version="2.3.6" />

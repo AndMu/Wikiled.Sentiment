@@ -1,17 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Wikiled.Core.Utility.Arguments;
+using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.Structure;
+
 namespace Wikiled.Sentiment.Text.MachineLearning
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Wikiled.Core.Utility.Arguments;
-    using Wikiled.Sentiment.Text.Data;
-    using Wikiled.Sentiment.Text.Extensions;
-    using Wikiled.Sentiment.Text.Sentiment;
-    using Wikiled.Sentiment.Text.Words;
-    using Wikiled.Text.Analysis.POS;
-    using Wikiled.Text.Analysis.Structure;
-
     public abstract class ExtractTextVectorBase
     {
         private readonly Dictionary<string, TextVectorCell> table = new Dictionary<string, TextVectorCell>(StringComparer.OrdinalIgnoreCase);
@@ -75,8 +74,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         private string GetWord(IWordItem wordItem)
         {
-            if (GenerateUsingImportantOnly && wordItem.POS.WordType != WordType.Adjective && wordItem.Entity != NamedEntities.Hashtag && !wordItem.IsTopAttribute && !wordItem.IsSentiment
-                && !wordItem.IsFeature)
+            if (GenerateUsingImportantOnly &&
+                wordItem.POS.WordType != WordType.Adjective &&
+                wordItem.Entity != NamedEntities.Hashtag &&
+                !wordItem.IsTopAttribute &&
+                !wordItem.IsSentiment &&
+                !wordItem.IsFeature)
             {
                 return null;
             }
