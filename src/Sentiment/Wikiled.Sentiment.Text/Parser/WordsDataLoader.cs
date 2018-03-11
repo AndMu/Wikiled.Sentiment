@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Caching;
 using System.Xml.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Core.Utility.Helpers;
 using Wikiled.Core.Utility.Serialization;
@@ -72,7 +72,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
             datasetPath = path;
             AspectDectector = NullAspectDectector.Instance;
-            Extractor = new RawWordExtractor(dictionary, MemoryCache.Default);
+            Extractor = new RawWordExtractor(dictionary, new MemoryCache(new MemoryCacheOptions()));
             WordFactory = new WordOccurenceFactory(this);
             AspectFactory = new MainAspectHandlerFactory(this);
             FrequencyListManager = new FrequencyListManager();

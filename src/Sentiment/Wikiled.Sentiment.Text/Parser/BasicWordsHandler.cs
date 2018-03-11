@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.Caching;
+using Microsoft.Extensions.Caching.Memory;
 using Wikiled.Core.Utility.Arguments;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.NLP.Repair;
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public bool DisableInvertors { get; set; }
 
-        public IRawTextExtractor Extractor { get; } = new RawWordExtractor(new BasicEnglishDictionary(), MemoryCache.Default);
+        public IRawTextExtractor Extractor { get; } = new RawWordExtractor(new BasicEnglishDictionary(), new MemoryCache(new MemoryCacheOptions()));
 
         public IInquirerManager InquirerManager => inquirerManager.Value;
 

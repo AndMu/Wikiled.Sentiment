@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -41,7 +42,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             log.Info("Training SVM...");
             Classifier classifier = new Classifier();
-            //await Task.Run(() => classifier.Train(token), token);
+            var data = arff.GetData().ToArray();
+            await Task.Run(() => classifier.Train(data.Select(item => item.Y).ToArray(), data.Select(item => item.X).ToArray(), token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
         }
 

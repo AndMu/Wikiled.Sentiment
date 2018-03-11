@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             List<SimpleCell> vectors = new List<SimpleCell>();
             CreateVector("Data", tree, vectors, usePrefix);
             vectors = vectors.OrderBy(item => item.Name).ToList();
-            return VectorDataFactory.Instance.CreateSimple(normalization, vectors.Select(item => (ICell)item).ToArray());
+            return new VectorDataFactory().CreateSimple(normalization, vectors.Select(item => (ICell)item).ToArray());
         }
 
         private static void CreateVector(string prefix, IDataTree tree, List<SimpleCell> vector, bool usePrefix = true)
