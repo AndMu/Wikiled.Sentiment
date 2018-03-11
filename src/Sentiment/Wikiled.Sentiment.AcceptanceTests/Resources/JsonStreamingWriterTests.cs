@@ -1,7 +1,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Structure;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Weighting;

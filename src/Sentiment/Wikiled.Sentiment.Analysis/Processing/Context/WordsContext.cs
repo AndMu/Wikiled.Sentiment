@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Context

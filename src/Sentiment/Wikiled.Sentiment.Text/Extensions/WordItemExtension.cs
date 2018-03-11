@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;

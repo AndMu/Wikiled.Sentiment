@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Collection;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Text.Analysis.Structure;
+using Wikiled.Sentiment.Text.Helpers;
 
 namespace Wikiled.Sentiment.Text.Words
 {

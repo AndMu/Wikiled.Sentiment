@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Logging;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Collection;
+using Wikiled.Common.Arguments;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 

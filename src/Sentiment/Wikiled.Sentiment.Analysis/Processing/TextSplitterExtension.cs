@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using NLog;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;

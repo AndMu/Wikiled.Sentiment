@@ -2,10 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net471</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +30,7 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
     <PackageReference Include="Wikiled.Arff" version="2.0.22" />
-    <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
+    <PackageReference Include="Wikiled.Common" Version="1.0.11" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.0.8" />
     <PackageReference Include="Wikiled.Redis" version="3.0.8" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.5.1" />
@@ -61,5 +58,11 @@
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
+
+  <Target Name="ForceGenerationOfBindingRedirects" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GenerateBindingRedirects" Condition="'$(AutoGenerateBindingRedirects)' == 'true'">
+    <PropertyGroup>
+      <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
+  </Target>
 
 </Project>

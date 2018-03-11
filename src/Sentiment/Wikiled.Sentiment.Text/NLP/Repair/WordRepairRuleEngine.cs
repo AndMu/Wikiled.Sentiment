@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
-using Wikiled.Core.Utility.Helpers;
-using Wikiled.Core.Utility.Logging;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
+using Wikiled.Common.Helpers;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;

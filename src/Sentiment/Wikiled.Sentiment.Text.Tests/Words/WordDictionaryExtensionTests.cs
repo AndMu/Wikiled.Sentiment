@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Core.Utility.Collection;
+using Wikiled.Common.Collection;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Tests.Words

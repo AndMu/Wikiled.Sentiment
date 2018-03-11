@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Arff.Normalization;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Text.Analysis.Reflection.Data;
 

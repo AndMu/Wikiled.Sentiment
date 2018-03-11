@@ -7,7 +7,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using CsvHelper;
 using NLog;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;

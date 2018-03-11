@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
 

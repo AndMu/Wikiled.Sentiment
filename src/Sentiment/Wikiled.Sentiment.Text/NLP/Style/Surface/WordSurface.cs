@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Reflection;

@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 
@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                         select item;
             foreach (var item in items)
             {
-                var test = item.Element("Classify");
+                var test = item.Element("Test");
                 if (test == null)
                 {
                     throw new NullReferenceException("test");

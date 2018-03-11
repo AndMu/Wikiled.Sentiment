@@ -10,15 +10,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Logging;
-using Wikiled.Core.Utility.Resources;
+using Wikiled.Common.Logging;
+using Wikiled.Console.Arguments;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 

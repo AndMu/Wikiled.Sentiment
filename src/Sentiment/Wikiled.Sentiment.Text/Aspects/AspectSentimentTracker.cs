@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Aspects.Data;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
