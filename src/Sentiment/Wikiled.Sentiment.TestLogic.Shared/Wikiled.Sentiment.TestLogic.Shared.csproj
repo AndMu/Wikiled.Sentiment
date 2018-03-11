@@ -11,14 +11,14 @@
   <ItemGroup>
     <PackageReference Include="Castle.Core" version="4.2.1" />
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
-    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="Moq" Version="4.8.2" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
-    <PackageReference Include="Newtonsoft.Json" version="10.0.3" />
+    <PackageReference Include="Newtonsoft.Json" version="11.0.1" />
     <PackageReference Include="NLog" version="4.5.0-rc07" />
     <PackageReference Include="NUnit" version="3.9.0" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
     <PackageReference Include="Polly" version="5.8.0" />
-    <PackageReference Include="protobuf-net" version="2.3.6" />
+    <PackageReference Include="protobuf-net" version="2.3.7" />
     <PackageReference Include="SharpZipLib" version="0.86.0" />
     <PackageReference Include="Snappy.NET" version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" version="1.2.6" />
@@ -30,11 +30,11 @@
     <PackageReference Include="System.Reactive.Windows.Threading" version="3.1.1" />
     <PackageReference Include="System.Threading.Tasks.Extensions" version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
-    <PackageReference Include="Wikiled.Arff" version="1.0.20" />
+    <PackageReference Include="Wikiled.Arff" version="2.0.22" />
     <PackageReference Include="Wikiled.Core.Utility" version="2.1.18" />
-    <PackageReference Include="Wikiled.Redis" version="2.4.10" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.4.11" />
-    <PackageReference Include="Wikiled.Text.Inquirer" version="1.0.19" />
+    <PackageReference Include="Wikiled.Redis" version="3.0.8" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.5.1" />
+    <PackageReference Include="Wikiled.Text.Inquirer" version="1.1.1" />
 
   </ItemGroup>
 
