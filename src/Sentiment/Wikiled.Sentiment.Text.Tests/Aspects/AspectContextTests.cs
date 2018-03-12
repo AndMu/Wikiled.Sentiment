@@ -22,7 +22,6 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         public async Task Process()
         {
             var data = await ActualWordsHandler.Instance.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-
             var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
             var context = new AspectContext(true, review.Items.ToArray());
             context.Process();

@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using NLog;
-using Wikiled.Common.Arguments;
-using Wikiled.Common.Helpers;
-using Wikiled.Common.Resources;
+using Wikiled.Console.Arguments;
+using Wikiled.Console.Helpers;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Extraction;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
@@ -72,7 +71,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             catch (Exception ex)
             {
                 log.Error(ex);
-                Console.ReadLine();
+                System.Console.ReadLine();
             }
         }
     }

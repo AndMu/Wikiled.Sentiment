@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Common.Arguments;
-using Wikiled.Common.Collection;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Async;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Context

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Wikiled.Common.Resources;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Dictionary;
 
 namespace Wikiled.Sentiment.Integration.Tests.Helpers

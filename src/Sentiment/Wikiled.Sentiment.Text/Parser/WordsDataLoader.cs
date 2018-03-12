@@ -10,6 +10,7 @@ using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP.Repair;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
