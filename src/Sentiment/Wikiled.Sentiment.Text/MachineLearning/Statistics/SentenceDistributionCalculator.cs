@@ -1,5 +1,5 @@
-﻿using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Collection;
+﻿using Wikiled.Common.Arguments;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.MachineLearning.Statistics

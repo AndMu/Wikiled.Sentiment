@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Xml.Linq;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Resources;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Serialization;
+using Wikiled.Console.Arguments;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 

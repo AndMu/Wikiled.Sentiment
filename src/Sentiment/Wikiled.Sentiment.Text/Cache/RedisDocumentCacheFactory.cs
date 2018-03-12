@@ -1,4 +1,4 @@
-﻿using Wikiled.Core.Utility.Arguments;
+﻿using Wikiled.Common.Arguments;
 using Wikiled.Redis.Logic;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;

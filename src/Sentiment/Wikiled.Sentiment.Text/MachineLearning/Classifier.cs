@@ -46,7 +46,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new InvalidOperationException("Model is not trained");
             }
 
-            Model.Save(path, SerializerCompression.GZip);
+            Model.Save(path);
         }
 
         public void Load(string path)

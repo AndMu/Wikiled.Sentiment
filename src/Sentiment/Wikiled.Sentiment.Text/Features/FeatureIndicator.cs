@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using NLog;
-using Wikiled.Core.Utility.Extensions;
-using Wikiled.Core.Utility.Resources;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Extensions;
+using Wikiled.Common.Resources;
+using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Features.Results;
 using Wikiled.Sentiment.Text.Words;
 

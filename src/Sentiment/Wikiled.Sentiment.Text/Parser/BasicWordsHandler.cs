@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Caching.Memory;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;

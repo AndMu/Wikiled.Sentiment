@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Text.Analysis.Dictionary;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair

@@ -1,7 +1,7 @@
 ﻿using System;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Resources;
+using Wikiled.Common.Arguments;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
@@ -13,9 +13,9 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         private readonly ICacheFactory cacheFactory;
 
-        private readonly ConfigurationHandler configuration;
+        private readonly IConfigurationHandler configuration;
 
-        public MainSplitterFactory(ICacheFactory cacheFactory, ConfigurationHandler configuration)
+        public MainSplitterFactory(ICacheFactory cacheFactory, IConfigurationHandler configuration)
         {
             Guard.NotNull(() => cacheFactory, cacheFactory);
             Guard.NotNull(() => configuration, configuration);
@@ -31,9 +31,6 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             {
                 case POSTaggerType.Simple:
                     instance = new SimpleSplitterHelper(configuration);
-                    break;
-                case POSTaggerType.Stanford:
-                    instance = new StanfordSplitterHelper(cacheFactory, configuration);
                     break;
                 case POSTaggerType.SharpNLP:
                     instance = new OpenNlpSplitterHelper(cacheFactory, configuration);

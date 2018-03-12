@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Resources;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Dictionary;
 
 namespace Wikiled.Sentiment.Text.Configuration

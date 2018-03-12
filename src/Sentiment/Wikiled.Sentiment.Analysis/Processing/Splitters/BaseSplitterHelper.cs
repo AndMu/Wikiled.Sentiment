@@ -1,10 +1,10 @@
 ﻿using System;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Resources;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
@@ -12,11 +12,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly ConfigurationHandler configuration;
+        private readonly IConfigurationHandler configuration;
 
         private bool isLoaded;
 
-        public BaseSplitterHelper(ConfigurationHandler configuration, int parallel = 0)
+        public BaseSplitterHelper(IConfigurationHandler configuration, int parallel = 0)
         {            
             Guard.NotNull(() => configuration, configuration);
             Parallel = parallel <= 0 ? Environment.ProcessorCount / 2 : parallel;

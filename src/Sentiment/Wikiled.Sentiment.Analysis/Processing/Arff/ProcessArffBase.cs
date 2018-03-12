@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Data;
 
