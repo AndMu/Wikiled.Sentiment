@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                         select item;
             foreach (var item in items)
             {
-                var test = item.Element("Classify");
+                var test = item.Element("Test");
                 if (test == null)
                 {
                     throw new NullReferenceException("test");
