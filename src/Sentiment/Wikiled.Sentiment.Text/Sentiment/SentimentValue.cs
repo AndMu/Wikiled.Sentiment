@@ -45,5 +45,10 @@ namespace Wikiled.Sentiment.Text.Sentiment
                        ? new SentimentValue(Owner, new SentimentValueData(DataValue.Value / (distance - 1), DataValue.SentimentSource))
                        : new SentimentValue(Owner, DataValue);
         }
+
+        public override string ToString()
+        {
+            return $"Sentiment: [{Owner}] [{DataValue}]";
+        }
     }
 }

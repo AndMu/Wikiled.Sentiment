@@ -38,7 +38,9 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         private void CalculateRating()
         {
-            var vector = Model.GetVector(Review.Vector.GetCells().ToArray());
+            var cells = Review.Vector.GetCells().ToArray();
+            var result = Model.GetVector(cells);
+            var vector = result.Vector;
             if (vector == null ||
                 vector.Length == 0)
             {
@@ -47,20 +49,21 @@ namespace Wikiled.Sentiment.Text.Sentiment
             }
 
             var bias = vector.RHO;
-            var rating = vector.Cells.FirstOrDefault(item => item.Data.Name == Constants.RATING_STARS);
-            if (rating != null)
-            {
-                bias += rating.Calculated;
-            }
 
             double added = Math.Abs(bias);
+            double addedOriginal = 0;
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
-                if (item.Data.Name != Constants.RATING_STARS &&
-                    cell.Item != null)
+                if (item.Data.Name == Constants.RATING_STARS ||
+                    item.Data.Name.Contains("DIMENSION_"))
+                {
+                    bias += item.Calculated;
+                }
+                else if (cell.Item != null)
                 {
                     added += Math.Abs(item.Calculated);
+                    addedOriginal += Math.Abs(item.X);
                     Add(new SentimentValue(
                             (IWordItem)cell.Item,
                             new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
@@ -73,7 +76,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
             foreach (var sentimentValue in Review.GetAllSentiments())
             {
                 double sentiment;
-                if (!calculatedSentiments.ContainsKey(sentimentValue.Owner))
+                if (calculatedSentiments.ContainsKey(sentimentValue.Owner))
                 {
                     sentiment = Math.Abs(sentimentValue.DataValue.Value);
                 }
@@ -87,18 +90,16 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 totalSentiment += sentiment;
             }
 
-            var unknownWeight = unknownSentiment / totalSentiment;
-            var weight = (1 - unknownWeight) * added;
-
-            foreach (var sentiment in notAddedSentiments)
+            if (notAddedSentiments.Count > 0)
             {
-                // unknown decrase45x
-                var value = sentiment.DataValue.SentimentSource == SentimentSource.None ? sentiment.DataValue.Value / 2 : sentiment.DataValue.Value;
-                Add(new SentimentValue(
-                        sentiment.Owner,
-                        new SentimentValueData(
-                            value / weight / 2,
-                            SentimentSource.AdjustedCalculated)));
+                var unknownWeight = unknownSentiment / totalSentiment;
+                var weight = addedOriginal == 0 ? 1 : added / addedOriginal * unknownWeight + 0.01;
+                foreach (var sentiment in notAddedSentiments)
+                {
+                    // unknown decrase45x
+                    var value = sentiment.DataValue.SentimentSource == SentimentSource.None ? sentiment.DataValue.Value / 2 : sentiment.DataValue.Value;
+                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(value / weight / 2, SentimentSource.AdjustedCalculated)));
+                }
             }
 
             if (calculatedSentiments.Count > 0)
@@ -106,6 +107,12 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 Add(new SentimentValue(
                     WordOccurrence.CreateBasic(Constants.BIAS, POSTags.Instance.JJ),
                     new SentimentValueData(bias, SentimentSource.AdjustedSVM)));
+            }
+
+            if (Rating.IsPositive &&
+                result.Probability < 0.5)
+            {
+                int a = 6;
             }
         }
 

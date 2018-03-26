@@ -19,6 +19,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         private readonly IClassifier classifier;
 
+        private readonly double[] weights;
+
         public MachineSentiment(IArffDataSet dataSet, IClassifier classifier)
         {
             Guard.NotNull(() => dataSet, dataSet);
@@ -26,6 +28,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             dataSet.Header.CreateHeader = false;
             this.dataSet = dataSet;
             this.classifier = classifier;
+            weights = classifier.Model.ToWeights();
         }
 
         public static IMachineSentiment Load(string path)
@@ -56,11 +59,17 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             SaveCoef(Path.Combine(path, "coef.dat"));
         }
 
-        public VectorData GetVector(TextVectorCell[] cells)
+        public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
         {
             Guard.NotNull(() => cells, cells);
             log.Debug("GetVector");
             List<VectorCell> vectorCells = new List<VectorCell>();
+            double[] vector = new double[dataSet.Header.Total];
+            for (int i = 0; i < dataSet.Header.Total; i++)
+            {
+                vector[i] = 0;
+            }
+
             foreach (var textCell in cells)
             {
                 var header = dataSet.Header[textCell.Name];
@@ -70,11 +79,13 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 }
 
                 var index = dataSet.Header.GetIndex(header);
-                var cellItem = new VectorCell(index, textCell, classifier.Model.Weights[index]);
+                vector[index] = textCell.Value;
+                var cellItem = new VectorCell(index, textCell, weights[index]);
                 vectorCells.Add(cellItem);
             }
 
-            return new VectorData(vectorCells.ToArray(), dataSet.Header.Total, classifier.Model.Threshold, NormalizationType.None);
+            var probability = classifier.Probability(vector);
+            return (probability, new VectorData(vectorCells.ToArray(), dataSet.Header.Total, classifier.Model.Threshold, NormalizationType.None));
         }
 
         private void SaveCoef(string fileName)
@@ -84,12 +95,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             {
                 return;
             }
-
+            
             using (StreamWriter stream = new StreamWriter(fileName, false))
             {
                 for (int i = 0; i < dataSet.Header.Total; i++)
                 {
-                    stream.WriteLine("{0} - {1}", dataSet.Header.GetByIndex(i).Name, classifier.Model.Weights[i] + classifier.Model.Threshold / dataSet.Header.Total);
+                    stream.WriteLine("{0} - {1}", dataSet.Header.GetByIndex(i).Name, weights[i] + classifier.Model.Threshold / dataSet.Header.Total);
                 }
             }
         }

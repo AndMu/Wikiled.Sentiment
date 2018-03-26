@@ -6,6 +6,6 @@ namespace Wikiled.Sentiment.Text.MachineLearning
     {
         void Save(string path);
 
-        VectorData GetVector(TextVectorCell[] cells);
+        (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells);
     }
 }

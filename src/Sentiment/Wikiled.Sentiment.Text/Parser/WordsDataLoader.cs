@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Wikiled.Common.Arguments;
-using Wikiled.Common.Helpers;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;

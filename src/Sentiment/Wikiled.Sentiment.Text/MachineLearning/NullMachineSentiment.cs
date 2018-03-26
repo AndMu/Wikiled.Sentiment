@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Wikiled.MachineLearning.Mathematics.Vectors;
+﻿using Wikiled.MachineLearning.Mathematics.Vectors;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
 {
@@ -9,9 +8,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
         }
 
-        public VectorData GetVector(TextVectorCell[] cells)
+        public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
         {
-            return null;
+            return (0, null);
         }
 
         public void SetAspectFilter(string path)

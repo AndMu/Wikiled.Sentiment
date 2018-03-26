@@ -11,8 +11,8 @@
     <PackageReference Include="Moq" Version="4.8.2" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="11.0.1" />
-    <PackageReference Include="NLog" version="4.5.0-rc07" />
-    <PackageReference Include="NUnit" version="3.9.0" />
+    <PackageReference Include="NLog" version="4.5.0" />
+    <PackageReference Include="NUnit" version="3.10.1" />
     <PackageReference Include="NUnit.ConsoleRunner" version="3.8.0" />
     <PackageReference Include="NUnit.Extension.NUnitProjectLoader" version="3.6.0" />
     <PackageReference Include="NUnit.Extension.NUnitV2Driver" version="3.7.0" />
@@ -35,7 +35,7 @@
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
     <PackageReference Include="Wikiled.Amazon" version="1.0.7" />
-    <PackageReference Include="Wikiled.Arff" version="2.0.22" />
+    <PackageReference Include="Wikiled.Arff" version="2.0.24" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.0.8" />
     <PackageReference Include="Wikiled.Redis" version="3.0.14" />
@@ -73,6 +73,10 @@
     <None Update="Sentiments\Video.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
   <Target Name="ForceGenerationOfBindingRedirects" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GenerateBindingRedirects" Condition="'$(AutoGenerateBindingRedirects)' == 'true'">
