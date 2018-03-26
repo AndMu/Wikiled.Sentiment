@@ -19,7 +19,7 @@
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
     <PackageReference Include="CsvHelper" version="7.1.0" />
     <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
-    <PackageReference Include="Newtonsoft.Json" version="11.0.1" />
+    <PackageReference Include="Newtonsoft.Json" version="11.0.2" />
     <PackageReference Include="NLog" version="4.5.0" />
     <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
     <PackageReference Include="Polly" version="5.8.0" />
@@ -35,9 +35,9 @@
     <PackageReference Include="System.Reactive.Windows.Threading" version="3.1.1" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
-    <PackageReference Include="Wikiled.Arff" version="2.0.24" />
+    <PackageReference Include="Wikiled.Arff" version="2.0.26" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
-    <PackageReference Include="Wikiled.MachineLearning" version="2.0.8" />
+    <PackageReference Include="Wikiled.MachineLearning" version="2.0.26" />
     <PackageReference Include="Wikiled.OpenNLP" version="1.5.2" />
     <PackageReference Include="Wikiled.Redis" version="3.0.14" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.5.1" />
