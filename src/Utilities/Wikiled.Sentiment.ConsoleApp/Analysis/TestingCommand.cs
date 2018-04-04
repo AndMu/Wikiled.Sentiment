@@ -19,7 +19,7 @@ using Wikiled.Text.Analysis.NLP.NRC;
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     /// <summary>
-    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Trained=.\Svm] -Out=.\results
+    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Model=.\Svm] -Out=.\results
     /// </summary>
     [Description("pSenti testing")]
     public class TestingCommand : BaseRawCommand

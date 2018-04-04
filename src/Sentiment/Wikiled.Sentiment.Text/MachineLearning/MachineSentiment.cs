@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             log.Info("Training SVM...");
             SvmTrainClient trainClient = new SvmTrainClient(arff);
-            var results = await trainClient.Train(header, token).ConfigureAwait(false);;
+            var results = await trainClient.Train(header, token).ConfigureAwait(false);
             if (results == null)
             {
                 throw new SvmException("No data to generate training model");

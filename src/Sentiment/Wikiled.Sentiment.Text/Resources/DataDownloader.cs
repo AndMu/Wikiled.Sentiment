@@ -33,10 +33,10 @@ namespace Wikiled.Sentiment.Text.Resources
             {
                 var entryFileName = zipEntry.Name;
                 log.Info("Unpacking [{0}]", entryFileName);
+
                 // to remove the folder from the entry:- entryFileName = Path.GetFileName(entryFileName);
                 // Optionally match entrynames against a selection list here to skip as desired.
                 // The unpacked length is available in the zipEntry.Size property.
-
                 byte[] buffer = new byte[4096];     // 4K is optimum
 
                 // Manipulate the output filename here as desired.
