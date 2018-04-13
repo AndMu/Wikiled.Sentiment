@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -21,10 +22,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         }
 
         public IMachineSentiment Model { get; private set; }
-
-        public int Negative { get; set; }
-
-        public int Positive { get; set; }
 
         public string SvmPath { get; set; }
 
@@ -53,8 +50,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     throw new ArgumentNullException(nameof(currentSet));
                 }
 
-                Guard.IsValid(() => Positive, Positive, i => i > 0, "Can't train. Missing positive samples");
-                Guard.IsValid(() => Negative, Negative, i => i > 0, "Can't train. Missing negative samples");
                 var dataSet = currentSet;
                 var machine = await MachineSentiment.Train(dataSet, CancellationToken.None).ConfigureAwait(false);
                 machine.Save(SvmPath);

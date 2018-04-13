@@ -10,6 +10,7 @@ using Accord;
 using MoreLinq;
 using NLog;
 using NUnit.Framework;
+using Wikiled.Arff.Persistence;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
@@ -18,6 +19,7 @@ using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
@@ -34,34 +36,40 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             var doc = XDocument.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
             var data = doc.XmlDeserialize<ProcessingData>();
-            var negative = data.Negative.Select(
+            var negative = data.Negative.Repeat(10).Select(
                 item =>
                     {
                         item.Stars = 1;
                         item.Document = new Document(item.Text);
+                        item.Document.Id = Guid.NewGuid().ToString();
                         item.Document.Stars = 1;
                         return new ParsingDocumentHolder(TestHelper.Instance.CachedSplitterHelper.Splitter, item);
                     }).ToArray();
-            negative = negative.Repeat(10).ToArray();
 
-            var positive = data.Positive.Select(
+            var positive = data.Positive.Repeat(10).Select(
                 item =>
                     {
                         item.Stars = 5;
                         item.Document = new Document(item.Text);
+                        item.Document.Id = Guid.NewGuid().ToString();
                         item.Document.Stars = 5;
                         return new ParsingDocumentHolder(TestHelper.Instance.CachedSplitterHelper.Splitter, item);
                     }).ToArray();
 
-            positive = positive.Repeat(10).ToArray();
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.CachedSplitterHelper, negative.Union(positive).ToObservable(), new ParsedReviewManagerFactory());
+
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.NonCachedSplitterHelper, negative.Union(positive).ToObservable(), new ParsedReviewManagerFactory());
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
             await trainingClient.Train().ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.CachedSplitterHelper, negative.Take(1).Union(positive.Take(1)).ToObservable(), new ParsedReviewManagerFactory());
+            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.NonCachedSplitterHelper, negative.Take(1).Union(positive.Take(1)).ToObservable(), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.Init();
             var result = await testingClient.Process().ToArray();
+            var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
+            var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
+            var table = dataSet.GetFeatureTable();
+            var resultWeight = classifier.Model.Weights[0];
+
         }
 
         [Test]

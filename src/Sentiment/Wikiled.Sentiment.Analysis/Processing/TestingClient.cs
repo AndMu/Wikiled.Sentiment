@@ -34,8 +34,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private int error;
 
-        private IMachineSentiment perspective;
-
         public TestingClient(IProcessingPipeline pipeline, string svmPath = null)
         {
             Guard.NotNull(() => pipeline, pipeline);
@@ -60,6 +58,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public int Errors => error;
 
+        public IMachineSentiment MachineSentiment { get; private set; }
+
         public PrecisionRecallCalculator<bool> Performance { get; } = new PrecisionRecallCalculator<bool>();
 
         public SentimentVector SentimentVector { get; }
@@ -77,11 +77,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             if (DisableSvm)
             {
-                perspective = new NullMachineSentiment();
+                MachineSentiment = new NullMachineSentiment();
             }
             else
             {
-                perspective = MachineSentiment.Load(SvmPath);
+                MachineSentiment = Text.MachineLearning.MachineSentiment.Load(SvmPath);
             }
 
             arff = ArffDataSet.Create<PositivityType>("MAIN");
@@ -130,7 +130,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             try
             {
-                RatingAdjustment adjustment = new RatingAdjustment(context.Review, perspective);
+                RatingAdjustment adjustment = new RatingAdjustment(context.Review, MachineSentiment);
                 pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = context.Review.GenerateDocument(adjustment);
                 AspectSentiment.Process(context.Review);
@@ -159,7 +159,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
             }
-            catch (Exception)
+            catch(Exception)
             {
                 Interlocked.Increment(ref error);
                 throw;

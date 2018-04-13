@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using NLog;
 using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Persistence.Headers;
 using Wikiled.Common.Arguments;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 
@@ -15,9 +17,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IArffDataSet dataSet;
-
-        private readonly IClassifier classifier;
+        private readonly Dictionary<IHeader, int> featureTable;
 
         private readonly double[] weights;
 
@@ -26,10 +26,15 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             Guard.NotNull(() => dataSet, dataSet);
             Guard.NotNull(() => classifier, classifier);
             dataSet.Header.CreateHeader = false;
-            this.dataSet = dataSet;
-            this.classifier = classifier;
+            DataSet = dataSet;
+            Classifier = classifier;
             weights = classifier.Model.ToWeights();
+            featureTable = dataSet.GetFeatureTable();
         }
+
+        public IArffDataSet DataSet { get; }
+
+        public IClassifier Classifier { get; }
 
         public static IMachineSentiment Load(string path)
         {
@@ -45,18 +50,50 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             log.Info("Training SVM...");
             Classifier classifier = new Classifier();
+            arff.Normalize(NormalizationType.L2);
             var data = arff.GetData().ToArray();
+            if (data.Length < 40)
+            {
+                throw new ArgumentOutOfRangeException("Not enough training records");
+            }
+
+            Dictionary<int, int> classCount = new Dictionary<int, int>();
+            foreach (var datRecord in data)
+            {
+                if (classCount.ContainsKey(datRecord.Y.Value))
+                {
+                    classCount[datRecord.Y.Value] += 1;
+                }
+                else
+                {
+                    classCount[datRecord.Y.Value] = 1;
+                }
+
+                // Make all sentiments positive - counts with weights
+                for (int i = 0; i < datRecord.X.Length; i++)
+                {
+                    var x = datRecord.X[i];
+                    datRecord.X[i] = x >= 0 ? x : -x;
+                }
+            }
+
+            if (classCount.Count != 2)
+            {
+                throw new ArgumentOutOfRangeException("Two classes not found");
+            }
+
+            if (classCount[-1] < 20)
+            {
+                throw new ArgumentOutOfRangeException("Not enough negative classes");
+            }
+
+            if (classCount[1] < 20)
+            {
+                throw new ArgumentOutOfRangeException("Not enough positive classes");
+            }
+
             await Task.Run(() => classifier.Train(data.Select(item => item.Y.Value).ToArray(), data.Select(item => item.X).ToArray(), token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
-        }
-
-        public void Save(string path)
-        {
-            Guard.NotNull(() => path, path);
-            log.Info("Saving {0}...", path);
-            dataSet.Save(Path.Combine(path, "data.arff"));
-            classifier.Save(Path.Combine(path, "training.model"));
-            SaveCoef(Path.Combine(path, "coef.dat"));
         }
 
         public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
@@ -64,43 +101,52 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             Guard.NotNull(() => cells, cells);
             log.Debug("GetVector");
             List<VectorCell> vectorCells = new List<VectorCell>();
-            double[] vector = new double[dataSet.Header.Total];
-            for (int i = 0; i < dataSet.Header.Total; i++)
+            double[] vector = new double[DataSet.Header.Total];
+            for (int i = 0; i < DataSet.Header.Total; i++)
             {
                 vector[i] = 0;
             }
 
             foreach (var textCell in cells)
             {
-                var header = dataSet.Header[textCell.Name];
-                if (header == null)
+                var header = DataSet.Header[textCell.Name];
+                if (header == null ||
+                    !featureTable.TryGetValue(header, out var index))
                 {
                     continue;
                 }
 
-                var index = dataSet.Header.GetIndex(header);
                 vector[index] = textCell.Value;
                 var cellItem = new VectorCell(index, textCell, weights[index]);
                 vectorCells.Add(cellItem);
             }
 
-            var probability = classifier.Probability(vector);
-            return (probability, new VectorData(vectorCells.ToArray(), dataSet.Header.Total, classifier.Model.Threshold, NormalizationType.None));
+            var probability = Classifier.Probability(vector);
+            return (probability, new VectorData(vectorCells.ToArray(), DataSet.Header.Total, Classifier.Model.Threshold, NormalizationType.None));
+        }
+
+        public void Save(string path)
+        {
+            Guard.NotNull(() => path, path);
+            log.Info("Saving {0}...", path);
+            DataSet.Save(Path.Combine(path, "data.arff"));
+            Classifier.Save(Path.Combine(path, "training.model"));
+            SaveCoef(Path.Combine(path, "coef.dat"));
         }
 
         private void SaveCoef(string fileName)
         {
             log.Info("Saving {0}...", fileName);
-            if (classifier.Model == null)
+            if (Classifier.Model == null)
             {
                 return;
             }
-            
+
             using (StreamWriter stream = new StreamWriter(fileName, false))
             {
-                for (int i = 0; i < dataSet.Header.Total; i++)
+                foreach (var feature in featureTable)
                 {
-                    stream.WriteLine("{0} - {1}", dataSet.Header.GetByIndex(i).Name, weights[i] + classifier.Model.Threshold / dataSet.Header.Total);
+                    stream.WriteLine("{0} - {1}", feature.Key.Name, weights[feature.Value] + Classifier.Model.Threshold / DataSet.Header.Total);
                 }
             }
         }

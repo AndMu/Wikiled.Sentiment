@@ -55,8 +55,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
-                if (item.Data.Name == Constants.RATING_STARS ||
-                    item.Data.Name.Contains("DIMENSION_"))
+                if (item.Data.Name == Constants.RATING_STARS)
                 {
                     bias += item.Calculated;
                 }

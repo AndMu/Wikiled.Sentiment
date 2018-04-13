@@ -35,10 +35,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private IProcessArff arffProcess;
 
-        private int negative;
-
-        private int positive;
-
         public TrainingClient(IProcessingPipeline pipeline, string svmPath)
         {
             Guard.NotNull(() => pipeline, pipeline);
@@ -96,7 +92,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                                           return result;
                                       }))
                               .Merge();
-                ;
             }
 
             log.Info("Cleaning up ARFF....");
@@ -106,8 +101,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             analyze.SetArff(arff);
-            analyze.Positive = positive;
-            analyze.Negative = negative;
             try
             {
                 await analyze.TrainSvm().ConfigureAwait(false);
@@ -149,14 +142,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
             if (context.Original.Stars > 3)
             {
                 arffProcess.PopulateArff(context.Review, PositivityType.Positive);
-                Interlocked.Increment(ref positive);
             }
             else
             {
                 arffProcess.PopulateArff(context.Review, PositivityType.Negative);
-                Interlocked.Increment(ref negative);
             }
-
             
             return context;
         }
