@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Collection;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;

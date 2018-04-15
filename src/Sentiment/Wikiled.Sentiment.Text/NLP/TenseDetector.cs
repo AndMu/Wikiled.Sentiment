@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;

@@ -42,10 +42,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
         [DataMember]
         public double? RawRating
         {
-            get
-            {
-                return HasValue ? RatingCalculator.Calculate(Positive, Negative) : (double?)null;
-            }
+            get => HasValue ? RatingCalculator.Calculate(Positive, Negative) : (double?)null;
             set
             {
             }
@@ -54,10 +51,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
         [DataMember]
         public double? StarsRating
         {
-            get
-            {
-                return RatingCalculator.CalculateStarsRating(RawRating);
-            }
+            get => RatingCalculator.CalculateStarsRating(RawRating);
             set
             {
             }

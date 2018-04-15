@@ -3,8 +3,8 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Logging;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 

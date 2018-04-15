@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.NLP.Style.Obscurity;
 using Wikiled.Sentiment.Text.NLP.Style.Readability;
 using Wikiled.Sentiment.Text.NLP.Style.Surface;

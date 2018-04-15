@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Arff.Normalization;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Text.Analysis.Reflection.Data;
 
@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             List<SimpleCell> vectors = new List<SimpleCell>();
             CreateVector("Data", tree, vectors, usePrefix);
             vectors = vectors.OrderBy(item => item.Name).ToList();
-            return VectorDataFactory.Instance.CreateSimple(normalization, vectors.Select(item => (ICell)item).ToArray());
+            return new VectorDataFactory().CreateSimple(normalization, vectors.Select(item => (ICell)item).ToArray());
         }
 
         private static void CreateVector(string prefix, IDataTree tree, List<SimpleCell> vector, bool usePrefix = true)

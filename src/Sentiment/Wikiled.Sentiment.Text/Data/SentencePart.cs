@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Wikiled.Core.Utility.Collection;
 using Wikiled.Sentiment.Text.Extensions;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Data
@@ -19,9 +19,14 @@ namespace Wikiled.Sentiment.Text.Data
 
         public IList<IWordItem> Occurrences => items.AsReadOnly();
 
+        public ISentencePart Previous { get; }
+
         public ISentence Sentence { get; }
 
-        public ISentencePart Previous { get; }
+        public override string ToString()
+        {
+            return $"Part with [{Occurrences.Count}]";
+        }
 
         public void AddItem(IWordItem item)
         {
@@ -66,11 +71,6 @@ namespace Wikiled.Sentiment.Text.Data
                 currentItem.Relationship.Add(item);
                 item.Relationship.Add(currentItem);
             }
-        }
-
-        public override string ToString()
-        {
-            return $"Part with [{Occurrences.Count}]";
         }
     }
 }

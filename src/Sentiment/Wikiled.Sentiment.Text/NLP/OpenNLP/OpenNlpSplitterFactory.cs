@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;

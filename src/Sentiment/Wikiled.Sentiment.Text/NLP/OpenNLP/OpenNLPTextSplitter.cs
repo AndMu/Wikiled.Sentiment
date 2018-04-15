@@ -3,7 +3,7 @@ using System.IO;
 using NLog;
 using SharpNL.Analyzer;
 using SharpNL.Chunker;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Cache;

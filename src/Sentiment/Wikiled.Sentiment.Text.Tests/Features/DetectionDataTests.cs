@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Xml.Linq;
 using NUnit.Framework;
-using Wikiled.Core.Utility.Resources;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Resources;
+using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Features;
 
 namespace Wikiled.Sentiment.Text.Tests.Features

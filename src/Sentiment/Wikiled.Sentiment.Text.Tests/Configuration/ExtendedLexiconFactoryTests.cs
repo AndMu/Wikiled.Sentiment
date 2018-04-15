@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using Rhino.Mocks;
-using Wikiled.Core.Utility.Resources;
 using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.Text.Tests.Configuration
 {

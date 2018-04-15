@@ -1,5 +1,5 @@
 ﻿using System;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;

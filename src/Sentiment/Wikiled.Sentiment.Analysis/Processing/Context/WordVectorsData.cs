@@ -2,8 +2,8 @@
 using System.IO;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Context

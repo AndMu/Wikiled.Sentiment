@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 
 namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap

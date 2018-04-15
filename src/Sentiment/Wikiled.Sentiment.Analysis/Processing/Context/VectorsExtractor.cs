@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Collection;
-using Wikiled.Core.Utility.Extensions;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Async;
+using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Context

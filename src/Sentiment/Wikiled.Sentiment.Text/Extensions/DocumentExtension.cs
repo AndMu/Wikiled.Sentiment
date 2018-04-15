@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Core.Utility.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
@@ -128,34 +126,6 @@ namespace Wikiled.Sentiment.Text.Extensions
             }
 
             return list;
-        }
-
-        public static void PopulateResults(this Document document, MachineDetectionResult result)
-        {
-            var itemTable = new Dictionary<string, List<WordEx>>(StringComparer.OrdinalIgnoreCase);
-            foreach (var wordEx in document.Words)
-            {
-                wordEx.CalculatedValue = 0;
-                itemTable.GetSafeCreate(wordEx.Text).Add(wordEx);
-            }
-
-            if (result == null)
-            {
-                return;
-            }
-
-            foreach (var vectorCell in result.Vector.Cells)
-            {
-                List<WordEx> words = itemTable[vectorCell.Data.Name];
-                double eachWordValue = vectorCell.Calculated / words.Count;
-                foreach (var wordEx in words)
-                {
-                    wordEx.CalculatedValue = eachWordValue;
-                    wordEx.Theta = vectorCell.Theta;
-                }
-            }
-
-            document.Stars = RatingCalculator.CalculateStarsRating(result.Result.Positivity);
         }
     }
 }

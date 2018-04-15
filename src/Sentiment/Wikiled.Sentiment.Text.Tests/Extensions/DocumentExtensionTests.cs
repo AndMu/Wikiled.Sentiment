@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using Wikiled.Arff.Normalization;
-using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
@@ -42,35 +40,6 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
             foreach (var textVectorCell in cells)
             {
                 Assert.AreEqual(3, textVectorCell.Value);
-            }
-        }
-
-        [Test]
-        public void PopulateResults()
-        {
-            VectorCell[] cells =
-            {
-                new VectorCell(0, new TextVectorCell("1", 10), 3),
-                new VectorCell(1, new TextVectorCell("2", 20), 6),
-            };
-
-            var result = new MachineDetectionResult(new VectorData(cells, 2, NormalizationType.None), new SvmResult());
-            document.PopulateResults(result);
-            foreach (var word in document.Words)
-            {
-                Assert.AreEqual(2, word.Value);
-                if (word.Text == "1")
-                {
-                    Assert.AreEqual(10, word.CalculatedValue);    
-                }
-                else if (word.Text == "2")
-                {
-                    Assert.AreEqual(40, word.CalculatedValue);
-                }
-                else
-                {
-                    Assert.AreEqual(0, word.CalculatedValue);
-                }
             }
         }
 

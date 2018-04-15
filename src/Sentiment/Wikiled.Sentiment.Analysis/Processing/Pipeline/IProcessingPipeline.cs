@@ -1,5 +1,5 @@
 ﻿using System;
-using Wikiled.Core.Utility.Logging;
+using Wikiled.Common.Logging;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {

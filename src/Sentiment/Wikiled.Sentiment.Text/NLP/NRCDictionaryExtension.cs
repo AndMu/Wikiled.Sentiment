@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP.NRC;

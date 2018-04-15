@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Wikiled.Core.Utility.Resources;
+using Wikiled.Common.Resources;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
@@ -25,7 +26,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public static ActualWordsHandler Instance { get; } = new ActualWordsHandler();
 
-        public ConfigurationHandler Configuration { get; }
+        public IConfigurationHandler Configuration { get; }
 
         public IWordsHandler WordsHandler { get; }
 

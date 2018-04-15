@@ -8,8 +8,8 @@ using System.Xml.Linq;
 using NLog;
 using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
-using Wikiled.Core.Utility.Arguments;
-using Wikiled.Core.Utility.Serialization;
+using Wikiled.Common.Arguments;
+using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
@@ -105,9 +105,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 await arffProcess.CleanupDataHolder(3, 10).ConfigureAwait(false);
             }
 
-            analyze.TrainingHeader.Normalization = NormalizationType.L2;
-            log.Info("Normalizing ARFF...");
-            arffProcess.Normalize(analyze.TrainingHeader.Normalization);
             analyze.SetArff(arff);
             analyze.Positive = positive;
             analyze.Negative = negative;

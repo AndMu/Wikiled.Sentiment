@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -29,7 +28,6 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
             string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             var result = await splitter.Process(new ParseRequest(sentence + ". " + sentence2)).ConfigureAwait(false);
             var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
-
             Assert.AreEqual(2, data.Sentences.Count);
             Assert.AreEqual(24, data.Sentences[0].Occurrences.Count());
             Assert.AreEqual(13, data.Sentences[0].Occurrences.GetImportant().Count());

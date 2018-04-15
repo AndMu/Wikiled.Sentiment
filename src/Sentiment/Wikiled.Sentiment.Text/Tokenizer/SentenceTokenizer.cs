@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Core.Utility.Arguments;
+using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
