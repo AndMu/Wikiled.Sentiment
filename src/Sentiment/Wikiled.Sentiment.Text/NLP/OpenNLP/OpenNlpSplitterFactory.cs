@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             wordsHandler = factory.WordsHandler;
         }
 
-        public bool CanConstruct => Directory.Exists(Path.Combine(resourcesPath, "Models")) && !IsConstructed;
+        public bool CanConstruct => Directory.Exists(resourcesPath) && !IsConstructed;
 
         public bool IsConstructed { get; private set; }
 

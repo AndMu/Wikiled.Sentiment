@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             else
             {
                 DataDownloader dataDownloader = new DataDownloader();
-                var task = dataDownloader.DownloadFile(new Uri("http://datasets.azurewebsites.net/Resources/resources.zip"), resourcesPath);
+                var task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
                 task.Wait();
             }
 
@@ -42,8 +42,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             commandsList.Add(new ExtractAttributesCommand());
             var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
 
-            var fPreviousExecutionState =
-                NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
+            var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
             if (fPreviousExecutionState == 0)
             {
                 log.Error("SetThreadExecutionState failed.");
