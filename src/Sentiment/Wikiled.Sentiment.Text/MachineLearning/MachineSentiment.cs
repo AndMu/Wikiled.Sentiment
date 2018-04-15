@@ -22,9 +22,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 {
     public class MachineSentiment<T> : IMachineSentiment
     {
-        private readonly int factor;
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+        private readonly int factor;
 
         private readonly Dictionary<string, double> readedCoef = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 

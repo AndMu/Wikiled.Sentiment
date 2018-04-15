@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task SimpleTest()
         {
             log.Info("SimpleTest");
-            var reviews =  TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
+            var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
             var doc = (await TestHelper.Instance.CachedSplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) { Date = new DateTime(2016, 01, 01) })
                              .ConfigureAwait(false));
