@@ -33,8 +33,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
 
             gridsearch.Token = token;
-            var inputs = Accord.Statistics.Tools.Standardize(x);
-            var result = gridsearch.Learn(inputs, y);
+            var result = gridsearch.Learn(x, y);
             Model = result.BestModel;
         }
 
@@ -63,8 +62,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new InvalidOperationException("Model is not trained");
             }
 
-            var inputs = Accord.Statistics.Tools.Standardize(x);
-            return Model.Probability(inputs);
+            return Model.Probability(x);
         }
 
         public double Probability(double[] x)
@@ -75,8 +73,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new InvalidOperationException("Model is not trained");
             }
             
-            var inputs = Accord.Statistics.Tools.Standardize(x);
-            return Model.Probability(inputs);
+            return Model.Probability(x);
         }
 
         public bool[] Classify(double[][] x)
@@ -87,8 +84,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new InvalidOperationException("Model is not trained");
             }
 
-            var inputs = Accord.Statistics.Tools.Standardize(x);
-            return Model.Decide(inputs);
+            return Model.Decide(x);
         }
     }
 }

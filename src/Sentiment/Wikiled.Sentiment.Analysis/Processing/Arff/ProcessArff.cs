@@ -1,8 +1,8 @@
 ﻿using System;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.MachineLearning;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Arff
 {

@@ -1,5 +1,5 @@
-﻿using Wikiled.Arff.Normalization;
-using Wikiled.MachineLearning.Mathematics.Vectors;
+﻿using Wikiled.MachineLearning.Mathematics.Vectors;
+using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Text.Analysis.NLP.NRC;
 

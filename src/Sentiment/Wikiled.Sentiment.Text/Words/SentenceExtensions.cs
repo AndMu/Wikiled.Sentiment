@@ -40,8 +40,7 @@ namespace Wikiled.Sentiment.Text.Words
                     continue;
                 }
 
-                var currentParent = wordItem.Parent as IPhrase;
-                if (currentParent == null ||
+                if (!(wordItem.Parent is IPhrase currentParent) ||
                     currentParent.AllWords.Count() <= 1)
                 {
                     yield return wordItem;

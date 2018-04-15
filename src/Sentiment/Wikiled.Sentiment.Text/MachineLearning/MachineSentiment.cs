@@ -5,11 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Arff.Normalization;
+using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.Arff.Persistence.Headers;
 using Wikiled.Common.Arguments;
 using Wikiled.MachineLearning.Mathematics.Vectors;
+using Wikiled.MachineLearning.Normalization;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
 {
@@ -28,7 +29,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             dataSet.Header.CreateHeader = false;
             DataSet = dataSet;
             Classifier = classifier;
-            weights = classifier.Model.ToWeights();
+            weights = classifier.Model.ToWeights().Skip(1).ToArray();
             featureTable = dataSet.GetFeatureTable();
         }
 
@@ -50,8 +51,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             log.Info("Training SVM...");
             Classifier classifier = new Classifier();
-            arff.Normalize(NormalizationType.L2);
-            var data = arff.GetData().ToArray();
+            var data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
             if (data.Length < 40)
             {
                 throw new ArgumentOutOfRangeException("Not enough training records");
@@ -73,7 +73,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 for (int i = 0; i < datRecord.X.Length; i++)
                 {
                     var x = datRecord.X[i];
-                    datRecord.X[i] = x >= 0 ? x : -x;
+                    datRecord.X[i] = Math.Abs(x);
                 }
             }
 
@@ -101,8 +101,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             Guard.NotNull(() => cells, cells);
             log.Debug("GetVector");
             List<VectorCell> vectorCells = new List<VectorCell>();
-            double[] vector = new double[DataSet.Header.Total];
-            for (int i = 0; i < DataSet.Header.Total; i++)
+            double[] vector = new double[featureTable.Count];
+            for (int i = 0; i < featureTable.Count; i++)
             {
                 vector[i] = 0;
             }
@@ -116,13 +116,15 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                     continue;
                 }
 
-                vector[index] = textCell.Value;
-                var cellItem = new VectorCell(index, textCell, weights[index]);
+                var absoluteCell = textCell.Item == null ? new TextVectorCell(textCell.Name, Math.Abs(textCell.Value)) : new TextVectorCell(textCell.Item, Math.Abs(textCell.Value));
+                vector[index] = absoluteCell.Value;
+                var cellItem = new VectorCell(index, absoluteCell, weights[index]);
                 vectorCells.Add(cellItem);
             }
 
+            vector = vector.Normalize(NormalizationType.L2).GetNormalized.ToArray();
             var probability = Classifier.Probability(vector);
-            return (probability, new VectorData(vectorCells.ToArray(), DataSet.Header.Total, Classifier.Model.Threshold, NormalizationType.None));
+            return (probability, new VectorData(vectorCells.ToArray(), DataSet.Header.Total, Classifier.Model.Threshold, NormalizationType.L2));
         }
 
         public void Save(string path)

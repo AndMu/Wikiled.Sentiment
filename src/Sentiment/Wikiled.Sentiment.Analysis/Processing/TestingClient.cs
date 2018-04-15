@@ -4,12 +4,12 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Xml.Linq;
 using NLog;
-using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;
+using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
@@ -75,14 +75,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public void Init()
         {
-            if (DisableSvm)
-            {
-                MachineSentiment = new NullMachineSentiment();
-            }
-            else
-            {
-                MachineSentiment = Text.MachineLearning.MachineSentiment.Load(SvmPath);
-            }
+            MachineSentiment = DisableSvm ? new NullMachineSentiment() : Text.MachineLearning.MachineSentiment.Load(SvmPath);
 
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
@@ -123,7 +116,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             var vector = SentimentVector.GetVector(NormalizationType.None);
             vector.XmlSerialize().Save(Path.Combine(path, "sentiment_vector.xml"));
-            arff.Save(path);
+            arff.Save(Path.Combine(path, "data.arff"));
         }
 
         private ProcessingContext RetrieveData(ProcessingContext context)
@@ -159,7 +152,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
             }
-            catch(Exception)
+            catch
             {
                 Interlocked.Increment(ref error);
                 throw;

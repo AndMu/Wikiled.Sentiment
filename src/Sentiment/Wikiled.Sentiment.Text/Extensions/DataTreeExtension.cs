@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Arff.Normalization;
 using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
+using Wikiled.MachineLearning.Normalization;
 using Wikiled.Text.Analysis.Reflection.Data;
 
 namespace Wikiled.Sentiment.Text.Extensions

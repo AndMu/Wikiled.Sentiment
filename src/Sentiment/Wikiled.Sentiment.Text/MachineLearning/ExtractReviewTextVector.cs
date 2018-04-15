@@ -27,16 +27,16 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             return review.CalculateRawRating();
         }
 
-        //protected override void Additional()
-        //{
-        //    SentimentVector vector = dictionary.Extract(review.Items);
-        //    foreach (var probability in vector.GetOccurences().Where(item => item.Probability > 0))
-        //    {
-        //        AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability);
-        //    }
+        protected override void Additional()
+        {
+            SentimentVector vector = dictionary.Extract(review.Items);
+            foreach (var probability in vector.GetProbabilities().Where(item => item.Probability > 0))
+            {
+                AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability * 10);
+            }
 
-        //    base.Additional();
-        //}
+            base.Additional();
+        }
 
         protected override IEnumerable<ISentence> GetSentences()
         {

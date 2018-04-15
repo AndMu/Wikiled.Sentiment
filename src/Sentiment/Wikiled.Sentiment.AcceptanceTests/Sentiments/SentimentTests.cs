@@ -10,6 +10,7 @@ using Accord;
 using MoreLinq;
 using NLog;
 using NUnit.Framework;
+using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
@@ -36,7 +37,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             var doc = XDocument.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
             var data = doc.XmlDeserialize<ProcessingData>();
-            var negative = data.Negative.Repeat(10).Select(
+            var negative = data.Negative.Repeat(5).Select(
                 item =>
                     {
                         item.Stars = 1;
@@ -46,7 +47,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                         return new ParsingDocumentHolder(TestHelper.Instance.CachedSplitterHelper.Splitter, item);
                     }).ToArray();
 
-            var positive = data.Positive.Repeat(10).Select(
+            var positive = data.Positive.Repeat(5).Select(
                 item =>
                     {
                         item.Stars = 5;
@@ -65,11 +66,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.Init();
             var result = await testingClient.Process().ToArray();
+            Assert.AreEqual(5, result[0].Adjustment.Rating.StarsRating);
+            Assert.AreEqual(1, result[1].Adjustment.Rating.StarsRating);
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
             var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
             var table = dataSet.GetFeatureTable();
             var resultWeight = classifier.Model.Weights[0];
-
         }
 
         [Test]

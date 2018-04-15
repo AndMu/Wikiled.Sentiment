@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Wikiled.Arff.Extensions;
-using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Async;
@@ -23,11 +22,6 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
         {
             await DataSet.CompactHeader(minOccurences).ConfigureAwait(false);
             DataSet.CompactReviews(minReviewSize);
-        }
-
-        public void Normalize(NormalizationType type)
-        {
-            DataSet.Normalize(type);
         }
 
         public void PopulateArff(IParsedReview[] processings, PositivityType positivity)

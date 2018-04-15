@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
@@ -11,6 +12,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
 {
     public class RatingAdjustment : IRatingAdjustment
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly Dictionary<IWordItem, SentimentValue> calculatedSentiments;
 
         public RatingAdjustment(IParsedReview review, IMachineSentiment model)
@@ -49,55 +52,38 @@ namespace Wikiled.Sentiment.Text.Sentiment
             }
 
             var bias = vector.RHO;
-
             double added = Math.Abs(bias);
-            double addedOriginal = 0;
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
-                if (item.Data.Name == Constants.RATING_STARS)
-                {
-                    bias += item.Calculated;
-                }
-                else if (cell.Item != null)
+                if (cell.Item != null)
                 {
                     added += Math.Abs(item.Calculated);
-                    addedOriginal += Math.Abs(item.X);
                     Add(new SentimentValue(
                             (IWordItem)cell.Item,
                             new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
                 }
+                else
+                {
+                    bias += item.Calculated;
+                }
             }
 
-            double totalSentiment = 0;
-            double unknownSentiment = 0;
             List<SentimentValue> notAddedSentiments = new List<SentimentValue>();
             foreach (var sentimentValue in Review.GetAllSentiments())
             {
-                double sentiment;
-                if (calculatedSentiments.ContainsKey(sentimentValue.Owner))
+                if (!calculatedSentiments.ContainsKey(sentimentValue.Owner))
                 {
-                    sentiment = Math.Abs(sentimentValue.DataValue.Value);
-                }
-                else
-                {
-                    sentiment = Math.Abs(sentimentValue.DataValue.SentimentSource == SentimentSource.None ? sentimentValue.DataValue.Value / 2 : sentimentValue.DataValue.Value);
-                    unknownSentiment += sentiment;
                     notAddedSentiments.Add(sentimentValue);
                 }
-
-                totalSentiment += sentiment;
             }
 
+            var weight = 0.25 * vector.Normalization.Coeficient;
             if (notAddedSentiments.Count > 0)
             {
-                var unknownWeight = unknownSentiment / totalSentiment;
-                var weight = addedOriginal == 0 ? 1 : added / addedOriginal * unknownWeight + 0.01;
                 foreach (var sentiment in notAddedSentiments)
                 {
-                    // unknown decrase45x
-                    var value = sentiment.DataValue.SentimentSource == SentimentSource.None ? sentiment.DataValue.Value / 2 : sentiment.DataValue.Value;
-                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(value / weight / 2, SentimentSource.AdjustedCalculated)));
+                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(sentiment.DataValue.Value * weight, SentimentSource.AdjustedCalculated)));
                 }
             }
 
@@ -111,7 +97,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
             if (Rating.IsPositive &&
                 result.Probability < 0.5)
             {
-                int a = 6;
+                log.Debug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
             }
         }
 

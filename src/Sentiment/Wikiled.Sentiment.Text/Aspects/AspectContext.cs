@@ -15,15 +15,15 @@ namespace Wikiled.Sentiment.Text.Aspects
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IWordItem[] words;
-
-        private bool processed;
-
         private readonly ConcurrentBag<IWordItem> attributes = new ConcurrentBag<IWordItem>();
 
         private readonly ConcurrentBag<IWordItem> features = new ConcurrentBag<IWordItem>();
-       
+
         private readonly bool includeSentiment;
+
+        private readonly IWordItem[] words;
+
+        private bool processed;
 
         public AspectContext(bool includeSentiment, IWordItem[] words)
         {
@@ -48,7 +48,7 @@ namespace Wikiled.Sentiment.Text.Aspects
             log.Debug("Process");
             if (processed)
             {
-                log.Warn("Already processed");
+                log.Warn("Allready processed");
                 return;
             }
 
@@ -65,11 +65,13 @@ namespace Wikiled.Sentiment.Text.Aspects
                 return;
             }
 
-            if (wordItem.POS.WordType == WordType.Adjective || wordItem.IsSentiment)
+            if (wordItem.POS.WordType == WordType.Adjective ||
+                wordItem.IsSentiment)
             {
                 if (wordItem.CanNotBeAttribute() ||
-                    (wordItem.IsSentiment && !includeSentiment)) // if sentiment excluded
+                    wordItem.IsSentiment && !includeSentiment)
                 {
+                    // if sentiment excluded
                     log.Debug("Can't be attribute: {0}", wordItem);
                     return;
                 }
@@ -79,7 +81,8 @@ namespace Wikiled.Sentiment.Text.Aspects
                 return;
             }
 
-            if (wordItem.POS.WordType == WordType.Noun || wordItem.Entity == NamedEntities.Organization)
+            if (wordItem.POS.WordType == WordType.Noun ||
+                wordItem.Entity == NamedEntities.Organization)
             {
                 // words with ending -ing and -ed can't be features
                 if (wordItem.CanNotBeFeature())

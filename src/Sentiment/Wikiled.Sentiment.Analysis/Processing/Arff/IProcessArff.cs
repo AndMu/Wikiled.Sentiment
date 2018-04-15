@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Wikiled.Arff.Normalization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Sentiment.Text.Data;
 
@@ -12,7 +11,5 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
         void PopulateArff(IParsedReview processings, PositivityType positivity);
 
         Task CleanupDataHolder(int minReviewSize, int minOccurences);
-
-        void Normalize(NormalizationType normalization);
     }
 }
