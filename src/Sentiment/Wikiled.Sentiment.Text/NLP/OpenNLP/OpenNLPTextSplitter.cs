@@ -5,6 +5,7 @@ using NLog;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Tokenize;
+using SharpNL.Utility;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
@@ -70,28 +71,27 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 var currentSentence = new SentenceItem(sentenceData.Text);
                 document.Add(currentSentence);
                 int index = 0;
+                Dictionary<int, Span> chunks = new Dictionary<int, Span>();
                 foreach (var chunk in sentenceData.Chunks)
                 {
-                    var phrase = chunk.Type;
-                    List<WordEx> phraseList = new List<WordEx>();
                     for (int i = chunk.Start; i < chunk.End; i++)
                     {
-                        var tag = sentenceData.Tags[i];
-                        var word = sentenceData.Tokens[i];
-                        var wordItem = handler.WordFactory.CreateWord(word, tag);
-                        wordItem.WordIndex = index;
-                        var wordData = WordExFactory.Construct(wordItem);
-                        currentSentence.Add(wordData);
-                        index++;
-                        phraseList.Add(wordData);
+                        chunks[i] = chunk;
                     }
+                }
 
-                    if (chunk.Length > 1)
+                for (int i = 0; i < sentenceData.Tokens.Length; i++)
+                {
+                    var tag = sentenceData.Tags[i];
+                    var word = sentenceData.Tokens[i];
+                    var wordItem = handler.WordFactory.CreateWord(word, tag);
+                    wordItem.WordIndex = index;
+                    var wordData = WordExFactory.Construct(wordItem);
+                    currentSentence.Add(wordData);
+                    index++;
+                    if (chunks.TryGetValue(i, out var chunk))
                     {
-                        foreach (var wordEx in phraseList)
-                        {
-                            wordEx.Phrase = phrase;
-                        }
+                        wordData.Phrase = chunk.Type;
                     }
                 }
             }

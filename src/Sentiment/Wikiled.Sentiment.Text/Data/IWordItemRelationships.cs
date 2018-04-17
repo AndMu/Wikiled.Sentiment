@@ -7,28 +7,28 @@ namespace Wikiled.Sentiment.Text.Data
 {
     public interface IWordItemRelationships
     {
-        void Reset();
+        IEnumerable<IWordItem> AfterRelated { get; }
+
+        IWordItem Inverted { get; }
+
+        IWordItem Next { get; set; }
+
+        IWordItem Owner { get; }
+
+        ISentencePart Part { get; set; }
+
+        IWordItem Previous { get; set; }
+
+        IEnumerable<IWordItem> PriorQuants { get; }
+
+        IEnumerable<IWordItem> PriorRelated { get; }
+
+        SentimentValue Sentiment { get; set; }
 
         void Add(IWordItem relatedWord);
 
         Tuple<IWordItem, double> DistanceToNearest(Func<IWordItem, bool> forward, Func<IWordItem, bool> backward);
 
-        IWordItem Owner { get; }
-
-        IEnumerable<IWordItem> PriorRelated { get; }
-
-        IEnumerable<IWordItem> AfterRelated { get; }
-
-        SentimentValue Sentiment { get; set; }
-
-        ISentencePart Part { get; set; }
-
-        IWordItem Inverted { get; }
-
-        IEnumerable<IWordItem> PriorQuants { get; }
-
-        IWordItem Previous { get; set; }
-
-        IWordItem Next { get; set; }
+        void Reset();
     }
 }
