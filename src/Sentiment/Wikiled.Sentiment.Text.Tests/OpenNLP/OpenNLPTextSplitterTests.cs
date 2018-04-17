@@ -11,7 +11,7 @@ using Wikiled.Text.Analysis.Cache;
 namespace Wikiled.Sentiment.Text.Tests.OpenNLP
 {
     [TestFixture]
-    public class SharpNLPTextSplitterTests
+    public class OpenNLPTextSplitterTests
     {
         private OpenNLPTextSplitter splitter;
 
@@ -36,6 +36,16 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
             Assert.AreEqual(19, data.Sentences[1].Occurrences.Count());
             Assert.AreEqual(13, data.Sentences[1].Occurrences.GetImportant().Count());
             Assert.AreEqual(2, data.Sentences[1].Parts.Count());
+        }
+
+        [Test]
+        public async Task SentenceWithSymbols()
+        {
+            var result = await splitter.Process(new ParseRequest("Woo! Score one for the penny-pinchers!")).ConfigureAwait(false);
+            var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
+            Assert.AreEqual(2, data.Sentences.Count);
+            Assert.AreEqual(1, data.Sentences[0].Occurrences.Count());
+            Assert.AreEqual(5, data.Sentences[1].Occurrences.Count());
         }
 
         [Test]

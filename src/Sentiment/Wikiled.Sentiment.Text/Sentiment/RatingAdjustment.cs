@@ -52,13 +52,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
             }
 
             var bias = vector.RHO;
-            double added = Math.Abs(bias);
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
                 if (cell.Item != null)
                 {
-                    added += Math.Abs(item.Calculated);
                     Add(new SentimentValue(
                             (IWordItem)cell.Item,
                             new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
@@ -78,7 +76,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 }
             }
 
-            var weight = 0.25 * vector.Normalization.Coeficient;
+            var weight = 0.25 / vector.Normalization.Coeficient;
             if (notAddedSentiments.Count > 0)
             {
                 foreach (var sentiment in notAddedSentiments)

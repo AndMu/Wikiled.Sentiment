@@ -1,4 +1,6 @@
-﻿using System.Reactive.Concurrency;
+﻿using System;
+using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -48,6 +50,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.DisableSvm = true;
             testing.Init();
             await testing.Process().LastOrDefaultAsync();
+            var result = await testing.Process().ToArray();
+            result = result.OrderBy(item => item.Processed.Id).ToArray();
+            var text = result.Select(item => item.Adjustment.Rating.RawRating?.ToString()).Aggregate((one, two) => one + Environment.NewLine + two);
             Assert.AreEqual(data.Errors, testing.Errors);
             Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
         }
