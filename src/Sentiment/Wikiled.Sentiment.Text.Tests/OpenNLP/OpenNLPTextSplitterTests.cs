@@ -62,7 +62,7 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
                 "<br /><br />All in all The Prey is dumb, boring and the killer I didn't find scary at all, this movie could have been a whole lot better.";
             var result = await splitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
             var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
-            Assert.AreEqual(8, data.Sentences.Count);
+            Assert.AreEqual(6, data.Sentences.Count);
             Assert.AreEqual(41, data.Sentences[1].Occurrences.Count());
         }
     }

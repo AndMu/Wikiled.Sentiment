@@ -47,9 +47,8 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public async Task<Document> Process(ParseRequest request)
         {
-            Lazy<ITextSplitter> splitter;
             await semaphore.WaitAsync().ConfigureAwait(false);
-            if (!workStack.TryPop(out splitter))
+            if (!workStack.TryPop(out var splitter))
             {
                 throw new InvalidOperationException("Synchronization error!");
             }

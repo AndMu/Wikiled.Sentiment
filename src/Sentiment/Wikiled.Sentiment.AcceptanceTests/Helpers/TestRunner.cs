@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         {
             this.helper = helper;
             this.definition = definition;
-            Active = definition.Cached ? helper.CachedSplitterHelper : helper.NonCachedSplitterHelper;
+            Active = helper.SplitterHelper;
             var maxParallel = Environment.ProcessorCount / 2;
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
@@ -54,15 +54,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                 {
                     log.Error("Error processing document");
                     return null;
-                }
-
-                if (definition.Cached)
-                {
-                    var parsed = await retryPolicy.ExecuteAsync(() => helper.Cache.GetById(review.Id)).ConfigureAwait(false);
-                    if (parsed != null)
-                    {
-                        return new ParsedDocumentHolder(doc, parsed);
-                    }
                 }
 
                 return new ParsingDocumentHolder(Active.Splitter, new SingleProcessingData(doc));

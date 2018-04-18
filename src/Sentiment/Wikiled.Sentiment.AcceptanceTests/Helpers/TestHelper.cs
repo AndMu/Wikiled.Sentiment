@@ -24,9 +24,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             AmazonRepository = new AmazonRepository(Redis);
             var cacheFactory = new RedisDocumentCacheFactory(Redis);
             Cache = cacheFactory.Create(POSTaggerType.SharpNLP);
-            CachedSplitterHelper = new MainSplitterFactory(cacheFactory, configuration).Create(POSTaggerType.SharpNLP);
             var localCache = new LocalCacheFactory();
-            NonCachedSplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
+            SplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
         }
 
         public static TestHelper Instance { get; } = new TestHelper();
@@ -35,9 +34,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public ICachedDocumentsSource Cache { get; }
 
-        public ISplitterHelper CachedSplitterHelper { get; }
-
-        public ISplitterHelper NonCachedSplitterHelper { get; }
+        public ISplitterHelper SplitterHelper { get; }
 
         public IRedisLink Redis { get; }
     }

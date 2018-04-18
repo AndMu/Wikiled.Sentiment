@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [TearDown]
         public void TearDown()
         {
-            TestHelper.Instance.CachedSplitterHelper.DataLoader.Reset();
+            TestHelper.Instance.SplitterHelper.DataLoader.Reset();
         }
 
         [TestCaseSource(nameof(testData))]
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                     throw new ArgumentOutOfRangeException();
             }
 
-            var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.CachedSplitterHelper.DataLoader.SentimentDataHolder);
+            var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.SplitterHelper.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load(), new ParsedReviewManagerFactory()), string.Empty);

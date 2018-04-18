@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                         item.Document = new Document(item.Text);
                         item.Document.Id = Guid.NewGuid().ToString();
                         item.Document.Stars = 1;
-                        return new ParsingDocumentHolder(TestHelper.Instance.CachedSplitterHelper.Splitter, item);
+                        return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
                     }).ToArray();
 
             var positive = data.Positive.Repeat(5).Select(
@@ -54,15 +54,15 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                         item.Document = new Document(item.Text);
                         item.Document.Id = Guid.NewGuid().ToString();
                         item.Document.Stars = 5;
-                        return new ParsingDocumentHolder(TestHelper.Instance.CachedSplitterHelper.Splitter, item);
+                        return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
                     }).ToArray();
 
 
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.NonCachedSplitterHelper, negative.Union(positive).ToObservable(), new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Union(positive).ToObservable(), new ParsedReviewManagerFactory());
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
             await trainingClient.Train().ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.NonCachedSplitterHelper, negative.Take(1).Union(positive.Take(1)).ToObservable(), new ParsedReviewManagerFactory());
+            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Take(1).Union(positive.Take(1)).ToObservable(), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.Init();
             var result = await testingClient.Process().ToArray();
@@ -80,8 +80,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("SimpleTest");
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
-            var doc = await TestHelper.Instance.CachedSplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) { Date = new DateTime(2016, 01, 01) }).ConfigureAwait(false);
-            var result = new ParsedReviewManager(TestHelper.Instance.CachedSplitterHelper.DataLoader, doc).Create();
+            var doc = await TestHelper.Instance.SplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) { Date = new DateTime(2016, 01, 01) }).ConfigureAwait(false);
+            var result = new ParsedReviewManager(TestHelper.Instance.SplitterHelper.DataLoader, doc).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
@@ -111,7 +111,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             ConcurrentBag<ISentence> sentences = new ConcurrentBag<ISentence>();
             var doc = await parsedDocument.GetParsed().ConfigureAwait(false);
-            var review = new ParsedReviewManager(TestHelper.Instance.CachedSplitterHelper.DataLoader, doc).Create();
+            var review = new ParsedReviewManager(TestHelper.Instance.SplitterHelper.DataLoader, doc).Create();
             foreach (var sentence in review.Sentences)
             {
                 var sentiments = sentence.Occurrences.Where(item => item.IsSentiment).ToArray();

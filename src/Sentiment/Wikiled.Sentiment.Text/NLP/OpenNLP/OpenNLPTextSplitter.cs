@@ -102,13 +102,13 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         private void LoadModels(string resourcesFolder)
         {
             POSModel posModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5\en-pos-maxent.bin"), FileMode.Open))
+            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5\en-pos-maxent.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 posModel = new POSModel(modelFile);
             }
 
             ChunkerModel chunkerModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5\en-chunker.bin"), FileMode.Open))
+            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5\en-chunker.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 chunkerModel = new ChunkerModel(modelFile);
             }
