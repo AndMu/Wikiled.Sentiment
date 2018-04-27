@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net471</TargetFrameworks>
+    <TargetFrameworks>NETSTANDARD2.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
@@ -58,24 +58,18 @@
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="morelinq" Version="2.10.0" />
-    <PackageReference Include="Crc32C.NET" Version="1.0.5.0" />
-    <PackageReference Include="IKVM" Version="8.1.5717.0" />
     <PackageReference Include="MathNet.Numerics" Version="4.4.0" />
-    <PackageReference Include="MSFT.ParallelExtensionsExtras" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.3" />
-    <PackageReference Include="ParallelExtensionsExtras" Version="1.2.0.0" />
     <PackageReference Include="Polly" Version="5.9.0" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
-    <PackageReference Include="SharpZipLib" Version="0.86.0" />
-    <PackageReference Include="Snappy.NET" Version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="System.Reactive.Core" Version="3.1.1" />
     <PackageReference Include="System.Reactive.Interfaces" Version="3.1.1" />
     <PackageReference Include="System.Reactive.Linq" Version="3.1.1" />
     <PackageReference Include="System.Reactive.PlatformServices" Version="3.1.1" />
-    <PackageReference Include="System.Reactive.Windows.Threading" Version="3.1.1" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
     <PackageReference Include="Wikiled.Arff" Version="2.1.2" />
@@ -89,10 +83,6 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Runtime.Caching" />
   </ItemGroup>
 
 </Project>

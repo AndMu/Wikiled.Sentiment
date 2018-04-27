@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
 using NLog;
 
 namespace Wikiled.Sentiment.Text.Resources
@@ -27,43 +26,44 @@ namespace Wikiled.Sentiment.Text.Resources
 
         private void UnzipFromStream(Stream zipStream, string outFolder)
         {
-            ZipInputStream zipInputStream = new ZipInputStream(zipStream);
-            ZipEntry zipEntry = zipInputStream.GetNextEntry();
-            while (zipEntry != null)
+            using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
             {
-                var entryFileName = zipEntry.Name;
-                log.Info("Unpacking [{0}]", entryFileName);
-
-                // to remove the folder from the entry:- entryFileName = Path.GetFileName(entryFileName);
-                // Optionally match entrynames against a selection list here to skip as desired.
-                // The unpacked length is available in the zipEntry.Size property.
-                byte[] buffer = new byte[4096];     // 4K is optimum
-
-                // Manipulate the output filename here as desired.
-                String fullZipToPath = Path.Combine(outFolder, entryFileName);
-                string directoryName = Path.GetDirectoryName(fullZipToPath);
-                if (directoryName.Length > 0)
+                foreach (var entry in archive.Entries)
                 {
-                    Directory.CreateDirectory(directoryName);
+                    using (var stream = entry.Open())
+                    {
+                        ProcessFile(outFolder, entry, stream);
+                    }
                 }
+            }
+        }
 
-                // Skip directory entry
-                string fileName = Path.GetFileName(fullZipToPath);
-                if (fileName.Length == 0)
-                {
-                    zipEntry = zipInputStream.GetNextEntry();
-                    continue;
-                }
+        private static void ProcessFile(string outFolder, ZipArchiveEntry entry, Stream stream)
+        {
+            var entryFileName = entry.Name;
+            log.Info("Unpacking [{0}]", entryFileName);
 
-                // Unzip file in buffered chunks. This is just as fast as unpacking to a buffer the full size
-                // of the file, but does not waste memory.
-                // The "using" will close the stream even if an exception occurs.
-                using (FileStream streamWriter = File.Create(fullZipToPath))
-                {
-                    StreamUtils.Copy(zipInputStream, streamWriter, buffer);
-                }
+            // Manipulate the output filename here as desired.
+            String fullZipToPath = Path.Combine(outFolder, entryFileName);
+            string directoryName = Path.GetDirectoryName(fullZipToPath);
+            if (directoryName.Length > 0)
+            {
+                Directory.CreateDirectory(directoryName);
+            }
 
-                zipEntry = zipInputStream.GetNextEntry();
+            // Skip directory entry
+            string fileName = Path.GetFileName(fullZipToPath);
+            if (fileName.Length == 0)
+            {
+                return;
+            }
+
+            // Unzip file in buffered chunks. This is just as fast as unpacking to a buffer the full size
+            // of the file, but does not waste memory.
+            // The "using" will close the stream even if an exception occurs.
+            using (FileStream streamWriter = File.Create(fullZipToPath))
+            {
+                stream.CopyTo(streamWriter, 4096); // 4K is optimum
             }
         }
     }

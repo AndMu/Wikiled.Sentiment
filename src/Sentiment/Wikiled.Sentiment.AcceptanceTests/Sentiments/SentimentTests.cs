@@ -6,12 +6,10 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Accord;
 using MoreLinq;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Arff.Extensions;
-using Wikiled.Arff.Persistence;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
@@ -71,7 +69,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
             var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
             var table = dataSet.GetFeatureTable();
-            var resultWeight = classifier.Model.Weights[0];
+            //var resultWeight = classifier.Model.Weights[0];
         }
 
         [Test]

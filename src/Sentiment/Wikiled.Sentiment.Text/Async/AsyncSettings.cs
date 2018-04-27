@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Schedulers;
 
 namespace Wikiled.Sentiment.Text.Async
 {
@@ -10,7 +9,5 @@ namespace Wikiled.Sentiment.Text.Async
                                                                  {
                                                                      MaxDegreeOfParallelism = Environment.ProcessorCount
                                                                  };
-
-        public static TaskScheduler DefaultScheduler { get; } = new LimitedConcurrencyLevelTaskScheduler(Environment.ProcessorCount);
     }
 }

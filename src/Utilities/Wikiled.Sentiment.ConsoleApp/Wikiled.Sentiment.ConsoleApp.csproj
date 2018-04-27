@@ -10,6 +10,10 @@
     <StartupObject>Wikiled.Sentiment.ConsoleApp.Program</StartupObject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net462|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
     <PackageReference Include="CsvHelper" version="7.1.0" />
