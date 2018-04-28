@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>NETSTANDARD2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFrameworks>NETSTANDARD2.0;net462</TargetFrameworks>
+  </PropertyGroup>
+
   <PropertyGroup>
-    <TargetFrameworks>NETSTANDARD2.0</TargetFrameworks>
     <Authors>Wikiled</Authors>
     <Description>Wikiled Sentiment Analysis library</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
