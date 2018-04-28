@@ -44,13 +44,12 @@ namespace Wikiled.Sentiment.ConsoleApp
 
             #if NET462
                 var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
+                if (fPreviousExecutionState == 0)
+                {
+                    log.Error("SetThreadExecutionState failed.");
+                    return;
+                }
             #endif
-
-            if (fPreviousExecutionState == 0)
-            {
-                log.Error("SetThreadExecutionState failed.");
-                return;
-            }
 
             try
             {
