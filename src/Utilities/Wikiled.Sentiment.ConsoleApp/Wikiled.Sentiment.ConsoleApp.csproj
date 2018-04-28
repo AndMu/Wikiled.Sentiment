@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp2.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -15,24 +15,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Crc32C.NET" version="1.0.5.0" />
     <PackageReference Include="CsvHelper" version="7.1.0" />
-    <PackageReference Include="IKVM" version="8.1.5717.0" />
-    <PackageReference Include="MSFT.ParallelExtensionsExtras" version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" version="11.0.2" />
     <PackageReference Include="NLog" version="4.5.3" />
-    <PackageReference Include="ParallelExtensionsExtras" version="1.2.0.0" />
     <PackageReference Include="Polly" version="5.9.0" />
     <PackageReference Include="protobuf-net" version="2.3.7" />
-    <PackageReference Include="SharpZipLib" version="0.86.0" />
-    <PackageReference Include="Snappy.NET" version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" version="1.2.6" />
     <PackageReference Include="System.Reactive" version="3.1.1" />
     <PackageReference Include="System.Reactive.Core" version="3.1.1" />
     <PackageReference Include="System.Reactive.Interfaces" version="3.1.1" />
     <PackageReference Include="System.Reactive.Linq" version="3.1.1" />
     <PackageReference Include="System.Reactive.PlatformServices" version="3.1.1" />
-    <PackageReference Include="System.Reactive.Windows.Threading" version="3.1.1" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="System.ValueTuple" version="4.4.0" />
     <PackageReference Include="Wikiled.Arff" version="2.1.2" />
