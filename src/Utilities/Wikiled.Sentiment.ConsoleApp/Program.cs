@@ -42,7 +42,10 @@ namespace Wikiled.Sentiment.ConsoleApp
             commandsList.Add(new ExtractAttributesCommand());
             var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
 
-            var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
+            #if NET462
+                var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
+            #endif
+
             if (fPreviousExecutionState == 0)
             {
                 log.Error("SetThreadExecutionState failed.");
