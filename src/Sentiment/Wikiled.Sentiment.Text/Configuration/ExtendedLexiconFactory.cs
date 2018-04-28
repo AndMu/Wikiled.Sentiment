@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Configuration
             {
                 if (!Directory.Exists(ResourcesPath))
                 {
-                    log.Debug("Path doesn't exist: {0}", ResourcesPath);
+                    log.Error("Path doesn't exist: {0}", ResourcesPath);
                     return false;
                 }
 
