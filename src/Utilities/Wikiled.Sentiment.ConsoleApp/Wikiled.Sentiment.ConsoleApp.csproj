@@ -9,9 +9,7 @@
   
   <PropertyGroup>    
     <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>Wikiled.Sentiment.ConsoleApp.Program</StartupObject>
   </PropertyGroup>
@@ -64,4 +62,9 @@
     </None>
   </ItemGroup>
 
+  <Target Name="ForceGenerationOfBindingRedirects" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GenerateBindingRedirects" Condition="'$(AutoGenerateBindingRedirects)' == 'true'">
+    <PropertyGroup>
+      <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
+  </Target>
 </Project>
