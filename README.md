@@ -7,63 +7,65 @@ Nuget library
 ```
 Install-Package Wikiled.Sentiment
 ```
-## Resources
-
-Both Standalone and library requires [resources](src/Resources/)
-In app.config/Wikiled.Sentiment.ConsoleApp.config:
-
-```
-<appSettings>
-<add key="resources" value="..\..\..\..\Resources" />
-<add key="Stanford" value="..\..\..\..\Resources\Stanford" />
-<add key="Lexicon" value="Library\Standard" />
-</appSettings>
-```
 
 ## Standalone application - *pSenti*
 
-Supported taggers:
-- SharpNLP
-- Stanford
-- Basic
-
 ### To test using lexicon based model 
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Tagger=SharpNLP -Out=[OutPut] -Input=[Folder/File]
-Wikiled.Sentiment.ConsoleApp.exe test -Tagger=SharpNLP -Out=[OutPut] -Positive=[Folder/File] -Negative=[Folder/File]
+Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File]
+Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Positive=[Folder/File] -Negative=[Folder/File]
 ```
 
 ### To override lexicon
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Tagger=SharpNLP -Out=[OutPut] -Input=[Folder/File] -Weights[WeightsFile] -FullWeightReset
+Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Weights[WeightsFile] -FullWeightReset
 ```
 
 ### To train with non default lexicon
 ```
-Wikiled.Sentiment.ConsoleApp.exe train -Tagger=SharpNLP -Positive=[Folder/File] -Negative=[Folder/File] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset] -Model=[Path to Model]
+Wikiled.Sentiment.ConsoleApp.exe train -Positive=[Folder/File] -Negative=[Folder/File] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset] -Model=[Path to Model]
 ```
 
 ### To Test with trained model
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Tagger=SharpNLP -Out=[OutPut] -Input=[Folder/File] -Trained=[Path to Trained Model]
+Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Model=[Path to Trained Model]
 ```
+## Linux support
+
+[Supported OS](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md)
+
+* Install [dotnet core](https://www.microsoft.com/net/download/)
+* Retrieve GIT repository wit source
+* dotnet build src/Utilities/Wikiled.Sentiment.ConsoleApp --configuration Release* 
+* dotnet src/Utilities/Wikiled.Sentiment.ConsoleApp/bit/Release/netcoreapp2.0/Wikiled.Sentiment.ConsoleApp.dll test -Articles=test -Input=lexicon.csv -out=Result -ExtractStyle]
 
 ## C# Library 
+
+## Resources
+
+```
+<appSettings>
+<add key="resources" value="Resources" />
+</appSettings>
+```
 
 ### Training model
 
 ```
 ICacheFactory cacheFactory = new LocalCacheFactory();
 IObservable<IParsedDocumentHolder> reviews = GetReviews();
-var splitter = new SplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
-TrainingClient client = new TrainingClient(splitter, reviews, @".\Model");
+var localCache = new LocalCacheFactory();
+var splitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
+ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitterHelper, reviews, new ParsedReviewManagerFactory());
+TrainingClient trainingClient = new TrainingClient(pipeline, @".\Model");
+			
 await client.Train();
 ```
 
 ### Testing model
 
 ```
-client = new TestingClient(splitter, reviews, Trained);
+client = new TestingClient(pipeline, Trained);
 client.Init();
 await client.Process();
 client.Save(Out);
