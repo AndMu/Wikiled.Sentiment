@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.Tests.Configuration
             mock.ReplayAll();
 
             IExtendedLexiconFactory factory = new ExtendedLexiconFactory(configuration);
-            Assert.AreEqual(@"c:\data", factory.ResourcesPath);
+            Assert.AreEqual(@"c:/data", factory.ResourcesPath);
             Assert.IsFalse(factory.IsConstructed);
             mock.VerifyAll();
         }
