@@ -31,11 +31,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 yield break;
             }
 
-            if (path.Contains(@"\pos"))
+            if (path.Contains(@"/pos"))
             {
                 positivity = PositivityType.Positive;
             }
-            else if (path.Contains(@"\neg"))
+            else if (path.Contains(@"/neg"))
             {
                 positivity = PositivityType.Negative;
             }

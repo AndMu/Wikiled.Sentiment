@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             handler.SentimentDataHolder.Clear();
             handler.DisableFeatureSentiment = true;
             var adjuster = new WeightSentimentAdjuster(handler.SentimentDataHolder);
-            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment\words.csv");
+            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
             adjuster.Adjust(words);
             var text = "I Veto it";
             var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);

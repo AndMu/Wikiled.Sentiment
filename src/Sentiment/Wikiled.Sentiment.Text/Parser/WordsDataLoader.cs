@@ -259,7 +259,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadRepairRules()
         {
-            string folder = Path.Combine(datasetPath, @"Rules\Invertors");
+            string folder = Path.Combine(datasetPath, @"Rules/Invertors");
             negatingLemmaBasedRepair = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRepairRule = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRule = new Dictionary<WordItemType, WordRepairRule>();

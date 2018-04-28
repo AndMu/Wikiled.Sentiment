@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.Configuration
         {
             Guard.NotNull(() => configuration, configuration);
             var path = configuration.ResolvePath("Resources");
-            ResourcesPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library\Standard"));
+            ResourcesPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
         }
 
         public bool CanBeConstructed

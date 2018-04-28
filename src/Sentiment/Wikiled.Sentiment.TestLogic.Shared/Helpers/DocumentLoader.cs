@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         {
             this.handler = handler;
             extraction = splitter;
-            path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"MachineLearning\Data\");
+            path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"MachineLearning/Data/");
         }
 
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
