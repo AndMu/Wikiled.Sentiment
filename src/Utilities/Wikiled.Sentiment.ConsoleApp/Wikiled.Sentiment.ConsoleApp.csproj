@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="CsvHelper" version="7.1.0" />
     <PackageReference Include="Newtonsoft.Json" version="11.0.2" />
     <PackageReference Include="NLog" version="4.5.3" />
