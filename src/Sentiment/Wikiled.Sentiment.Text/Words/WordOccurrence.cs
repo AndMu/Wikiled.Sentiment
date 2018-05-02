@@ -13,6 +13,8 @@ namespace Wikiled.Sentiment.Text.Words
     {
         private NamedEntities entity;
 
+        private bool isSentiment;
+
         private WordOccurrence(string text, string raw, BasePOSType pos)
         {
             Guard.NotNullOrEmpty(() => text, text);
@@ -57,7 +59,11 @@ namespace Wikiled.Sentiment.Text.Words
 
         public bool IsQuestion { get; private set; }
 
-        public bool IsSentiment { get; private set; }
+        public bool IsSentiment
+        {
+            get => isSentiment || Relationship?.Sentiment?.DataValue != null;
+            private set => isSentiment = value;
+        }
 
         public bool IsSimple => true;
 

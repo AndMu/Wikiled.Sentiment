@@ -79,7 +79,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 wordItem.Entity != NamedEntities.Hashtag &&
                 !wordItem.IsTopAttribute &&
                 !wordItem.IsSentiment &&
-                !wordItem.IsFeature)
+                !wordItem.IsFeature &&
+                wordItem.Relationship?.Inverted == null)
             {
                 return null;
             }

@@ -53,7 +53,10 @@ namespace Wikiled.Sentiment.Text.Structure
                 foreach (var wordItem in sentence.Occurrences)
                 {
                     var word = WordExFactory.Construct(wordItem);
-                    word.IsStop = word.IsStop;
+                    word.IsStop = wordItem.IsStopWord;
+                    word.Phrase = wordItem.Parent?.Text;
+                    word.NormalizedEntity = wordItem.NormalizedEntity;
+                    
                     if (!word.IsStop && wordItem.Relationship?.Sentiment != null)
                     {
                         word.Value = wordItem.Relationship.Sentiment.DataValue.Value;
