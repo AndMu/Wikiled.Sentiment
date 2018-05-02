@@ -5,7 +5,6 @@ using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -51,9 +50,9 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [TestCase(true, false, 2, "my", "like")]
         [TestCase(false, false, 5, "my", "teacher")]
         [TestCase(true, true, 4, "not", "NOTxxxxxxFeature")]
-        [TestCase(false, true, 6, "not", "NOTxxxxxxFeature")]
-        [TestCase(true, false, 3, "not", "NOTxxxlike")]
-        [TestCase(false, false, 6, "not", "NOTxxxteacher")]
+        [TestCase(false, true, 6, "not", "teacher")]
+        [TestCase(true, false, 2, "not", "NOTxxxlike")]
+        [TestCase(false, false, 5, "not", "teacher")]
         public async Task GetCells(bool generate, bool addFeature, int total, string prefix, string lastWord)
         {
             if (addFeature)
@@ -67,6 +66,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);
+
             // feature is always 
             Assert.AreEqual(lastWord, cells[cells.Count - 1].Name);
         }

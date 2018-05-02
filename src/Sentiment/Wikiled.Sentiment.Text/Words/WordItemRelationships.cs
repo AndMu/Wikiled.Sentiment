@@ -34,7 +34,8 @@ namespace Wikiled.Sentiment.Text.Words
             get
             {
                 if (Previous != null &&
-                    Previous.IsInvertor)
+                    Previous.IsInvertor &&
+                    Previous.Relationship.Owner == this.Owner)
                 {
                     return Previous;
                 }
