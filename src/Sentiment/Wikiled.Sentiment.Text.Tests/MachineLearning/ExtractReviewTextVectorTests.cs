@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [TestCase(true, false, 2, "my", "like")]
         [TestCase(false, false, 5, "my", "teacher")]
         [TestCase(true, true, 4, "not", "NOTxxxxxxFeature")]
-        [TestCase(false, true, 6, "not", "teacher")]
+        [TestCase(false, true, 6, "not", "NOTxxxxxxFeature")]
         [TestCase(true, false, 2, "not", "NOTxxxlike")]
         [TestCase(false, false, 5, "not", "teacher")]
         public async Task GetCells(bool generate, bool addFeature, int total, string prefix, string lastWord)
