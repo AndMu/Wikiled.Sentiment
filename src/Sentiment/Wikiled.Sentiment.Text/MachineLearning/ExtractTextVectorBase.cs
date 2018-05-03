@@ -80,6 +80,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 !wordItem.IsTopAttribute &&
                 !wordItem.IsSentiment &&
                 !wordItem.IsFeature &&
+                !wordItem.IsInvertor &&
                 wordItem.Relationship?.Inverted == null)
             {
                 return null;
