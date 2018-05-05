@@ -27,8 +27,6 @@ namespace Wikiled.Sentiment.Text.Data
 
         void Add(IWordItem relatedWord);
 
-        Tuple<IWordItem, double> DistanceToNearest(Func<IWordItem, bool> forward, Func<IWordItem, bool> backward);
-
         void Reset();
     }
 }

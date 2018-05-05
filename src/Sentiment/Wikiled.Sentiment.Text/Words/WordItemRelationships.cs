@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
@@ -7,7 +6,6 @@ using Wikiled.Sentiment.Text.Data.Weighting;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
-using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Text.Words
 {
@@ -40,7 +38,7 @@ namespace Wikiled.Sentiment.Text.Words
                     return Previous;
                 }
 
-                Tuple<IWordItem, double> answer;
+                IWordItem answer;
                 IWordItemRelationships current = this;
                 while (current.Previous != null)
                 {
@@ -48,8 +46,7 @@ namespace Wikiled.Sentiment.Text.Words
                     if (current.Owner.IsInvertor)
                     {
                         answer = current.Owner.GetInvertedTarget();
-                        if (answer != null &&
-                            answer.Item1 == Owner)
+                        if (answer == Owner)
                         {
                             return current.Owner;
                         }
@@ -65,8 +62,7 @@ namespace Wikiled.Sentiment.Text.Words
                     if (current.Owner.IsInvertor)
                     {
                         answer = current.Owner.GetInvertedTarget();
-                        if (answer != null &&
-                            answer.Item1 == Owner)
+                        if (answer == Owner)
                         {
                             return current.Owner;
                         }
@@ -141,86 +137,6 @@ namespace Wikiled.Sentiment.Text.Words
             Reset();
         }
 
-        public Tuple<IWordItem, double> DistanceToNearest(Func<IWordItem, bool> forward, Func<IWordItem, bool> backward)
-        {
-            var max = 2;
-            IWordItemRelationships current = this;
-            double i = 0;
-            double weightSentiment = 0.9;
-            double weightFeature = 2;
-            double weight = 1;
-            var stopWeight = 0.5;
-            Tuple<IWordItem, double> found = null;
-            while (current.Next != null)
-            {
-                current = current.Next.Relationship;
-                if (current.Owner.POS.WordType == WordType.SeparationSymbol)
-                {
-                    break;
-                }
-
-                if (current.Owner.IsStopWord)
-                {
-                    i += stopWeight;
-                    continue;
-                }
-
-                i += weight;
-                if (i >= max)
-                {
-                    break;
-                }
-
-                var coef = current.Owner.IsFeature ? weightFeature : weightSentiment;
-                var value = i * coef;
-                if (forward(current.Owner))
-                {
-                    if (found == null ||
-                        found.Item2 > value)
-                    {
-                        found = new Tuple<IWordItem, double>(current.Owner, value);
-                    }
-                }
-            }
-
-            max = 3;
-            i = 0;
-            weight = 2;
-            current = this;
-            while (current.Previous != null)
-            {
-                current = current.Previous.Relationship;
-                if (current.Owner.POS.WordType == WordType.SeparationSymbol)
-                {
-                    break;
-                }
-
-                if (current.Owner.IsStopWord)
-                {
-                    i += stopWeight;
-                    continue;
-                }
-
-                i += weight;
-                if (i >= max)
-                {
-                    break;
-                }
-
-                if (found != null && found.Item2 <= i)
-                {
-                    break;
-                }
-
-                if (backward(current.Owner))
-                {
-                    return new Tuple<IWordItem, double>(current.Owner, i);
-                }
-            }
-
-            return found;
-        }
-
         public void Reset()
         {
             sentimentResolved = false;
@@ -250,7 +166,7 @@ namespace Wikiled.Sentiment.Text.Words
 
                 return SentimentValue.CreateInvertor(Owner);
             }
-            
+
             if (sentimentValue == null)
             {
                 return null;

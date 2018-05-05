@@ -104,14 +104,19 @@ namespace Wikiled.Sentiment.Text.Extensions
         public static IWordItem GetInverted(this IWordItem word)
         {
             var distance = word.GetInvertedTarget();
-            return distance?.Item1;
+            return distance;
         }
 
-        public static Tuple<IWordItem, double> GetInvertedTarget(this IWordItem word)
+        public static IWordItem GetInvertedTarget(this IWordItem word)
         {
-            bool Forward(IWordItem item) => item.IsTopAttribute || item.IsSentiment || item.IsFeature || item.POS.WordType == WordType.Verb;
-            bool Backward(IWordItem item) => item.IsTopAttribute || item.IsSentiment || item.IsFeature;
-            return word.Relationship.DistanceToNearest(Forward, Backward);
+            var item = word.Relationship.GetNeighbours(true).GetNext();
+            if (item != null)
+            {
+                return item;
+            }
+
+            item = word.Relationship.GetNeighbours(false).GetNext();
+            return item;
         }
 
         public static IEnumerable<string> GetPossibleText(this IWordItem word)
@@ -164,8 +169,7 @@ namespace Wikiled.Sentiment.Text.Extensions
                         item.Description.Syntactic.Verb.IsHave ||
                         item.Description.Syntactic.Verb.IsModal ||
                         item.Description.Syntactic.Verb.IsDoVerb ||
-                        item.Description.Syntactic.Verb.IsTo) ==
-                true)
+                        item.Description.Syntactic.Verb.IsTo) == true)
             {
                 return true;
             }

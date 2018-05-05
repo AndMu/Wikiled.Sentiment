@@ -2,6 +2,7 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
@@ -12,7 +13,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
     {
         private Mock<IWordsHandler> handler;
 
-        private Mock<IWordItem> parent;
+        private TestWordItem parent;
 
         private WordItemRelationships instance;
 
@@ -20,9 +21,10 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             handler = new Mock<IWordsHandler>();
-            parent = new Mock<IWordItem>();
-            parent.Setup(item => item.WordIndex).Returns(1);
-            instance = new WordItemRelationships(handler.Object, parent.Object);
+            parent = new TestWordItem();
+            parent.WordIndex = 1;
+            instance = new WordItemRelationships(handler.Object, parent);
+            parent.Relationship = instance;
         }
 
         [Test]
@@ -46,7 +48,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Create()
         {
             Assert.Throws<ArgumentNullException>(() => new WordItemRelationships(handler.Object, null));
-            Assert.AreEqual(parent.Object, instance.Owner);
+            Assert.AreEqual(parent, instance.Owner);
             Assert.IsNull(instance.Previous);
             Assert.IsNull(instance.Next);
             Assert.IsNull(instance.Sentiment);
@@ -58,6 +60,9 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void SimpleInverted()
         {
             var previous = new Mock<IWordItem>();
+            var previousRelationship = new WordItemRelationships(handler.Object, previous.Object);
+            previousRelationship.Next = instance.Owner;
+            previous.Setup(item => item.Relationship).Returns(previousRelationship);
             previous.Setup(item => item.IsInvertor).Returns(true);
             instance.Previous = previous.Object;
             Assert.AreEqual(previous.Object, instance.Inverted);
