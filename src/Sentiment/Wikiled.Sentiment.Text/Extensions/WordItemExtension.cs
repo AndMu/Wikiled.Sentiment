@@ -109,14 +109,22 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static IWordItem GetInvertedTarget(this IWordItem word)
         {
-            var item = word.Relationship.GetNeighbours(true).GetNext();
-            if (item != null)
+            var next = word.Relationship.GetNeighbours(true).GetNext();
+            var previous = word.Relationship.GetNeighbours(false).GetNext();
+            if (next != null &&
+                (next.IsFeature || next.IsSentiment))
             {
-                return item;
+                return next;
             }
 
-            item = word.Relationship.GetNeighbours(false).GetNext();
-            return item;
+            if (previous != null &&
+                (previous.IsFeature || previous.IsSentiment) &&
+                previous.WordIndex == (word.WordIndex - 1))
+            {
+                return previous;
+            }
+            
+            return next ?? previous;
         }
 
         public static IEnumerable<string> GetPossibleText(this IWordItem word)
