@@ -77,7 +77,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Extensions
             items[2].IsFeature = true;
             items[3].IsSentiment = true;
             var next = items[1].Relationship.GetNeighbours(true).GetNext();
-            Assert.AreEqual(items[3], next);
+            Assert.AreEqual(items[2], next);
         }
     }
 }
