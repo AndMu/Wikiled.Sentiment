@@ -33,7 +33,7 @@ namespace Wikiled.Sentiment.Text.Extensions
                               new
                               {
                                   Index = item.Item2,
-                                  Weight = item.Word.IsSentiment ? 3 : item.Word.IsFeature ? 2 : 1,
+                                  Weight = item.Word.IsSentiment ? 4 : item.Word.IsFeature ? 3 : item.Word.POS.WordType == WordType.Verb ? 2 : 1,
                                   Word = item.Word
                               };
             return grouped.OrderByDescending(item => item.Weight)
@@ -61,6 +61,13 @@ namespace Wikiled.Sentiment.Text.Extensions
                 }
 
                 yield return (current.Owner, i);
+                if (current.Owner.IsFeature ||
+                    current.Owner.IsSentiment ||
+                    current.Owner.POS.WordType == WordType.Verb)
+                {
+                    yield break;
+                }
+
                 if (i >= max)
                 {
                     yield break;
