@@ -37,7 +37,7 @@ Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Model=
 * Install [dotnet core](https://www.microsoft.com/net/download/)
 * Retrieve GIT repository source
 * dotnet build src/Utilities/Wikiled.Sentiment.ConsoleApp --configuration Release
-* dotnet src/Utilities/Wikiled.Sentiment.ConsoleApp/bit/Release/netcoreapp2.0/Wikiled.Sentiment.ConsoleApp.dll test -Articles=test -Input=lexicon.csv -out=Result -ExtractStyle]
+* dotnet src/Utilities/Wikiled.Sentiment.ConsoleApp/bit/Release/netcoreapp2.0/Wikiled.Sentiment.ConsoleApp.dll test -Input=[path to files] -out=Result -ExtractStyle]
 
 ## C# Library 
 
