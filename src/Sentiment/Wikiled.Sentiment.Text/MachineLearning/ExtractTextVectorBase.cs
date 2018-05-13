@@ -51,8 +51,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         protected void AddItem(IWordItem item, string word, double value)
         {
             Guard.NotNullOrEmpty(() => word, word);
-            TextVectorCell cell;
-            var addedCell = !table.TryGetValue(word, out cell) ? new TextVectorCell(item, word, value) : new TextVectorCell(item, word, cell.Value + value);
+            var addedCell = !table.TryGetValue(word, out var cell) ? new TextVectorCell(item, word, value) : new TextVectorCell(item, word, cell.Value + value);
             table[word] = addedCell;
         }
 
@@ -69,7 +68,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         private double GetValue(IWordItem wordItem)
         {
-            return wordItem.Relationship.Sentiment?.DataValue.Value ?? 1;
+            return Math.Abs(wordItem.Relationship.Sentiment?.DataValue.Value ?? 1);
         }
 
         private string GetWord(IWordItem wordItem)

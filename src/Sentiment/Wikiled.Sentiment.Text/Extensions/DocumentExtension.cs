@@ -22,8 +22,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             var itemTable = new Dictionary<string, IItem>(StringComparer.OrdinalIgnoreCase);
             foreach (var wordEx in document.Words)
             {
-                int total;
-                table.TryGetValue(wordEx.Text, out total);
+                table.TryGetValue(wordEx.Text, out int total);
                 total++;
                 table[wordEx.Text] = total;
                 itemTable[wordEx.Text] = wordEx.UnderlyingWord;

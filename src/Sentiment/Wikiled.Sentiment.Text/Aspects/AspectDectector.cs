@@ -41,15 +41,13 @@ namespace Wikiled.Sentiment.Text.Aspects
         public bool IsAspect(IWordItem word)
         {
             Guard.NotNull(() => word, word);
-            IWordItem result;
-            return aspectsTable.TryGetWordValue(word, out result);
+            return aspectsTable.TryGetWordValue(word, out IWordItem result);
         }
 
         public bool IsAttribute(IWordItem word)
         {
             Guard.NotNull(() => word, word);
-            IWordItem result;
-            return attributesTable.TryGetWordValue(word, out result);
+            return attributesTable.TryGetWordValue(word, out IWordItem result);
         }
 
         public IEnumerable<IWordItem> AllFeatures => aspectsTable.Values;

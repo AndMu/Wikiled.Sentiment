@@ -58,14 +58,13 @@ namespace Wikiled.Sentiment.Text.Helpers
 
         public string FindKey(string key)
         {
-            T value;
             if (key.Length < minimum ||
                 key.Length == 0)
             {
                 return null;
             }
 
-            return innerTable.TryGetValue(key, out value) ? key : FindKey(key.Substring(0, key.Length - 1));
+            return innerTable.TryGetValue(key, out T value) ? key : FindKey(key.Substring(0, key.Length - 1));
         }
 
         public Dictionary<string, T>.Enumerator GetEnumerator()

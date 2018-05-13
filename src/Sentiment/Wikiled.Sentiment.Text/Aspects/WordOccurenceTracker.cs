@@ -38,13 +38,15 @@ namespace Wikiled.Sentiment.Text.Aspects
         public void AddPhrase(IPhrase phrase)
         {
             Guard.NotNull(() => phrase, phrase);
-            ConcurrentBag<IPhrase> list;
-            if (!tablePhrase.TryGetValue(phrase.Text, out list))
+            if (!tablePhrase.TryGetValue(phrase.Text, out ConcurrentBag<IPhrase> list))
             {
                 list = new ConcurrentBag<IPhrase>();
                 if (!tablePhrase.TryAdd(phrase.Text, list))
                 {
-                    tablePhrase.TryGetValue(phrase.Text, out list);
+                    if (!tablePhrase.TryGetValue(phrase.Text, out list))
+                    {
+                        list = new ConcurrentBag<IPhrase>();
+                    }
                 }
 
                 tablePhrase[phrase.Text] = list;

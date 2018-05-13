@@ -113,8 +113,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 return null;
             }
 
-            WordRepairRule rule;
-            return negatingRepairRule.TryGetWordValue(word, out rule) ? rule : null;
+            return negatingRepairRule.TryGetWordValue(word, out WordRepairRule rule) ? rule : null;
         }
 
         public bool IsFeature(IWordItem word)
@@ -137,8 +136,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
             if (negating.ContainsKey(word.Text))
             {
-                WordRepairRule rule;
-                if (negatingRule.TryGetValue(WordItemType.Invertor, out rule))
+                if (negatingRule.TryGetValue(WordItemType.Invertor, out WordRepairRule rule))
                 {
                     var value = new WordRepairRuleEngine(word, rule).Evaluate();
                     if (value.HasValue)
@@ -205,8 +203,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public double? MeasureQuantifier(IWordItem word)
         {
-            double value;
-            if (booster.TryGetValue(word.Text, out value))
+            if (booster.TryGetValue(word.Text, out double value))
             {
                 if (value == 0)
                 {

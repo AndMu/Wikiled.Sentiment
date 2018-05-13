@@ -44,8 +44,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
-            SentimentValueData value;
-            if (!EmotionsTable.TryGetWordValue(word, out value))
+            if (!EmotionsTable.TryGetWordValue(word, out SentimentValueData value))
             {
                 return MeasureLookupSentiment(word);
             }
@@ -100,8 +99,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private SentimentValue MeasureLookupSentiment(IWordItem word)
         {
-            SentimentValueData value;
-            if (!EmotionsLookup.TryGetWordValue(word, out value))
+            if (!EmotionsLookup.TryGetWordValue(word, out SentimentValueData value))
             {
                 return null;
             }

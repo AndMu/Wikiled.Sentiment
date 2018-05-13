@@ -65,8 +65,7 @@ namespace Wikiled.Sentiment.Text.Helpers
 
         public TValue Get(TKey key)
         {
-            TValue value;
-            return values.TryGetValue(key, out value) ? value : default(TValue);
+            return values.TryGetValue(key, out TValue value) ? value : default(TValue);
         }
 
         public void Increment()
@@ -92,14 +91,12 @@ namespace Wikiled.Sentiment.Text.Helpers
 
         public int TotalOccurences(TKey key)
         {
-            int total;
-            return !totalTable.TryGetValue(key, out total) ? 0 : total;
+            return !totalTable.TryGetValue(key, out int total) ? 0 : total;
         }
 
         protected static void Increment(TKey key, Dictionary<TKey, int> table)
         {
-            int total;
-            if (!table.TryGetValue(key, out total))
+            if (!table.TryGetValue(key, out int total))
             {
                 total = 0;
             }

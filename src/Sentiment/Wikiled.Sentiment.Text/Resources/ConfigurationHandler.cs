@@ -20,8 +20,7 @@ namespace Wikiled.Sentiment.Text.Resources
 
         public string GetConfiguration(string name)
         {
-            string value;
-            if (!TryGetConfiguration(name, out value))
+            if (!TryGetConfiguration(name, out string value))
             {
                 throw new NullReferenceException(name + " not found");
             }
@@ -37,8 +36,7 @@ namespace Wikiled.Sentiment.Text.Resources
 
         public T SafeGetConfiguration<T>(string name, T defaultValue)
         {
-            T value;
-            return !TryGetConfiguration(name, out value) ? defaultValue : value;
+            return !TryGetConfiguration(name, out T value) ? defaultValue : value;
         }
 
         public void SetConfiguration(string name, string value)
@@ -49,8 +47,7 @@ namespace Wikiled.Sentiment.Text.Resources
         public bool TryGetConfiguration<T>(string name, out T outValue)
         {
             outValue = default(T);
-            string value;
-            if (!overrides.TryGetValue(name, out value))
+            if (!overrides.TryGetValue(name, out string value))
             {
                 value = ConfigurationManager.AppSettings[name];
             }

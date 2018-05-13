@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             SentimentVector vector = dictionary.Extract(review.Items);
             foreach (var probability in vector.GetProbabilities().Where(item => item.Probability > 0))
             {
-                AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability * 10);
+                AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability);
             }
 
             base.Additional();

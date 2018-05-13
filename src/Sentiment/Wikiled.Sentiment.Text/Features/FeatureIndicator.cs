@@ -25,8 +25,7 @@ namespace Wikiled.Sentiment.Text.Features
 
         public IIdentificationResult CheckIndication(IWordItem word)
         {
-            List<DetectionItem> list;
-            if (detectionTable.TryGetWordValue(word, out list))
+            if (detectionTable.TryGetWordValue(word, out List<DetectionItem> list))
             {
                 log.Debug("Found <{0}> results: {1}", word.Text, list.Count);
                 return new IdentificationResult(list);

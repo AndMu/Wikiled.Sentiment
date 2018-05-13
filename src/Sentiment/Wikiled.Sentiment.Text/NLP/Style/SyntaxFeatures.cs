@@ -113,8 +113,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
                     if (table.Count == 3)
                     {
                         string mask = $"{table.Values[0].POS.Tag} {table.Values[1].POS.Tag} {table.Values[2].POS.Tag}";
-                        int total = 0;
-                        if (posTables.TryGetValue(mask, out total))
+                        if (posTables.TryGetValue(mask, out int total))
                         {
                             total += 1;
                         }

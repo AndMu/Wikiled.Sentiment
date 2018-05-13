@@ -125,8 +125,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public double? MeasureQuantifier(IWordItem word)
         {
-            double value;
-            if (quantifiers.RawData.TryGetValue(word.Text, out value))
+            if (quantifiers.RawData.TryGetValue(word.Text, out double value))
             {
                 if (value == 0)
                 {

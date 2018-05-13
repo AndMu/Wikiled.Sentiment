@@ -40,8 +40,7 @@ namespace Wikiled.Sentiment.Text.Cache
         public async Task<Document> GetById(string id)
         {
             Guard.NotNullOrEmpty(() => id, id);
-            Document doc;
-            if (nearCache.TryGetValue(id, out doc))
+            if (nearCache.TryGetValue(id, out Document doc))
             {
                 return doc;
             }

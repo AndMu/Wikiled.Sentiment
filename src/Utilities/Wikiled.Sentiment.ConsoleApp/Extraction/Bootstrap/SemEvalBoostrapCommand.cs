@@ -46,8 +46,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                         yield break;
                     }
 
-                    long idValue;
-                    if (long.TryParse(blocks[0], out idValue))
+                    if (long.TryParse(blocks[0], out long idValue))
                     {
                         id = idValue;
                     }
@@ -68,8 +67,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                     }
                     else
                     {
-                        int value;
-                        if (int.TryParse(sentiment, out value))
+                        if (int.TryParse(sentiment, out int value))
                         {
                             positivity = value > 0 ? PositivityType.Positive : value < 0 ? PositivityType.Negative : PositivityType.Neutral;
                         }

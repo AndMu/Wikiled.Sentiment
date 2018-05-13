@@ -20,12 +20,12 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public static double? CalculateStarsRating(double? value)
         {
-            return (value + 1) / 2 * 4 + 1;
+            return 2 * value + 3;
         }
 
         public static double? ConvertToRaw(double star)
         {
-            return ((star - 1) / 4 * 2) - 1;
+            return (star - 3) / 2;
         }
 
         public static double Calculate(double positive, double negative)

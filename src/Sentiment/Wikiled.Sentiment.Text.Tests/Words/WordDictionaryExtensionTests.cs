@@ -50,8 +50,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             wordItem.Setup(item => item.Text).Returns(word);
             wordItem.Setup(item => item.Stemmed).Returns(raw);
 
-            int result;
-            var resultItem = masked.TryGetWordValue(wordItem.Object, out result);
+            var resultItem = masked.TryGetWordValue(wordItem.Object, out int result);
             Assert.AreEqual(expected, resultItem);
         }
     }

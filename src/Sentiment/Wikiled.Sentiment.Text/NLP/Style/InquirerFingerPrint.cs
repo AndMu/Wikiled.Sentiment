@@ -34,8 +34,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public InquirerData GetData(WordEx word)
         {
-            Dictionary<string, bool> data;
-            wordLevelFingerPrint.TryGetValue(word, out data);
+            wordLevelFingerPrint.TryGetValue(word, out Dictionary<string, bool> data);
             return data == null
                 ? null
                 : new InquirerData
