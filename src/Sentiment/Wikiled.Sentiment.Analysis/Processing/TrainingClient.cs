@@ -135,9 +135,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return null;
             }
 
-            SingleProcessingData item = new SingleProcessingData();
-            item.InitDocument(context.Review);
-
             if (context.Original.Stars > 3)
             {
                 arffProcess.PopulateArff(context.Review, PositivityType.Positive);

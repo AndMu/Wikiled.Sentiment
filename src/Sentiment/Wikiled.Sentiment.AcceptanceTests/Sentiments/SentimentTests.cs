@@ -13,7 +13,6 @@ using Wikiled.Arff.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data;
@@ -39,9 +38,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                 item =>
                     {
                         item.Stars = 1;
-                        item.Document = new Document(item.Text);
-                        item.Document.Id = Guid.NewGuid().ToString();
-                        item.Document.Stars = 1;
+                        item.Text = item.Text;
+                        item.Id = Guid.NewGuid().ToString();
                         return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
                     }).ToArray();
 
@@ -49,9 +47,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                 item =>
                     {
                         item.Stars = 5;
-                        item.Document = new Document(item.Text);
-                        item.Document.Id = Guid.NewGuid().ToString();
-                        item.Document.Stars = 5;
+                        item.Text = item.Text;
+                        item.Id = Guid.NewGuid().ToString();
                         return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
                     }).ToArray();
 

@@ -39,6 +39,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         public bool Debug { get; set; }
 
+        /// <summary>
+        /// Track Arff
+        /// </summary>
+        public bool Suspend { get; set; }
+
         public bool ExtractStyle { get; set; }
 
         [Required]
@@ -58,6 +63,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
                     client = new TestingClient(pipeline, Model);
+                    client.TrackArff = !Suspend;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
                     client.Process()
@@ -75,7 +81,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                           .Wait();
                 }
 
-                client.Save(Out);
+                if (!Suspend)
+                {
+                    client.Save(Out);
+                }
             }
 
             log.Info($"Testing performance {client.GetPerformanceDescription()}");

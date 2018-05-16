@@ -7,7 +7,6 @@ using Polly.Retry;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Amazon.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
 
@@ -56,7 +55,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.Splitter, new SingleProcessingData(doc));
+                return new ParsingDocumentHolder(Active.Splitter, doc);
             }
             catch (Exception ex)
             {

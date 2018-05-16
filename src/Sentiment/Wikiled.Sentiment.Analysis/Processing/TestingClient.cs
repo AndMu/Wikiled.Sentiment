@@ -42,6 +42,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 DisableSvm = true;
             }
 
+            TrackArff = true;
             this.pipeline = pipeline;
             SvmPath = svmPath;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
@@ -68,6 +69,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool UseBagOfWords { get; set; }
 
+        public bool TrackArff { get; set; }
+
         public string GetPerformanceDescription()
         {
             return string.Format($"{Performance.GetTotalAccuracy()} RMSE:{statistics.CalculateRmse():F2}");
@@ -79,7 +82,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
-            arffProcess = factory.Create(arff);
+            arffProcess = TrackArff ? factory.Create(arff) : null;
 
             if (!DisableAspects &&
                 (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))
@@ -136,7 +139,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 if (adjustment.Rating.StarsRating == null)
                 {
                     statistics.AddUnknown();
-                    arffProcess.PopulateArff(context.Review, PositivityType.Negative);
+                    arffProcess?.PopulateArff(context.Review, PositivityType.Negative);
                 }
                 else
                 {
@@ -149,7 +152,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                         }
                     }
 
-                    arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
+                    arffProcess?.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
                 }
             }
             catch

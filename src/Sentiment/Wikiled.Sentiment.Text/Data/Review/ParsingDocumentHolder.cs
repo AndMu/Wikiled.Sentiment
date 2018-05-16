@@ -7,24 +7,31 @@ namespace Wikiled.Sentiment.Text.Data.Review
 {
     public class ParsingDocumentHolder : IParsedDocumentHolder
     {
-        private readonly SingleProcessingData doc;
-
         private readonly ITextSplitter splitter;
+
+        public ParsingDocumentHolder(ITextSplitter splitter, Document doc)
+        {
+            Guard.NotNull(() => splitter, splitter);
+            Guard.NotNull(() => doc, doc);
+            this.splitter = splitter;
+            Original = doc;
+        }
 
         public ParsingDocumentHolder(ITextSplitter splitter, SingleProcessingData doc)
         {
             Guard.NotNull(() => splitter, splitter);
             Guard.NotNull(() => doc, doc);
             this.splitter = splitter;
-            this.doc = doc;
-            Original = doc.Document;
+            Original = new Document(doc.Text);
+            Original.DocumentTime = doc.Date;
+            Original.Stars = doc.Stars;
         }
 
         public Document Original { get; }
 
         public Task<Document> GetParsed()
         {
-            return splitter.Process(new ParseRequest(doc.Document) { Date = doc.Date });
+            return splitter.Process(new ParseRequest(Original) { Date = Original.DocumentTime });
         }
     }
 }

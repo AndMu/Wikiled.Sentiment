@@ -23,19 +23,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             foreach (var document in GetReview(path))
             {
-                var item = new SingleProcessingData(document);
+                var item = new SingleProcessingData(document.Text);
                 if (positive == true)
                 {
                     item.Stars = 5;
-                    item.Document.Stars = 5;
                 }
                 else if (positive == false)
                 {
                     item.Stars = 1;
-                    item.Document.Stars = 1;
                 }
 
-                yield return new ParsingDocumentHolder(splitter, item);
+                yield return new ParsingDocumentHolder(splitter, document);
             }
         }
 
@@ -61,14 +59,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private static void SetStars(SingleProcessingData processingData, double defaultStars)
         {
-            if (processingData.Document.Stars == null)
+            if (processingData.Stars == null)
             {
                 processingData.Stars = defaultStars;
-                processingData.Document.Stars = defaultStars;
-            }
-            else
-            {
-                processingData.Stars = processingData.Document.Stars.Value;
             }
         }
 
