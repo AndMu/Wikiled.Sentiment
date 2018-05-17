@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "test -Articles=\"e:\\DataSets\\Market\\reddit\\out.xml\" -Weights=\"e:\\DataSets\\Market\\lexicon.csv\" -Out=.\\reddit"
+      "commandLineArgs": "test -Articles=e:\\DataSets\\Market\\FinArticles\\reuters.xml -Weights=e:\\DataSets\\Market\\lexicon.csv -out=Market -ExtractStyle -Suspend"
     }
   }
 }

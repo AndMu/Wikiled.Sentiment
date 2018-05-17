@@ -3,9 +3,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Polly.Retry;
 using Wikiled.Amazon.Logic;
-using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -21,8 +19,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         private readonly TestHelper helper;
 
         private readonly SemaphoreSlim semaphore;
-
-        private readonly RetryPolicy retryPolicy = RetryHandler.Construct(true);
 
         public TestRunner(TestHelper helper, SentimentTestData definition)
         {

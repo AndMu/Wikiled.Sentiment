@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using CsvHelper;
 using NLog;
 using Wikiled.Common.Extensions;
@@ -63,20 +64,19 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
                     client = new TestingClient(pipeline, Model);
+                    Semaphore = new SemaphoreSlim(2000);
+                    client.ProcessingSemaphore = Semaphore;
                     client.TrackArff = !Suspend;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
                     client.Process()
                           .Select(
-                              item => Observable.Start(
-                                  () =>
-                                  {
-                                      SaveDocument(splitter.DataLoader, item);
-                                      pipeline.Monitor.Increment();
-                                      return item;
-                                  },
-                                  TaskPoolScheduler.Default))
-                          .Merge()
+                              item => 
+                              {
+                                  SaveDocument(splitter.DataLoader, item);
+                                  pipeline.Monitor.Increment();
+                                  return item;
+                              })
                           .LastOrDefaultAsync()
                           .Wait();
                 }

@@ -29,9 +29,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             this.scheduler = scheduler;
             Splitter = splitter;
             this.factory = factory;
-            var replay = reviews.Replay();
-            this.reviews = replay;
-            replay.Connect();
+            this.reviews = reviews;
         }
 
         public ISplitterHelper Splitter { get; }

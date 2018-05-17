@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Xml.Linq;
 using NLog;
 using Wikiled.Common.Serialization;
@@ -21,6 +22,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private ISplitterHelper splitter;
+
+        protected SemaphoreSlim Semaphore { get; set; }
 
         public string Weights { get; set; }
 
@@ -89,10 +92,19 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
                              
-            Process(review, splitter);
+            Process(SynchronizedReviews(review), splitter);
         }
 
         protected abstract void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);
+
+        private IEnumerable<IParsedDocumentHolder> SynchronizedReviews(IEnumerable<IParsedDocumentHolder> reviews)
+        {
+            foreach (var review in reviews)
+            {
+                Semaphore?.Wait();
+                yield return review;
+            }
+        }
 
         private IEnumerable<IParsedDocumentHolder> GetAllReviews()
         {

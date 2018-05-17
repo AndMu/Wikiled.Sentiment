@@ -71,6 +71,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool TrackArff { get; set; }
 
+        public SemaphoreSlim ProcessingSemaphore { get; set; }
+
         public string GetPerformanceDescription()
         {
             return string.Format($"{Performance.GetTotalAccuracy()} RMSE:{statistics.CalculateRmse():F2}");
@@ -107,7 +109,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public IObservable<ProcessingContext> Process()
         {
-            var documentSelector = pipeline.ProcessStep().Select(item => Observable.Start(() => RetrieveData(item))).Merge();
+            var documentSelector = pipeline.ProcessStep().Select(RetrieveData);
             return documentSelector.Where(item => item != null);
         }
 
@@ -159,6 +161,10 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 Interlocked.Increment(ref error);
                 throw;
+            }
+            finally
+            {
+                ProcessingSemaphore?.Release();
             }
 
             return context;

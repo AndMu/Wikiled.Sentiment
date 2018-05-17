@@ -18,8 +18,13 @@ namespace Wikiled.Sentiment.Text.Data.Review
         [XmlAttribute]
         public DateTime Date { get; set; }
 
+        [XmlAttribute]
         public double? Stars { get; set; }
 
+        [XmlAttribute]
+        public string Author { get; set; }
+
+        [XmlAttribute]
         public string Id { get; set; }
 
         public string Text { get; set; }
