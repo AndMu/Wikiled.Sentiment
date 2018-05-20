@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace Wikiled.Sentiment.Text.Data.Review
 {
@@ -14,9 +15,10 @@ namespace Wikiled.Sentiment.Text.Data.Review
             Text = string.IsNullOrEmpty(text) ? "<Empty>" : text.Trim();
         }
 
-        public DateTime? Date { get; set; }
+        [XmlAttribute]
+        public DateTime Date { get; set; }
 
-        public double? Stars { get; set; }
+        public double Stars { get; set; }
 
         public string Author { get; set; }
 

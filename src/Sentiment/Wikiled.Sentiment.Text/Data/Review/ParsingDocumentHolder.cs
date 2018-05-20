@@ -25,6 +25,8 @@ namespace Wikiled.Sentiment.Text.Data.Review
             Original = new Document(doc.Text);
             Original.DocumentTime = doc.Date;
             Original.Stars = doc.Stars;
+            Original.Author = doc.Author;
+            Original.Id = doc.Id;
         }
 
         public Document Original { get; }
