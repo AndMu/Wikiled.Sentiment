@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net462</TargetFrameworks>
+    <TargetFrameworks>net471</TargetFrameworks>
   </PropertyGroup>
   
   <PropertyGroup>    
@@ -22,8 +22,8 @@
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="CsvHelper" version="7.1.0" />
     <PackageReference Include="Newtonsoft.Json" version="11.0.2" />
-    <PackageReference Include="NLog" version="4.5.3" />
-    <PackageReference Include="Polly" version="5.9.0" />
+    <PackageReference Include="NLog" version="4.5.4" />
+    <PackageReference Include="Polly" version="6.0.1" />
     <PackageReference Include="protobuf-net" version="2.3.7" />
     <PackageReference Include="StackExchange.Redis" version="1.2.6" />
     <PackageReference Include="System.Reactive" version="3.1.1" />
@@ -37,9 +37,9 @@
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
     <PackageReference Include="Wikiled.Console" Version="1.0.5" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.1.1" />
-    <PackageReference Include="Wikiled.Redis" version="3.0.14" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.5.20" />
-    <PackageReference Include="Wikiled.Text.Inquirer" version="1.1.1" />
+    <PackageReference Include="Wikiled.Redis" version="3.0.15" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.5.22" />
+    <PackageReference Include="Wikiled.Text.Inquirer" version="1.1.5" />
 
   </ItemGroup>
 

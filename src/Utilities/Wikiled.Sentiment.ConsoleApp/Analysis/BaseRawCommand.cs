@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         public override void Execute()
         {
             log.Info("Initialize...");
-            ICacheFactory cacheFactory = new LocalCacheFactory();
+            ICacheFactory cacheFactory = new NullCacheFactory();
             if (Redis)
             {
                 log.Info("Using REDIS...");

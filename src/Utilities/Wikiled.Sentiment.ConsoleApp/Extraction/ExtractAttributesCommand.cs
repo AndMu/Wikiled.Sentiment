@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -45,7 +46,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
-            splitter = new MainSplitterFactory(new LocalCacheFactory(), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
+            splitter = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
             var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, GetReviews().ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory());
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))

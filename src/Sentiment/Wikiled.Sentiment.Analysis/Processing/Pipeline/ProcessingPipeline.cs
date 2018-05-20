@@ -40,7 +40,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
         {
             Monitor = new PerformanceMonitor(100);
             var selectedData = reviews
-                .SelectMany(item => Observable.Start(() => StepProcessing(item), scheduler))
+                .Select(item => Observable.Start(() => StepProcessing(item), scheduler))
+                .Merge()
                 .Merge();
 
             return selectedData.Where(item => item != null);

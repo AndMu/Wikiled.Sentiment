@@ -6,8 +6,6 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public interface ISplitterFactory : IConfigurationFactory, IDisposable
     {
-        ITextSplitter TextSplitter { get; }
-
         ITextSplitter ConstructSingle();
     }
 }

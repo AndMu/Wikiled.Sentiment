@@ -35,7 +35,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         {
             log.Info("Training Operation...");
             TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory()), Model);
-            client.ProcessingSemaphore = Semaphore;
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

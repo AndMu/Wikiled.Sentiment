@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.IO;
+using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
@@ -24,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             AmazonRepository = new AmazonRepository(Redis);
             var cacheFactory = new RedisDocumentCacheFactory(Redis);
             Cache = cacheFactory.Create(POSTaggerType.SharpNLP);
-            var localCache = new LocalCacheFactory();
+            var localCache = new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions()));
             SplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
         }
 

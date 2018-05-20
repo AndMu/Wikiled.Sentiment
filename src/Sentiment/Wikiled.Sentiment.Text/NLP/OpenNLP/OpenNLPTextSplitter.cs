@@ -4,7 +4,6 @@ using System.Linq;
 using NLog;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
-using SharpNL.Tokenize;
 using SharpNL.Utility;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;

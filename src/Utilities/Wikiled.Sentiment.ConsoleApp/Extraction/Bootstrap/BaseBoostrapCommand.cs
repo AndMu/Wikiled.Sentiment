@@ -8,6 +8,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Logging;
@@ -148,7 +149,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         {
             log.Info("Loading text splitter for bootstrapping");
             var config = new ConfigurationHandler();
-            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(), config);
+            var splitterFactory = new MainSplitterFactory(
+                new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), 
+                config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
             log.Info("Removing default lexicon");
             bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
@@ -161,7 +164,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         {
             log.Info("Loading default text splitter");
             var config = new ConfigurationHandler();
-            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(), config);
+            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), config);
             defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
         }
 
