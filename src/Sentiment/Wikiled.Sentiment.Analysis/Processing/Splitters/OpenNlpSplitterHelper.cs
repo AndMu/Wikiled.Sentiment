@@ -24,7 +24,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         protected override ISplitterFactory Construct(ILexiconFactory lexiconFactory)
         {
-            return new RecyclableSplitterFactory(new OpenNlpSplitterFactory(configuration.ResolvePath("Resources"), lexiconFactory, cacheFactory));
+            return new OpenNlpSplitterFactory(configuration.ResolvePath("Resources"), lexiconFactory, cacheFactory);
         }
     }
 }

@@ -42,7 +42,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 DisableSvm = true;
             }
 
-            TrackArff = true;
             this.pipeline = pipeline;
             SvmPath = svmPath;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
@@ -85,6 +84,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = TrackArff ? factory.Create(arff) : null;
+
+            log.Info("Track ARFF: {0}", TrackArff);
 
             if (!DisableAspects &&
                 (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))

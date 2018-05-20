@@ -43,7 +43,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         /// <summary>
         /// Track Arff
         /// </summary>
-        public bool Suspend { get; set; }
+        public bool TrackArff { get; set; }
 
         public bool ExtractStyle { get; set; }
 
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                     client = new TestingClient(pipeline, Model);
                     Semaphore = new SemaphoreSlim(2000);
                     client.ProcessingSemaphore = Semaphore;
-                    client.TrackArff = !Suspend;
+                    client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
                     client.Process()
