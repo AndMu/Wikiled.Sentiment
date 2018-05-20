@@ -81,7 +81,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                           .Wait();
                 }
 
-                if (!Suspend)
+                if (!TrackArff)
                 {
                     client.Save(Out);
                 }
