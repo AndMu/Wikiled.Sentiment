@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Xml.Linq;
 using NLog;
-using Wikiled.Common.Serialization;
 using Wikiled.Console.Arguments;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
@@ -109,7 +107,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private IEnumerable<IParsedDocumentHolder> GetAllReviews()
         {
             log.Info("Loading {0}", Articles);
-            var data = XDocument.Load(Articles).XmlDeserialize<ProcessingData>();
+            var data = new XmlProcessingDataLoader().LoadOldXml(Articles);
             return splitter.Splitter.GetParsedReviewHolders(data);
         }
 

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -16,30 +14,21 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private List<SingleProcessingData> positive = new List<SingleProcessingData>();
 
-        [XmlIgnore]
-        public IEnumerable<SingleProcessingData> AllReviews => GetReviews(negative, positive, neutral);
-
-        [XmlArray]
-        [XmlArrayItem("DataItem")]
-        public SingleProcessingData[] Negative
+        public IEnumerable<SingleProcessingData> Negative
         {
             get => negative.ToArray();
             set => negative = new List<SingleProcessingData>(value);
         }
 
-        [XmlArray]
-        [XmlArrayItem("DataItem")]
-        public SingleProcessingData[] Neutral
+        public IEnumerable<SingleProcessingData> Neutral
         {
             get => neutral.ToArray();
             set => neutral = new List<SingleProcessingData>(value);
         }
 
-        [XmlArray]
-        [XmlArrayItem("DataItem")]
-        public SingleProcessingData[] Positive
+        public IEnumerable<SingleProcessingData> Positive
         {
-            get => positive.ToArray();
+            get => positive;
             set => positive = new List<SingleProcessingData>(value);
         }
 
@@ -65,18 +54,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public override string ToString()
         {
             return $"Articles Positive:{positive.Count} Negative:{negative.Count} Neutral:{neutral.Count}";
-        }
-
-        private IEnumerable<SingleProcessingData> GetReviews(
-            IEnumerable<SingleProcessingData> negativeItems,
-            IEnumerable<SingleProcessingData> positiveItems,
-            IEnumerable<SingleProcessingData> neutralItems)
-        {
-            var reviews = new List<SingleProcessingData>();
-            reviews.AddRange(negativeItems);
-            reviews.AddRange(positiveItems);
-            reviews.AddRange(neutralItems);
-            return reviews.OrderBy(item => item.Date);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
         }
 
-        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, ProcessingData data)
+        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IProcessingData data)
         {
             foreach (var processingData in data.Positive)
             {

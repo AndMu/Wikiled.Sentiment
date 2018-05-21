@@ -12,13 +12,12 @@ namespace Wikiled.Sentiment.Text.Data.Review
         public SingleProcessingData(string text)
             : this()
         {
-            Text = string.IsNullOrEmpty(text) ? "<Empty>" : text.Trim();
+            Text = text?.Trim();
         }
 
-        [XmlAttribute]
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
 
-        public double Stars { get; set; }
+        public double? Stars { get; set; }
 
         public string Author { get; set; }
 

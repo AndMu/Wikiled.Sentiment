@@ -20,7 +20,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.Structure;
+
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -32,8 +32,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task SimpleTest()
         {
-            var doc = XDocument.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
-            var data = doc.XmlDeserialize<ProcessingData>();
+            var data = new XmlProcessingDataLoader().LoadOldXml(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
             var negative = data.Negative.Repeat(5).Select(
                 item =>
                     {
