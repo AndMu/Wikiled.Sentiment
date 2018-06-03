@@ -107,7 +107,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private IEnumerable<IParsedDocumentHolder> GetAllReviews()
         {
             log.Info("Loading {0}", Articles);
-            var data = new XmlProcessingDataLoader().LoadOldXml(Articles);
+            var data = new DataLoader().Load(Articles);
             return splitter.Splitter.GetParsedReviewHolders(data);
         }
 

@@ -9,7 +9,7 @@ using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     /// <summary>
-    ///     bootimdb -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
+    ///     bootimdb -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train
     /// </summary>
     [Description("Bootstrap training dataset from IMDB")]
     public class ImdbBoostrapCommand : BaseBoostrapCommand
@@ -39,7 +39,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             {
                 positivity = PositivityType.Negative;
             }
-
 
             yield return new EvalData(id + $"_{positivity}", positivity, text);
         }

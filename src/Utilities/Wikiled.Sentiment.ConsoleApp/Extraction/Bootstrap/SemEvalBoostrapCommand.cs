@@ -11,7 +11,7 @@ using Wikiled.Text.Analysis.Twitter;
 namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     /// <summary>
-    ///     semboot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train.txt
+    ///     semboot -Words=words.csv -Path="E:\DataSets\SemEval\All\out\ -Destination=c:\DataSets\SemEval\train
     /// </summary>
     [Description("Bootstrap training dataset from SemEval-2017")]
     public class SemEvalBoostrapCommand : BaseBoostrapCommand
