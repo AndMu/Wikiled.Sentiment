@@ -63,6 +63,12 @@ namespace Wikiled.Sentiment.Text.Words
                 {
                     foreach (var child in parent.AllWords)
                     {
+                        if (wordItem.IsFeature || wordItem.IsSentiment)
+                        {
+                            yield return wordItem;
+                            continue;
+                        }
+
                         if (child.IsStopWord &&
                             !WordTypeResolver.Instance.IsSpecialEndSymbol(child.Text))
                         {

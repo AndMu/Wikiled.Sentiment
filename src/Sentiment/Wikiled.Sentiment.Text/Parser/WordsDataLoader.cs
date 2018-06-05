@@ -223,12 +223,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
-            if (word.IsStopWord ||
-                !word.IsSimple)
-            {
-                return null;
-            }
-
             if (DisableFeatureSentiment &&
                 word.IsFeature)
             {

@@ -144,11 +144,6 @@ namespace Wikiled.Sentiment.Text.Words
 
         private SentimentValue ResolveSentiment()
         {
-            if (Owner.IsStopWord)
-            {
-                return null;
-            }
-
             var sentimentValue = handler?.MeasureSentiment(Owner);
             if (Owner.IsInvertor &&
                 !Owner.IsUsedInSentiment())
