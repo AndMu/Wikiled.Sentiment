@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
     {
         private Mock<IWordItem> wordItem;
 
-        [Test]
+        [SetUp]
         public void Setup()
         {
             wordItem = new Mock<IWordItem>();
