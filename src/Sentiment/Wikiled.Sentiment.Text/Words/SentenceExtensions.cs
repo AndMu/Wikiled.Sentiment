@@ -35,8 +35,9 @@ namespace Wikiled.Sentiment.Text.Words
             IPhrase parent = null;
             foreach (var wordItem in words)
             {
-                if (wordItem.IsStopWord ||
-                    wordItem.IsConjunction())
+                if ((wordItem.IsStopWord || wordItem.IsConjunction()) &&
+                    !wordItem.IsFeature && 
+                    !wordItem.IsSentiment)
                 {
                     continue;
                 }

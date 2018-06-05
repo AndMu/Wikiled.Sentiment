@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         }
 
         [Test]
-        public async Task BasicSentiment()
+        public async Task TestEmoticon()
         {
             var text = "EMOTICON_confused I do";
             var result = await testHelper.SplitterHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
