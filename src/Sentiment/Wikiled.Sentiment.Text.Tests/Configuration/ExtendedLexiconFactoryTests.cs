@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Rhino.Mocks;
+﻿using Moq;
+using NUnit.Framework;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Resources;
 
@@ -11,16 +11,13 @@ namespace Wikiled.Sentiment.Text.Tests.Configuration
         [Test]
         public void ConstructUsingConfiguration()
         {
-            MockRepository mock = new MockRepository();
-            IConfigurationHandler configuration = mock.StrictMock<IConfigurationHandler>();
-            Expect.Call(configuration.ResolvePath("Resources")).Return(@"c:/data");
-            Expect.Call(configuration.SafeGetConfiguration("Lexicon", @"Library/Standard")).Return(@"c:/data");
-            mock.ReplayAll();
-
-            IExtendedLexiconFactory factory = new ExtendedLexiconFactory(configuration);
+            Mock<IConfigurationHandler> configuration = new Mock<IConfigurationHandler>();
+            configuration.Setup(item => item.ResolvePath("Resources")).Returns(@"c:/data");
+            configuration.Setup(item => item.SafeGetConfiguration("Lexicon", @"Library/Standard")).Returns(@"c:/data");
+            
+            IExtendedLexiconFactory factory = new ExtendedLexiconFactory(configuration.Object);
             Assert.AreEqual(@"c:/data", factory.ResourcesPath);
             Assert.IsFalse(factory.IsConstructed);
-            mock.VerifyAll();
         }
     }
 }

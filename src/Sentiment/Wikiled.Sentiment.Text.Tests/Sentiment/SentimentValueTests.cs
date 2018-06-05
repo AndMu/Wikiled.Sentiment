@@ -1,6 +1,5 @@
-﻿using Wikiled.Sentiment.Text.Data;
+﻿using Moq;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
@@ -9,20 +8,18 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
     [TestFixture]
     public class SentimentValueTests
     {
-        private MockRepository mocks;
-        private IWordItem wordItem;
+        private Mock<IWordItem> wordItem;
 
         [Test]
         public void Setup()
         {
-            mocks = new MockRepository();
-            wordItem = mocks.StrictMock<IWordItem>();
+            wordItem = new Mock<IWordItem>();
         }
 
         [Test]
         public void Netgative()
         {
-            SentimentValue value = new SentimentValue(wordItem, - 0.5);
+            SentimentValue value = new SentimentValue(wordItem.Object, - 0.5);
             Assert.AreEqual(-0.5, value.DataValue.Value);
             Assert.IsFalse(value.DataValue.IsPositive);
         }
@@ -30,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void Positive()
         {
-            SentimentValue value = new SentimentValue(wordItem, 0.5);
+            SentimentValue value = new SentimentValue(wordItem.Object, 0.5);
             Assert.AreEqual(0.5, value.DataValue.Value);
             Assert.IsTrue(value.DataValue.IsPositive);
         }
@@ -38,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void CreateGood()
         {
-            var value = SentimentValue.CreateGood(wordItem);
+            var value = SentimentValue.CreateGood(wordItem.Object);
             Assert.AreEqual(1, value.DataValue.Value);
             Assert.IsTrue(value.DataValue.IsPositive);
         }
@@ -46,7 +43,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void CreateBad()
         {
-            var value = SentimentValue.CreateBad(wordItem);
+            var value = SentimentValue.CreateBad(wordItem.Object);
             Assert.AreEqual(-1, value.DataValue.Value);
             Assert.IsFalse(value.DataValue.IsPositive);
         }
@@ -54,7 +51,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void GetDistanced()
         {
-            var value = SentimentValue.CreateBad(wordItem);
+            var value = SentimentValue.CreateBad(wordItem.Object);
             var distanced = value.GetDistanced(1);
             Assert.AreEqual(-1, distanced.DataValue.Value);
             distanced = value.GetDistanced(2);

@@ -130,6 +130,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             try
             {
                 RatingAdjustment adjustment = new RatingAdjustment(context.Review, MachineSentiment);
+                adjustment.CalculateRating();
                 pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = context.Review.GenerateDocument(adjustment);
                 AspectSentiment.Process(context.Review);

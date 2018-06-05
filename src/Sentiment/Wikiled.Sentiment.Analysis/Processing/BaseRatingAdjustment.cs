@@ -7,17 +7,19 @@ using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
-    public class BaseRatingAdjustment : IRatingAdjustment
+    public abstract class BaseRatingAdjustment : IRatingAdjustment
     {
-        public BaseRatingAdjustment(IParsedReview review)
+        private readonly Dictionary<IWordItem, SentimentValue> calculatedSentiments;
+
+        protected BaseRatingAdjustment(IParsedReview review)
         {
             Guard.NotNull(() => review, review);
             Review = review;
-            CalculatedSentiments = new Dictionary<IWordItem, SentimentValue>(SimpleWordItemEquality.Instance);
+            calculatedSentiments = new Dictionary<IWordItem, SentimentValue>(SimpleWordItemEquality.Instance);
             Rating = new RatingData();
         }
 
-        protected Dictionary<IWordItem, SentimentValue> CalculatedSentiments { get; }
+        public int TotalSentiments => calculatedSentiments.Count;
 
         public RatingData Rating { get; protected set; }
 
@@ -25,25 +27,34 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public SentimentValue GetSentiment(IWordItem word)
         {
-            CalculatedSentiments.TryGetValue(word, out var value);
+            calculatedSentiments.TryGetValue(word, out var value);
             return value;
+        }
+
+        public abstract void CalculateRating();
+
+        protected bool ContainsSentiment(IWordItem word)
+        {
+            return calculatedSentiments.ContainsKey(word);
         }
 
         protected void Add(SentimentValue sentiment)
         {
-            if (CalculatedSentiments.ContainsKey(sentiment.Owner))
+            if (calculatedSentiments.ContainsKey(sentiment.Owner))
             {
                 return;
             }
 
             if (sentiment.Owner.Relationship.Inverted != null)
             {
-                CalculatedSentiments[sentiment.Owner.Relationship.Inverted] = new SentimentValue(
-                    sentiment.Owner.Relationship.Inverted, new SentimentValueData(0, SentimentSource.AdjustedCanceled));
+                calculatedSentiments[sentiment.Owner.Relationship.Inverted] = 
+                    new SentimentValue(
+                        sentiment.Owner.Relationship.Inverted, 
+                        new SentimentValueData(0, SentimentSource.AdjustedCanceled));
             }
 
             Rating.AddSentiment(sentiment.DataValue);
-            CalculatedSentiments[sentiment.Owner] = sentiment;
+            calculatedSentiments[sentiment.Owner] = sentiment;
         }
     }
 }

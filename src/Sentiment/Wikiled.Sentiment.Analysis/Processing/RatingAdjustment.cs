@@ -19,12 +19,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             Guard.NotNull(() => model, model);
             Model = model;
-            CalculateRating();
         }
 
         public IMachineSentiment Model { get; }
 
-        private void CalculateRating()
+        public override void CalculateRating()
         {
             var cells = Review.Vector.GetCells().ToArray();
             var result = Model.GetVector(cells);
@@ -53,7 +52,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             List<SentimentValue> notAddedSentiments = new List<SentimentValue>();
             foreach (var sentimentValue in Review.GetAllSentiments())
             {
-                if (!CalculatedSentiments.ContainsKey(sentimentValue.Owner))
+                if (!ContainsSentiment(sentimentValue.Owner))
                 {
                     notAddedSentiments.Add(sentimentValue);
                 }
@@ -68,7 +67,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
-            if (CalculatedSentiments.Count > 0)
+            if (TotalSentiments > 0)
             {
                 Add(new SentimentValue(
                     WordOccurrence.CreateBasic(Constants.BIAS, POSTags.Instance.JJ),
