@@ -5,6 +5,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Words;
 
 namespace Wikiled.Sentiment.Text.NLP.Style
 {

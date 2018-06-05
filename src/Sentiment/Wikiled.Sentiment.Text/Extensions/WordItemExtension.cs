@@ -5,6 +5,7 @@ using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Words;
 
 namespace Wikiled.Sentiment.Text.Extensions
 {

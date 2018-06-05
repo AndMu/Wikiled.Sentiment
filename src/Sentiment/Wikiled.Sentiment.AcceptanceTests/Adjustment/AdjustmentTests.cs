@@ -1,39 +1,35 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Words;
-using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
 {
     [TestFixture]
     public class AdjustmentTests
     {
-        private BasicWordsHandler handler;
-
-        private ITextSplitter textSplitter;
+        private TestHelper testHelper;
 
         [SetUp]
         public void Setup()
         {
-            handler = new BasicWordsHandler(new NaivePOSTagger(null, WordTypeResolver.Instance));
-            textSplitter = new SimpleTextSplitter(handler);
+            testHelper = new TestHelper();
         }
 
         [Test]
         public async Task Adjusted()
         {
-            handler.SentimentDataHolder.Clear();
-            handler.DisableFeatureSentiment = true;
-            var adjuster = new WeightSentimentAdjuster(handler.SentimentDataHolder);
+            testHelper.SplitterHelper.DataLoader.SentimentDataHolder.Clear();
+            testHelper.SplitterHelper.DataLoader.DisableFeatureSentiment = true;
+            var adjuster = new WeightSentimentAdjuster(testHelper.SplitterHelper.DataLoader.SentimentDataHolder);
             var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
             adjuster.Adjust(words);
             var text = "I Veto it";
-            var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(handler, result).Create();
+            var result = await testHelper.SplitterHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = new ParsedReviewManager(testHelper.SplitterHelper.DataLoader, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
@@ -41,8 +37,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         public async Task BasicSentiment()
         {
             var text = "EMOTICON_confused I do";
-            var result = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(handler, result).Create();
+            var result = await testHelper.SplitterHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = new ParsedReviewManager(testHelper.SplitterHelper.DataLoader, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

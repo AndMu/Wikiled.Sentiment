@@ -1,43 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 
-namespace Wikiled.Sentiment.Text.Sentiment
+namespace Wikiled.Sentiment.Analysis.Processing
 {
-    public class RatingAdjustment : IRatingAdjustment
+    public class RatingAdjustment : BaseRatingAdjustment
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<IWordItem, SentimentValue> calculatedSentiments;
-
         public RatingAdjustment(IParsedReview review, IMachineSentiment model)
+            : base(review)
         {
-            Guard.NotNull(() => review, review);
             Guard.NotNull(() => model, model);
             Model = model;
-            Review = review;
-            calculatedSentiments = new Dictionary<IWordItem, SentimentValue>(SimpleWordItemEquality.Instance);
-            Rating = new RatingData();
             CalculateRating();
         }
 
         public IMachineSentiment Model { get; }
-
-        public RatingData Rating { get; private set; }
-
-        public IParsedReview Review { get; }
-
-        public SentimentValue GetSentiment(IWordItem word)
-        {
-            calculatedSentiments.TryGetValue(word, out var value);
-            return value;
-        }
 
         private void CalculateRating()
         {
@@ -57,9 +42,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 var cell = (TextVectorCell)item.Data;
                 if (cell.Item != null)
                 {
-                    Add(new SentimentValue(
-                            (IWordItem)cell.Item,
-                            new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
+                    Add(new SentimentValue((IWordItem)cell.Item, new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
                 }
                 else
                 {
@@ -70,7 +53,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
             List<SentimentValue> notAddedSentiments = new List<SentimentValue>();
             foreach (var sentimentValue in Review.GetAllSentiments())
             {
-                if (!calculatedSentiments.ContainsKey(sentimentValue.Owner))
+                if (!CalculatedSentiments.ContainsKey(sentimentValue.Owner))
                 {
                     notAddedSentiments.Add(sentimentValue);
                 }
@@ -85,7 +68,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 }
             }
 
-            if (calculatedSentiments.Count > 0)
+            if (CalculatedSentiments.Count > 0)
             {
                 Add(new SentimentValue(
                     WordOccurrence.CreateBasic(Constants.BIAS, POSTags.Instance.JJ),
@@ -97,23 +80,6 @@ namespace Wikiled.Sentiment.Text.Sentiment
             {
                 log.Debug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
             }
-        }
-
-        private void Add(SentimentValue sentiment)
-        {
-            if (calculatedSentiments.ContainsKey(sentiment.Owner))
-            {
-                return;
-            }
-
-            if (sentiment.Owner.Relationship.Inverted != null)
-            {
-                calculatedSentiments[sentiment.Owner.Relationship.Inverted] =
-                    new SentimentValue(sentiment.Owner.Relationship.Inverted, new SentimentValueData(0, SentimentSource.AdjustedCanceled));
-            }
-
-            Rating.AddSentiment(sentiment.DataValue);
-            calculatedSentiments[sentiment.Owner] = sentiment;
         }
     }
 }

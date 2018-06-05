@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace Wikiled.Sentiment.Text.Data.Review
 {

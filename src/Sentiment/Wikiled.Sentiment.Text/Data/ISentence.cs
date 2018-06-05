@@ -11,6 +11,8 @@ namespace Wikiled.Sentiment.Text.Data
 
         ISentence Next { get; set; }
 
+        IParsedReview Review { get; }
+
         IEnumerable<IWordItem> Occurrences { get; }
 
         IEnumerable<ISentencePart> Parts { get; }

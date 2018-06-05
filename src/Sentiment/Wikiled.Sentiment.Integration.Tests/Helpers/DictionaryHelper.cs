@@ -8,7 +8,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Helpers
 {
     public class DictionaryHelper
     {
-        private DictionaryHelper()
+        public DictionaryHelper()
         {
             var configuration = new ConfigurationHandler();
             var path = configuration.GetConfiguration("resources");
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Helpers
             WordsHandlers.Load();
         }
 
-        public static DictionaryHelper Instance { get; } = new DictionaryHelper();
+        public static DictionaryHelper Default { get; } = new DictionaryHelper();
 
         public string LibraryPath { get; }
 

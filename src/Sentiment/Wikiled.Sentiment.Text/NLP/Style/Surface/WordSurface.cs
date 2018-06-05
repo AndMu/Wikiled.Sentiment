@@ -3,6 +3,7 @@ using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Reflection;
+using Wikiled.Text.Analysis.Words;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Surface
 {

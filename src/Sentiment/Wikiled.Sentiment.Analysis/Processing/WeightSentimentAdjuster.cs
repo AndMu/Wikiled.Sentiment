@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 
@@ -27,13 +26,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 throw new ArgumentOutOfRangeException(nameof(weightFile), weightFile);
             }
 
-            var lines = File.ReadAllLines(weightFile);
-            foreach (var line in lines)
+            foreach (var line in new SentimentDataReader(weightFile).Read())
             {
-                var items = line.Split(',');
-                var word = items[0].Trim();
-                var weight = double.Parse(items[1]);
-                sentimentDataHolder.SetValue(word, new SentimentValueData(weight, SentimentSource.Word2Vec));
+                sentimentDataHolder.SetValue(line.Word, line.Data);
             }
         }
     }

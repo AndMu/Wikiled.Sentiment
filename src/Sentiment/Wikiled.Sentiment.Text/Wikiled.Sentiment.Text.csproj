@@ -12,49 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Dictionary\InvertorWords.txt" />
-    <None Remove="Resources\Dictionary\IrregularForms.xml" />
-    <None Remove="Resources\Dictionary\Quantifiers.txt" />
-    <None Remove="Resources\Dictionary\QuestionWords.txt" />
-    <None Remove="Resources\Dictionary\Sentiments.txt" />
-    <None Remove="Resources\Dictionary\StopWords.txt" />
-    <None Remove="Resources\Features\Features.xml" />
-    <None Remove="Resources\POS\Adjective.txt" />
-    <None Remove="Resources\POS\Adverb.txt" />
-    <None Remove="Resources\POS\Article.txt" />
-    <None Remove="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
-    <None Remove="Resources\POS\Conjunctions\CoordinatingConjunction.txt" />
-    <None Remove="Resources\POS\Conjunctions\InvertingConjunction.txt" />
-    <None Remove="Resources\POS\Conjunctions\RegularConjunction.txt" />
-    <None Remove="Resources\POS\Conjunctions\SubordinateConjunction.txt" />
-    <None Remove="Resources\POS\Noun.txt" />
-    <None Remove="Resources\POS\Preposition.txt" />
-    <None Remove="Resources\POS\Pronoun.txt" />
-    <None Remove="Resources\POS\Verb.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\Dictionary\InvertorWords.txt" />
-    <EmbeddedResource Include="Resources\Dictionary\IrregularForms.xml" />
-    <EmbeddedResource Include="Resources\Dictionary\Quantifiers.txt" />
-    <EmbeddedResource Include="Resources\Dictionary\QuestionWords.txt" />
-    <EmbeddedResource Include="Resources\Dictionary\Sentiments.txt" />
-    <EmbeddedResource Include="Resources\Dictionary\StopWords.txt" />
-    <EmbeddedResource Include="Resources\Features\Features.xml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\POS\Adjective.txt" />
-    <EmbeddedResource Include="Resources\POS\Adverb.txt" />
-    <EmbeddedResource Include="Resources\POS\Article.txt" />
-    <EmbeddedResource Include="Resources\POS\Conjunctions\ConjunctiveAdverb.txt" />
-    <EmbeddedResource Include="Resources\POS\Conjunctions\CoordinatingConjunction.txt" />
-    <EmbeddedResource Include="Resources\POS\Conjunctions\InvertingConjunction.txt" />
-    <EmbeddedResource Include="Resources\POS\Conjunctions\RegularConjunction.txt" />
-    <EmbeddedResource Include="Resources\POS\Conjunctions\SubordinateConjunction.txt" />
-    <EmbeddedResource Include="Resources\POS\Noun.txt" />
-    <EmbeddedResource Include="Resources\POS\Preposition.txt" />
-    <EmbeddedResource Include="Resources\POS\Pronoun.txt" />
-    <EmbeddedResource Include="Resources\POS\Verb.txt" />
+    <Compile Remove="Resources\POS\**" />
+    <EmbeddedResource Remove="Resources\POS\**" />
+    <None Remove="Resources\POS\**" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -64,27 +24,27 @@
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="morelinq" Version="2.10.0" />
-    <PackageReference Include="MathNet.Numerics" Version="4.4.1" />
+    <PackageReference Include="MathNet.Numerics" Version="4.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NLog" Version="4.5.4" />
+    <PackageReference Include="NLog" Version="4.5.6" />
     <PackageReference Include="Polly" Version="6.0.1" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
     <PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.4.1" />
-    <PackageReference Include="System.Reactive" Version="3.1.1" />
-    <PackageReference Include="System.Reactive.Core" Version="3.1.1" />
-    <PackageReference Include="System.Reactive.Interfaces" Version="3.1.1" />
-    <PackageReference Include="System.Reactive.Linq" Version="3.1.1" />
-    <PackageReference Include="System.Reactive.PlatformServices" Version="3.1.1" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="System.Reactive" Version="4.0.0" />
+    <PackageReference Include="System.Reactive.Core" Version="4.0.0" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="4.0.0" />
+    <PackageReference Include="System.Reactive.Linq" Version="4.0.0" />
+    <PackageReference Include="System.Reactive.PlatformServices" Version="4.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" Version="2.1.2" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
     <PackageReference Include="Wikiled.MachineLearning" Version="2.1.1" />
     <PackageReference Include="Knuppe.SharpNL" Version="1.3.0" />
     <PackageReference Include="Wikiled.Redis" Version="3.0.15" />
-    <PackageReference Include="Wikiled.Text.Analysis" Version="1.5.22" />
+    <PackageReference Include="Wikiled.Text.Analysis" Version="1.5.25" />
     <PackageReference Include="Wikiled.Text.Inquirer" Version="1.1.5" />
   </ItemGroup>
 

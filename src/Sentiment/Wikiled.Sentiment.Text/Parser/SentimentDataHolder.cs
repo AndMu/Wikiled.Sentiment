@@ -96,7 +96,6 @@ namespace Wikiled.Sentiment.Text.Parser
             EmotionsTable[string.Intern(word)] = value;
         }
 
-
         private SentimentValue MeasureLookupSentiment(IWordItem word)
         {
             if (!EmotionsLookup.TryGetWordValue(word, out SentimentValueData value))

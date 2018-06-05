@@ -9,7 +9,6 @@ using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP.Repair;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
@@ -18,6 +17,7 @@ using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.Frequency;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.Words;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -244,16 +244,6 @@ namespace Wikiled.Sentiment.Text.Parser
             Load();
         }
 
-        public void Save()
-        {
-            WriteData("BoosterWordList.txt", false, booster);
-            WriteData("NegatingWordList.txt", true, negating);
-            WriteData("QuestionWords.txt", true, question);
-            WriteData("StopWords.txt", true, stopWords);
-            WriteData("StopPos.txt", true, stopPos);
-            WriteData("EmotionLookupTable.txt", true, SentimentDataHolder.CreateEmotionsData());
-        }
-
         private void ReadRepairRules()
         {
             string folder = Path.Combine(datasetPath, @"Rules/Invertors");
@@ -284,16 +274,6 @@ namespace Wikiled.Sentiment.Text.Parser
         {
             var stream = new DictionaryStream(Path.Combine(datasetPath, file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
-        }
-
-        private void WriteData<T1, T2>(string file, bool useDefault, Dictionary<T1, T2> data)
-        {
-            string path = Path.Combine(datasetPath, @"Out");
-            using (var boosterData = new WriteTabResourceDataFile(Path.Combine(path, file)))
-            {
-                boosterData.UseDefaultIfNotFound = useDefault;
-                boosterData.WriteData(data);
-            }
         }
     }
 }

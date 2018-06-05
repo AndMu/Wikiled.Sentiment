@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsQuestion(string word, bool expected)
         {
-            var result = DictionaryHelper.Instance.WordsHandlers.IsQuestion(GetWord(word));
+            var result = DictionaryHelper.Default.WordsHandlers.IsQuestion(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", true)]
         public void IsStop(string word, bool expected)
         {
-            var result = DictionaryHelper.Instance.WordsHandlers.IsStop(GetWord(word));
+            var result = DictionaryHelper.Default.WordsHandlers.IsStop(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsSentiment(string word, bool expected)
         {
-            var result = DictionaryHelper.Instance.WordsHandlers.IsSentiment(GetWord(word));
+            var result = DictionaryHelper.Default.WordsHandlers.IsSentiment(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -40,13 +40,13 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("book", false)]
         public void IsKnown(string word, bool expected)
         {
-            var result = DictionaryHelper.Instance.WordsHandlers.IsKnown(GetWord(word));
+            var result = DictionaryHelper.Default.WordsHandlers.IsKnown(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
         private IWordItem GetWord(string word)
         {
-            return DictionaryHelper.Instance.WordsHandlers.WordFactory.CreateWord(word, "NN");
+            return DictionaryHelper.Default.WordsHandlers.WordFactory.CreateWord(word, "NN");
         }
     }
 }

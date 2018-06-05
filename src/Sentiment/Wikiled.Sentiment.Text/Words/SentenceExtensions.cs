@@ -3,6 +3,7 @@ using System.Linq;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Text.Analysis.Words;
 
 namespace Wikiled.Sentiment.Text.Words
 {
