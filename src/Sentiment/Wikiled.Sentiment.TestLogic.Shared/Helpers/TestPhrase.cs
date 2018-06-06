@@ -19,6 +19,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public void Add(IWordItem word)
         {
+            word.Parent = this;
             words.Add(word);
         }
 

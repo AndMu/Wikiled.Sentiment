@@ -63,9 +63,9 @@ namespace Wikiled.Sentiment.Text.Words
                 {
                     foreach (var child in parent.AllWords)
                     {
-                        if (wordItem.IsFeature || wordItem.IsSentiment)
+                        if (child.IsFeature || child.IsSentiment)
                         {
-                            yield return wordItem;
+                            yield return child;
                             continue;
                         }
 
