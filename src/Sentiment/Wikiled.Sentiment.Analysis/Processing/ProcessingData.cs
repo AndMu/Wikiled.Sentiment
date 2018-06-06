@@ -6,7 +6,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
-    public class ProcessingData : IProcessingData
+    public class ProcessingData
     {
         private List<SingleProcessingData> negative = new List<SingleProcessingData>();
 
@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public void Add(PositivityType positivity, SingleProcessingData data)
         {
             Guard.NotNull(() => data, data);
-            switch(positivity)
+            switch (positivity)
             {
                 case PositivityType.Positive:
                     positive.Add(data);

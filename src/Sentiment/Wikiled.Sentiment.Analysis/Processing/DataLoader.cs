@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
@@ -13,8 +11,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return new XmlProcessingDataLoader().LoadOldXml(path);
             }
 
-            var data = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<ProcessingData>(data);
+            var data = new JsonProcessingDataLoader(path);
+            data.Load();
+            return data;
         }
     }
 }

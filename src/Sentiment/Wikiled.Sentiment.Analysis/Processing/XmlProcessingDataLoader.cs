@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 data.Add(PositivityType.Neutral, item);
             }
 
-            return data;
+            return new StaticProcessingData(data);
         }
 
         private IEnumerable<SingleProcessingData> GetRecords(IEnumerable<XElement> elements)

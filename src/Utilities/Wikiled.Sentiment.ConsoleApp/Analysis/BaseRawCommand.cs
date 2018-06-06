@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Threading;
 using NLog;
 using Wikiled.Console.Arguments;
@@ -75,7 +76,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 adjuster.Adjust(Weights);
             }
 
-            IEnumerable<IParsedDocumentHolder> review;
+            IObservable<IParsedDocumentHolder> review;
 
             if (!string.IsNullOrEmpty(Input))
             {
@@ -90,43 +91,40 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
                              
-            Process(SynchronizedReviews(review), splitter);
+            Process(review.Select(SynchronizedReviews), splitter);
         }
 
-        protected abstract void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);
+        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);
 
-        private IEnumerable<IParsedDocumentHolder> SynchronizedReviews(IEnumerable<IParsedDocumentHolder> reviews)
+        private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
         {
-            foreach (var review in reviews)
-            {
-                Semaphore?.Wait();
-                yield return review;
-            }
+            Semaphore?.Wait();
+            return review;
         }
 
-        private IEnumerable<IParsedDocumentHolder> GetAllReviews()
+        private IObservable<IParsedDocumentHolder> GetAllReviews()
         {
             log.Info("Loading {0}", Articles);
             var data = new DataLoader().Load(Articles);
             return splitter.Splitter.GetParsedReviewHolders(data);
         }
 
-        private IEnumerable<IParsedDocumentHolder> GetPositiveReviews()
+        private IObservable<IParsedDocumentHolder> GetPositiveReviews()
         {
             log.Info("Positive {0}", Positive);
-            return splitter.Splitter.GetParsedReviewHolders(Positive, true);
+            return splitter.Splitter.GetParsedReviewHolders(Positive, true).ToObservable();
         }
 
-        private IEnumerable<IParsedDocumentHolder> GetNegativeReviews()
+        private IObservable<IParsedDocumentHolder> GetNegativeReviews()
         {
             log.Info("Negative {0}", Negative);
-            return splitter.Splitter.GetParsedReviewHolders(Negative, false);
+            return splitter.Splitter.GetParsedReviewHolders(Negative, false).ToObservable();
         }
 
-        private IEnumerable<IParsedDocumentHolder> GetOtherReviews()
+        private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
             log.Info("Other {0}", Input);
-            return splitter.Splitter.GetParsedReviewHolders(Input, null);
+            return splitter.Splitter.GetParsedReviewHolders(Input, null).ToObservable();
         }
     }
 }

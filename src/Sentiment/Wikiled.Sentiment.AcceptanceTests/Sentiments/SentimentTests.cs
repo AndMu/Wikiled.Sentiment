@@ -33,30 +33,37 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task SimpleTest()
         {
             var data = new XmlProcessingDataLoader().LoadOldXml(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
-            var negative = data.Negative.Repeat(5).Select(
+            var negative = data.All
+                               .Where(item => item.Sentiment == SentimentClass.Negative)
+                               .Select(item => item.Data)
+                               .Repeat(5)
+                               .Select(
                 item =>
                     {
                         item.Stars = 1;
                         item.Text = item.Text;
                         item.Id = Guid.NewGuid().ToString();
                         return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
-                    }).ToArray();
+                    });
 
-            var positive = data.Positive.Repeat(5).Select(
-                item =>
-                    {
-                        item.Stars = 5;
-                        item.Text = item.Text;
-                        item.Id = Guid.NewGuid().ToString();
-                        return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
-                    }).ToArray();
+            var positive = data.All.Where(item => item.Sentiment == SentimentClass.Positive)
+                               .Select(item => item.Data)
+                               .Repeat(5)
+                               .Select(
+                                   item =>
+                                   {
+                                       item.Stars = 5;
+                                       item.Text = item.Text;
+                                       item.Id = Guid.NewGuid().ToString();
+                                       return new ParsingDocumentHolder(TestHelper.Instance.SplitterHelper.Splitter, item);
+                                   });
 
 
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Union(positive).ToObservable(), new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Concat(positive), new ParsedReviewManagerFactory());
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
             await trainingClient.Train().ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Take(1).Union(positive.Take(1)).ToObservable(), new ParsedReviewManagerFactory());
+            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Take(1).Concat(positive.Take(1)), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.Init();
             var result = await testingClient.Process().ToArray();

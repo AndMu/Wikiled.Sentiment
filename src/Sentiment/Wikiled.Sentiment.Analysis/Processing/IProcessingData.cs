@@ -1,14 +1,9 @@
-using System.Collections.Generic;
-using Wikiled.Sentiment.Text.Data.Review;
+using System;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
     public interface IProcessingData
     {
-        IEnumerable<SingleProcessingData> Positive { get; }
-
-        IEnumerable<SingleProcessingData> Negative { get; }
-
-        IEnumerable<SingleProcessingData> Neutral { get; }
+        IObservable<DataPair> All { get; }
     }
 }

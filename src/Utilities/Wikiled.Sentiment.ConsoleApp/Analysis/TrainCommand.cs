@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -30,10 +31,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IEnumerable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory()), Model);
+            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ObserveOn(TaskPoolScheduler.Default), new ParsedReviewManagerFactory()), Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

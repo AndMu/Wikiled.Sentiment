@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reactive.Linq;
 using NLog;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -37,24 +39,24 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
         }
 
-        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IProcessingData data)
+        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IProcessingData data)
         {
-            foreach (var processingData in data.Positive)
-            {
-                SetStars(processingData, 5);
-                yield return new ParsingDocumentHolder(splitter, processingData);
-            }
+            var all = data.All.Select(
+                processingData =>
+                {
+                    if (processingData.Sentiment == SentimentClass.Positive)
+                    {
+                        SetStars(processingData.Data, 5);
+                    }
+                    else if (processingData.Sentiment == SentimentClass.Negative)
+                    {
+                        SetStars(processingData.Data, 1);
+                    }
 
-            foreach (var processingData in data.Negative)
-            {
-                SetStars(processingData, 1);
-                yield return new ParsingDocumentHolder(splitter, processingData);
-            }
+                    return new ParsingDocumentHolder(splitter, processingData.Data);
+                });
 
-            foreach (var processingData in data.Neutral)
-            {
-                yield return new ParsingDocumentHolder(splitter, processingData);
-            }
+            return all;
         }
 
         private static void SetStars(SingleProcessingData processingData, double defaultStars)

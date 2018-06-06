@@ -77,7 +77,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                              .Subscribe(item => log.Info(monitor)))
             {
                 var reviews = ReadFiles();
-                var subscriptionMessage = reviews.ToObservable()
+                var subscriptionMessage = reviews.Concat()
                                                  .ObserveOn(TaskPoolScheduler.Default)
                                                  .Select(item => Observable.Start(() => ProcessReview(item), TaskPoolScheduler.Default))
                                                  .Merge()
@@ -141,7 +141,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             SaveResult(types);
         }
 
-        protected abstract IEnumerable<EvalData> GetDataPacket(string file);
+        protected abstract IObservable<EvalData> GetDataPacket(string file);
 
         protected abstract void SaveResult(EvalData[] subscriptionMessage);
 
@@ -150,7 +150,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             log.Info("Loading text splitter for bootstrapping");
             var config = new ConfigurationHandler();
             var splitterFactory = new MainSplitterFactory(
-                new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), 
+                new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())),
                 config);
             bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
             log.Info("Removing default lexicon");
@@ -211,34 +211,31 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             }
         }
 
-        private IEnumerable<EvalData> ReadFiles()
+        private IEnumerable<IObservable<EvalData>> ReadFiles()
         {
             if (File.Exists(Path))
             {
-                foreach (var evalData in ReadFile(Path))
-                {
-                    yield return evalData;
-                }
+                yield return ReadFile(Path);
             }
             else
             {
                 foreach (var file in Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories))
                 {
-                    foreach (var evalData in ReadFile(file))
-                    {
-                        yield return evalData;
-                    }
+                    yield return ReadFile(Path);
                 }
             }
         }
 
-        private IEnumerable<EvalData> ReadFile(string file)
+        private IObservable<EvalData> ReadFile(string file)
         {
-            foreach (var semEvalData in GetDataPacket(file).Where(item => item != null))
-            {
-                monitor.ManualyCount();
-                yield return semEvalData;
-            }
+            return GetDataPacket(file)
+                .Where(item => item != null)
+                .Select(
+                    semEvalData =>
+                    {
+                        monitor.ManualyCount();
+                        return semEvalData;
+                    });
         }
     }
 }

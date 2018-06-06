@@ -109,7 +109,8 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private SentimentValue MeasureLookupSentiment(IWordItem word)
         {
-            if (!EmotionsLookup.TryGetWordValue(word, out SentimentValueData value))
+            if (word is IPhrase ||
+                !EmotionsLookup.TryGetWordValue(word, out SentimentValueData value))
             {
                 return null;
             }

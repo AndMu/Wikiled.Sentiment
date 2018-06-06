@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reactive.Linq;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
@@ -20,27 +21,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         public override string Name { get; } = "bootimdb";
 
-        protected override IEnumerable<EvalData> GetDataPacket(string path)
+        protected override IObservable<EvalData> GetDataPacket(string path)
         {
-            path = path.ToLower();
-            PositivityType? positivity = null;
-            var id = System.IO.Path.GetFileNameWithoutExtension(path);
-            var text = File.ReadAllText(path);
-            if (string.IsNullOrEmpty(text))
-            {
-                yield break;
-            }
-
-            if (path.Contains(@"/pos"))
-            {
-                positivity = PositivityType.Positive;
-            }
-            else if (path.Contains(@"/neg"))
-            {
-                positivity = PositivityType.Negative;
-            }
-
-            yield return new EvalData(id + $"_{positivity}", positivity, text);
+            return GetDataPacketEnum(path).ToObservable();
         }
 
         protected override void SaveResult(EvalData[] subscriptionMessage)
@@ -76,6 +59,29 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             }
 
             File.WriteAllText(file, item.Text);
+        }
+
+        private IEnumerable<EvalData> GetDataPacketEnum(string path)
+        {
+            path = path.ToLower();
+            PositivityType? positivity = null;
+            var id = System.IO.Path.GetFileNameWithoutExtension(path);
+            var text = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(text))
+            {
+                yield break;
+            }
+
+            if (path.Contains(@"/pos"))
+            {
+                positivity = PositivityType.Positive;
+            }
+            else if (path.Contains(@"/neg"))
+            {
+                positivity = PositivityType.Negative;
+            }
+
+            yield return new EvalData(id + $"_{positivity}", positivity, text);
         }
     }
 }

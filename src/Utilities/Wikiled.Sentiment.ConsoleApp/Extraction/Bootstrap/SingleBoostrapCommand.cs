@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 
@@ -18,25 +19,25 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         public override string Name { get; } = "boot";
 
-        protected override IEnumerable<EvalData> GetDataPacket(string path)
+        protected override IObservable<EvalData> GetDataPacket(string path)
         {
             path = path.ToLower();
             if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ||
                 path.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
             {
                 var data = new DataLoader().Load(path);
-                foreach (var processingData in data.Neutral.Concat(data.Negative).Concat(data.Positive))
-                {
-                    yield return new EvalData(processingData.Id, null, processingData.Text);
-                }
+                return data.All.Select(processingData => new EvalData(processingData.Data.Id, null, processingData.Data.Text));
             }
-            else
+
+            return ReadFile(path).ToObservable();
+        }
+
+        private IEnumerable<EvalData> ReadFile(string path)
+        {
+            foreach (var line in File.ReadLines(path).Where(item => !string.IsNullOrWhiteSpace(item)))
             {
-                foreach (var line in File.ReadLines(path).Where(item => !string.IsNullOrWhiteSpace(item)))
-                {
-                    id++;
-                    yield return new EvalData(id.ToString(), null, line);
-                }
+                id++;
+                yield return new EvalData(id.ToString(), null, line);
             }
         }
     }

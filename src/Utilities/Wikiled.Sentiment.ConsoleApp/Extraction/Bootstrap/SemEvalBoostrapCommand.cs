@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Reactive.Linq;
 using System.Text;
 using NLog;
 using Wikiled.Arff.Persistence;
@@ -16,9 +17,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
     [Description("Bootstrap training dataset from SemEval-2017")]
     public class SemEvalBoostrapCommand : BaseBoostrapCommand
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
-
         private readonly MessageCleanup cleanup = new MessageCleanup();
+
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private Dictionary<string, string> exist;
 
@@ -30,7 +31,24 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             base.Execute();
         }
 
-        protected override IEnumerable<EvalData> GetDataPacket(string file)
+        protected override IObservable<EvalData> GetDataPacket(string file)
+        {
+            return GetDataPacketEnum(file).ToObservable();
+        }
+
+        protected override void SaveResult(EvalData[] subscriptionMessage)
+        {
+            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+            {
+                foreach (var item in subscriptionMessage)
+                {
+                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
+                    streamWrite.Flush();
+                }
+            }
+        }
+
+        private IEnumerable<EvalData> GetDataPacketEnum(string file)
         {
             using (var streamRead = new StreamReader(file))
             {
@@ -39,7 +57,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 {
                     long? id = null;
                     PositivityType? positivity = null;
-                    var blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    var blocks = line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries);
                     if (blocks.Length < 3)
                     {
                         log.Error($"Error: {line}");
@@ -85,18 +103,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                         exist[text] = text;
                         yield return new EvalData(id.ToString(), positivity, text);
                     }
-                }
-            }
-        }
-
-        protected override void SaveResult(EvalData[] subscriptionMessage)
-        {
-            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
-            {
-                foreach (var item in subscriptionMessage)
-                {
-                    streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
-                    streamWrite.Flush();
                 }
             }
         }
