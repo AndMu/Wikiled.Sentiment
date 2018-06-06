@@ -8,6 +8,7 @@
         GlobalSvm,
         FeatureSpecific,
         Word2Vec,
+        CustomAdjusted,
         None
     }
 }

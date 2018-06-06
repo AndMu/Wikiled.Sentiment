@@ -1,27 +1,33 @@
-﻿using System;
-using NLog;
-using Wikiled.Common.Arguments;
+﻿using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.MachineLearning;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class LexiconRatingAdjustment : BaseRatingAdjustment
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private readonly ISentimentDataHolder sentimentData;
 
-        private ISentimentDataReader reader;
-
-        public LexiconRatingAdjustment(IParsedReview review, ISentimentDataReader reader) 
+        public LexiconRatingAdjustment(IParsedReview review, ISentimentDataHolder sentimentData) 
             : base(review)
         {
-            Guard.NotNull(() => reader, reader);
-            this.reader = reader;
+            Guard.NotNull(() => sentimentData, sentimentData);
+            this.sentimentData = sentimentData;
         }
 
         public override void CalculateRating()
         {
-            throw new NotImplementedException();
+            foreach (var reviewItem in Review.Items)
+            {
+                var sentiment = sentimentData.MeasureSentiment(reviewItem);
+                if (sentiment != null)
+                {
+                    Add(new SentimentValue(reviewItem,
+                        new SentimentValueData(sentiment.DataValue.Value, SentimentSource.CustomAdjusted)));
+                }
+            }
         }
     }
 }

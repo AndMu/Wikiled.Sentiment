@@ -2,8 +2,9 @@
 using System.IO;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.MachineLearning;
+using Wikiled.Sentiment.Text.Sentiment;
 
-namespace Wikiled.Sentiment.Text.Sentiment
+namespace Wikiled.Sentiment.Text.Resources
 {
     public class SentimentDataReader : ISentimentDataReader
     {

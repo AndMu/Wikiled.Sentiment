@@ -44,17 +44,15 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             helper.WordsHandlers.DisableFeatureSentiment = true;
             helper.WordsHandlers.SentimentDataHolder.Clear();
             helper.WordsHandlers.DisableFeatureSentiment = true;
-            var adjuster = new WeightSentimentAdjuster(helper.WordsHandlers.SentimentDataHolder);
 
-            //adjuster.Adjust(@"e:\Source\PhDDocument\Python\Trump\result.csv");
-            var POSITIVE_ADJ = new[] { "good", "lovely", "excellent", "delightful", "perfect" };
-            var NEGATIVE_ADJ = new[] { "bad", "horrible", "poor", "disgusting", "unhappy" };
-            foreach (var item in POSITIVE_ADJ)
+            var positiveAdj = new[] { "good", "lovely", "excellent", "delightful", "perfect" };
+            var negativeAdj = new[] { "bad", "horrible", "poor", "disgusting", "unhappy" };
+            foreach (var item in positiveAdj)
             {
                 helper.WordsHandlers.SentimentDataHolder.SetValue(item, new SentimentValueData(2));
             }
 
-            foreach (var item in NEGATIVE_ADJ)
+            foreach (var item in negativeAdj)
             {
                 helper.WordsHandlers.SentimentDataHolder.SetValue(item, new SentimentValueData(-2));
             }
@@ -64,6 +62,25 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             Assert.IsNull(review.CalculateRawRating().StarsRating);
             var sentiments = review.GetAllSentiments();
             Assert.AreEqual(0, sentiments.Length);
+        }
+
+        [TestCase("like", 2, 1)]
+        [TestCase("like", -2, -1)]
+        [TestCase("hate", 2, 1)]
+        [TestCase("hate", -2, -1)]
+        [TestCase("nope", -2, null)]
+        public async Task AdjustSentiment(string word, int value, double? rating)
+        {
+            var request = await textSplitter.Process(new ParseRequest("Like or hate it")).ConfigureAwait(false);
+            var review = new ParsedReviewManager(helper.WordsHandlers, request).Create();
+            LexiconRatingAdjustment adjustment = new LexiconRatingAdjustment(
+                review, 
+                SentimentDataHolder.Load(new []
+                {
+                    new WordSentimentValueData(word, new SentimentValueData(value)),
+                }));
+            adjustment.CalculateRating();
+            Assert.AreEqual(rating, adjustment.Rating.RawRating);
         }
 
         [TestCase("I like this pc", null, 0)]

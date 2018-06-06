@@ -2,6 +2,7 @@
 using System.IO;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 
 namespace Wikiled.Sentiment.Analysis.Processing

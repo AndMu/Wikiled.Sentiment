@@ -14,6 +14,17 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
+        public static ISentimentDataHolder Load(IEnumerable<WordSentimentValueData> reader)
+        {
+            SentimentDataHolder holder = new SentimentDataHolder();
+            foreach (var valueData in reader)
+            {
+                holder.SetValue(valueData.Word, valueData.Data);
+            }
+
+            return holder;
+        }
+
         public void SetValue(string word, SentimentValueData value)
         {
             EmotionsTable.Remove(word);
