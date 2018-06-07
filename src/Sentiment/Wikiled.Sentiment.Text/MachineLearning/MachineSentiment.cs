@@ -11,6 +11,7 @@ using Wikiled.Arff.Persistence.Headers;
 using Wikiled.Common.Arguments;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
+using Wikiled.Sentiment.Text.Extensions;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
 {
@@ -107,24 +108,49 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 vector[i] = 0;
             }
 
+            var unknownIndexes = vector.Length;
             foreach (var textCell in cells)
             {
-                var header = DataSet.Header[textCell.Name];
-                if (header == null ||
-                    !featureTable.TryGetValue(header, out var index))
+                var cell = GetCell(textCell);
+                if (cell != null)
                 {
-                    continue;
+                    vector[cell.Index] = cell.X;
+                    vectorCells.Add(cell);
                 }
-
-                var absoluteCell = textCell.Item == null ? new TextVectorCell(textCell.Name, Math.Abs(textCell.Value)) : new TextVectorCell(textCell.Item, Math.Abs(textCell.Value));
-                vector[index] = absoluteCell.Value;
-                var cellItem = new VectorCell(index, absoluteCell, weights[index]);
-                vectorCells.Add(cellItem);
+                else
+                {
+                    // if invereted exist in database, it is very likely that normal version has opposite meaning
+                    cell = GetCell(new TextVectorCell(textCell.Name.GetOpposite(), Math.Abs(textCell.Value)));
+                    if (cell != null)
+                    {
+                        var theata = textCell.Name.IsInverted() ? cell.Theta / 2 : cell.Theta / 4;
+                        cell = new VectorCell(unknownIndexes, textCell, -theata);
+                        vectorCells.Add(cell);
+                        unknownIndexes++;
+                    }
+                }
             }
 
             vector = vector.Normalize(NormalizationType.L2).GetNormalized.ToArray();
             var probability = Classifier.Probability(vector);
-            return (probability, new VectorData(vectorCells.ToArray(), DataSet.Header.Total, Classifier.Model.Threshold, NormalizationType.L2));
+            return (probability, new VectorData(vectorCells.ToArray(), unknownIndexes, Classifier.Model.Threshold, NormalizationType.L2));
+        }
+
+        private VectorCell GetCell(TextVectorCell textCell)
+        {
+            var header = DataSet.Header[textCell.Name];
+            if (header == null ||
+                !featureTable.TryGetValue(header, out var index))
+            {
+                return null;
+            }
+
+            var absoluteCell = textCell.Item == null
+                ? new TextVectorCell(textCell.Name, Math.Abs(textCell.Value))
+                : new TextVectorCell(textCell.Item, Math.Abs(textCell.Value));
+
+            var cellItem = new VectorCell(index, absoluteCell, weights[index]);
+            return cellItem;
         }
 
         public void Save(string path)

@@ -11,6 +11,8 @@ namespace Wikiled.Sentiment.Text.Extensions
 {
     public static class WordItemExtension
     {
+        public const string InvertTag = "NOTxxx";
+
         public static bool CanNotBeAttribute(this IWordItem word)
         {
             if (word.IsEmoticon())
@@ -96,10 +98,31 @@ namespace Wikiled.Sentiment.Text.Extensions
 
             if (wordItem.Relationship.Inverted != null)
             {
-                return "NOTxxx" + word;
+                return GetInvertedMask(word);
             }
 
             return wordItem.IsFeature ? null : word;
+        }
+
+        public static bool IsInverted(this string word)
+        {
+            return word.IndexOf(InvertTag, StringComparison.OrdinalIgnoreCase) == 0;
+        }
+        
+
+        public static string GetOpposite(this string word)
+        {
+            if (IsInverted(word))
+            {
+                return word.Substring(InvertTag.Length);
+            }
+
+            return word.GetInvertedMask();
+        }
+
+        public static string GetInvertedMask(this string word)
+        {
+            return InvertTag + word;
         }
 
         public static IWordItem GetInverted(this IWordItem word)
@@ -131,6 +154,11 @@ namespace Wikiled.Sentiment.Text.Extensions
         public static IEnumerable<string> GetPossibleText(this IWordItem word)
         {
             yield return word.Text;
+
+            if (word is IPhrase)
+            {
+                yield break;
+            }
 
             if (!string.IsNullOrEmpty(word.Stemmed) &&
                 word.Stemmed != word.Text)
