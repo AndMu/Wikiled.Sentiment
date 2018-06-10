@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Text.Analysis.Structure;
@@ -70,6 +71,45 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
             wordItem.Entity = entities;
             var result = wordItem.CanNotBeAttribute();
             Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("good", "NOTxxxgood")]
+        [TestCase("bad", "NOTxxxbad")]
+        public void GetInvertedMask(string word, string expected)
+        {
+            var result = word.GetInvertedMask();
+            Assert.AreEqual(expected, result);
+        }
+
+        [TestCase("good", "NOTxxxgood")]
+        [TestCase("bad", "NOTxxxbad")]
+        [TestCase("NOTxxxbad", "bad")]
+        [TestCase("NOTxxxgood", "good")]
+        public void GetOpposite(string word, string expected)
+        {
+            var result = word.GetOpposite();
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GetPossibleText()
+        {
+            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("running", "NN");
+            var result = wordItem.GetPossibleText().ToArray();
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual("running", result[0]);
+            Assert.AreEqual("run", result[1]);
+        }
+
+        [Test]
+        public void PhraseGetPossibleText()
+        {
+            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreatePhrase("NNS");
+            wordItem.Add(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("so", "JJ"));
+            wordItem.Add(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("good", "JJ"));
+            var result = wordItem.GetPossibleText().ToArray();
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual("so good", result[0]);
         }
     }
 }

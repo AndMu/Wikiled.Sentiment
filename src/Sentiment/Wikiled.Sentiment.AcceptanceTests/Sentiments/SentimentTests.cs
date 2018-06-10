@@ -5,12 +5,9 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using MoreLinq;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Arff.Extensions;
-using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -36,7 +33,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var negative = data.All
                                .Where(item => item.Sentiment == SentimentClass.Negative)
                                .Select(item => item.Data)
-                               .Repeat(5)
+                               .Repeat(15)
                                .Select(
                 item =>
                     {
@@ -48,7 +45,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
             var positive = data.All.Where(item => item.Sentiment == SentimentClass.Positive)
                                .Select(item => item.Data)
-                               .Repeat(5)
+                               .Repeat(15)
                                .Select(
                                    item =>
                                    {
@@ -72,7 +69,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
             var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
             var table = dataSet.GetFeatureTable();
-            //var resultWeight = classifier.Model.Weights[0];
+            var invertedSentiment = testingClient.MachineSentiment.GetVector(new[] {new TextVectorCell("NOTxxxseem", 1)});
+            var unknownSentiment = testingClient.MachineSentiment.GetVector(new[] { new TextVectorCell("seem", 1) });
+            Assert.AreEqual(unknownSentiment.Vector.Cells[0].Calculated * 4, -invertedSentiment.Vector.Cells[0].Calculated);
+            var weights = classifier.Model.ToWeights().Skip(1).ToArray();
         }
 
         [Test]

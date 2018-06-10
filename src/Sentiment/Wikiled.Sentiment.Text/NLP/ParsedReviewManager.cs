@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
@@ -74,7 +75,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
             foreach (var sentence in review.Sentences)
             {
-                foreach (var phrase in sentence.Occurrences.GetPhrases())
+                foreach (var phrase in sentence.Occurrences.GetPhrases().Where(item => item.AllWords.Count() > 1))
                 {
                     phrase.IsSentiment = manager.IsSentiment(phrase);
                     phrase.IsFeature = manager.IsFeature(phrase);
