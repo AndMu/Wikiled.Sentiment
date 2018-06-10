@@ -10,7 +10,6 @@
   <PropertyGroup>    
     <OutputType>Exe</OutputType>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>Wikiled.Sentiment.ConsoleApp.Program</StartupObject>
   </PropertyGroup>
 

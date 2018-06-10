@@ -8,6 +8,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: InternalsVisibleTo("Wikiled.Sentiment.Text.Tests")]
-[assembly: InternalsVisibleTo("Wikiled.Sentiment.Text.Tests1")]
-[assembly: InternalsVisibleTo("Wikiled.Sentiment.Text.Explorables")]
 
