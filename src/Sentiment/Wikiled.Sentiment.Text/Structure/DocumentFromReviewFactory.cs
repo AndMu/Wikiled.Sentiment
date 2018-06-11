@@ -43,20 +43,16 @@ namespace Wikiled.Sentiment.Text.Structure
                     word.IsStop = wordItem.IsStopWord;
                     word.Phrase = wordItem.Parent?.Text;
                     word.NormalizedEntity = wordItem.NormalizedEntity;
-
-                    if (!word.IsStop && wordItem.Relationship?.Sentiment != null)
+                    word.Value = wordItem.Relationship.Sentiment?.DataValue?.Value;
+                    word.IsAspect = wordItem.IsFeature;
+                    SentimentValue value = adjustment.GetSentiment(wordItem);
+                    if (value != null)
                     {
-                        word.Value = wordItem.Relationship.Sentiment.DataValue.Value;
-                        word.IsAspect = wordItem.IsFeature;
-                        SentimentValue value = adjustment.GetSentiment(wordItem);
-                        if (value != null)
-                        {
-                            word.CalculatedValue = value.DataValue.Value;
-                        }
-                        else if (word.Value != null)
-                        {
-                            word.CalculatedValue = 0;
-                        }
+                        word.CalculatedValue = value.DataValue.Value;
+                    }
+                    else if (word.Value != null)
+                    {
+                        word.CalculatedValue = 0;
                     }
 
                     sentenceItem.Add(word);
