@@ -1,5 +1,4 @@
-﻿using System;
-using Wikiled.Common.Arguments;
+﻿using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
@@ -10,26 +9,18 @@ namespace Wikiled.Sentiment.Text.Structure
     {
         public static readonly DocumentFromReviewFactory Instance = new DocumentFromReviewFactory();
 
-        private DocumentFromReviewFactory(){}
+        private DocumentFromReviewFactory() { }
 
-        public Document ReparseDocument(IParsedReview review, Document original, IRatingAdjustment adjustment)
+        public Document ReparseDocument(IParsedReview review, IRatingAdjustment adjustment)
         {
             Guard.NotNull(() => review, review);
-            Guard.NotNull(() => original, original);
             Guard.NotNull(() => adjustment, adjustment);
             var document = new Document();
-            if (original != null)
-            {
-                document.DocumentTime = original.DocumentTime;
-                document.Text = original.Text;
-                document.Stars = original.Stars;
-                document.Id = original.Id;
-                document.Author = original.Author;
-            }
-            else
-            {
-                document.DocumentTime = DateTime.Now;
-            }
+            document.DocumentTime = review.Document.DocumentTime;
+            document.Text = review.Document.Text;
+            document.Stars = review.Document.Stars;
+            document.Id = review.Document.Id;
+            document.Author = review.Document.Author;
 
             if (adjustment.Rating != null)
             {
@@ -56,7 +47,7 @@ namespace Wikiled.Sentiment.Text.Structure
                     word.IsStop = wordItem.IsStopWord;
                     word.Phrase = wordItem.Parent?.Text;
                     word.NormalizedEntity = wordItem.NormalizedEntity;
-                    
+
                     if (!word.IsStop && wordItem.Relationship?.Sentiment != null)
                     {
                         word.Value = wordItem.Relationship.Sentiment.DataValue.Value;

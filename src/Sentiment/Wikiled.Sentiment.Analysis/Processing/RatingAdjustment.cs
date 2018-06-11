@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public RatingAdjustment(IParsedReview review, IMachineSentiment model)
+        private RatingAdjustment(IParsedReview review, IMachineSentiment model)
             : base(review)
         {
             Guard.NotNull(() => model, model);
@@ -22,6 +22,18 @@ namespace Wikiled.Sentiment.Analysis.Processing
         }
 
         public IMachineSentiment Model { get; }
+
+        public static IRatingAdjustment Create(IParsedReview review, IMachineSentiment model)
+        {
+            if (model is NullMachineSentiment)
+            {
+                return new NullRatingAdjustment(review);
+            }
+
+            var adjustment = new RatingAdjustment(review, model);
+            adjustment.CalculateRating();
+            return adjustment;
+        }
 
         public override void CalculateRating()
         {

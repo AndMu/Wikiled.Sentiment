@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Text.Data
     {
         DateTime? Date { get; }
 
-        Document GenerateDocument(IRatingAdjustment adjustment);
+        Document Document { get; }
 
         IEnumerable<IWordItem> Items { get; }
 

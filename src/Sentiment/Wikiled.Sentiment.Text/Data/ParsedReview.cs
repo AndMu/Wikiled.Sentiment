@@ -5,7 +5,6 @@ using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
@@ -15,8 +14,6 @@ namespace Wikiled.Sentiment.Text.Data
     public class ParsedReview : IParsedReview
     {
         private readonly List<ISentence> allSentences = new List<ISentence>();
-
-        private readonly Document document;
 
         private readonly string text;
 
@@ -29,10 +26,12 @@ namespace Wikiled.Sentiment.Text.Data
                 Date = document.DocumentTime.Value;
             }
 
-            this.document = document;
+            Document = document;
             text = document.Text;
             Vector = new ExtractReviewTextVector(dictionary, this);
         }
+
+        public Document Document { get; }
 
         public ISentence CurrentSentence { get; private set; }
 
@@ -88,11 +87,6 @@ namespace Wikiled.Sentiment.Text.Data
         public RatingData CalculateRawRating()
         {
             return RatingData.Accumulate(allSentences.Select(item => item.CalculateRating()));
-        }
-
-        public Document GenerateDocument(IRatingAdjustment adjustment)
-        {
-            return DocumentFromReviewFactory.Instance.ReparseDocument(this, document, adjustment);
         }
 
         public SentimentValue[] GetAllSentiments()

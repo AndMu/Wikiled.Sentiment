@@ -17,7 +17,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         public Document Processed { get; set; }
 
-        public RatingAdjustment Adjustment { get; set; }
+        public IRatingAdjustment Adjustment { get; set; }
 
         public IParsedReview Review { get; }
     }

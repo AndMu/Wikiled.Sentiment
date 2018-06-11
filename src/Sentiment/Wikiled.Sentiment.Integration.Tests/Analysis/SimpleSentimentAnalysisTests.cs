@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Integration.Tests.Helpers;
+using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -35,6 +36,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
             var sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
+            var adjustment = RatingAdjustment.Create(review, new NullMachineSentiment());
+            Assert.AreEqual(rating, (int)adjustment.Rating.StarsRating);
         }
 
         [Test]

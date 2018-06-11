@@ -1,4 +1,5 @@
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Sentiment
 {
@@ -7,5 +8,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
         RatingData Rating { get; }
 
         SentimentValue GetSentiment(IWordItem word);
+
+        Document GenerateDocument();
     }
 }
