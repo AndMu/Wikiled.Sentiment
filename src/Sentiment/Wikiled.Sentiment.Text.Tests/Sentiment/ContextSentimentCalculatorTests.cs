@@ -114,7 +114,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         {
             Mock<IWordItem> invertor = new Mock<IWordItem>();
             child.SetupSequence(item => item.Inverted)
-                .Returns(null)
+                .Returns((IWordItem)null)
                 .Returns(invertor.Object)
                 .Returns(invertor.Object);
             invertor.Setup(item => item.WordIndex).Returns(1);
