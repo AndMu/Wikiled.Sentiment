@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
@@ -29,7 +30,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         {
             var result = await extraction.Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
             var review = new ParsedReviewManager(handler, result).Create();
-            return review.GenerateDocument(new NullRatingAdjustment());
+            var documentFromReview = new DocumentFromReviewFactory();
+            return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }
 
         public async Task<Document> InitDocumentWithWords()

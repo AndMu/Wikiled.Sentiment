@@ -1,6 +1,5 @@
 ﻿using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Sentiment
@@ -10,15 +9,13 @@ namespace Wikiled.Sentiment.Text.Sentiment
         public NullRatingAdjustment(IParsedReview review)
         {
             Guard.NotNull(() => review, review);
+            Review = review;
             Rating = review.CalculateRawRating();
         }
 
         public RatingData Rating { get; }
 
-        {
-            return DocumentFromReviewFactory.Instance.ReparseDocument(review, this);
-        }
-
+        public IParsedReview Review { get; }
 
         public SentimentValue GetSentiment(IWordItem word)
         {

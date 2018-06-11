@@ -1,5 +1,4 @@
 ﻿using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
 
@@ -7,32 +6,29 @@ namespace Wikiled.Sentiment.Text.Structure
 {
     public class DocumentFromReviewFactory : IDocumentFromReviewFactory
     {
-        public static readonly DocumentFromReviewFactory Instance = new DocumentFromReviewFactory();
-
-        private DocumentFromReviewFactory() { }
-
-        public Document ReparseDocument(IParsedReview review, IRatingAdjustment adjustment)
+        public Document ReparseDocument(IRatingAdjustment adjustment)
         {
-            Guard.NotNull(() => review, review);
             Guard.NotNull(() => adjustment, adjustment);
+            Guard.NotNull(() => adjustment.Review, adjustment.Review);
+            Guard.NotNull(() => adjustment.Review.Document, adjustment.Review.Document);
             var document = new Document();
-            document.DocumentTime = review.Document.DocumentTime;
-            document.Text = review.Document.Text;
-            document.Stars = review.Document.Stars;
-            document.Id = review.Document.Id;
-            document.Author = review.Document.Author;
+            document.DocumentTime = adjustment.Review.Document.DocumentTime;
+            document.Text = adjustment.Review.Document.Text;
+            document.Stars = adjustment.Review.Document.Stars;
+            document.Id = adjustment.Review.Document.Id;
+            document.Author = adjustment.Review.Document.Author;
 
             if (adjustment.Rating != null)
             {
                 document.Stars = adjustment.Rating.StarsRating;
             }
 
-            if (review.Text == null)
+            if (adjustment.Review.Text == null)
             {
-                document.Text = review.Text;
+                document.Text = adjustment.Review.Text;
             }
 
-            foreach (var sentence in review.Sentences)
+            foreach (var sentence in adjustment.Review.Sentences)
             {
                 if (string.IsNullOrWhiteSpace(sentence.Text))
                 {

@@ -6,6 +6,6 @@ namespace Wikiled.Sentiment.Text.Structure
 {
     public interface IDocumentFromReviewFactory
     {
-        Document ReparseDocument(IParsedReview review, IRatingAdjustment adjustment);
+        Document ReparseDocument(IRatingAdjustment adjustment);
     }
 }

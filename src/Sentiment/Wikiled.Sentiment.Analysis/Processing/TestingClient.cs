@@ -16,6 +16,7 @@ using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -25,6 +26,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly IProcessingPipeline pipeline;
+
+        private readonly IDocumentFromReviewFactory documentFromReview = new DocumentFromReviewFactory();
 
         private readonly StatisticsCalculator statistics = new StatisticsCalculator();
 
@@ -131,7 +134,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
                 pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
-                context.Processed = context.Review.GenerateDocument(adjustment);
+
+                context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);
                 context.Adjustment = adjustment;
                 if (context.Original.Stars == null)
