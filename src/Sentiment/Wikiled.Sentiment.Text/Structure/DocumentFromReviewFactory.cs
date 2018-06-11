@@ -60,14 +60,16 @@ namespace Wikiled.Sentiment.Text.Structure
                     if (!word.IsStop && wordItem.Relationship?.Sentiment != null)
                     {
                         word.Value = wordItem.Relationship.Sentiment.DataValue.Value;
-                        word.CalculatedValue = word.Value;
                         word.IsAspect = wordItem.IsFeature;
 
                         SentimentValue value = adjustment.GetSentiment(wordItem);
                         if (value != null)
                         {
                             word.CalculatedValue = value.DataValue.Value;
-                            word.Theta = value.DataValue.Value / word.Value;
+                        }
+                        else if (word.Value != null)
+                        {
+                            word.CalculatedValue = 0;
                         }
                     }
 
