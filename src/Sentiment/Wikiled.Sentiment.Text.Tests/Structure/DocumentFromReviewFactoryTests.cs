@@ -62,7 +62,9 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             }
 
             review.Setup(item => item.Sentences).Returns(sentences.Select(item => item.Object).ToList());
-            var document = DocumentFromReviewFactory.Instance.ReparseDocument(review.Object, new Document("Test"), adjustment.Object);
+            adjustment.Setup(item => item.Review).Returns(review.Object);
+            review.Setup(item => item.Document).Returns(new Document("Test"));
+            var document = new DocumentFromReviewFactory().ReparseDocument(adjustment.Object);
             Assert.AreEqual(2, document.Sentences.Count);
             foreach (var sentenceItem in document.Sentences)
             {
