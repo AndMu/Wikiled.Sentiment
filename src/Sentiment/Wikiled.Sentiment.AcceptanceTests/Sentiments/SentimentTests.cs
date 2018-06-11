@@ -81,7 +81,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("SimpleTest");
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
-            var doc = await TestHelper.Instance.SplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument()) { Date = new DateTime(2016, 01, 01) }).ConfigureAwait(false);
+            var doc = await TestHelper.Instance.SplitterHelper.Splitter.Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
             var result = new ParsedReviewManager(TestHelper.Instance.SplitterHelper.DataLoader, doc).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);

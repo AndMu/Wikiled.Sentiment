@@ -24,7 +24,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
             review.Vector.GenerateUsingImportantOnly = false;
         }
 
-        private void AddData(DateTime date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
+        private void AddData(DateTime? date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
         {
             var cells = extractTextVector.GetCells();
             if (cells.Count == 0)
@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
             {
                 IArffDataRow review = DataSet.AddDocument();
                 review.Class.Value  = positivity;
-                review.AddRecord(Constants.DATE).Value = date;
+                review.AddRecord(Constants.DATE).Value = date ?? DateTime.Today;
                 foreach (var cell in cells)
                 {
                     string name = cell.Name;
