@@ -8,7 +8,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public SentimentValue GetSentiment(IWordItem word)
         {
-            return null;
+            return word?.Relationship?.Sentiment;
         }
     }
 }

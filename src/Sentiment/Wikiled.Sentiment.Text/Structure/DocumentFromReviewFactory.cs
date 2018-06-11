@@ -61,7 +61,6 @@ namespace Wikiled.Sentiment.Text.Structure
                     {
                         word.Value = wordItem.Relationship.Sentiment.DataValue.Value;
                         word.IsAspect = wordItem.IsFeature;
-
                         SentimentValue value = adjustment.GetSentiment(wordItem);
                         if (value != null)
                         {
