@@ -22,7 +22,6 @@ namespace Wikiled.Sentiment.Text.NLP
             ISentenceTokenizer tokenizer = SentenceTokenizer.Create(wordsHandler, WordsTokenizerFactory.NotWhiteSpace, true, false);
             SimpleWordsExtraction wordsExtraction = new SimpleWordsExtraction(tokenizer);
             Document document = wordsExtraction.GetDocument(request.Document.Text);
-            document.Init(request.Document);
             return document;
         }
     }

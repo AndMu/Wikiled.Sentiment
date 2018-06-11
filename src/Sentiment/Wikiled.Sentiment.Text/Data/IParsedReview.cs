@@ -9,9 +9,7 @@ namespace Wikiled.Sentiment.Text.Data
 {
     public interface IParsedReview
     {
-        string Domain { get; }
-
-        DateTime Date { get; }
+        DateTime? Date { get; }
 
         Document GenerateDocument(IRatingAdjustment adjustment);
 

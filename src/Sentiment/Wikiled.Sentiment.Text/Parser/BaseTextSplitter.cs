@@ -58,6 +58,9 @@ namespace Wikiled.Sentiment.Text.Parser
 
                 document = await Task.Run(() => ActualProcess(request)).ConfigureAwait(false);
                 document.Id = request.Document.Id;
+                document.DocumentTime = request.Document.DocumentTime;
+                document.Author = request.Document.Author;
+                document.Title = request.Document.Title;
                 if (await cache.Save(document).ConfigureAwait(false))
                 {
                     return document;

@@ -1,5 +1,4 @@
-﻿using System;
-using Wikiled.Common.Arguments;
+﻿using Wikiled.Common.Arguments;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -19,7 +18,5 @@ namespace Wikiled.Sentiment.Text.Parser
         }
 
         public Document Document { get; }
-
-        public DateTime? Date { get; set; }
     }
 }

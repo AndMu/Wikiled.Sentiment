@@ -6,6 +6,7 @@ using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
 using Wikiled.Common.Arguments;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Tokenizer;
@@ -46,7 +47,6 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         {
             var sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
             var sentenceDataList = new List<SentenceData>(sentences.Length);
-
             for (int i = 0; i < sentences.Length; i++)
             {
                 var sentenceData = new SentenceData { Text = sentences[i] };

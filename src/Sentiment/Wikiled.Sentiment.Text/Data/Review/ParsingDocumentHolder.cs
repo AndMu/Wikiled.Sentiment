@@ -33,7 +33,7 @@ namespace Wikiled.Sentiment.Text.Data.Review
         
         public Task<Document> GetParsed()
         {
-            return splitter.Process(new ParseRequest(Original) { Date = Original.DocumentTime });
+            return splitter.Process(new ParseRequest(Original));
         }
     }
 }

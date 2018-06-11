@@ -32,14 +32,11 @@ namespace Wikiled.Sentiment.Text.Data
             this.document = document;
             text = document.Text;
             Vector = new ExtractReviewTextVector(dictionary, this);
-            //Domain = this.document.Domain;
         }
 
         public ISentence CurrentSentence { get; private set; }
 
-        public string Domain { get; }
-
-        public DateTime Date { get; }
+        public DateTime? Date { get; }
 
         public IEnumerable<IWordItem> Items =>
             from sentence in Sentences
