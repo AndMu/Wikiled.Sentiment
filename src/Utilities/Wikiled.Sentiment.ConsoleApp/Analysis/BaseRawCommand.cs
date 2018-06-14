@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 using Wikiled.Console.Arguments;
 using Wikiled.Redis.Config;
@@ -46,7 +47,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
-        public override void Execute()
+        public override Task Execute()
         {
             log.Info("Initialize...");
             ICacheFactory cacheFactory = new NullCacheFactory();
@@ -92,6 +93,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             }
                              
             Process(review.Select(SynchronizedReviews), splitter);
+            return Task.CompletedTask;
         }
 
         protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);

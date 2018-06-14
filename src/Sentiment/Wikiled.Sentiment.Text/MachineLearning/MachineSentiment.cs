@@ -9,6 +9,7 @@ using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.Arff.Persistence.Headers;
 using Wikiled.Common.Arguments;
+using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Text.Extensions;
@@ -93,7 +94,10 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentOutOfRangeException("Not enough positive classes");
             }
 
-            await Task.Run(() => classifier.Train(data.Select(item => item.Y.Value).ToArray(), data.Select(item => item.X).ToArray(), token), token).ConfigureAwait(false);
+            var yData = data.Select(item => item.Y.Value).ToArray();
+            var xData = data.Select(item => item.X).ToArray();
+            var randomized = new Random().Shuffle<double>(yData, xData).ToArray();
+            await Task.Run(() => classifier.Train(randomized[0], randomized[1], token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
         }
 

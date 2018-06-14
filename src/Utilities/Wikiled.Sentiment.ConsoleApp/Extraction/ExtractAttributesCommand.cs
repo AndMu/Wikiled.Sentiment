@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using Wikiled.Console.Arguments;
@@ -42,7 +43,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         [Description("Include sentiment words into attributes")]
         public bool Sentiment { get; set; }
 
-        public override void Execute()
+        public override async Task Execute()
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
@@ -51,15 +52,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                pipeline.ProcessStep()
+                await pipeline.ProcessStep()
                         .Select(item => Observable.Start(() =>
                         {
                             Processing(item);
                             pipeline.Monitor.Increment();
                         }))
                         .Merge()
-                        .LastOrDefaultAsync()
-                        .Wait();
+                        .LastOrDefaultAsync();
             }
 
             var file = Path.Combine(Out, "features.xml");
