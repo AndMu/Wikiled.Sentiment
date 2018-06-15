@@ -32,10 +32,10 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" Version="2.1.2" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
-    <PackageReference Include="Wikiled.MachineLearning" Version="2.1.4" />
+    <PackageReference Include="Wikiled.MachineLearning" Version="2.1.5" />
     <PackageReference Include="Knuppe.SharpNL" Version="1.3.0" />
     <PackageReference Include="Wikiled.Redis" Version="3.0.15" />
-    <PackageReference Include="Wikiled.Text.Analysis" Version="1.5.28" />
+    <PackageReference Include="Wikiled.Text.Analysis" Version="1.5.30" />
     <PackageReference Include="Wikiled.Text.Inquirer" Version="1.1.5" />
   </ItemGroup>
 

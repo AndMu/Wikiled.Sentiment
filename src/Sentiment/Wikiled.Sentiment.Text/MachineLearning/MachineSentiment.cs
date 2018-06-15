@@ -96,8 +96,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
             var yData = data.Select(item => item.Y.Value).ToArray();
             var xData = data.Select(item => item.X).ToArray();
-            var randomized = new Random().Shuffle<double>(yData, xData).ToArray();
-            await Task.Run(() => classifier.Train(randomized[0], randomized[1], token), token).ConfigureAwait(false);
+            var randomized = new Random().Shuffle(yData, xData).ToArray();
+            await Task.Run(() => classifier.Train(randomized[0].Cast<int>().ToArray(), randomized[1].Cast<double[]>().ToArray(), token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
         }
 

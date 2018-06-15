@@ -61,7 +61,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         [Required]
         public string Words { get; set; }
 
-        public override void Execute()
+        public override async Task Execute()
         {
             List<Task> initTasks = new List<Task>();
             initTasks.Add(Task.Run(() => LoadBootstrap()));
@@ -70,7 +70,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 initTasks.Add(Task.Run(() => LoadDefault()));
             }
 
-            Task.WhenAll(initTasks).Wait();
+            await Task.WhenAll(initTasks);
             monitor = new PerformanceMonitor(0);
             EvalData[] types;
             using (Observable.Interval(TimeSpan.FromSeconds(30))

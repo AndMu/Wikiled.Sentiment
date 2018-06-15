@@ -17,6 +17,10 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net471|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="CsvHelper" version="7.1.1" />
@@ -35,9 +39,9 @@
     <PackageReference Include="Wikiled.Arff" version="2.1.2" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
     <PackageReference Include="Wikiled.Console" Version="1.0.6" />
-    <PackageReference Include="Wikiled.MachineLearning" version="2.1.4" />
+    <PackageReference Include="Wikiled.MachineLearning" version="2.1.5" />
     <PackageReference Include="Wikiled.Redis" version="3.0.15" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.5.28" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.5.30" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.1.5" />
 
   </ItemGroup>

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using NLog;
 using Wikiled.Console.Arguments;
-using Wikiled.Console.Helpers;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Extraction;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
@@ -17,7 +17,7 @@ namespace Wikiled.Sentiment.ConsoleApp
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             log.Info("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
             ConfigurationHandler configuration = new ConfigurationHandler();
@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                 }
 
                 command.ParseArguments(args.Skip(1)); // or CommandLineParser.ParseArguments(c, args.Skip(1))
-                command.Execute();
+                await command.Execute();
             }
             catch (Exception ex)
             {
