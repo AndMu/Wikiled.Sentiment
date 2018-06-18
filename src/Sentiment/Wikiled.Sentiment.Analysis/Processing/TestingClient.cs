@@ -9,6 +9,7 @@ using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;
+using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
@@ -124,7 +125,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             var aspectSentiments = AspectSentiment.GetResults();
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             var vector = SentimentVector.GetVector(NormalizationType.None);
-            vector.XmlSerialize().Save(Path.Combine(path, "sentiment_vector.xml"));
+            new JsonVectorSerialization(Path.Combine(path, "sentiment_vector.json")).Serialize(new[] { vector });
             arff.Save(Path.Combine(path, "data.arff"));
         }
 

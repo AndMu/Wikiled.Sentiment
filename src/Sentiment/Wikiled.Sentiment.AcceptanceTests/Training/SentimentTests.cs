@@ -10,8 +10,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        [TestCase("B00002EQCW", "Total:<214> Positive:<95.980%> Negative:<66.667%> F1:<0.967> RMSE:0.97")]
-        [TestCase("B0026127Y8", "Total:<853> Positive:<89.249%> Negative:<35.802%> F1:<0.911> RMSE:1.19")]
+        [TestCase("B00002EQCW", "Total:<214> Positive:<96.500%> Negative:<71.429%> F1:<0.972> RMSE:0.94")]
+        [TestCase("B0026127Y8", "Total:<853> Positive:<88.875%> Negative:<39.506%> F1:<0.911> RMSE:1.19")]
         public async Task TestElectronics(string product, string performance)
         {
             log.Info("TestElectronics: {0} {1}", product, performance);

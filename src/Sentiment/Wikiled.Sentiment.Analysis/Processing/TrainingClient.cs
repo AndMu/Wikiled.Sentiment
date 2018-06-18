@@ -9,6 +9,7 @@ using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Arguments;
 using Wikiled.Common.Serialization;
+using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
@@ -60,7 +61,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
             log.Info("Starting Training");
-            using(Observable.Interval(TimeSpan.FromSeconds(30))
+            using (Observable.Interval(TimeSpan.FromSeconds(30))
                            .Subscribe(item => log.Info(pipeline.Monitor)))
             {
                 await pipeline.ProcessStep()
@@ -143,7 +144,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 arffProcess.PopulateArff(context.Review, PositivityType.Negative);
             }
-            
+
             return context;
         }
 
@@ -169,7 +170,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             pipeline.Splitter.DataLoader.AspectDectector = new AspectDectector(features, attributes);
             var vector = sentimentVector.GetVector(NormalizationType.None);
-            vector.XmlSerialize().Save(Path.Combine(analyze.SvmPath, "sentiment_vector.xml"));
+            new JsonVectorSerialization(Path.Combine(analyze.SvmPath, "sentiment_vector.json")).Serialize(new[] { vector });
             log.Info("Extracting features... DONE!");
         }
     }
