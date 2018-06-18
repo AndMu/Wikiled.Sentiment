@@ -61,7 +61,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         [Required]
         public string Words { get; set; }
 
-        public override async Task Execute()
+        protected override async Task Execute(CancellationToken token)
         {
             List<Task> initTasks = new List<Task>();
             initTasks.Add(Task.Run(() => LoadBootstrap()));

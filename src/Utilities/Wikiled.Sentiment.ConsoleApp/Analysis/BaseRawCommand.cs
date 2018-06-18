@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +46,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
-        public override Task Execute()
+        protected override Task Execute(CancellationToken token)
         {
             log.Info("Initialize...");
             ICacheFactory cacheFactory = new NullCacheFactory();

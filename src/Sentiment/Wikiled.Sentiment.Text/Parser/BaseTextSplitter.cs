@@ -45,8 +45,16 @@ namespace Wikiled.Sentiment.Text.Parser
                 Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
                 if (document == null)
                 {
-                    string text = request.Document.Text.Trim().SanitizeXmlString();
-                    document = await cache.GetCached(text).ConfigureAwait(false);
+                    string text = request.Document.Text.Trim();
+                    if (string.IsNullOrEmpty(text))
+                    {
+                        document = new Document();
+                    }
+                    else
+                    {
+                        text = text.SanitizeXmlString();
+                        document = await cache.GetCached(text).ConfigureAwait(false);
+                    }
                 }
 
                 if (document != null)

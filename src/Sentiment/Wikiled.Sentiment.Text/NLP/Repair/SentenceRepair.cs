@@ -34,6 +34,11 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public string Repair(string originalSentence)
         {
+            if (originalSentence == null)
+            {
+                throw new ArgumentNullException(nameof(originalSentence));
+            }
+
             if (!string.IsNullOrEmpty(lightMask) &&
                 originalSentence.IndexOf(lightMask, StringComparison.OrdinalIgnoreCase) < 0)
             {

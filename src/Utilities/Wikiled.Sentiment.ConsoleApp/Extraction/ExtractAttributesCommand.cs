@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using NLog;
@@ -43,7 +44,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         [Description("Include sentiment words into attributes")]
         public bool Sentiment { get; set; }
 
-        public override async Task Execute()
+        protected override async Task Execute(CancellationToken token)
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));

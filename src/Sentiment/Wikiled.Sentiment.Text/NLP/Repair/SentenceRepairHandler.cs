@@ -36,6 +36,11 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public string Repair(string sentence)
         {
+            if (string.IsNullOrEmpty(sentence))
+            {
+                return string.Empty;
+            }
+
             foreach (var sentenceRepair in repairs)
             {
                 sentence = sentenceRepair.Repair(sentence);

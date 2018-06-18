@@ -17,7 +17,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -91,6 +91,13 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             Assert.IsTrue(words[0].IsSentiment);
             Assert.IsTrue(words[1].IsSentiment);
             Assert.AreEqual(-1, words[0].Relationship.Sentiment.DataValue.Value);
+        }
+
+        [Test]
+        public async Task TestNull()
+        {
+            var doc = await TestHelper.Instance.SplitterHelper.Splitter.Process(new ParseRequest(new Document())).ConfigureAwait(false);
+            Assert.AreEqual(0, doc.Sentences.Count);
         }
 
         [Test]

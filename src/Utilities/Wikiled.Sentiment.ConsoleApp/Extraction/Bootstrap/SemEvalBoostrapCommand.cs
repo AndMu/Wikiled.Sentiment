@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Reactive.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Arff.Persistence;
@@ -26,10 +27,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         public override string Name { get; } = "semboot";
 
-        public override Task Execute()
+        protected override Task Execute(CancellationToken token)
         {
             exist = new Dictionary<string, string>();
-            return base.Execute();
+            return base.Execute(token);
         }
 
         protected override IObservable<EvalData> GetDataPacket(string file)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Console.Arguments;
@@ -67,7 +68,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                 }
 
                 command.ParseArguments(args.Skip(1)); // or CommandLineParser.ParseArguments(c, args.Skip(1))
-                await command.Execute();
+                await command.StartExecution(CancellationToken.None);
             }
             catch (Exception ex)
             {
