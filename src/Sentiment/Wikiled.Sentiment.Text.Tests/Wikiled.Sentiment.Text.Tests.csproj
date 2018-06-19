@@ -26,8 +26,8 @@
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.1.2" />
     <PackageReference Include="Wikiled.Common" Version="1.0.11" />
-    <PackageReference Include="Wikiled.MachineLearning" version="2.1.7" />
-    <PackageReference Include="Wikiled.Redis" version="3.0.15" />
+    <PackageReference Include="Wikiled.MachineLearning" version="2.1.9" />
+    <PackageReference Include="Wikiled.Redis" version="3.0.16" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.5.30" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.1.5" />
 
