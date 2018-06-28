@@ -11,22 +11,18 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly string replaceMask;
 
-        private readonly Regex replaceRegex;
-
         private readonly IWordsDictionary dictionary;
+
+        private readonly string mask;
 
         public SentenceRepair(IWordsDictionary dictionary, string lightMask, string mask, string replaceMask)
         {
             Guard.NotNullOrEmpty(() => mask, mask);
             Guard.NotNull(() => dictionary, dictionary);
 
+            this.mask = mask ?? throw new ArgumentNullException(nameof(mask));
             this.replaceMask = replaceMask;
             this.dictionary = dictionary;
-            replaceRegex = new Regex(
-                mask,
-                RegexOptions.IgnoreCase |
-                RegexOptions.Singleline |
-                RegexOptions.Compiled);
             this.lightMask = lightMask;
         }
 
@@ -47,7 +43,8 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             if (VerifyDictionary != null)
             {
-                var matches = replaceRegex.Matches(originalSentence);
+                
+                var matches = Regex.Matches(originalSentence, mask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 foreach (Match match in matches)
                 {
                     bool found = false;
@@ -67,7 +64,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
                     if (found)
                     {
-                        var replaced = replaceRegex.Replace(match.Value, replaceMask);
+                        var replaced = Regex.Replace(match.Value, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                         originalSentence = originalSentence.Replace(match.Value, replaced);
                     }
                 }
@@ -75,7 +72,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 return originalSentence;
             }
 
-            return replaceRegex.Replace(originalSentence, replaceMask);
+            return Regex.Replace(originalSentence, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
     }
 }

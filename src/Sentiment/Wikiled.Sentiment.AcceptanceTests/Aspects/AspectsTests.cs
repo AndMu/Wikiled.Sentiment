@@ -51,12 +51,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             var attributes = aspectHandler.GetAttributes(10).ToArray();
             for (int i = 0; i < data.Features.Items.Length; i++)
             {
-                Assert.AreEqual(data.Features.Items[i], features[i].Text.ToLower());
+                Assert.IsTrue(features.Any(item => string.Compare(item.Text, data.Features.Items[i], StringComparison.OrdinalIgnoreCase) == 0));
             }
 
             for (int i = 0; i < data.Attributes.Items.Length; i++)
             {
-                Assert.AreEqual(data.Attributes.Items[i], attributes[i].Text.ToLower());
+                Assert.IsTrue(attributes.Any(item => string.Compare(item.Text, data.Attributes.Items[i], StringComparison.OrdinalIgnoreCase) == 0));
             }
         }
 

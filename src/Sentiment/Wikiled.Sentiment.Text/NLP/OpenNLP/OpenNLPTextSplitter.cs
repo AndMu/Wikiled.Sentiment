@@ -6,7 +6,6 @@ using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
 using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Tokenizer;
@@ -38,7 +37,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             Guard.NotNullOrEmpty(() => resourcesFolder, resourcesFolder);
             log.Debug("Creating with resource path: {0}", resourcesFolder);
             this.handler = handler;
-            tokenizer = new TreebankWordTokenizer();
+            tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = SentenceTokenizer.Create(handler, true, false);
             LoadModels(resourcesFolder);
         }
