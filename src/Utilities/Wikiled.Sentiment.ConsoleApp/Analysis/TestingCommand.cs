@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -65,7 +64,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 {
                     client = new TestingClient(pipeline, Model);
                     Semaphore = new SemaphoreSlim(2000);
-                    client.ProcessingSemaphore = Semaphore;
+                    pipeline.ProcessingSemaphore = Semaphore;
                     client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
