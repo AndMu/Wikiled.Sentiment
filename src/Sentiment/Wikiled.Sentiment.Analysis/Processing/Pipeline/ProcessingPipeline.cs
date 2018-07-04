@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Common.Arguments;
@@ -36,6 +37,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         public PerformanceMonitor Monitor { get; private set; }
 
+        public SemaphoreSlim ProcessingSemaphore { get; set; }
+
         public IObservable<ProcessingContext> ProcessStep()
         {
             Monitor = new PerformanceMonitor(100);
@@ -52,6 +55,15 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
             try
             {
                 Monitor.ManualyCount();
+                if (ProcessingSemaphore != null)
+                {
+                    var isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
+                    if (!isSuccesful)
+                    {
+                        throw new TimeoutException();
+                    }
+                }
+
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
                 var review = factory.Create(Splitter.DataLoader, doc).Create();
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);

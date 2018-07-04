@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Wikiled.Common.Logging;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
@@ -10,5 +11,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
         PerformanceMonitor Monitor { get; }
 
         IObservable<ProcessingContext> ProcessStep();
+
+        SemaphoreSlim ProcessingSemaphore { get; set; }
     }
 }

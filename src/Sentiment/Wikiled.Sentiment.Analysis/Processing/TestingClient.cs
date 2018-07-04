@@ -74,8 +74,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool TrackArff { get; set; }
 
-        public SemaphoreSlim ProcessingSemaphore { get; set; }
-
         public string GetPerformanceDescription()
         {
             return string.Format($"{Performance.GetTotalAccuracy()} RMSE:{statistics.CalculateRmse():F2}");
@@ -170,7 +168,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             finally
             {
-                ProcessingSemaphore?.Release();
+                pipeline.ProcessingSemaphore?.Release();
             }
 
             return context;
