@@ -62,6 +62,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             await trainingClient.Train().ConfigureAwait(false);
             pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Take(1).Concat(positive.Take(1)), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
+            testingClient.TrackArff = true;
             testingClient.Init();
             var result = await testingClient.Process().ToArray();
             Assert.AreEqual(5, result[0].Adjustment.Rating.StarsRating);
