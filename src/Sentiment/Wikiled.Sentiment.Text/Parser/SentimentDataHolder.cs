@@ -66,7 +66,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public void PopulateEmotionsData(Dictionary<string, double> data)
         {
-            Guard.NotNull(() => data, data);
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             Clear();
             foreach (var item in data)
             {

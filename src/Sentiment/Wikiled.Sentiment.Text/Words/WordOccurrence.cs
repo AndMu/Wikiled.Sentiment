@@ -15,11 +15,18 @@ namespace Wikiled.Sentiment.Text.Words
 
         private WordOccurrence(string text, string raw, BasePOSType pos)
         {
-            Guard.NotNullOrEmpty(() => text, text);
-            Guard.NotNull(() => pos, pos);
-            Guard.IsValid(() => pos, pos, type => !type.IsGroup, "Check group");
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("message", nameof(text));
+            }
+
             Text = text;
-            POS = pos;
+            POS = pos ?? throw new ArgumentNullException(nameof(pos));
+            if (!pos.IsGroup)
+            {
+                throw new ArgumentException(nameof(pos));
+            }
+
             Stemmed = raw;
         }
 
@@ -85,7 +92,11 @@ namespace Wikiled.Sentiment.Text.Words
 
         public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
         {
-            Guard.NotNull(() => wordsHandlers, wordsHandlers);
+            if (wordsHandlers == null)
+            {
+                throw new ArgumentNullException(nameof(wordsHandlers));
+            }
+
             text = text?.ToLower();
             string rawWord = string.IsNullOrEmpty(raw) ? wordsHandlers.Extractor.GetWord(text) : raw;
             rawWord = rawWord?.ToLower();

@@ -169,6 +169,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 default:
                     throw new ArgumentOutOfRangeException("level", "Root level - " + level);
             }
+
             return sentence.ReplaceString(value, replaceValue, option);
         }
     }

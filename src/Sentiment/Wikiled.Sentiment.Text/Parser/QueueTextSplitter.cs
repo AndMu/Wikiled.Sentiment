@@ -21,7 +21,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public QueueTextSplitter(int maxSplitters, ISplitterFactory factory)
         {
-            Guard.NotNull(() => factory, factory);
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             Guard.IsValid(() => maxSplitters, maxSplitters, i => i > 0, "Invalid range");
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
             for (int i = 0; i < maxSplitters; i++)

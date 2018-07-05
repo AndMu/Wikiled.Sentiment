@@ -17,10 +17,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         public MainSplitterFactory(ICacheFactory cacheFactory, IConfigurationHandler configuration)
         {
-            Guard.NotNull(() => cacheFactory, cacheFactory);
-            Guard.NotNull(() => configuration, configuration);
-            this.configuration = configuration;
-            this.cacheFactory = cacheFactory;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.cacheFactory = cacheFactory ?? throw new ArgumentNullException(nameof(cacheFactory));
         }
 
         public ISplitterHelper Create(POSTaggerType value)

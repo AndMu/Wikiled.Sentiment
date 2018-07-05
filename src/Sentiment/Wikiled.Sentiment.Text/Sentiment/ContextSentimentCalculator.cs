@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Words;
 
@@ -14,8 +13,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public ContextSentimentCalculator(IWordItemRelationships parent)
         {
-            Guard.NotNull(() => parent, parent);
-            this.parent = parent;
+            this.parent = parent ?? throw new ArgumentNullException(nameof(parent));
         }
 
         public IList<SentimentValue> Sentiments => sentiments.AsReadOnly();

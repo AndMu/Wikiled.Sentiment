@@ -14,14 +14,13 @@ namespace Wikiled.Sentiment.Text.Words
 
         public WordOccurenceFactory(IWordsHandler wordsHandlers)
         {
-            Guard.NotNull(() => wordsHandlers, wordsHandlers);
-            this.wordsHandlers = wordsHandlers;
+            this.wordsHandlers = wordsHandlers ?? throw new System.ArgumentNullException(nameof(wordsHandlers));
         }
 
         public IPhrase CreatePhrase(string posPhrase)
         {
             BasePOSType postType = POSTags.Instance.UnknownPhrase;
-            if(!POSTags.Instance.Contains(posPhrase))
+            if (!POSTags.Instance.Contains(posPhrase))
             {
                 log.Warn("POS not found <{0}>", posPhrase);
             }

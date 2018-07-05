@@ -8,14 +8,17 @@ namespace Wikiled.Sentiment.Text.Structure
     {
         public static WordEx Construct(IWordItem item)
         {
-            Guard.NotNull(() => item, item);
+            if (item == null)
+            {
+                throw new System.ArgumentNullException(nameof(item));
+            }
+
             var word = new WordEx(item);
             word.NormalizedEntity = item.NormalizedEntity;
             word.EntityType = item.Entity;
             word.Type = item.POS.Tag;
             word.IsAspect = item.IsFeature;
             word.IsStop = item.IsStopWord;
-
             return word;
         }
     }

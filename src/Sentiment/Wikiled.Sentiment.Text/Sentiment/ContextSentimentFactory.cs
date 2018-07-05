@@ -7,7 +7,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
     {
         public IContextSentiment Construct(IWordItemRelationships parent)
         {
-            Guard.NotNull(() => parent, parent);
+            if (parent == null)
+            {
+                throw new System.ArgumentNullException(nameof(parent));
+            }
+
             var context = new ContextSentimentCalculator(parent);
             context.Process();
             return context;

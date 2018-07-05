@@ -21,9 +21,8 @@ namespace Wikiled.Sentiment.Text.Words
 
         public WordItemRelationships(IWordsHandler handler, IWordItem parent)
         {
-            Guard.NotNull(() => parent, parent);
-            this.handler = handler;
-            Owner = parent;
+            this.handler = handler ?? throw new System.ArgumentNullException(nameof(handler));
+            Owner = parent ?? throw new System.ArgumentNullException(nameof(parent));
             Reset();
         }
 
@@ -132,7 +131,11 @@ namespace Wikiled.Sentiment.Text.Words
 
         public void Add(IWordItem relatedWord)
         {
-            Guard.NotNull(() => relatedWord, relatedWord);
+            if (relatedWord == null)
+            {
+                throw new System.ArgumentNullException(nameof(relatedWord));
+            }
+
             related.Add(relatedWord);
             Reset();
         }

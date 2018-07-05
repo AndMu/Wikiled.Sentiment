@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Structure;
@@ -24,15 +25,15 @@ namespace Wikiled.Sentiment.Text.Tokenizer
             IPipeline<WordEx> wordItemPipeline,
             string[] words)
         {
-            Guard.NotNull(() => pipeline, pipeline);
-            Guard.NotNull(() => wordItemFactory, wordItemFactory);
-            Guard.NotNull(() => wordItemPipeline, wordItemPipeline);
-            Guard.NotNullOrEmpty(() => sentence, sentence);
-            Guard.IsValid(() => words, words, item => item != null && item.Length > 0, "Words");
-            this.pipeline = pipeline;
-            this.wordItemFactory = wordItemFactory;
-            this.wordItemPipeline = wordItemPipeline;
-            this.words = words;
+            this.pipeline = pipeline ?? throw new System.ArgumentNullException(nameof(pipeline));
+            this.wordItemFactory = wordItemFactory ?? throw new System.ArgumentNullException(nameof(wordItemFactory));
+            this.wordItemPipeline = wordItemPipeline ?? throw new System.ArgumentNullException(nameof(wordItemPipeline));
+            this.words = words ?? throw new System.ArgumentNullException(nameof(words));
+            if (this.words.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(words));
+            }
+
             SentenceText = sentence;
         }
 

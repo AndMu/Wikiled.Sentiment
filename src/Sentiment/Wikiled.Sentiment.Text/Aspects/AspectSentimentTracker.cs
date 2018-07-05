@@ -25,13 +25,16 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public AspectSentimentTracker(IContextSentimentFactory factory)
         {
-            Guard.NotNull(() => factory, factory);
-            this.factory = factory;
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public void Process(IParsedReview review)
         {
-            Guard.NotNull(() => review, review);
+            if (review == null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
             log.Debug("Process");
             Interlocked.Increment(ref totalReviews);
             foreach (var aspect in review.Items.Where(item => item.IsFeature))

@@ -12,16 +12,14 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
         public WordItemFilterOutPipeline(Func<IWordItem, bool> condition)
         {
-            Guard.NotNull(() => condition, condition);
-            this.condition = condition;
+            this.condition = condition ?? throw new ArgumentNullException(nameof(condition));
         }
 
         public IEnumerable<WordEx> Process(IEnumerable<WordEx> words)
         {
             foreach (var word in words)
             {
-                IWordItem wordItem = word.UnderlyingWord as IWordItem;
-                if (wordItem != null &&
+                if (word.UnderlyingWord is IWordItem wordItem &&
                     condition(wordItem))
                 {
                     continue;

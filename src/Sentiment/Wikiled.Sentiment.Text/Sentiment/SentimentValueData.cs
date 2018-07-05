@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.MachineLearning;
 
 namespace Wikiled.Sentiment.Text.Sentiment
@@ -36,7 +35,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public void Add(SentimentValueData value)
         {
-            Guard.NotNull(() => value, value);
+            if (value == null)
+            {
+                throw new System.ArgumentNullException(nameof(value));
+            }
+
             other.Add(value);
         }
     }

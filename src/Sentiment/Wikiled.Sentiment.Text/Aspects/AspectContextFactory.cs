@@ -14,7 +14,11 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public IAspectContext Create(IWordItem[] words)
         {
-            Guard.NotNull(() => words, words);
+            if (words == null)
+            {
+                throw new System.ArgumentNullException(nameof(words));
+            }
+
             return new AspectContext(includeSentiment, words);
         }
     }

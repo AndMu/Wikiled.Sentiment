@@ -18,14 +18,17 @@ namespace Wikiled.Sentiment.Text.Words
 
         public PhraseContructor(IWordsHandler handler)
         {
-            Guard.NotNull(() => handler, handler);
-            this.handler = handler;
+            this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         public IEnumerable<IPhrase> GetPhrases(IWordItem word)
         {
+            if (word == null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             log.Debug("GetPhrases {0}", word);
-            Guard.NotNull(() => word, word);
             var currentWords = word.Relationship.Part.Occurrences
                 .Where(item => !item.CanNotBeFeature() && !item.IsSentiment).ToArray();
 

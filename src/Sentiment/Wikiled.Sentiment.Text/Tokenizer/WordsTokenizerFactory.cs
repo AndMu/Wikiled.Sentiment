@@ -29,14 +29,10 @@ namespace Wikiled.Sentiment.Text.Tokenizer
             CombinedPipeline<string> pipeline,
             CombinedPipeline<WordEx> wordItemPipeline)
         {
-            Guard.NotNull(() => pipeline, pipeline);
-            Guard.NotNull(() => wordItemFactory, wordItemFactory);
-            Guard.NotNull(() => wordItemPipeline, wordItemPipeline);
-
             splitter = new RegexSplitter(pattern);
-            Pipeline = pipeline;
-            this.wordItemFactory = wordItemFactory;
-            WordItemPipeline = wordItemPipeline;
+            Pipeline = pipeline ?? throw new System.ArgumentNullException(nameof(pipeline));
+            this.wordItemFactory = wordItemFactory ?? throw new System.ArgumentNullException(nameof(wordItemFactory));
+            WordItemPipeline = wordItemPipeline ?? throw new System.ArgumentNullException(nameof(wordItemPipeline));
         }
 
         public CombinedPipeline<string> Pipeline { get; }

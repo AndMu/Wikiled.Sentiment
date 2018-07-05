@@ -11,13 +11,16 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
         public SimpleWordItemFactory(IWordsHandler wordsHandlersManager)
         {
-            Guard.NotNull(() => wordsHandlersManager, wordsHandlersManager);
-            this.wordsHandlersManager = wordsHandlersManager;
+            this.wordsHandlersManager = wordsHandlersManager ?? throw new System.ArgumentNullException(nameof(wordsHandlersManager));
         }
 
         public IWordItem Construct(string word)
         {
-            Guard.NotNullOrEmpty(() => word, word);
+            if (string.IsNullOrEmpty(word))
+            {
+                throw new System.ArgumentException("message", nameof(word));
+            }
+
             BasePOSType wordPOSType = wordsHandlersManager.PosTagger.GetTag(word);
             return wordsHandlersManager.WordFactory.CreateWord(
                 word,

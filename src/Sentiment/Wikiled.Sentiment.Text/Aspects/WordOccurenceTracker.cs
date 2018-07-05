@@ -30,14 +30,22 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public void AddWord(IWordItem wordItem)
         {
-            Guard.NotNull(() => wordItem, wordItem);
+            if (wordItem == null)
+            {
+                throw new ArgumentNullException(nameof(wordItem));
+            }
+
             Interlocked.Increment(ref total);
             table[wordItem.Text] = wordItem;
         }
 
         public void AddPhrase(IPhrase phrase)
         {
-            Guard.NotNull(() => phrase, phrase);
+            if (phrase == null)
+            {
+                throw new ArgumentNullException(nameof(phrase));
+            }
+
             if (!tablePhrase.TryGetValue(phrase.Text, out ConcurrentBag<IPhrase> list))
             {
                 list = new ConcurrentBag<IPhrase>();

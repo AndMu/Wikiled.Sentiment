@@ -28,9 +28,8 @@ namespace Wikiled.Sentiment.Text.Aspects
         public AspectContext(bool includeSentiment, IWordItem[] words)
         {
             log.Debug("Construct");
-            Guard.NotNull(() => words, words);
             this.includeSentiment = includeSentiment;
-            this.words = words;
+            this.words = words ?? throw new System.ArgumentNullException(nameof(words));
         }
 
         public IEnumerable<IWordItem> GetAttributes()

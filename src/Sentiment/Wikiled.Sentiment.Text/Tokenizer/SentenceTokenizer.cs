@@ -16,9 +16,8 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
         private SentenceTokenizer(string pattern, IWordsTokenizerFactory wordPipelineFactory)
         {
-            Guard.NotNull(() => wordPipelineFactory, wordPipelineFactory);
             splitter = new RegexSplitter(pattern);
-            TokenizerFactory = wordPipelineFactory;
+            TokenizerFactory = wordPipelineFactory ?? throw new System.ArgumentNullException(nameof(wordPipelineFactory));
         }
 
         private SentenceTokenizer(IWordsTokenizerFactory wordPipelineFactory)

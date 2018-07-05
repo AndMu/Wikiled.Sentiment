@@ -16,10 +16,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
         public OpenNlpSplitterHelper(ICacheFactory cacheFactory, IConfigurationHandler configuration, int parallel = 0)
             : base(configuration, parallel)
         {
-            Guard.NotNull(() => cacheFactory, cacheFactory);
-            Guard.NotNull(() => configuration, configuration);
-            this.cacheFactory = cacheFactory;
-            this.configuration = configuration;
+            this.cacheFactory = cacheFactory ?? throw new System.ArgumentNullException(nameof(cacheFactory));
+            this.configuration = configuration ?? throw new System.ArgumentNullException(nameof(configuration));
         }
 
         protected override ISplitterFactory Construct(ILexiconFactory lexiconFactory)

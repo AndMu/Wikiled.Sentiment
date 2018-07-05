@@ -7,9 +7,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
     {
         public DataPair(SentimentClass sentiment, SingleProcessingData data)
         {
-            Guard.NotNull(() => data, data);
             Sentiment = sentiment;
-            Data = data;
+            Data = data ?? throw new System.ArgumentNullException(nameof(data));
         }
 
         public SentimentClass Sentiment { get; }

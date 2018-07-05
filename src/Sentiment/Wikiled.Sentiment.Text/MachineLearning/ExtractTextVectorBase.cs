@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -50,7 +49,11 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         protected void AddItem(IWordItem item, string word, double value)
         {
-            Guard.NotNullOrEmpty(() => word, word);
+            if (string.IsNullOrEmpty(word))
+            {
+                throw new ArgumentException("message", nameof(word));
+            }
+
             var addedCell = !table.TryGetValue(word, out var cell) ? new TextVectorCell(item, word, value) : new TextVectorCell(item, word, cell.Value + value);
             table[word] = addedCell;
         }

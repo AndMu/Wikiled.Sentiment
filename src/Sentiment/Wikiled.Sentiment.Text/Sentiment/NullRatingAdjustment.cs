@@ -8,8 +8,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
     {
         public NullRatingAdjustment(IParsedReview review)
         {
-            Guard.NotNull(() => review, review);
-            Review = review;
+            Review = review ?? throw new System.ArgumentNullException(nameof(review));
             Rating = review.CalculateRawRating();
         }
 

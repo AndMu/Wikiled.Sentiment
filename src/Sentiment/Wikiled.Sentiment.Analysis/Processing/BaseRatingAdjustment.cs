@@ -13,8 +13,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         protected BaseRatingAdjustment(IParsedReview review)
         {
-            Guard.NotNull(() => review, review);
-            Review = review;
+            Review = review ?? throw new System.ArgumentNullException(nameof(review));
             calculatedSentiments = new Dictionary<IWordItem, SentimentValue>(SimpleWordItemEquality.Instance);
             Rating = new RatingData();
         }

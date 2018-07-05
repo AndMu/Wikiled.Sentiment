@@ -12,8 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public WordsContext(WordEx word)
         {
-            Guard.NotNull(() => word, word);
-            Word = word;
+            Word = word ?? throw new ArgumentNullException(nameof(word));
             Words = new List<WordEx>();
         }
 
@@ -25,7 +24,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public void AddContext(WordEx word)
         {
-            Guard.NotNull(() => word, word);
+            if (word == null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             if (string.Compare(word.Text, Word.Text, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 log.Debug("This is owner word: {0}", word.Text);

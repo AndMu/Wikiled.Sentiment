@@ -40,13 +40,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public TestingClient(IProcessingPipeline pipeline, string svmPath = null)
         {
-            Guard.NotNull(() => pipeline, pipeline);
             if (string.IsNullOrEmpty(svmPath))
             {
                 DisableSvm = true;
             }
 
-            this.pipeline = pipeline;
+            this.pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
             SvmPath = svmPath;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
             SentimentVector = new SentimentVector();

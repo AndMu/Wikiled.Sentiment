@@ -8,13 +8,15 @@ namespace Wikiled.Sentiment.Text.Parser
         public ParseRequest(string text)
             : this(new Document(text))
         {
-            Guard.NotNullOrEmpty(() => text, text);
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new System.ArgumentException("message", nameof(text));
+            }
         }
 
         public ParseRequest(Document document)
         {
-            Guard.NotNull(() => document, document);
-            Document = document;
+            Document = document ?? throw new System.ArgumentNullException(nameof(document));
         }
 
         public Document Document { get; }

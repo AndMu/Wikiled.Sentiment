@@ -19,10 +19,8 @@ namespace Wikiled.Sentiment.Text.Parser
 
         protected BaseTextSplitter(IWordsHandler handler, ICachedDocumentsSource cache)
         {
-            Guard.NotNull(() => handler, handler);
-            Guard.NotNull(() => cache, cache);
-            this.handler = handler;
-            this.cache = cache;
+            this.handler = handler ?? throw new System.ArgumentNullException(nameof(handler));
+            this.cache = cache ?? throw new System.ArgumentNullException(nameof(cache));
         }
 
         public virtual void Dispose()
@@ -31,8 +29,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public async Task<Document> Process(ParseRequest request)
         {
-            Guard.NotNull(() => request, request);
-            Guard.NotNull(() => request.Document, request.Document);
+            if (request?.Document == null)
+            {
+                throw new System.ArgumentNullException(nameof(request));
+            }
+
             using (new PerformanceTrace(log.Debug, "Process"))
             {
                 request.Document.Text = handler.Repair.Repair(request.Document.Text);

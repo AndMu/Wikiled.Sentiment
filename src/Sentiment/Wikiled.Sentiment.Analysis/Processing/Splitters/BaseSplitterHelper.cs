@@ -16,13 +16,12 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         private bool isLoaded;
 
-        public BaseSplitterHelper(IConfigurationHandler configuration, int parallel = 0)
+        protected BaseSplitterHelper(IConfigurationHandler configuration, int parallel = 0)
         {            
-            Guard.NotNull(() => configuration, configuration);
             Parallel = parallel <= 0 ? Environment.ProcessorCount / 2 : parallel;
             Parallel = Parallel <= 0 ? 1 : Parallel;
             log.Debug("Construct with parallel: {0}", Parallel);
-            this.configuration = configuration;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public int Parallel { get; }

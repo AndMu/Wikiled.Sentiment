@@ -8,9 +8,11 @@ namespace Wikiled.Sentiment.Text.Structure
     {
         public Document ReparseDocument(IRatingAdjustment adjustment)
         {
-            Guard.NotNull(() => adjustment, adjustment);
-            Guard.NotNull(() => adjustment.Review, adjustment.Review);
-            Guard.NotNull(() => adjustment.Review.Document, adjustment.Review.Document);
+            if (adjustment?.Review?.Document == null)
+            {
+                throw new System.ArgumentNullException(nameof(adjustment));
+            }
+
             var document = new Document();
             document.DocumentTime = adjustment.Review.Document.DocumentTime;
             document.Text = adjustment.Review.Document.Text;

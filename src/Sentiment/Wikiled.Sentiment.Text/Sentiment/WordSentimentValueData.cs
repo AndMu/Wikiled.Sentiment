@@ -6,10 +6,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
     {
         public WordSentimentValueData(string word, SentimentValueData data)
         {
-            Guard.NotNull(() => word, word);
-            Guard.NotNull(() => data, data);
-            Word = word;
-            Data = data;
+            Word = word ?? throw new System.ArgumentNullException(nameof(word));
+            Data = data ?? throw new System.ArgumentNullException(nameof(data));
         }
 
         public string Word { get; }

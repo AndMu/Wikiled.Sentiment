@@ -19,9 +19,8 @@ namespace Wikiled.Sentiment.Text.Words
 
         private Phrase(BasePOSType pos)
         {
-            Guard.NotNull(() => pos, pos);
             Text = string.Empty;
-            POS = pos;
+            POS = pos ?? throw new System.ArgumentNullException(nameof(pos));
             Stemmed = string.Empty;
         }
 
@@ -97,7 +96,11 @@ namespace Wikiled.Sentiment.Text.Words
 
         public static Phrase Create(IWordsHandler wordsHandlers, BasePOSType pos)
         {
-            Guard.NotNull(() => wordsHandlers, wordsHandlers);
+            if (wordsHandlers == null)
+            {
+                throw new System.ArgumentNullException(nameof(wordsHandlers));
+            }
+
             var item = new Phrase(pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
             return item;
@@ -105,7 +108,11 @@ namespace Wikiled.Sentiment.Text.Words
 
         public void Add(IWordItem word)
         {
-            Guard.NotNull(() => word, word);
+            if (word == null)
+            {
+                throw new System.ArgumentNullException(nameof(word));
+            }
+
             if (occurrences.Contains(word) ||
                 word.IsSimpleConjunction())
             {

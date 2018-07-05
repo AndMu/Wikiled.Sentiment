@@ -11,13 +11,21 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
         public ProcessArff(IArffDataSet dataSet) 
             : base(dataSet)
         {
-            Guard.NotNull(() => dataSet, dataSet);
+            if (dataSet == null)
+            {
+                throw new ArgumentNullException(nameof(dataSet));
+            }
+
             dataSet.Header.RegisterDate(Constants.DATE);
         }
 
         public override void PopulateArff(IParsedReview review, PositivityType positivity)
         {
-            Guard.NotNull(() => review, review);
+            if (review == null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
             review.Reset();
             review.Vector.GenerateUsingImportantOnly = true;
             AddData(review.Date, review.Vector, positivity);

@@ -23,14 +23,10 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, IParsedReviewManagerFactory factory)
         {
-            Guard.NotNull(() => splitter, splitter);
-            Guard.NotNull(() => reviews, reviews);
-            Guard.NotNull(() => scheduler, scheduler);
-            Guard.NotNull(() => factory, factory);
-            this.scheduler = scheduler;
-            Splitter = splitter;
-            this.factory = factory;
-            this.reviews = reviews;
+            this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
+            Splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.reviews = reviews ?? throw new ArgumentNullException(nameof(reviews));
         }
 
         public ISplitterHelper Splitter { get; }

@@ -4,6 +4,8 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 {
     public class CombinedPipeline<T> : IPipeline<T>
     {
+        public List<IPipeline<T>> Pipelines { get; }
+
         public CombinedPipeline(params IPipeline<T>[] pipelines)
         {
             Pipelines = new List<IPipeline<T>>();
@@ -23,7 +25,5 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
             return words;
         }
-
-        public List<IPipeline<T>> Pipelines { get; }
     }
 }

@@ -15,8 +15,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public SimpleWordsExtraction(ISentenceTokenizer tokenizer)
         {
-            Guard.NotNull(() => tokenizer, tokenizer);
-            this.tokenizer = tokenizer;
+            this.tokenizer = tokenizer ?? throw new System.ArgumentNullException(nameof(tokenizer));
         }
 
         public Document GetDocument(string text)

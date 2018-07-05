@@ -9,8 +9,16 @@ namespace Wikiled.Sentiment.Text.Words
     {
         public static bool TryGetWordValue<T>(this IDictionary<string, T> table, IWordItem word, out T value)
         {
-            Guard.NotNull(() => table, table);
-            Guard.NotNull(() => word, word);
+            if (table == null)
+            {
+                throw new System.ArgumentNullException(nameof(table));
+            }
+
+            if (word == null)
+            {
+                throw new System.ArgumentNullException(nameof(word));
+            }
+
             value = default(T);
             foreach (var text in word.GetPossibleText())
             {
@@ -25,8 +33,16 @@ namespace Wikiled.Sentiment.Text.Words
 
         public static bool TryGetWordValue<T>(this MaskDictionary<T> table, IWordItem word, out T value)
         {
-            Guard.NotNull(() => table, table);
-            Guard.NotNull(() => word, word);
+            if (table == null)
+            {
+                throw new System.ArgumentNullException(nameof(table));
+            }
+
+            if (word == null)
+            {
+                throw new System.ArgumentNullException(nameof(word));
+            }
+
             if (table.TryGetValue(word.Text, out value))
             {
                 return true;
