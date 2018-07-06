@@ -141,24 +141,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     log.Debug("Document doesn't have star assigned");
                 }
 
-                if (adjustment.Rating.StarsRating == null)
-                {
-                    statistics.AddUnknown();
-                    arffProcess?.PopulateArff(context.Review, PositivityType.Negative);
-                }
-                else
-                {
-                    if (context.Original.Stars != null)
-                    {
-                        statistics.Add(adjustment.Rating.StarsRating.Value, context.Original.Stars.Value);
-                        if (context.Original.Stars != 3)
-                        {
-                            Performance.Add(context.Original.Stars > 3, adjustment.Rating.IsPositive);
-                        }
-                    }
-
-                    arffProcess?.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
-                }
+                StandaloneProcess(context, adjustment);
             }
             catch
             {
@@ -171,6 +154,35 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             return context;
+        }
+
+        private void StandaloneProcess(ProcessingContext context, IRatingAdjustment adjustment)
+        {
+            if (arffProcess == null)
+            {
+                log.Debug("Arff is disabled, statistics wil not be tracked");
+                return;
+            }
+
+            if (adjustment.Rating.StarsRating == null)
+            {
+                statistics.AddUnknown();
+                arffProcess.PopulateArff(context.Review, PositivityType.Negative);
+            }
+            else
+            {
+                if (context.Original.Stars != null)
+                {
+                    statistics.Add(adjustment.Rating.StarsRating.Value, context.Original.Stars.Value);
+                    if (context.Original.Stars != 3)
+                    {
+                        Performance.Add(context.Original.Stars > 3, adjustment.Rating.IsPositive);
+                    }
+                }
+
+                arffProcess.PopulateArff(context.Review,
+                    context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
+            }
         }
     }
 }

@@ -41,6 +41,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             logger.Info("Loading data...");
             ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, testing.Load(), new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingLocation);
+            testingClient.TrackArff = true;
             testingClient.Init();
             await testingClient.Process().LastOrDefaultAsync();
             testingClient.Save(Path.Combine(trainingLocation, @"Result", testProduct));
