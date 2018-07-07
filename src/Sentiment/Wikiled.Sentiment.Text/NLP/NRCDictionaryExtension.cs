@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Collections.Generic;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP.NRC;
@@ -11,8 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         public static NRCRecord FindRecord(this INRCDictionary dictionary, WordEx word)
         {
-            IWordItem item = word.UnderlyingWord as IWordItem;
-            return item != null ? dictionary.FindRecord(item) : dictionary.FindRecord(word.Text);
+            return word.UnderlyingWord is IWordItem item ? dictionary.FindRecord(item) : dictionary.FindRecord(word.Text);
         }
 
         public static NRCRecord FindRecord(this INRCDictionary dictionary, IWordItem word)
@@ -43,7 +42,16 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public static SentimentVector Extract(this INRCDictionary dictionary, IEnumerable<WordEx> words)
         {
-            Guard.NotNull(() => dictionary, dictionary);
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (words is null)
+            {
+                throw new ArgumentNullException(nameof(words));
+            }
+
             var vector = new SentimentVector();
             foreach (var word in words)
             {
@@ -55,7 +63,16 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public static SentimentVector Extract(this INRCDictionary dictionary, IEnumerable<IWordItem> words)
         {
-            Guard.NotNull(() => dictionary, dictionary);
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (words is null)
+            {
+                throw new ArgumentNullException(nameof(words));
+            }
+
             var vector = new SentimentVector();
             dictionary.ExtractToVector(vector, words);
             return vector;
@@ -63,8 +80,21 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public static void ExtractToVector(this INRCDictionary dictionary, SentimentVector vector, IEnumerable<IWordItem> words)
         {
-            Guard.NotNull(() => vector, vector);
-            Guard.NotNull(() => dictionary, dictionary);
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (vector is null)
+            {
+                throw new ArgumentNullException(nameof(vector));
+            }
+
+            if (words is null)
+            {
+                throw new ArgumentNullException(nameof(words));
+            }
+
             foreach (var word in words)
             {
                 vector.ExtractData(dictionary.FindRecord(word));

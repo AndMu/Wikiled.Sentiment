@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.POS.Tags;
@@ -15,16 +14,16 @@ namespace Wikiled.Sentiment.Text.Words
 
         private WordOccurrence(string text, string raw, BasePOSType pos)
         {
-            if (string.IsNullOrEmpty(text))
-            {
-                throw new ArgumentException("message", nameof(text));
-            }
-
             Text = text;
             POS = pos ?? throw new ArgumentNullException(nameof(pos));
-            if (!pos.IsGroup)
+            if (pos.IsGroup)
             {
                 throw new ArgumentException(nameof(pos));
+            }
+
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(text));
             }
 
             Stemmed = raw;

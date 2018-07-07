@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Words;
 
@@ -25,8 +24,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public MainAspectHandler(IAspectContextFactory aspectContextFactory, int cutOff = 4)
         {
-            Guard.NotNull(() => aspectContextFactory, aspectContextFactory);
-            this.aspectContextFactory = aspectContextFactory;
+            this.aspectContextFactory = aspectContextFactory ?? throw new ArgumentNullException(nameof(aspectContextFactory));
             this.cutOff = cutOff;
         }
 
@@ -44,7 +42,11 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public void Process(IParsedReview review)
         {
-            Guard.NotNull(() => review, review);
+            if (review is null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
             foreach (var sentence in review.Sentences)
             {
                 var context = aspectContextFactory.Create(sentence.Occurrences.ToArray());

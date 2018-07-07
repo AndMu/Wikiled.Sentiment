@@ -1,5 +1,4 @@
-﻿using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.Data.Review;
+﻿using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {

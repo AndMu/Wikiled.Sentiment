@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Dictionary;
@@ -16,7 +15,11 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         public ExtendedLexiconFactory(IConfigurationHandler configuration)
         {
-            Guard.NotNull(() => configuration, configuration);
+            if (configuration is null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
             var path = configuration.ResolvePath("Resources");
             ResourcesPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
         }

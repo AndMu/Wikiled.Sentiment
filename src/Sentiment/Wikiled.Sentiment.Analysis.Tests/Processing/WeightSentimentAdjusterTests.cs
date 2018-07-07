@@ -33,10 +33,9 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing
         [Test]
         public void Adjust()
         {
-            Assert.Throws<ArgumentNullException>(() => instance.Adjust(null));
+            Assert.Throws<ArgumentException>(() => instance.Adjust(null));
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.Adjust("Test"));
-            instance.Adjust(
-                Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
+            instance.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Processing", "Electronics.csv"));
             dataHolder.Verify(item => item.SetValue(It.IsAny<string>(), It.IsAny<SentimentValueData>()), Times.Exactly(9));
         }
 

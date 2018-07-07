@@ -1,6 +1,5 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Aspects
 {
@@ -10,8 +9,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public MainAspectHandlerFactory(IWordsHandler handler)
         {
-            Guard.NotNull(() => handler, handler);
-            this.handler = handler;
+            this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         public IMainAspectHandler Construct()

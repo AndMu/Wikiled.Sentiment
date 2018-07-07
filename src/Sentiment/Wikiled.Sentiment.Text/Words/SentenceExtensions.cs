@@ -14,13 +14,12 @@ namespace Wikiled.Sentiment.Text.Words
             Phrase parent = null;
             foreach(var wordItem in words)
             {
-                var currentParent = wordItem.Parent as Phrase;
-                if(currentParent == null)
+                if (!(wordItem.Parent is Phrase currentParent))
                 {
                     continue;
                 }
 
-                if(parent == currentParent)
+                if (parent == currentParent)
                 {
                     continue;
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.NLP
@@ -10,8 +9,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public RecyclableSplitterFactory(ISplitterFactory factory)
         {
-            Guard.NotNull(() => factory, factory);
-            this.factory = factory;
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         public void Construct()

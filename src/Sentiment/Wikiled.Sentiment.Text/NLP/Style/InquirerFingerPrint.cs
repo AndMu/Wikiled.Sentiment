@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.Reflection;
 using Wikiled.Text.Analysis.Reflection.Data;
@@ -22,9 +21,8 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public InquirerFingerPrint(IInquirerManager inquirer, TextBlock text)
         {
-            Guard.NotNull(() => inquirer, inquirer);
-            Text = text;
-            this.inquirer = inquirer;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            this.inquirer = inquirer ?? throw new ArgumentNullException(nameof(inquirer));
         }
 
         [InfoCategory("Inquirer Based Info")]

@@ -1,8 +1,8 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Data;
 
@@ -12,8 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
     {
         protected ProcessArffBase(IArffDataSet dataSet)
         {
-            Guard.NotNull(() => dataSet, dataSet);
-            DataSet = dataSet;
+            DataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
         }
 
         public IArffDataSet DataSet { get; }
@@ -26,7 +25,16 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
 
         public void PopulateArff(IParsedReview[] processings, PositivityType positivity)
         {
-            Guard.IsValid(() => processings, processings, item => item.All(x => x != null), "All reviews should be not null");
+            if (processings is null)
+            {
+                throw new ArgumentNullException(nameof(processings));
+            }
+
+            if (processings.Length == 0 || processings.Any(x => x is null))
+            {
+                throw new ArgumentException("Value cannot be an empty collection and not null.", nameof(processings));
+            }
+
             Parallel.ForEach(
                 processings,
                 AsyncSettings.DefaultParallel,

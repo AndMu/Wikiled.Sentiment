@@ -1,5 +1,4 @@
-﻿using Wikiled.Common.Arguments;
-using Wikiled.Text.Analysis.POS.Tags;
+﻿using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 

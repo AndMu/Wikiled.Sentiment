@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Sentiment.Text.Parser;
@@ -13,8 +13,12 @@ namespace Wikiled.Sentiment.Text.NLP.Style
     {
         public static bool IsCoordinatingConjunction(this WordEx word)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.POS == POSTags.Instance.CC;
             }
@@ -24,8 +28,12 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static bool IsPronoun(this WordEx word)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.POS.WordType == WordType.Pronoun;
             }
@@ -35,8 +43,12 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static int CountSyllables(this WordEx word)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return EnglishSyllableCounter.Instance.CountSyllables(wordItem.Text);
             }
@@ -46,8 +58,17 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static bool IsWordType(this IPOSTagger tagger, WordEx word, WordType type)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (tagger is null)
+            {
+                throw new ArgumentNullException(nameof(tagger));
+            }
+
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.POS.WordType == type;
             }
@@ -57,8 +78,12 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static bool IsDigit(this WordEx word)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.Entity == NamedEntities.Number ||
                        wordItem.Entity == NamedEntities.Percent ||
@@ -72,8 +97,22 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static bool IsWordType(this IPOSTagger tagger, WordEx word, BasePOSType posType)
         {
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (tagger is null)
+            {
+                throw new ArgumentNullException(nameof(tagger));
+            }
+
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (posType is null)
+            {
+                throw new ArgumentNullException(nameof(posType));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.POS == posType;
             }
@@ -83,9 +122,17 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public static bool IsQuestion(this WordEx word, IWordsHandler wordsHandler)
         {
-            Guard.NotNull(() => wordsHandler, wordsHandler);
-            IWordItem wordItem = word.UnderlyingWord as IWordItem;
-            if (wordItem != null)
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            if (wordsHandler is null)
+            {
+                throw new ArgumentNullException(nameof(wordsHandler));
+            }
+
+            if (word.UnderlyingWord is IWordItem wordItem)
             {
                 return wordItem.IsQuestion;
             }

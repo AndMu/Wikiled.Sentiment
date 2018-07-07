@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Aspects
@@ -13,8 +12,16 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public AspectDectector(IWordItem[] aspects, IWordItem[] attributes)
         {
-            Guard.NotNull(() => attributes, attributes);
-            Guard.NotNull(() => aspects, aspects);
+            if (aspects is null)
+            {
+                throw new ArgumentNullException(nameof(aspects));
+            }
+
+            if (attributes is null)
+            {
+                throw new ArgumentNullException(nameof(attributes));
+            }
+
             foreach (var attribute in attributes)
             {
                 attributesTable[attribute.Text] = attribute;
@@ -28,26 +35,42 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public void Remove(IWordItem feature)
         {
-            Guard.NotNull(() => feature, feature);
+            if (feature is null)
+            {
+                throw new ArgumentNullException(nameof(feature));
+            }
+
             aspectsTable.Remove(feature.Text);
         }
 
         public void AddFeature(IWordItem feature)
         {
-            Guard.NotNull(() => feature, feature);
+            if (feature is null)
+            {
+                throw new ArgumentNullException(nameof(feature));
+            }
+
             aspectsTable[feature.Text] = feature;
         }
 
         public bool IsAspect(IWordItem word)
         {
-            Guard.NotNull(() => word, word);
-            return aspectsTable.TryGetWordValue(word, out IWordItem result);
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            return aspectsTable.TryGetWordValue(word, out _);
         }
 
         public bool IsAttribute(IWordItem word)
         {
-            Guard.NotNull(() => word, word);
-            return attributesTable.TryGetWordValue(word, out IWordItem result);
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
+            return attributesTable.TryGetWordValue(word, out _);
         }
 
         public IEnumerable<IWordItem> AllFeatures => aspectsTable.Values;

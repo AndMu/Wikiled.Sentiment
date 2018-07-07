@@ -1,5 +1,4 @@
-﻿using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.Data;
+﻿using Wikiled.Sentiment.Text.Data;
 
 namespace Wikiled.Sentiment.Text.Sentiment
 {

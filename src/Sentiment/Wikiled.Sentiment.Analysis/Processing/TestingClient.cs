@@ -5,7 +5,6 @@ using System.Threading;
 using System.Xml.Linq;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;

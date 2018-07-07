@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Linq;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.Reflection;
 
@@ -11,8 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Surface
 
         public CharactersSurface(TextBlock text)
         {
-            Guard.NotNull(() => text, text);
-            Text = text;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
         }
 
         /// <summary>

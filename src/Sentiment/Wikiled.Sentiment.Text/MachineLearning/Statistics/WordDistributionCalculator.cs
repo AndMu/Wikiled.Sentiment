@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
@@ -12,8 +11,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
         public WordDistributionCalculator(WordEx word, params Document[] documents)
             : base(documents)
         {
-            Guard.NotNull(() => word, word);
-            MainItem = word;
+            MainItem = word ?? throw new ArgumentNullException(nameof(word));
         }
 
         public WordEx MainItem { get; }
@@ -55,9 +53,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
                 return true;
             }
 
-            IWordItem underlying = word.UnderlyingWord as IWordItem;
             IWordItem mainUnderlying = MainItem.UnderlyingWord as IWordItem;
-            if (underlying != null && mainUnderlying != null)
+            if (word.UnderlyingWord is IWordItem underlying && mainUnderlying != null)
             {
                 return SimpleWordItemEquality.Instance.Equals(underlying, mainUnderlying);
             }

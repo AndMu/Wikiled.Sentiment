@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NLog;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Tokenizer;
@@ -32,9 +32,21 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         public OpenNLPTextSplitter(IWordsHandler handler, string resourcesFolder, ICachedDocumentsSource cache)
             : base(handler, cache)
         {
-            Guard.NotNull(() => resourcesFolder, resourcesFolder);
-            Guard.NotNull(() => handler, handler);
-            Guard.NotNullOrEmpty(() => resourcesFolder, resourcesFolder);
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            if (cache is null)
+            {
+                throw new ArgumentNullException(nameof(cache));
+            }
+
+            if (string.IsNullOrEmpty(resourcesFolder))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(resourcesFolder));
+            }
+
             log.Debug("Creating with resource path: {0}", resourcesFolder);
             this.handler = handler;
             tokenizer = TreebankWordTokenizer.Tokenizer;

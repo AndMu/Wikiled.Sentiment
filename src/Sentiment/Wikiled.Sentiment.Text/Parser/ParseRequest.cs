@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -8,9 +8,9 @@ namespace Wikiled.Sentiment.Text.Parser
         public ParseRequest(string text)
             : this(new Document(text))
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
-                throw new System.ArgumentException("message", nameof(text));
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(text));
             }
         }
 

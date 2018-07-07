@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Threading.Tasks;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Data.Review
@@ -10,10 +10,8 @@ namespace Wikiled.Sentiment.Text.Data.Review
 
         public ParsedDocumentHolder(Document original, Document parsed)
         {
-            Guard.NotNull(() => parsed, parsed);
-            Guard.NotNull(() => original, original);
-            this.parsed = parsed;
-            Original = original;
+            this.parsed = parsed ?? throw new ArgumentNullException(nameof(parsed));
+            Original = original ?? throw new ArgumentNullException(nameof(original));
         }
 
         public Document Original { get; }

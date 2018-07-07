@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void Construct()
         {
             Assert.Throws<ArgumentNullException>(() => new QueueTextSplitter(5, null));
-            Assert.Throws<ArgumentException>(() => new QueueTextSplitter(0, factory.Object));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new QueueTextSplitter(0, factory.Object));
         }
 
         [TestCase(1, 1)]

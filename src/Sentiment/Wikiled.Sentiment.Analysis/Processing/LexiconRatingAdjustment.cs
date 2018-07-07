@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Parser;
@@ -13,8 +13,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public LexiconRatingAdjustment(IParsedReview review, ISentimentDataHolder sentimentData) 
             : base(review)
         {
-            Guard.NotNull(() => sentimentData, sentimentData);
-            this.sentimentData = sentimentData;
+            if (review is null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
+            this.sentimentData = sentimentData ?? throw new ArgumentNullException(nameof(sentimentData));
         }
 
         public override void CalculateRating()

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
@@ -26,9 +25,8 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public RedisDocumentCache(POSTaggerType tagger, IRedisLink manager)
         {
-            Guard.NotNull(() => manager, manager);
             this.tagger = tagger;
-            this.manager = manager;
+            this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
             if (!manager.HasDefinition<Document>())
             {
                 manager.RegisterNormalized<Document>(new XmlDataSerializer()).IsSingleInstance = true;
@@ -39,7 +37,11 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public async Task<Document> GetById(string id)
         {
-            Guard.NotNullOrEmpty(() => id, id);
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(id));
+            }
+
             if (nearCache.TryGetValue(id, out Document doc))
             {
                 return doc;
@@ -62,8 +64,16 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public Task<Document> GetCached(Document original)
         {
-            Guard.NotNull(() => original, original);
-            Guard.NotNullOrEmpty(() => original.Id, original.Id);
+            if (original is null)
+            {
+                throw new ArgumentNullException(nameof(original));
+            }
+
+            if (string.IsNullOrEmpty(original.Id))
+            {
+                throw new ArgumentException("Value cannot be null or empty id.", nameof(original.Id));
+            }
+
             return GetById(original.Id);
         }
 
@@ -74,8 +84,16 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public async Task<bool> Save(Document document)
         {
-            Guard.NotNull(() => document, document);
-            Guard.NotNullOrEmpty(() => document.Id, document.Id);
+            if (document is null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            if (string.IsNullOrEmpty(document.Id))
+            {
+                throw new ArgumentException("Value cannot be null or empty id.", nameof(document.Id));
+            }
+
             nearCache[document.Id] = document;
             var key = new RepositoryKey(this, new ObjectKey(document.Id));
             key.AddIndex(new IndexKey(this, "Index:All", false));

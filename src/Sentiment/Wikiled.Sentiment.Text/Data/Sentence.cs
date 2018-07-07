@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 
@@ -12,10 +12,8 @@ namespace Wikiled.Sentiment.Text.Data
 
         public Sentence(IParsedReview review, SentenceItem original)
         {
-            Guard.NotNull(() => review, review);
-            Guard.NotNull(() => original, original);
-            Review = review;
-            Original = original;
+            Review = review ?? throw new ArgumentNullException(nameof(review));
+            Original = original ?? throw new ArgumentNullException(nameof(original));
             Index = review.Sentences.Count;
             CreateNewPart();
         }

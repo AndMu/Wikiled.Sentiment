@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Dictionary.Streams;
@@ -27,10 +26,13 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public SentenceRepairHandler(string path, IWordsHandler wordsHandlers)
         {
-            Guard.NotNullOrEmpty(() => path, path);
-            Guard.NotNull(() => wordsHandlers, wordsHandlers);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             resourcesPath = path;
-            this.wordsHandlers = wordsHandlers;
+            this.wordsHandlers = wordsHandlers ?? throw new ArgumentNullException(nameof(wordsHandlers));
             Load();
         }
 

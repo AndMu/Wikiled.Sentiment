@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
@@ -21,9 +20,21 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         public OpenNlpSplitterFactory(string path, ILexiconFactory factory, ICacheFactory cachedFactory)
         {
-            Guard.NotNullOrEmpty(() => path, path);
-            Guard.NotNull(() => factory, factory);
-            Guard.NotNull(() => cachedFactory, cachedFactory);
+            if (factory is null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            if (cachedFactory is null)
+            {
+                throw new ArgumentNullException(nameof(cachedFactory));
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             log.Debug("Creating with resource path: {0}", path);
             resourcesPath = path;
             this.cachedFactory = cachedFactory;

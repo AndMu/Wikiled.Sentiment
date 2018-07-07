@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -19,7 +18,11 @@ namespace Wikiled.Sentiment.Text.Data
 
         internal ParsedReview(INRCDictionary dictionary, Document document)
         {
-            Guard.NotNull(() => document, document);
+            if (document is null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
             if (document.DocumentTime.HasValue &&
                 document.DocumentTime.Value.Ticks > 0)
             {

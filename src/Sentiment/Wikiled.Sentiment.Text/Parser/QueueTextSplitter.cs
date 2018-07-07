@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Structure;
 
@@ -26,7 +25,11 @@ namespace Wikiled.Sentiment.Text.Parser
                 throw new ArgumentNullException(nameof(factory));
             }
 
-            Guard.IsValid(() => maxSplitters, maxSplitters, i => i > 0, "Invalid range");
+            if (maxSplitters <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(maxSplitters));
+            }
+
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
             for (int i = 0; i < maxSplitters; i++)
             {

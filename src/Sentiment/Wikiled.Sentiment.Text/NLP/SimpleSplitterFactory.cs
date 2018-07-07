@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 
@@ -10,7 +10,11 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public SimpleSplitterFactory(ILexiconFactory factory)
         {
-            Guard.NotNull(() => factory, factory);
+            if (factory is null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
             wordsHandler = factory.WordsHandler;
         }
 

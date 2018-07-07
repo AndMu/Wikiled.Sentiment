@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
@@ -56,7 +56,11 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
         public IEnumerable<IWordsTokenizer> Parse(string text)
         {
-            Guard.NotNullOrEmpty(() => text, text);
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(text));
+            }
+
             string[] sentences = splitter.Split(text).ToArray();
             string saved = string.Empty;
             for (int i = 0; i < sentences.Length; i++)
@@ -112,7 +116,11 @@ namespace Wikiled.Sentiment.Text.Tokenizer
 
         public IEnumerable<string> Split(string text)
         {
-            Guard.NotNullOrEmpty(() => text, text);
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(text));
+            }
+
             return Parse(text).Select(wordsTokenizer => wordsTokenizer.SentenceText);
         }
     }

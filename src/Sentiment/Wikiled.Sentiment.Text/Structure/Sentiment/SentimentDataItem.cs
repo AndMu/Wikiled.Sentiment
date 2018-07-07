@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Structure.Sentiment
@@ -7,8 +7,16 @@ namespace Wikiled.Sentiment.Text.Structure.Sentiment
     {
         public SentimentDataItem(int index, string text, double? value, SentimentLevel level)
         {
-            Guard.IsValid(() => index, index, item => item >= 0, "index");
-            Guard.NotNullOrEmpty(() => text, text);
+            if (index < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(text));
+            }
+
             Index = index;
             Text = text;
             Value = value;

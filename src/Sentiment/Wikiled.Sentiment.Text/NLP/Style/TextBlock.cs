@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.NLP.Style.Obscurity;
 using Wikiled.Sentiment.Text.NLP.Style.Readability;
@@ -21,15 +20,32 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public TextBlock(IWordsHandler handler, SentenceItem[] sentences, bool load = true)
         {
-            Guard.NotEmpty(() => sentences, sentences);
-            Guard.NotNull(() => handler, handler);
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            if (sentences is null)
+            {
+                throw new ArgumentNullException(nameof(sentences));
+            }
+
+            if (sentences.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(sentences));
+            }
+
             Sentences = sentences;
             Surface = new SurfaceData(this);
             Readability = new ReadabilityDataSource(this);
             Words = (from sentence in Sentences
                      from word in sentence.Words
                      select word).ToArray();
-            Guard.IsValid(() => Words, Words, item => item.Length > 0, "sentences");
+            if (Words.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(Words));
+            }
+            
             var pure = new List<WordEx>();
             foreach (var word in Words)
             {

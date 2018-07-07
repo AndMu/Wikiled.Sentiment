@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
-using Wikiled.Common.Helpers;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
@@ -21,8 +18,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public WordRepairRuleEngine(IWordItem item, WordRepairRule repairRule)
         {
-            Guard.NotNull(() => item, item);
-            wordItem = item;
+            wordItem = item ?? throw new ArgumentNullException(nameof(item));
             this.repairRule = repairRule;
         }
 

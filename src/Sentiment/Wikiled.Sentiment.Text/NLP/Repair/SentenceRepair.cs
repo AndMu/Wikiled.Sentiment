@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Wikiled.Common.Arguments;
 using Wikiled.Text.Analysis.Dictionary;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
@@ -17,12 +16,14 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public SentenceRepair(IWordsDictionary dictionary, string lightMask, string mask, string replaceMask)
         {
-            Guard.NotNullOrEmpty(() => mask, mask);
-            Guard.NotNull(() => dictionary, dictionary);
+            if (string.IsNullOrEmpty(mask))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(mask));
+            }
 
-            this.mask = mask ?? throw new ArgumentNullException(nameof(mask));
-            this.replaceMask = replaceMask;
-            this.dictionary = dictionary;
+            this.mask = mask ;
+            this.replaceMask = replaceMask ?? throw new ArgumentNullException(nameof(replaceMask));
+            this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             this.lightMask = lightMask;
         }
 

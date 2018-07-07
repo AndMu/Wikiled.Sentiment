@@ -3,7 +3,6 @@ using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Newtonsoft.Json;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -14,7 +13,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public JsonProcessingDataLoader(string path)
         {
-            Guard.NotNullOrEmpty(() => path, path);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             this.path = path;
             All = Observable.Empty<DataPair>();
         }

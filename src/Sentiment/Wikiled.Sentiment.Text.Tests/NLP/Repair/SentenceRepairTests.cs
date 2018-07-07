@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         public void Create()
         {
             Assert.Throws<ArgumentNullException>(() => new SentenceRepair(null, null, "test", "test"));
-            Assert.Throws<ArgumentNullException>(() => new SentenceRepair(dictionary.Object, "test", null, "test"));
+            Assert.Throws<ArgumentException>(() => new SentenceRepair(dictionary.Object, "test", null, "test"));
         }
 
         [Test]

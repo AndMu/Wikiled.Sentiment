@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;

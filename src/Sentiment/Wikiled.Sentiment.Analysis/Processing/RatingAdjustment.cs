@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -17,8 +17,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private RatingAdjustment(IParsedReview review, IMachineSentiment model)
             : base(review)
         {
-            Guard.NotNull(() => model, model);
-            Model = model;
+            if (review is null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
+            Model = model ?? throw new ArgumentNullException(nameof(model));
         }
 
         public IMachineSentiment Model { get; }

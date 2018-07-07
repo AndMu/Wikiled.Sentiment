@@ -1,5 +1,4 @@
-﻿using Wikiled.Common.Arguments;
-using Wikiled.Sentiment.Text.Configuration;
+﻿using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.Resources;

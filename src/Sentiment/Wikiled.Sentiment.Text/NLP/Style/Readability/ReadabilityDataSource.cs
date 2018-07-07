@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.Reflection;
 using Wikiled.Text.Analysis.Structure;
@@ -16,8 +15,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Readability
 
         public ReadabilityDataSource(TextBlock text)
         {
-            Guard.NotNull(() => text, text);
-            Text = text;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
         }
 
         /// <summary>

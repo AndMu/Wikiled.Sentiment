@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
@@ -22,10 +22,8 @@ namespace Wikiled.Sentiment.Text.NLP.Style
 
         public SyntaxFeatures(IWordsHandler wordsHandler, TextBlock text)
         {
-            Guard.NotNull(() => wordsHandler, wordsHandler);
-            Guard.NotNull(() => text, text);
-            Text = text;
-            this.wordsHandler = wordsHandler;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            this.wordsHandler = wordsHandler ?? throw new ArgumentNullException(nameof(wordsHandler));
         }
 
         /// <summary>
@@ -99,8 +97,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style
                 foreach (var word in sentenceItem.Words)
                 {
                     table.Increment();
-                    IWordItem wordItem = word.UnderlyingWord as IWordItem;
-                    if (wordItem == null ||
+                    if (!(word.UnderlyingWord is IWordItem wordItem) ||
                         wordItem.POS.WordType == WordType.Symbol ||
                         wordItem.POS.WordType == WordType.SeparationSymbol ||
                         wordItem.POS.WordType == WordType.Unknown ||

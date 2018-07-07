@@ -8,7 +8,6 @@ using NLog;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.Arff.Persistence.Headers;
-using Wikiled.Common.Arguments;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
@@ -26,11 +25,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public MachineSentiment(IArffDataSet dataSet, IClassifier classifier)
         {
-            Guard.NotNull(() => dataSet, dataSet);
-            Guard.NotNull(() => classifier, classifier);
+            if (dataSet is null)
+            {
+                throw new ArgumentNullException(nameof(dataSet));
+            }
+
             dataSet.Header.CreateHeader = false;
             DataSet = dataSet;
-            Classifier = classifier;
+            Classifier = classifier ?? throw new ArgumentNullException(nameof(classifier));
             weights = classifier.Model.ToWeights().Skip(1).ToArray();
             featureTable = dataSet.GetFeatureTable();
         }
@@ -41,8 +43,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public static IMachineSentiment Load(string path)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             log.Info("Loading {0}...", path);
-            Guard.NotNull(() => path, path);
             var reviews = ArffDataSet.Load<PositivityType>(Path.Combine(path, "data.arff"));
             Classifier classifier = new Classifier();
             classifier.Load(Path.Combine(path, "training.model"));
@@ -103,7 +109,11 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
         {
-            Guard.NotNull(() => cells, cells);
+            if (cells is null)
+            {
+                throw new ArgumentNullException(nameof(cells));
+            }
+
             log.Debug("GetVector");
             List<VectorCell> vectorCells = new List<VectorCell>();
             double[] vector = new double[featureTable.Count];
@@ -159,7 +169,11 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public void Save(string path)
         {
-            Guard.NotNull(() => path, path);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             log.Info("Saving {0}...", path);
             DataSet.Save(Path.Combine(path, "data.arff"));
             Classifier.Save(Path.Combine(path, "training.model"));

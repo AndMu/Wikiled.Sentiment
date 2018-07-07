@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Linq;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
@@ -13,7 +13,11 @@ namespace Wikiled.Sentiment.Text.Data.Weighting
 
         public SentimentCalculator(SentimentValue value)
         {
-            Guard.NotNull(() => value, value);
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
             wordItem = value.Owner;
             sentimentValue = value;
         }

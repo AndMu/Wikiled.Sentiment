@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
@@ -11,13 +11,21 @@ namespace Wikiled.Sentiment.Text.NLP.Style
     {
         public static InquirerDefinition GetWordDefinitions(this IInquirerManager inquirer, WordEx word)
         {
-            IWordItem item = word.UnderlyingWord as IWordItem;
-            return item != null ? GetWordDefinitions(inquirer, item) : inquirer.GetDefinitions(word.Text);
+            return word.UnderlyingWord is IWordItem item ? GetWordDefinitions(inquirer, item) : inquirer.GetDefinitions(word.Text);
         }
 
         public static InquirerDefinition GetWordDefinitions(this IInquirerManager inquirer, IWordItem word)
         {
-            Guard.NotNull(() => word, word);
+            if (inquirer is null)
+            {
+                throw new ArgumentNullException(nameof(inquirer));
+            }
+
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             foreach (var text in word.GetPossibleText())
             {
                 var current = inquirer.GetDefinitions(text);

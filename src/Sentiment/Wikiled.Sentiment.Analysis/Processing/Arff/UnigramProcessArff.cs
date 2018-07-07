@@ -1,5 +1,5 @@
-﻿using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
+﻿using System;
+using Wikiled.Arff.Persistence;
 using Wikiled.Sentiment.Text.Data;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Arff
@@ -13,7 +13,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
 
         public override void PopulateArff(IParsedReview current, PositivityType positivity)
         {
-            Guard.NotNull(() => current, current);
+            if (current is null)
+            {
+                throw new ArgumentNullException(nameof(current));
+            }
+
             lock (DataSet)
             {
                 var review = DataSet.AddDocument();

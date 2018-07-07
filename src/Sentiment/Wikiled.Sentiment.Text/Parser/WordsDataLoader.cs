@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.Extensions.Caching.Memory;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
@@ -52,7 +51,15 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public WordsDataLoader(string path, IWordsDictionary dictionary)
         {
-            Guard.NotNullOrEmpty(() => path, path);
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
 
             inquirerManager = new Lazy<IInquirerManager>(
                 () =>

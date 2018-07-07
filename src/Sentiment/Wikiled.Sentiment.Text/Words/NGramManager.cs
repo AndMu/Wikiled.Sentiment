@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Collections.Generic;
 using Wikiled.Sentiment.Text.Data;
 
 namespace Wikiled.Sentiment.Text.Words
@@ -8,9 +8,26 @@ namespace Wikiled.Sentiment.Text.Words
     {
         public static NGramBlock[] GetNearNGram(this IWordItem[] words, int index, int length)
         {
-            Guard.NotEmpty(() => words, words);
-            Guard.IsValid(() => index, index, item => item >= 0, "index");
-            Guard.IsValid(() => length, length, item => item > 0, "length");
+            if (words is null)
+            {
+                throw new ArgumentNullException(nameof(words));
+            }
+
+            if (length <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (index <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (words.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(words));
+            }
+
             int startingIndex = index - (length - 1);
             int endIndex = index + (length - 1);
             startingIndex = startingIndex < 0 ? 0 : startingIndex;

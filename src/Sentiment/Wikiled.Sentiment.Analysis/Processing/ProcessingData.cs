@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -34,7 +33,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public void Add(PositivityType positivity, SingleProcessingData data)
         {
-            Guard.NotNull(() => data, data);
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
             switch (positivity)
             {
                 case PositivityType.Positive:

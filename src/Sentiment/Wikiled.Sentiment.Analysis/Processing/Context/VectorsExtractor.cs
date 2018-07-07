@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Helpers;
@@ -28,7 +27,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public void Process(Document document)
         {
-            Guard.NotNull(() => document, document);
+            if (document is null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
             AutoEvictingDictionary<WordEx, WordsContext> table =
                 new AutoEvictingDictionary<WordEx, WordsContext>(length: WindowSize);
             AutoEvictingDictionary<SentenceItem, SentenceItem> sentences =
@@ -55,7 +58,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public void Save(string path)
         {
-            Guard.NotNullOrEmpty(() => path, path);
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+            }
+
             log.Info("Saving Vectors to: {0}", path);
             path.EnsureDirectoryExistence();
             Parallel.ForEach(

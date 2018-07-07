@@ -1,5 +1,4 @@
-﻿using Wikiled.Common.Arguments;
-
+﻿
 namespace Wikiled.Sentiment.Text.Sentiment
 {
     public class WordSentimentValueData

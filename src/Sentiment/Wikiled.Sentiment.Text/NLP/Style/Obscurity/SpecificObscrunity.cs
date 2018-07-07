@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.NLP.Frequency;
 using Wikiled.Text.Analysis.Reflection;
@@ -18,9 +17,8 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Obscurity
 
         public SpecificObscrunity(TextBlock text, IWordFrequencyList list)
         {
-            Guard.NotNull(() => list, list);
-            Text = text;
-            this.list = list;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
+            this.list = list ?? throw new ArgumentNullException(nameof(list));
         }
 
         public TextBlock Text { get; }

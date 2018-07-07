@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.Text.Analysis.Structure;
 
@@ -42,7 +42,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public void Save(string path)
         {
-            Guard.NotNullOrEmpty(() => path, path);
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(path));
+            }
+
             log.Info("Saving {0}...", path);
             string fileName = $"{Word.Text.CreatePureLetterText()}.arff";
             path = Path.Combine(path, fileName);

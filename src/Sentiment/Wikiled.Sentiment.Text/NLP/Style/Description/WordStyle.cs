@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using Wikiled.Common.Arguments;
+﻿using System;
+using Newtonsoft.Json;
 using Wikiled.Sentiment.Text.NLP.Style.Description.Data;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
@@ -10,7 +10,11 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Description
     {
         public WordStyle(WordEx word)
         {
-            Guard.NotNull(() => word, word);
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             Word = word.Text;
         }
 

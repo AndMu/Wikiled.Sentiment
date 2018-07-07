@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -20,8 +20,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public RecyclableTextSplitter(ISplitterFactory factory, int maxProcessing = 1000)
         {
-            Guard.NotNull(() => factory, factory);
-            this.factory = factory;
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
             this.maxProcessing = maxProcessing;
         }
 

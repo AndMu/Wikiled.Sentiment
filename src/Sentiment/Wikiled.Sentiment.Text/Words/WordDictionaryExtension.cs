@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Helpers;
 

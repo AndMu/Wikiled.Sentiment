@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Threading.Tasks;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -11,17 +11,18 @@ namespace Wikiled.Sentiment.Text.Data.Review
 
         public ParsingDocumentHolder(ITextSplitter splitter, Document doc)
         {
-            Guard.NotNull(() => splitter, splitter);
-            Guard.NotNull(() => doc, doc);
-            this.splitter = splitter;
-            Original = doc;
+            this.splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
+            Original = doc ?? throw new ArgumentNullException(nameof(doc));
         }
 
         public ParsingDocumentHolder(ITextSplitter splitter, SingleProcessingData doc)
         {
-            Guard.NotNull(() => splitter, splitter);
-            Guard.NotNull(() => doc, doc);
-            this.splitter = splitter;
+            if (doc is null)
+            {
+                throw new ArgumentNullException(nameof(doc));
+            }
+
+            this.splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
             Original = new Document(doc.Text);
             Original.DocumentTime = doc.Date;
             Original.Stars = doc.Stars;

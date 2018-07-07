@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Redis.Logic;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -11,8 +11,7 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public RedisDocumentCacheFactory(IRedisLink redis)
         {
-            Guard.NotNull(() => redis, redis);
-            this.redis = redis;
+            this.redis = redis ?? throw new ArgumentNullException(nameof(redis));
         }
 
         public ICachedDocumentsSource Create(POSTaggerType tagger)

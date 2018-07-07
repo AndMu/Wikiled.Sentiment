@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -16,10 +16,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public ExtractReviewTextVector(INRCDictionary dictionary, IParsedReview review)
         {
-            Guard.NotNull(() => review, review);
-            Guard.NotNull(() => dictionary, dictionary);
-            this.review = review;
-            this.dictionary = dictionary;
+            this.review = review ?? throw new ArgumentNullException(nameof(review));
+            this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
         }
 
         protected override RatingData GetRating()

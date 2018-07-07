@@ -1,6 +1,5 @@
 ﻿using System;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
 

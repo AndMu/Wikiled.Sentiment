@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Wikiled.Common.Arguments;
 
 namespace Wikiled.Sentiment.Text.Resources
 {
@@ -17,7 +16,11 @@ namespace Wikiled.Sentiment.Text.Resources
 
         public JsonStreamingWriter(string path)
         {
-            Guard.NotNullOrEmpty(() => path, path);
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(path));
+            }
+
             streamWriter = new StreamWriter(path, false, Encoding.UTF8);
             streamWriter.AutoFlush = true;
             writer = new JsonTextWriter(streamWriter);

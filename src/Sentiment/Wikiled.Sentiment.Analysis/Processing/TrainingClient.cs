@@ -2,13 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.Common.Arguments;
-using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
@@ -37,10 +34,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public TrainingClient(IProcessingPipeline pipeline, string svmPath)
         {
-            Guard.NotNull(() => pipeline, pipeline);
-            Guard.NotNull(() => svmPath, svmPath);
+            if (string.IsNullOrEmpty(svmPath))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(svmPath));
+            }
 
-            this.pipeline = pipeline;
+            this.pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
             this.svmPath = svmPath;
             SentimentVector = new SentimentVector();
             analyze = new AnalyseReviews();

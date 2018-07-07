@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
 
@@ -9,8 +9,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
         public SentenceDistributionCalculator(SentenceItem sentence, Document document)
             : base(document)
         {
-            Guard.NotNull(() => sentence, sentence);
-            Sentence = sentence;
+            if (document is null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            Sentence = sentence ?? throw new ArgumentNullException(nameof(sentence));
         }
 
         public SentenceItem Sentence { get; }

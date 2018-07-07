@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Wikiled.Common.Arguments;
+﻿using System;
+using System.Linq;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -13,10 +13,8 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Description
 
         public StyleExtractor(IWordsHandler handler, Document document)
         {
-            Guard.NotNull(() => handler, handler);
-            Guard.NotNull(() => document, document);
-            this.document = document;
-            this.handler = handler;
+            this.document = document ?? throw new ArgumentNullException(nameof(document));
+            this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         public DocumentStyle Extract()

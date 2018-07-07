@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Create()
         {
             Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(null, "Test", null, POSTags.Instance.NN));
-            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, null, null, POSTags.Instance.NN));
+            Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, null, null, POSTags.Instance.NN));
             Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, "Test", null, null));
             Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.SBAR));
 

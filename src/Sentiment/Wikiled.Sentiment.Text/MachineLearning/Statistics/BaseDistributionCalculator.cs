@@ -1,5 +1,5 @@
-﻿using NLog;
-using Wikiled.Common.Arguments;
+﻿using System;
+using NLog;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Text.Analysis.Structure;
 
@@ -15,13 +15,26 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         protected BaseDistributionCalculator(params Document[] documents)
         {
-            Guard.NotEmpty(() => documents, documents);
+            if (documents is null)
+            {
+                throw new ArgumentNullException(nameof(documents));
+            }
+
+            if (documents.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(documents));
+            }
+
             this.documents = documents;
         }
 
         public IStatisticsResult GetStatistics(int windowSize)
         {
-            Guard.IsValid(() => windowSize, windowSize, item => item > 0, "windowSize");
+            if (windowSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(windowSize));
+            }
+
             log.Debug("GetStatistics: <{0}>", windowSize);
             result = new StatisticsResult(GetValue(), windowSize);
             documents.ForEachExecute(document => Process(document, result));

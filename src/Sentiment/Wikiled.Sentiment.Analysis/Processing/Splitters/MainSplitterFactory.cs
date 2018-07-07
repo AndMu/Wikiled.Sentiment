@@ -1,6 +1,5 @@
 ﻿using System;
 using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;

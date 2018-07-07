@@ -1,5 +1,4 @@
 ﻿using NLog;
-using Wikiled.Common.Arguments;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Sentiment.Text.Parser;

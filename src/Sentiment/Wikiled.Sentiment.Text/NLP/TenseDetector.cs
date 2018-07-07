@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
@@ -11,7 +10,11 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         public static TenseType ResolveTense(this ISentence sentence)
         {
-            Guard.NotNull(() => sentence, sentence);
+            if (sentence is null)
+            {
+                throw new ArgumentNullException(nameof(sentence));
+            }
+
             var tenses = sentence.Occurrences.Select(item => item.GetTense()).Where(item => item != null).ToArray();
             if (tenses.Length == 0)
             {
@@ -64,7 +67,11 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public static TenseType? GetTense(this IWordItem word)
         {
-            Guard.NotNull(() => word, word);
+            if (word is null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             if (word.POS == POSTags.Instance.VBP ||
                 word.POS == POSTags.Instance.VBZ)
             {

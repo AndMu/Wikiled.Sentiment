@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
@@ -19,10 +18,8 @@ namespace Wikiled.Sentiment.Text.NLP
 
         public ParsedReviewManager(IWordsHandler manager, Document document)
         {
-            Guard.NotNull(() => manager, manager);
-            Guard.NotNull(() => document, document);
-            this.manager = manager;
-            this.document = document;
+            this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            this.document = document ?? throw new ArgumentNullException(nameof(document));
         }
 
         private bool CanSplit => review.CurrentSentence.CurrentPart.Occurrences.Count > 0 &&
@@ -88,7 +85,11 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private void AddWord(IWordItem occurrence, bool last)
         {
-            Guard.NotNull(() => occurrence, occurrence);
+            if (occurrence is null)
+            {
+                throw new ArgumentNullException(nameof(occurrence));
+            }
+
             if (!occurrence.IsSimple)
             {
                 throw new ArgumentOutOfRangeException(nameof(occurrence));
@@ -106,7 +107,11 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private void CreateSentence(SentenceItem sentence)
         {
-            Guard.NotNull(() => sentence, sentence);
+            if (sentence is null)
+            {
+                throw new ArgumentNullException(nameof(sentence));
+            }
+
             review.AddNewSentence(sentence);
         }
     }

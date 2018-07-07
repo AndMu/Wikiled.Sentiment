@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Text.Analysis.Cache;
@@ -13,8 +13,7 @@ namespace Wikiled.Sentiment.Text.NLP
         public SimpleTextSplitter(IWordsHandler wordsHandler)
             : base(wordsHandler, NullCachedDocumentsSource.Instance)
         {
-            Guard.NotNull(() => wordsHandler, wordsHandler);
-            this.wordsHandler = wordsHandler;
+            this.wordsHandler = wordsHandler ?? throw new ArgumentNullException(nameof(wordsHandler));
         }
 
         protected override Document ActualProcess(ParseRequest request)

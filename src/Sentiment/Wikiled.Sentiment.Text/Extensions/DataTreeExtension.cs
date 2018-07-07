@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Wikiled.Common.Arguments;
 using Wikiled.Common.Extensions;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
@@ -12,7 +12,11 @@ namespace Wikiled.Sentiment.Text.Extensions
     {
         public static VectorData CreateVector(this IDataTree tree, NormalizationType normalization, bool usePrefix = true)
         {
-            Guard.NotNull(() => tree, tree);
+            if (tree is null)
+            {
+                throw new ArgumentNullException(nameof(tree));
+            }
+
             List<SimpleCell> vectors = new List<SimpleCell>();
             CreateVector("Data", tree, vectors, usePrefix);
             vectors = vectors.OrderBy(item => item.Name).ToList();

@@ -1,4 +1,4 @@
-﻿using Wikiled.Common.Arguments;
+﻿using System;
 using Wikiled.Text.Analysis.Reflection;
 
 namespace Wikiled.Sentiment.Text.NLP.Style.Surface
@@ -10,8 +10,7 @@ namespace Wikiled.Sentiment.Text.NLP.Style.Surface
     {
         public SurfaceData(TextBlock text)
         {
-            Guard.NotNull(() => text, text);
-            Text = text;
+            Text = text ?? throw new ArgumentNullException(nameof(text));
             Sentence = new SentenceSurface(text);
             Characters = new CharactersSurface(text);
             Words = new WordSurface(text);
