@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         public WordItemRelationships(IWordsHandler handler, IWordItem parent)
         {
-            this.handler = handler ?? throw new System.ArgumentNullException(nameof(handler));
+            this.handler = handler;
             Owner = parent ?? throw new System.ArgumentNullException(nameof(parent));
             Reset();
         }
