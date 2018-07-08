@@ -221,7 +221,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             {
                 foreach (var file in Directory.GetFiles(Path, "*.*", SearchOption.AllDirectories))
                 {
-                    yield return ReadFile(Path);
+                    yield return ReadFile(file);
                 }
             }
         }

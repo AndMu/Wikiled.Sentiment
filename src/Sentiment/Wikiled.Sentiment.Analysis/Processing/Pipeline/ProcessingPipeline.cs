@@ -14,18 +14,15 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IObservable<IParsedDocumentHolder> reviews;
-
         private readonly IScheduler scheduler;
 
         private readonly IParsedReviewManagerFactory factory;
 
-        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IObservable<IParsedDocumentHolder> reviews, IParsedReviewManagerFactory factory)
+        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IParsedReviewManagerFactory factory)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
             Splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.reviews = reviews ?? throw new ArgumentNullException(nameof(reviews));
         }
 
         public ISplitterHelper Splitter { get; }
@@ -34,8 +31,14 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         public SemaphoreSlim ProcessingSemaphore { get; set; }
 
-        public IObservable<ProcessingContext> ProcessStep()
+        public IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews)
         {
+            if (reviews is null)
+            {
+                throw new ArgumentNullException(nameof(reviews));
+            }
+
+            log.Info("ProcessStep");
             Monitor = new PerformanceMonitor(100);
             var selectedData = reviews
                 .Select(item => Observable.Start(() => StepProcessing(item), scheduler))

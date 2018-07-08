@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly ConcurrentBag<Lazy<ITextSplitter>> splitters = new ConcurrentBag<Lazy<ITextSplitter>>();
 
-        private readonly ConcurrentStack<Lazy<ITextSplitter>> workStack = new ConcurrentStack<Lazy<ITextSplitter>>();
+        private readonly ConcurrentQueue<Lazy<ITextSplitter>> workStack = new ConcurrentQueue<Lazy<ITextSplitter>>();
 
         private readonly SemaphoreSlim semaphore;
 
@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Parser
             {
                 var item = new Lazy<ITextSplitter>(factory.ConstructSingle);
                 splitters.Add(item);
-                workStack.Push(item);
+                workStack.Enqueue(item);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Wikiled.Sentiment.Text.Parser
         public async Task<Document> Process(ParseRequest request)
         {
             await semaphore.WaitAsync().ConfigureAwait(false);
-            if (!workStack.TryPop(out var splitter))
+            if (!workStack.TryDequeue(out var splitter))
             {
                 throw new InvalidOperationException("Synchronization error!");
             }
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.Text.Parser
             }
             finally
             {
-                workStack.Push(splitter);
+                workStack.Enqueue(splitter);
                 semaphore.Release();
             }
         }

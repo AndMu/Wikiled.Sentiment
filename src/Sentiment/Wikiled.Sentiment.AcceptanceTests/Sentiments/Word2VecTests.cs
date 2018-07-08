@@ -69,12 +69,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.SplitterHelper.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load(), new ParsedReviewManagerFactory()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, new ParsedReviewManagerFactory()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;
             testing.Init();
-            await testing.Process().LastOrDefaultAsync();
+            await testing.Process(runner.Load()).LastOrDefaultAsync();
             testing.Save(Path.Combine(TestContext.CurrentContext.TestDirectory, "Word2Vec"));
             Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
             Assert.AreEqual(data.Errors, testing.Errors);

@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
                 SetupHeader();
-                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ObserveOn(TaskPoolScheduler.Default), new ParsedReviewManagerFactory());
+                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory());
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
@@ -68,7 +68,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                     client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
-                    client.Process()
+                    client.Process(reviews.ObserveOn(TaskPoolScheduler.Default))
                           .Select(
                               item => 
                               {

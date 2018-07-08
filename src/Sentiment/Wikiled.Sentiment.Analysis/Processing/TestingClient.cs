@@ -13,6 +13,7 @@ using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -108,9 +109,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
             log.Info("Processing...");
         }
 
-        public IObservable<ProcessingContext> Process()
+        public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
-            var documentSelector = pipeline.ProcessStep().Select(RetrieveData);
+            var documentSelector = pipeline.ProcessStep(reviews).Select(RetrieveData);
             return documentSelector.Where(item => item != null);
         }
 

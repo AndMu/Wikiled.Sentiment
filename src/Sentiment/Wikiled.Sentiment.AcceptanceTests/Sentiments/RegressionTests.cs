@@ -41,12 +41,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("RawSentimentDetection: {0}", data);
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             await runner.Load().LastOrDefaultAsync();
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, runner.Load(), new ParsedReviewManagerFactory()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, new ParsedReviewManagerFactory()), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;
             testing.Init();
-            await testing.Process().LastOrDefaultAsync();
+            await testing.Process(runner.Load()).LastOrDefaultAsync();
             //var result = await testing.Process().ToArray();
             //result = result.OrderBy(item => item.Processed.Id).ToArray();
             //var text = result.Select(item => item.Adjustment.Rating.RawRating?.ToString()).Aggregate((one, two) => one + Environment.NewLine + two);

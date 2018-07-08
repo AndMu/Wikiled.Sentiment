@@ -20,8 +20,11 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         public void RepairNotOnly()
         {
             SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
-            var result = handler.Repair("We not only brought this book but also liked it");
-            Assert.AreEqual("We brought this book and liked it", result);
+            for (int i = 0; i < 1000; i++)
+            {
+                var result = handler.Repair("We not only brought this book but also liked it");
+                Assert.AreEqual("We brought this book and liked it", result);
+            }
         }
 
         [Test]

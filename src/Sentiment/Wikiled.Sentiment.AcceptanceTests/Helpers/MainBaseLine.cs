@@ -39,11 +39,11 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             TestRunner testing = new TestRunner(Helper, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, testing.Load(), new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingLocation);
             testingClient.TrackArff = true;
             testingClient.Init();
-            await testingClient.Process().LastOrDefaultAsync();
+            await testingClient.Process(testing.Load()).LastOrDefaultAsync();
             testingClient.Save(Path.Combine(trainingLocation, @"Result", testProduct));
             return testingClient;
         }
@@ -55,10 +55,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             Training = new TestRunner(Helper, new SentimentTestData(product) { Category = category });
 
             logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active, Training.Load(), new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active, new ParsedReviewManagerFactory());
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingLocation);
             logger.Info("Training...");
-            return trainingClient.Train();
+            return trainingClient.Train(Training.Load());
         }
     }
 }

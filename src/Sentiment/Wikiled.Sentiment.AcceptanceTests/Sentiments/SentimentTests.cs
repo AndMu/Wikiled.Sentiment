@@ -56,15 +56,15 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                                    });
 
 
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Concat(positive), new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, new ParsedReviewManagerFactory());
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
-            await trainingClient.Train().ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, negative.Take(1).Concat(positive.Take(1)), new ParsedReviewManagerFactory());
+            await trainingClient.Train(negative.Concat(positive)).ConfigureAwait(false);
+            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.SplitterHelper, new ParsedReviewManagerFactory());
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.TrackArff = true;
             testingClient.Init();
-            var result = await testingClient.Process().ToArray();
+            var result = await testingClient.Process(negative.Take(1).Concat(positive.Take(1))).ToArray();
             Assert.AreEqual(5, result[0].Adjustment.Rating.StarsRating);
             Assert.AreEqual(1, result[1].Adjustment.Rating.StarsRating);
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;

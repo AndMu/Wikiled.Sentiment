@@ -61,17 +61,16 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, mockSplitterHelper.Object, documentSource, reviewMock.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null, documentSource, reviewMock.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, mockSplitterHelper.Object, null, reviewMock.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, mockSplitterHelper.Object, documentSource, null));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, mockSplitterHelper.Object, reviewMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null, reviewMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, mockSplitterHelper.Object, null));
         }
 
         [Test]
         public void ProcessStep()
         {
             var subscriber = scheduler.CreateObserver<ProcessingContext>();
-            instance.ProcessStep()
+            instance.ProcessStep(documentSource)
                     .Subscribe(subscriber);
             scheduler.AdvanceBy(TimeSpan.FromSeconds(4).Ticks);
             Assert.AreEqual(3, subscriber.Messages.Count);
@@ -80,7 +79,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, mockSplitterHelper.Object, documentSource, reviewMock.Object);
+            return new ProcessingPipeline(scheduler, mockSplitterHelper.Object, reviewMock.Object);
         }
     }
 }

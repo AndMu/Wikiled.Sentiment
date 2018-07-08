@@ -11,6 +11,7 @@ using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.NLP.NRC;
 
@@ -55,7 +56,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool UseBagOfWords { get; set; }
 
-        public async Task Train()
+        public async Task Train(IObservable<IParsedDocumentHolder> reviews)
         {
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
@@ -63,7 +64,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                            .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep()
+                await pipeline.ProcessStep(reviews)
                               .Select(AdditionalProcessing)
                               .Select(
                                   item =>
@@ -81,7 +82,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep()
+                await pipeline.ProcessStep(reviews)
                               .Select(
                                   item => Observable.Start(
                                       () =>

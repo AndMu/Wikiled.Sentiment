@@ -49,11 +49,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
             splitter = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, GetReviews().ToObservable(TaskPoolScheduler.Default), new ParsedReviewManagerFactory());
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory());
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
-                await pipeline.ProcessStep()
+                await pipeline.ProcessStep(GetReviews().ToObservable(TaskPoolScheduler.Default))
                         .Select(item => Observable.Start(() =>
                         {
                             Processing(item);

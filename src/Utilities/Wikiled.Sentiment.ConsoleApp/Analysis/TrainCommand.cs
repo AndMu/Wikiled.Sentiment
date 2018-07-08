@@ -34,11 +34,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, reviews.ObserveOn(TaskPoolScheduler.Default), new ParsedReviewManagerFactory()), Model);
+            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory()), Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;
-            client.Train().Wait();
+            client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).Wait();
         }
     }
 }
