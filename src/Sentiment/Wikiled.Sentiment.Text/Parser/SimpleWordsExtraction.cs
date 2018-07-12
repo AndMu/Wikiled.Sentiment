@@ -2,9 +2,9 @@
 using System.Linq;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Structure;
-using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Tokenizer;
 
 namespace Wikiled.Sentiment.Text.Parser
 {

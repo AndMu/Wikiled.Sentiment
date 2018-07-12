@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         IInquirerManager InquirerManager { get; }
 
-        FrequencyListManager FrequencyListManager { get; }
+        IFrequencyListManager FrequencyListManager { get; }
 
         INRCDictionary NRCDictionary { get; }
 

@@ -8,7 +8,6 @@ using SharpNL.POSTag;
 using SharpNL.Utility;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
-using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Tokenizer;
@@ -50,7 +49,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             log.Debug("Creating with resource path: {0}", resourcesFolder);
             this.handler = handler;
             tokenizer = TreebankWordTokenizer.Tokenizer;
-            sentenceSplitter = SentenceTokenizer.Create(handler, true, false);
+            sentenceSplitter = SentenceTokenizer.Create(handler.PosTagger, true, false);
             LoadModels(resourcesFolder);
         }
 

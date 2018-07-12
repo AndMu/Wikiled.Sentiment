@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.Words
                 throw new System.ArgumentNullException(nameof(word));
             }
 
-            value = default(T);
+            value = default;
             foreach (var text in word.GetPossibleText())
             {
                 if (table.TryGetValue(text, out value))

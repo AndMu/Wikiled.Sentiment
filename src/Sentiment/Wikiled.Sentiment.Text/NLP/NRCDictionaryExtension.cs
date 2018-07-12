@@ -9,11 +9,6 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public static class NRCDictionaryExtension
     {
-        public static NRCRecord FindRecord(this INRCDictionary dictionary, WordEx word)
-        {
-            return word.UnderlyingWord is IWordItem item ? dictionary.FindRecord(item) : dictionary.FindRecord(word.Text);
-        }
-
         public static NRCRecord FindRecord(this INRCDictionary dictionary, IWordItem word)
         {
             NRCRecord nrcRecord = null;

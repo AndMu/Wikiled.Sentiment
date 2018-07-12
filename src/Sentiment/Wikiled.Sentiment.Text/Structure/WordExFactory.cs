@@ -18,6 +18,10 @@ namespace Wikiled.Sentiment.Text.Structure
             word.Type = item.POS.Tag;
             word.IsAspect = item.IsFeature;
             word.IsStop = item.IsStopWord;
+            word.IsInvertor = item.IsInvertor;
+            word.IsInverted = item.Relationship?.Inverted != null;
+            word.Phrase = item.Parent?.Text;
+            word.Raw = item.Stemmed;
             return word;
         }
     }

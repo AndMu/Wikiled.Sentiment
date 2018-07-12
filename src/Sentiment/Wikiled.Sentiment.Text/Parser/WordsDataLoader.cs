@@ -99,7 +99,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public IInquirerManager InquirerManager => inquirerManager.Value;
 
-        public FrequencyListManager FrequencyListManager { get; }
+        public IFrequencyListManager FrequencyListManager { get; }
 
         public bool IsDisableInvertorSentiment { get; set; }
 

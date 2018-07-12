@@ -1,8 +1,8 @@
 ﻿using System;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Tokenizer;
 
 namespace Wikiled.Sentiment.Text.NLP
 {
@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         protected override Document ActualProcess(ParseRequest request)
         {
-            ISentenceTokenizer tokenizer = SentenceTokenizer.Create(wordsHandler, WordsTokenizerFactory.NotWhiteSpace, true, false);
+            ISentenceTokenizer tokenizer = SentenceTokenizer.Create(wordsHandler.PosTagger, WordsTokenizerFactory.NotWhiteSpace, true, false);
             SimpleWordsExtraction wordsExtraction = new SimpleWordsExtraction(tokenizer);
             Document document = wordsExtraction.GetDocument(request.Document.Text);
             return document;
