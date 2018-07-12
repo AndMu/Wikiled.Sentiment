@@ -77,6 +77,11 @@ namespace Wikiled.Sentiment.Text.Extensions
         {
             yield return word.Text;
 
+            if (word is IPhrase)
+            {
+                yield break;
+            }
+
             if (!string.IsNullOrEmpty(word.Stemmed) &&
                 word.Stemmed != word.Text)
             {
@@ -89,7 +94,6 @@ namespace Wikiled.Sentiment.Text.Extensions
                 yield return word.Text.Substring(1);
             }
         }
-
 
         public static string GenerateMask(this IWordItem wordItem, bool pure)
         {
