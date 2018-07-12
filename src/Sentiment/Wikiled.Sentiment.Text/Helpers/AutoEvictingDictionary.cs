@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Text.Helpers
         {
             if (!ContainsKey(key))
             {
-                throw new ArgumentOutOfRangeException("key", "Can't touch unknown item");
+                throw new ArgumentOutOfRangeException(nameof(key), "Can't touch unknown item");
             }
 
             Add(key, Get(key));

@@ -108,7 +108,7 @@ namespace Wikiled.Sentiment.Text.Extensions
         {
             return word.IndexOf(InvertTag, StringComparison.OrdinalIgnoreCase) == 0;
         }
-        
+
 
         public static string GetOpposite(this string word)
         {
@@ -147,7 +147,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             {
                 return previous;
             }
-            
+
             return next ?? previous;
         }
 
