@@ -3,9 +3,8 @@ using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Structure;
-using Wikiled.Sentiment.Text.Tokenizer;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Tokenizer;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
 {
@@ -15,7 +14,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetDocument1Simple()
         {
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, true, false));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, true, false));
             Document document = extraction.GetDocument("I went to forest and don't know what I thought. But that is ok and not so bad and ok");
             Assert.AreEqual(21, document.TotalWords);
             Assert.AreEqual(2, document.Sentences.Count);
@@ -49,7 +48,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetDocument1()
         {
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, false, false));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, false, false));
             Document document = extraction.GetDocument("I went to forest and don't know what I thought. But that is ok and not so bad and ok");
             Assert.AreEqual(19, document.TotalWords);
             Assert.AreEqual(2, document.Sentences.Count);
@@ -82,7 +81,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetDocument1WithoutStop()
         {
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, false, true));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, false, true));
             Document document = extraction.GetDocument("I went to forest and don't know what I thought. But that is ok and not so bad and ok");
             Assert.AreEqual(7, document.TotalWords);
             Assert.AreEqual(2, document.Sentences.Count);
@@ -103,7 +102,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetDocumentFromLDA()
         {
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, true, false));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, true, false));
             Document document =
                 extraction.GetDocument(
                     "Elizabeth Needham (died 3 May 1731), also known as Mother Needham");
@@ -125,7 +124,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetDocument2()
         {
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, false, false));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, false, false));
             Document document = extraction.GetDocument("Not bad Not bad and defintle again will do that. For you my king. I spent that road.");
             Assert.AreEqual(19, document.TotalWords);
             Assert.AreEqual(3, document.Sentences.Count);
@@ -170,7 +169,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
             secondW.Text = "Second";
             first.Setup(item => item.Occurrences).Returns(new[] {firstW, secondW});
 
-            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler, false, false));
+            SimpleWordsExtraction extraction = new SimpleWordsExtraction(SentenceTokenizer.Create(ActualWordsHandler.Instance.WordsHandler.PosTagger, false, false));
             Document document = extraction.GetDocumentBySentences("Test", first.Object);
             Assert.AreEqual(2, document.TotalWords);
             Assert.AreEqual(1, document.Sentences.Count);
