@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Wikiled.Common.Resources;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;

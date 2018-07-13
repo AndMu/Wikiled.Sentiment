@@ -3,6 +3,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Tokenizer;
+using Wikiled.Text.Analysis.Tokenizer.Pipelined;
 
 namespace Wikiled.Sentiment.Text.NLP
 {

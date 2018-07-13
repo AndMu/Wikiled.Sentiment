@@ -46,6 +46,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
                                        Inverted = new TestWordItem()
                                    }
                 });
+
             Assert.IsTrue(record.IsAnger);
             Assert.IsFalse(record.IsAnticipation);
             Assert.IsFalse(record.IsDisgust);
@@ -61,7 +62,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         [Test]
         public void Extract()
         {
-            var vector = dictionary.Object.Extract(new[] { new WordEx(new SimpleWord("kill")) });
+            var vector = dictionary.Object.Extract(new[] { new TestWordItem { Text = "kill" } });
             Assert.AreEqual(0, vector.Anger);
             Assert.AreEqual(0, vector.Anticipation);
             Assert.AreEqual(0, vector.Disgust);
@@ -73,7 +74,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
             Assert.AreEqual(1, vector.Total);
             Assert.AreEqual(2, vector.TotalSum);
 
-            vector = dictionary.Object.Extract(new[] { new WordEx(new SimpleWord("love")) });
+            vector = dictionary.Object.Extract(new[] { new TestWordItem { Text = "love" }});
             Assert.AreEqual(0, vector.Anger);
             Assert.AreEqual(0, vector.Anticipation);
             Assert.AreEqual(0, vector.Disgust);
