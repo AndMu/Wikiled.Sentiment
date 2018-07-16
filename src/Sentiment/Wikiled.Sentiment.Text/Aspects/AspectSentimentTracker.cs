@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
+using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Text.Aspects.Data;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -67,7 +68,7 @@ namespace Wikiled.Sentiment.Text.Aspects
                                 {
                                     Text = item.Key,
                                     Times = item.Value.Count,
-                                    Sentiment = RatingData.Accumulate(item.Value.Select(x => x.DataValue)).RawRating
+                                    Sentiment = item.Value.Select(x => x.DataValue).Accumulate().RawRating
                                 }).ToArray();
             }
 

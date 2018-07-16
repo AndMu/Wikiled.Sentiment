@@ -11,15 +11,18 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         private readonly IWordsHandler wordsHandler;
 
+        private readonly SentenceTokenizerFactory sentenceTokenizer;
+
         public SimpleTextSplitter(IWordsHandler wordsHandler)
             : base(wordsHandler, NullCachedDocumentsSource.Instance)
         {
             this.wordsHandler = wordsHandler ?? throw new ArgumentNullException(nameof(wordsHandler));
+            sentenceTokenizer = new SentenceTokenizerFactory(wordsHandler.PosTagger, wordsHandler.Extractor);
         }
 
         protected override Document ActualProcess(ParseRequest request)
         {
-            ISentenceTokenizer tokenizer = SentenceTokenizer.Create(wordsHandler.PosTagger, WordsTokenizerFactory.NotWhiteSpace, true, false);
+            var tokenizer = sentenceTokenizer.Create(true, false);
             SimpleWordsExtraction wordsExtraction = new SimpleWordsExtraction(tokenizer);
             Document document = wordsExtraction.GetDocument(request.Document.Text);
             return document;

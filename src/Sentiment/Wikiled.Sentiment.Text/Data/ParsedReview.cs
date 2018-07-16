@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Wikiled.Common.Extensions;
+using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;

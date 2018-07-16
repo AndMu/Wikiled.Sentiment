@@ -50,7 +50,8 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             log.Debug("Creating with resource path: {0}", resourcesFolder);
             this.handler = handler;
             tokenizer = TreebankWordTokenizer.Tokenizer;
-            sentenceSplitter = SentenceTokenizer.Create(handler.PosTagger, true, false);
+            var sentenceTokenizer = new SentenceTokenizerFactory(handler.PosTagger, handler.Extractor);
+            sentenceSplitter = sentenceTokenizer.Create(true, false);
             LoadModels(resourcesFolder);
         }
 
