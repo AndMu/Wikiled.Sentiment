@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
                 foreach(var word in sentenceItem.Words)
                 {
                     WordsContext current = GetVector(word).CreateNewVector();
-                    current.SentimentValue = sentences.Values.Sum(item => item.CalculateSentiment());
+                    current.SentimentValue = sentences.Values.Select(item => item.CalculateSentiment().RawRating).Where(item => item.HasValue).Select(item => item.Value).Sum();
                     foreach(var addedRecords in table.Values)
                     {
                         addedRecords.AddContext(word);

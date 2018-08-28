@@ -87,7 +87,7 @@ namespace Wikiled.Sentiment.Text.Extensions
                 var item = new SentimentDataItem(
                     list.Count,
                     text,
-                    sentence.CalculateSentiment(),
+                    sentence.CalculateSentiment().RawRating,
                     SentimentLevel.Sentence);
                 item.ParentSentence = sentence;
                 list.Add(item);

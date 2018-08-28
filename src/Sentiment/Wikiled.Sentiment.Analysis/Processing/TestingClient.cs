@@ -9,6 +9,7 @@ using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors;
+using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;

@@ -20,11 +20,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
         {
             if (data.IsPositive)
             {
-                instance.Positive += data.Value;
+                instance.AddPositive(data.Value);
             }
             else
             {
-                instance.Negative += -data.Value;
+                instance.AddNegative(data.Value);
             }
         }
     }

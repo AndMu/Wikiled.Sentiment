@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.MachineLearning.Mathematics.Vectors;
+using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;

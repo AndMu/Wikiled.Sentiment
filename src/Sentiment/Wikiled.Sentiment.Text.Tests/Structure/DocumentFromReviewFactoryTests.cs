@@ -52,7 +52,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
 
             var adjustment = new Mock<IRatingAdjustment>();
             var rating = new RatingData();
-            rating.Positive += 2;
+            rating.AddPositive(2);
             adjustment.Setup(item => item.Rating)
                 .Returns(rating);
 

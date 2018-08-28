@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
 
         protected override double? GetValue()
         {
-            return Sentence.CalculateSentiment();
+            return Sentence.CalculateSentiment().RawRating;
         }
 
         protected override void Process(Document currentDocument, StatisticsResult result)
@@ -30,18 +30,18 @@ namespace Wikiled.Sentiment.Text.MachineLearning.Statistics
             for (int i = 0; i < currentDocument.Sentences.Count; i++)
             {
                 autoEvictingDictionary.Increment();
-                SentenceItem currenSentence = currentDocument.Sentences[i];
-                IStatisticsResult statistics = currenSentence == Sentence
+                SentenceItem currentSentence = currentDocument.Sentences[i];
+                IStatisticsResult statistics = currentSentence == Sentence
                                                    ? (IStatisticsResult)result
-                                                   : new NullStatisticsResult(currenSentence.CalculateSentiment());
+                                                   : new NullStatisticsResult(currentSentence.CalculateSentiment().RawRating);
 
                 foreach (var statisticsResult in autoEvictingDictionary.Values)
                 {
-                    statisticsResult.AddData(currenSentence.CalculateSentiment());
+                    statisticsResult.AddData(currentSentence.CalculateSentiment().RawRating);
                     statistics.AddData(statisticsResult.Value);
                 }
 
-                autoEvictingDictionary.Add(currenSentence, statistics);
+                autoEvictingDictionary.Add(currentSentence, statistics);
                 result.IncrementTotal();
                 statistics.IncrementOccurences();
             }
