@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Wikiled.MachineLearning.Mathematics;
 
 namespace Wikiled.Sentiment.Text.Sentiment
@@ -20,11 +21,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
         {
             if (data.IsPositive)
             {
-                instance.AddPositive(data.Value);
+                instance.AddPositive(Math.Abs(data.Value));
             }
             else
             {
-                instance.AddNegative(data.Value);
+                instance.AddNegative(Math.Abs(data.Value));
             }
         }
     }

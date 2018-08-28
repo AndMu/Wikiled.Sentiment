@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "boot -Words=e:\\Source\\PhD\\src\\Paper\\words_trump.csv -Path=e:\\DataSets\\Trump\\Messages\\important.json -Destination=train"
+      "commandLineArgs": "train -Model=Amazon -Positive=\"h:\\DataSets\\Amazon\\Supervised\\out_8\\pos\" -Negative=\"h:\\DataSets\\Amazon\\Supervised\\out_8\\neg\""
     }
   }
 }

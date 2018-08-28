@@ -25,14 +25,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             foreach (var document in GetReview(path))
             {
-                var item = new SingleProcessingData(document.Text);
                 if (positive == true)
                 {
-                    item.Stars = 5;
+                    document.Stars = 5;
                 }
                 else if (positive == false)
                 {
-                    item.Stars = 1;
+                    document.Stars = 1;
                 }
 
                 yield return new ParsingDocumentHolder(splitter, document);
