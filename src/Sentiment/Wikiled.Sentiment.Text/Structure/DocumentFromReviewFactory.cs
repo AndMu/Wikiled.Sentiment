@@ -14,7 +14,6 @@ namespace Wikiled.Sentiment.Text.Structure
 
             var document = new Document();
             document.DocumentTime = adjustment.Review.Document.DocumentTime;
-            document.Text = adjustment.Review.Document.Text;
             document.Stars = adjustment.Review.Document.Stars;
             document.Id = adjustment.Review.Document.Id;
             document.Author = adjustment.Review.Document.Author;
@@ -60,6 +59,7 @@ namespace Wikiled.Sentiment.Text.Structure
                 }
             }
 
+            document.Text = adjustment.Review.Document.Text;
             return document;
         }
     }

@@ -67,12 +67,12 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
             Assert.AreEqual(0, data[0].Index);
             Assert.AreEqual(SentimentLevel.Sentence, data[0].Level);
             Assert.AreEqual("0 (Root)", data[0].Text);
-            Assert.AreEqual(12, data[0].Value);
+            Assert.AreEqual(1, data[0].Value);
 
             Assert.AreEqual(2, data[2].Index);
             Assert.AreEqual(SentimentLevel.Sentence, data[data.Count - 1].Level);
             Assert.AreEqual("2 (Root)", data[2].Text);
-            Assert.AreEqual(12, data[2].Value);
+            Assert.AreEqual(1, data[2].Value);
         }
     }
 }

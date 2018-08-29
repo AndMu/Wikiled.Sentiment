@@ -34,8 +34,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             sentences.Add(new Mock<ISentence>());
             foreach (var sentence in sentences)
             {
-                sentence.Setup(item => item.Text)
-                    .Returns("Sentence");
+                sentence.Setup(item => item.Text).Returns("Sentence");
                 var currentWords = new List<TestWordItem>();
                 for (int i = 0; i < 2; i++)
                 {
