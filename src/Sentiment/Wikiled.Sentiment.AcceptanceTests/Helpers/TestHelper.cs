@@ -23,7 +23,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         private readonly Lazy<ICachedDocumentsSource> cachedDocumentSource;
 
-        public TestHelper(string server = "192.168.0.147", int port = 6373)
+        public TestHelper(string server = "192.168.0.70", int port = 6373)
         {
             ConfigurationHandler configuration = new ConfigurationHandler();
             configuration.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]));
