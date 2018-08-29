@@ -15,12 +15,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public SupportVectorMachine<Linear> Model { get; private set;}
+        public SupportVectorMachine Model { get; private set;}
 
         public void Train(int[] y, double[][] x, CancellationToken token)
         {
             log.Info("Training SVM...");
-            var gridsearch = new GridSearch<SupportVectorMachine<Linear>, double[], int>
+            var gridsearch = new GridSearch<SupportVectorMachine, double[], int>
                                  {
                                      ParameterRanges =
                                          new GridSearchRangeCollection
@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         public void Load(string path)
         {
             log.Info("Loading {0}", path);
-            Model = Serializer.Load<SupportVectorMachine<Linear>>(path);
+            Model = Serializer.Load<SupportVectorMachine>(path);
         }
 
         public double[] Probability(double[][] x)

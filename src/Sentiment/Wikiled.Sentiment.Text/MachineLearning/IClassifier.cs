@@ -6,7 +6,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 {
     public interface IClassifier
     {
-        SupportVectorMachine<Linear> Model { get; }
+        SupportVectorMachine Model { get; }
 
         void Train(int[] y, double[][] x, CancellationToken token);
 
