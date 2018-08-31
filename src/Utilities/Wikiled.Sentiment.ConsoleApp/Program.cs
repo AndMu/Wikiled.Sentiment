@@ -5,7 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using NLog;
+using NLog.Extensions.Logging;
+using Wikiled.Common.Utilities.Resources;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Extraction;
@@ -20,6 +23,8 @@ namespace Wikiled.Sentiment.ConsoleApp
 
         public static async Task Main(string[] args)
         {
+            var loggerFactory = new LoggerFactory();
+            loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
             log.Info("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
             ConfigurationHandler configuration = new ConfigurationHandler();
             var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
@@ -29,7 +34,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             }
             else
             {
-                DataDownloader dataDownloader = new DataDownloader();
+                DataDownloader dataDownloader = new DataDownloader(loggerFactory);
                 var task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
                 task.Wait();
             }
@@ -68,7 +73,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                 }
 
                 command.ParseArguments(args.Skip(1)); // or CommandLineParser.ParseArguments(c, args.Skip(1))
-                await command.StartExecution(CancellationToken.None);
+                await command.StartExecution(CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
