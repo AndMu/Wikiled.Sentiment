@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Wikiled.Common.Logging;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline

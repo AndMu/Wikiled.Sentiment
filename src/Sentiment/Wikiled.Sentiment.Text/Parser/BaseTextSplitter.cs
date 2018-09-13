@@ -3,6 +3,7 @@ using NLog;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;
+using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 
@@ -35,7 +36,8 @@ namespace Wikiled.Sentiment.Text.Parser
 
             using (new PerformanceTrace(log.Debug, "Process"))
             {
-                request.Document.Text = handler.Repair.Repair(request.Document.Text);
+                string text = request.Document.Text.Trim();
+                request.Document.Text = text;
                 if (string.IsNullOrWhiteSpace(request.Document.Id))
                 {
                     var tag = request.Document.Id = GenerateKey(request.Document.Text);
@@ -45,12 +47,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
                 if (document == null)
                 {
-                    string text = request.Document.Text.Trim();
-                    if (string.IsNullOrEmpty(text))
-                    {
-                        document = new Document();
-                    }
-                    else
+                    if (!string.IsNullOrEmpty(text))
                     {
                         text = text.SanitizeXmlString();
                         document = await cache.GetCached(text).ConfigureAwait(false);
@@ -60,16 +57,26 @@ namespace Wikiled.Sentiment.Text.Parser
                 if (document != null)
                 {
                     log.Debug("Cache HIT");
+                    document = document.CloneJson();
                     document.Id = request.Document.Id;
                     return document;
                 }
 
-                document = await Task.Run(() => ActualProcess(request)).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(text))
+                {
+                    document = await Task.Run(() => ActualProcess(request)).ConfigureAwait(false);
+                }
+                else
+                {
+                    document = new Document();
+                    log.Info("Empty document detected");
+                }
+
                 document.Id = request.Document.Id;
                 document.DocumentTime = request.Document.DocumentTime;
                 document.Author = request.Document.Author;
                 document.Title = request.Document.Title;
-                if (await cache.Save(document).ConfigureAwait(false))
+                if (await cache.Save(document.CloneJson()).ConfigureAwait(false))
                 {
                     return document;
                 }

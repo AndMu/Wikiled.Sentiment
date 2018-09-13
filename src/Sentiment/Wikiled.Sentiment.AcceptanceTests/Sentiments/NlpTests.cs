@@ -27,8 +27,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]);
             var libraryPath = Path.Combine(path, @"Library/Standard/");
-            var dictionary = new BasicEnglishDictionary();
-            wordsHandler = new WordsDataLoader(libraryPath, dictionary);
+            wordsHandler = new WordsDataLoader(libraryPath);
             splitter = new OpenNLPTextSplitter(wordsHandler, path, NullCachedDocumentsSource.Instance);
         }
 

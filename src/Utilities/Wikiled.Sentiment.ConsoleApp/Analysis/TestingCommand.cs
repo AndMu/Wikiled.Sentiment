@@ -5,11 +5,13 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using Autofac;
 using CsvHelper;
 using NLog;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -96,7 +98,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             {
                 foreach (var word in context.Processed.Words)
                 {
-                    vector.ExtractData(handler.NRCDictionary.FindRecord(word));
+                    vector.ExtractData(handler.Container.Resolve<INRCDictionary>().FindRecord(word));
                 }
             }
 

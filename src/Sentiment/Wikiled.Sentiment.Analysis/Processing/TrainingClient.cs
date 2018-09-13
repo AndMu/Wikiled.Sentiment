@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Autofac;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.MachineLearning.Mathematics.Vectors;
@@ -120,7 +121,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             featureExtractor.Process(context.Review);
-            pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(sentimentVector, context.Review.Items);
+            pipeline.Splitter.DataLoader.Container.Resolve<INRCDictionary>().ExtractToVector(sentimentVector, context.Review.Items);
             return context;
         }
 

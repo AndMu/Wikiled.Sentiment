@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Autofac;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
@@ -9,6 +10,7 @@ using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Text.Tests.MachineLearning
@@ -41,7 +43,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.NRCDictionary, null));
+            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.Container.Resolve<INRCDictionary>(), null));
             Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(null, reviewMock.Object));
         }
 
@@ -62,7 +64,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 
             var data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
             review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
-            instance = new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.NRCDictionary, review);
+            instance = new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.Container.Resolve<INRCDictionary>(), review);
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);

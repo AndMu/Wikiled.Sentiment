@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Data;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Words
 {
@@ -108,7 +111,7 @@ namespace Wikiled.Sentiment.Text.Words
             item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
             item.IsQuestion = wordsHandlers.IsQuestion(item);
             item.IsStopWord = wordsHandlers.IsStop(item);
-            item.Inquirer = wordsHandlers.InquirerManager.GetDefinitions(text);
+            item.Inquirer = wordsHandlers.Container.Resolve<IInquirerManager>().GetDefinitions(text);
             return item;
         }
 

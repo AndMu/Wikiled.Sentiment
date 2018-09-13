@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Autofac;
+using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Microsoft.Extensions.Caching.Memory;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Extensions;
@@ -25,10 +26,6 @@ namespace Wikiled.Sentiment.Text.Parser
     {
         private readonly string datasetPath;
 
-        private readonly Lazy<IInquirerManager> inquirerManager;
-
-        private readonly Lazy<INRCDictionary> nrcDictionary;
-
         private IAspectDectector aspectDectector;
 
         private Dictionary<string, double> booster;
@@ -49,69 +46,40 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
-        public WordsDataLoader(string path, IWordsDictionary dictionary)
+        public WordsDataLoader(string path)
         {
-            if (dictionary is null)
-            {
-                throw new ArgumentNullException(nameof(dictionary));
-            }
-
             if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             }
 
-            inquirerManager = new Lazy<IInquirerManager>(
-                () =>
-                    {
-                        var instance = new InquirerManager();
-                        instance.Load();
-                        return instance;
-                    });
-
-            nrcDictionary = new Lazy<INRCDictionary>(
-                () =>
-                    {
-                        var instance = new NRCDictionary();
-                        instance.Load();
-                        return instance;
-                    });
-
             datasetPath = path;
-            AspectDectector = NullAspectDectector.Instance;
-            Extractor = new RawWordExtractor(dictionary, new MemoryCache(new MemoryCacheOptions()));
-            WordFactory = new WordOccurenceFactory(this);
-            AspectFactory = new MainAspectHandlerFactory(this);
-            FrequencyListManager = new FrequencyListManager();
             Reset();
-            repair = new SentenceRepairHandler(Path.Combine(path, "Repair"), this);
         }
 
         public IAspectDectector AspectDectector { get => aspectDectector; set => aspectDectector = value ?? throw new ArgumentNullException(nameof(value)); }
 
-        public IMainAspectHandlerFactory AspectFactory { get; }
+        public IPOSTagger PosTagger { get; } = new NaivePOSTagger(new BNCList(), WordTypeResolver.Instance);
+
+        public IContainer Container { get; private set; }
+
+        public IMainAspectHandlerFactory AspectFactory { get; private set; }
 
         public bool DisableFeatureSentiment { get; set; }
 
         public bool DisableInvertors { get; set; }
 
-        public IRawTextExtractor Extractor { get; }
+        public IRawTextExtractor Extractor { get; private set; }
 
-        public IInquirerManager InquirerManager => inquirerManager.Value;
-
-        public IFrequencyListManager FrequencyListManager { get; }
+        public IFrequencyListManager FrequencyListManager { get; private set; }
 
         public bool IsDisableInvertorSentiment { get; set; }
-
-        public INRCDictionary NRCDictionary => nrcDictionary.Value;
-
-        public IPOSTagger PosTagger { get; } = new NaivePOSTagger(new BNCList(), WordTypeResolver.Instance);
 
         public ISentenceRepairHandler Repair { get => repair ?? NullSentenceRepairHandler.Instance; set => repair = value; }
 
         public ISentimentDataHolder SentimentDataHolder { get; private set; }
 
-        public IWordFactory WordFactory { get; }
+        public IWordFactory WordFactory { get; private set; }
 
         public WordRepairRule FindRepairRule(IWordItem word)
         {
@@ -145,7 +113,7 @@ namespace Wikiled.Sentiment.Text.Parser
             {
                 if (negatingRule.TryGetValue(WordItemType.Invertor, out WordRepairRule rule))
                 {
-                    var value = new WordRepairRuleEngine(word, rule).Evaluate();
+                    bool? value = new WordRepairRuleEngine(word, rule).Evaluate();
                     if (value.HasValue)
                     {
                         return value.Value;
@@ -155,7 +123,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 return true;
             }
 
-            var evaluationValue = new WordRepairRuleEngine(word, FindRepairRule(word)).Evaluate();
+            bool? evaluationValue = new WordRepairRuleEngine(word, FindRepairRule(word)).Evaluate();
             if (evaluationValue.HasValue)
             {
                 return evaluationValue.Value;
@@ -180,7 +148,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public bool IsSentiment(IWordItem word)
         {
-            var sentiment = MeasureSentiment(word);
+            SentimentValue sentiment = MeasureSentiment(word);
             return sentiment != null;
         }
 
@@ -241,8 +209,22 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public void Reset()
         {
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterType<BasicEnglishDictionary>().As<IWordsDictionary>().SingleInstance();
+            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<NRCDictionary>().As<INRCDictionary>().SingleInstance().OnActivated(item => item.Instance.Load());
+            Container = builder.Build();
+
             SentimentDataHolder = new SentimentDataHolder();
+            AspectDectector = NullAspectDectector.Instance;
+            Extractor = new RawWordExtractor(Container.Resolve<IWordsDictionary>(), new MemoryCache(new MemoryCacheOptions()));
+            WordFactory = new WordOccurenceFactory(this);
+            AspectFactory = new MainAspectHandlerFactory(this);
+            FrequencyListManager = new FrequencyListManager();
+
             Load();
+
+            repair = new SentenceRepairHandler(Path.Combine(datasetPath, "Repair"), this);
         }
 
         private void ReadRepairRules()
@@ -251,9 +233,9 @@ namespace Wikiled.Sentiment.Text.Parser
             negatingLemmaBasedRepair = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRepairRule = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRule = new Dictionary<WordItemType, WordRepairRule>();
-            foreach (var file in Directory.GetFiles(folder))
+            foreach (string file in Directory.GetFiles(folder))
             {
-                var data = XDocument.Load(file).XmlDeserialize<WordRepairRule>();
+                WordRepairRule data = XDocument.Load(file).XmlDeserialize<WordRepairRule>();
                 if (!string.IsNullOrEmpty(data.Lemma))
                 {
                     negatingLemmaBasedRepair[data.Lemma] = data;
@@ -273,7 +255,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> ReadTextData(string file)
         {
-            var stream = new DictionaryStream(Path.Combine(datasetPath, file), new FileStreamSource());
+            DictionaryStream stream = new DictionaryStream(Path.Combine(datasetPath, file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
     }

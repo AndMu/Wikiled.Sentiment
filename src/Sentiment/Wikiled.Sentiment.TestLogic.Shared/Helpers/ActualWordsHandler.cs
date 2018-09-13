@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             var resources = Configuration.GetConfiguration("Resources");
             var resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
             Configuration.SetConfiguration("Resources", resourcesPath);
-            var factory = new ExtendedLexiconFactory(Configuration);
+            var factory = new FullLexiconContainerFactory(Configuration);
             factory.Construct();
             WordsHandler = factory.WordsHandler;
             ((WordsDataLoader)WordsHandler).Repair = null;

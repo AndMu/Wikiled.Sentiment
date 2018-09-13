@@ -1,6 +1,6 @@
 using Wikiled.Sentiment.Text.Parser;
 
-namespace Wikiled.Sentiment.Analysis.Processing
+namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
     public interface ISplitterHelper
     {

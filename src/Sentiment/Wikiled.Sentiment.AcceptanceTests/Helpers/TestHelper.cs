@@ -6,9 +6,7 @@ using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
-using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -20,8 +18,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         private readonly Lazy<RedisLink> redis;
 
         private readonly Lazy<AmazonRepository> amazonRepository;
-
-        private readonly Lazy<ICachedDocumentsSource> cachedDocumentSource;
 
         public TestHelper(string server = "192.168.0.70", int port = 6373)
         {
@@ -35,12 +31,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             });
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
-            cachedDocumentSource = new Lazy<ICachedDocumentsSource>(() =>
-            {
-                var cacheFactory = new RedisDocumentCacheFactory(Redis);
-                return cacheFactory.Create(POSTaggerType.SharpNLP);
-            });
-
             var localCache = new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions()));
             SplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
         }
@@ -48,8 +38,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         public static TestHelper Instance { get; } = new TestHelper();
 
         public AmazonRepository AmazonRepository => amazonRepository.Value;
-
-        public ICachedDocumentsSource Cache => cachedDocumentSource.Value;
 
         public ISplitterHelper SplitterHelper { get; }
 

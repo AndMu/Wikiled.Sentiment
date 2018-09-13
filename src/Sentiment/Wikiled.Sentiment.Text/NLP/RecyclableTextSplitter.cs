@@ -45,7 +45,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 splitter = factory.ConstructSingle();
             }
 
-            var result = await splitter.Process(request);
+            var result = await splitter.Process(request).ConfigureAwait(false);
             if (Interlocked.Increment(ref current) >= maxProcessing)
             {
                 splitter.Dispose();

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
+using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
@@ -44,7 +45,7 @@ namespace Wikiled.Sentiment.Text.Cache
 
             if (nearCache.TryGetValue(id, out Document doc))
             {
-                return doc;
+                return doc.CloneJson();
             }
 
             var key = new RepositoryKey(this, new ObjectKey(id));
@@ -59,7 +60,7 @@ namespace Wikiled.Sentiment.Text.Cache
                 return null;
             }
 
-            return doc;
+            return doc.CloneJson();
         }
 
         public Task<Document> GetCached(Document original)
@@ -97,7 +98,7 @@ namespace Wikiled.Sentiment.Text.Cache
             nearCache[document.Id] = document;
             var key = new RepositoryKey(this, new ObjectKey(document.Id));
             key.AddIndex(new IndexKey(this, "Index:All", false));
-            await manager.Client.AddRecord(key, document).ConfigureAwait(false);;
+            await manager.Client.AddRecord(key, document).ConfigureAwait(false);
             return true;
         }
     }

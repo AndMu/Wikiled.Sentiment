@@ -15,9 +15,9 @@ namespace Wikiled.Sentiment.Text.Tests.Configuration
             configuration.Setup(item => item.ResolvePath("Resources")).Returns(@"c:/data");
             configuration.Setup(item => item.SafeGetConfiguration("Lexicon", @"Library/Standard")).Returns(@"c:/data");
             
-            IExtendedLexiconFactory factory = new ExtendedLexiconFactory(configuration.Object);
-            Assert.AreEqual(@"c:/data", factory.ResourcesPath);
-            Assert.IsFalse(factory.IsConstructed);
+            IExtendedLexiconContainer container = new FullLexiconContainerFactory(configuration.Object);
+            Assert.AreEqual(@"c:/data", container.ResourcesPath);
+            Assert.IsFalse(container.IsConstructed);
         }
     }
 }

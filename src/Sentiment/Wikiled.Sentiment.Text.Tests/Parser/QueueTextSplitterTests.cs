@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
                     .Returns(
                         async () =>
                         {
-                            await Task.Delay(50);
+                            await Task.Delay(50).ConfigureAwait(false); 
                             return null;
                         });
                 
@@ -54,7 +54,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
                 tasks.Add(instance.Process(request));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(false);
             instance.Dispose();
             splitter.Verify(item => item.Process(request), Times.Exactly(times));
             factory.Verify(item => item.ConstructSingle(), Times.Exactly(construction));

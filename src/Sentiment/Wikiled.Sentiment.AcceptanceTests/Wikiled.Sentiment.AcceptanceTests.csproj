@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>NET471</TargetFramework>
@@ -7,14 +7,14 @@
 
   <ItemGroup>
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
-    <PackageReference Include="Moq" Version="4.9.0" />
+    <PackageReference Include="Moq" Version="4.10.0" />
     <PackageReference Include="Newtonsoft.Json" version="11.0.2" />
     <PackageReference Include="NLog" version="4.5.9" />
     <PackageReference Include="NUnit" version="3.10.1" />
     <PackageReference Include="Polly" version="6.1.0" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
     <PackageReference Include="Snappy.NET" version="1.1.1.8" />
-    <PackageReference Include="StackExchange.Redis" version="1.2.6" />
+    <PackageReference Include="StackExchange.Redis" version="2.0.505" />
     <PackageReference Include="System.Reactive" version="4.1.0" />
     <PackageReference Include="System.Reactive.Core" version="4.1.0" />
     <PackageReference Include="System.Reactive.Interfaces" version="4.1.0" />
@@ -25,7 +25,7 @@
     <PackageReference Include="Wikiled.Arff" version="2.2.0" />
     <PackageReference Include="Wikiled.Common" Version="1.1.1" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.2.10" />
-    <PackageReference Include="Wikiled.Redis" version="3.1.2" />
+    <PackageReference Include="Wikiled.Redis" version="3.2.2" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.6.23" />
   </ItemGroup>
 

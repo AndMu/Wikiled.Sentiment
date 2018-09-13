@@ -38,19 +38,17 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
             isLoaded = true;
             log.Info("Loading lexicon...");
-            var lexiconFactory = new ExtendedLexiconFactory(configuration);
-            lexiconFactory.Construct();
+            var lexiconFactory = new FullLexiconContainerFactory(configuration);
             var factory = Construct(lexiconFactory);
             if (factory == null)
             {
                 throw new InvalidOperationException("Failed to construct!!!");
             }
 
-            factory.Construct();
             Splitter = new QueueTextSplitter(Parallel, factory);
             DataLoader = lexiconFactory.WordsHandler;
         }
 
-        protected abstract ISplitterFactory Construct(ILexiconFactory lexiconFactory);
+        protected abstract ISplitterFactory Construct(ILexiconContainerFactory lexiconContainerFactory);
     }
 }

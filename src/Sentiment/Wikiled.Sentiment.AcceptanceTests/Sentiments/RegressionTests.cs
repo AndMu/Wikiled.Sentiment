@@ -39,7 +39,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task RawSentimentDetection(SentimentTestData data)
         {
             log.Info("RawSentimentDetection: {0}", data);
-            TestRunner runner = new TestRunner(TestHelper.Instance, data);
+            TestHelper helper = new TestHelper();
+            TestRunner runner = new TestRunner(helper, data);
             await runner.Load().LastOrDefaultAsync();
             TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, new ParsedReviewManagerFactory()), string.Empty);
             testing.DisableAspects = true;

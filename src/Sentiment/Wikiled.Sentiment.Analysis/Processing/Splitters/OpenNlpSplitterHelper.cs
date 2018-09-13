@@ -19,9 +19,9 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             this.configuration = configuration ?? throw new System.ArgumentNullException(nameof(configuration));
         }
 
-        protected override ISplitterFactory Construct(ILexiconFactory lexiconFactory)
+        protected override ISplitterFactory Construct(ILexiconContainerFactory lexiconContainerFactory)
         {
-            return new RecyclableSplitterFactory(new OpenNlpSplitterFactory(configuration.ResolvePath("Resources"), lexiconFactory, cacheFactory));
+            return new RecyclableSplitterFactory(new OpenNlpSplitterFactory(configuration.ResolvePath("Resources"), lexiconContainerFactory, cacheFactory));
         }
     }
 }

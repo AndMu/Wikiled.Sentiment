@@ -11,9 +11,9 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
         {
         }
 
-        protected override ISplitterFactory Construct(ILexiconFactory lexiconFactory)
+        protected override ISplitterFactory Construct(ILexiconContainerFactory lexiconContainerFactory)
         {
-            return new SimpleSplitterFactory(lexiconFactory);
+            return new SimpleSplitterFactory(lexiconContainerFactory);
         }
     }
 }

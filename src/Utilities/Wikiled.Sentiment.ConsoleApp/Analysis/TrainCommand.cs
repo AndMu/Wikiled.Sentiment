@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using NLog;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 

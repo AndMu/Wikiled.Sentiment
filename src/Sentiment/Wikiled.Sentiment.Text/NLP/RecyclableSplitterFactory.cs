@@ -12,15 +12,6 @@ namespace Wikiled.Sentiment.Text.NLP
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public void Construct()
-        {
-            factory.Construct();
-        }
-
-        public bool CanConstruct => factory.CanConstruct;
-
-        public bool IsConstructed => factory.IsConstructed;
-
         public void Dispose()
         {
             factory.Dispose();

@@ -70,7 +70,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 initTasks.Add(Task.Run(() => LoadDefault()));
             }
 
-            await Task.WhenAll(initTasks);
+            await Task.WhenAll(initTasks).ConfigureAwait(false); 
             monitor = new PerformanceMonitor(0);
             EvalData[] types;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
@@ -170,8 +170,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private async Task<EvalData> ProcessReview(EvalData data)
         {
-            await semaphore.WaitAsync()
-                           .ConfigureAwait(false);
+            await semaphore.WaitAsync().ConfigureAwait(false);
             try
             {
                 var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
@@ -189,8 +188,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 else if (Neutral)
                 {
                     // check also using default lexicon
-                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text))
-                                                    .ConfigureAwait(false);
+                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
                     var originalReview = managerFactory.Create(bootStrapSplitter.DataLoader, main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 

@@ -8,14 +8,14 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         private readonly IWordsHandler wordsHandler;
 
-        public SimpleSplitterFactory(ILexiconFactory factory)
+        public SimpleSplitterFactory(ILexiconContainerFactory containerFactory)
         {
-            if (factory is null)
+            if (containerFactory is null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(containerFactory));
             }
 
-            wordsHandler = factory.WordsHandler;
+            wordsHandler = containerFactory.WordsHandler;
         }
 
         public bool CanConstruct => !IsConstructed;

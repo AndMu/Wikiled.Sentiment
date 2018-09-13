@@ -3,6 +3,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Xml.Linq;
+using Autofac;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
@@ -132,7 +133,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             try
             {
                 var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
-                pipeline.Splitter.DataLoader.NRCDictionary.ExtractToVector(SentimentVector, context.Review.Items);
+                pipeline.Splitter.DataLoader.Container.Resolve<INRCDictionary>().ExtractToVector(SentimentVector, context.Review.Items);
 
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);

@@ -1,12 +1,9 @@
-﻿using Wikiled.Sentiment.Text.Aspects;
+﻿using Autofac;
+using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Text.Analysis.POS;
-using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP;
-using Wikiled.Text.Analysis.NLP.Frequency;
-using Wikiled.Text.Analysis.NLP.NRC;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
@@ -14,13 +11,7 @@ namespace Wikiled.Sentiment.Text.Parser
     {
         bool DisableInvertors { get; set; }
 
-        IInquirerManager InquirerManager { get; }
-
-        IFrequencyListManager FrequencyListManager { get; }
-
-        INRCDictionary NRCDictionary { get; }
-
-        ISentenceRepairHandler Repair { get; }
+        IContainer Container { get; }
 
         IMainAspectHandlerFactory AspectFactory { get; }
 
@@ -37,8 +28,6 @@ namespace Wikiled.Sentiment.Text.Parser
         bool DisableFeatureSentiment { get; set; }
 
         void Reset();
-
-        WordRepairRule FindRepairRule(IWordItem word);
 
         bool IsFeature(IWordItem word);
 

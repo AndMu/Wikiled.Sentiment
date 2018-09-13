@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Autofac;
 using NLog;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
@@ -18,11 +19,11 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private readonly ICacheFactory cachedFactory;
 
-        public OpenNlpSplitterFactory(string path, ILexiconFactory factory, ICacheFactory cachedFactory)
+        public OpenNlpSplitterFactory(string path, ILexiconContainerFactory containerFactory, ICacheFactory cachedFactory)
         {
-            if (factory is null)
+            if (containerFactory is null)
             {
-                throw new ArgumentNullException(nameof(factory));
+                throw new ArgumentNullException(nameof(containerFactory));
             }
 
             if (cachedFactory is null)
@@ -38,7 +39,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             log.Debug("Creating with resource path: {0}", path);
             resourcesPath = path;
             this.cachedFactory = cachedFactory;
-            wordsHandler = factory.WordsHandler;
+            wordsHandler = containerFactory.WordsHandler;
         }
 
         public bool CanConstruct => Directory.Exists(resourcesPath) && !IsConstructed;

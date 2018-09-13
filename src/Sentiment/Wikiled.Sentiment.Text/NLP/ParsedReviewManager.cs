@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using Autofac;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.NLP
@@ -35,7 +37,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 return review;
             }
 
-            review = new ParsedReview(manager.NRCDictionary, document);
+            review = new ParsedReview(manager.Container.Resolve<INRCDictionary>(), document);
             foreach (var sentence in document.Sentences)
             {
                 CreateSentence(sentence);
