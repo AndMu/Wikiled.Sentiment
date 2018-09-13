@@ -1,12 +1,8 @@
 ﻿using System;
 using System.IO;
-using Autofac;
 using NLog;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
-using Wikiled.Text.Analysis.Dictionary;
-using Wikiled.Text.Analysis.NLP.NRC;
-using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {

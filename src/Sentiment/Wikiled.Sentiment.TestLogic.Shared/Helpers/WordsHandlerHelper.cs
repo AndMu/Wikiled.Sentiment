@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Autofac;
+using Moq;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
@@ -18,11 +19,13 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             Handler.Setup(item => item.Extractor).Returns(RawTextExractor.Object);
             Loader = new Mock<DocumentLoader>();
             RawTextExractor.Setup(item => item.GetWord(It.IsAny<string>())).Returns((string myval) => myval);
+            
             InquirerManager = new Mock<IInquirerManager>();
-            Handler.Setup(item => item.InquirerManager).Returns(InquirerManager.Object);
-
             Dictionary = new Mock<INRCDictionary>();
-            Handler.Setup(item => item.NRCDictionary).Returns(Dictionary.Object);
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance(InquirerManager.Object);
+            builder.RegisterInstance(Dictionary.Object);
+            Handler.Setup(item => item.Container).Returns(builder.Build());
         }
 
         public Mock<IInquirerManager> InquirerManager { get; }

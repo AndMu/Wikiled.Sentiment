@@ -15,8 +15,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Helpers
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, path);
             configuration.SetConfiguration("resouces", path);
             LibraryPath = Path.Combine(path, @"Library\Standard\");
-            var dictionary = new BasicEnglishDictionary();
-            WordsHandlers = new WordsDataLoader(LibraryPath, dictionary);
+            WordsHandlers = new WordsDataLoader(LibraryPath);
             WordsHandlers.Load();
         }
 
