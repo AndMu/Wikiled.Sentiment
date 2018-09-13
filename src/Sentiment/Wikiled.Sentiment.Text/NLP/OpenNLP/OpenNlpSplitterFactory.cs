@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             log.Debug("Creating with resource path: {0}", path);
             resourcesPath = path;
             this.cachedFactory = cachedFactory;
-            wordsHandler = containerFactory.WordsHandler;
+            wordsHandler = containerFactory.Construct();
         }
 
         public bool CanConstruct => Directory.Exists(resourcesPath) && !IsConstructed;

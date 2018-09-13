@@ -8,15 +8,17 @@ namespace Wikiled.Sentiment.Text.Configuration
 {
     public class FullLexiconContainerFactory : ILexiconContainerFactory
     {
+        private readonly IConfigurationHandler configuration;
+
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         public FullLexiconContainerFactory(IConfigurationHandler configuration)
         {
-            if (configuration is null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+       
+        public IWordsHandler Construct()
+        {
             var path = configuration.ResolvePath("Resources");
             var resourcesPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
             if (!Directory.Exists(resourcesPath))
@@ -25,9 +27,7 @@ namespace Wikiled.Sentiment.Text.Configuration
                 throw new InvalidOperationException("Lexicon can't be constructed");
             }
 
-            WordsHandler = new WordsDataLoader(resourcesPath);
+            return new WordsDataLoader(resourcesPath);
         }
-       
-        public IWordsHandler WordsHandler { get; }
     }
 }

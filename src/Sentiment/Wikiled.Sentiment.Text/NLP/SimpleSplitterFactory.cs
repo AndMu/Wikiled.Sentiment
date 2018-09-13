@@ -15,19 +15,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 throw new ArgumentNullException(nameof(containerFactory));
             }
 
-            wordsHandler = containerFactory.WordsHandler;
-        }
-
-        public bool CanConstruct => !IsConstructed;
-
-        public bool IsConstructed { get; private set; }
-
-        public ITextSplitter TextSplitter { get; private set; }
-
-        public void Construct()
-        {
-            TextSplitter = ConstructSingle();
-            IsConstructed = true;
+            wordsHandler = containerFactory.Construct();
         }
 
         public ITextSplitter ConstructSingle()

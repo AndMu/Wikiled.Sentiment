@@ -46,7 +46,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             }
 
             Splitter = new QueueTextSplitter(Parallel, factory);
-            DataLoader = lexiconFactory.WordsHandler;
+            DataLoader = lexiconFactory.Construct();
         }
 
         protected abstract ISplitterFactory Construct(ILexiconContainerFactory lexiconContainerFactory);

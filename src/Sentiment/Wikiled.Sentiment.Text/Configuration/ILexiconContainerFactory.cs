@@ -4,6 +4,6 @@ namespace Wikiled.Sentiment.Text.Configuration
 {
     public interface ILexiconContainerFactory
     {
-        IWordsHandler WordsHandler { get; }
+        IWordsHandler Construct();
     }
 }
