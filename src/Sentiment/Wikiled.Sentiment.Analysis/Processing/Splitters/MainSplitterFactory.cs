@@ -1,8 +1,17 @@
-﻿using System;
+﻿using Autofac;
 using NLog;
+using System;
+using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.NLP.Repair;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
+using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.Dictionary;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 {
@@ -20,25 +29,47 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             this.cacheFactory = cacheFactory ?? throw new ArgumentNullException(nameof(cacheFactory));
         }
 
-        public ISplitterHelper Create(POSTaggerType value)
+        public bool SupportRepair { get; set; } = true;
+
+        public IContainerHelper Create(POSTaggerType value)
         {
             log.Debug("Create: {0}", value);
-            ISplitterHelper instance;
+            ContainerBuilder builder = new ContainerBuilder();
+            builder.RegisterInstance(cacheFactory);
+            builder.RegisterInstance(configuration);
+            builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
+            builder.RegisterType<BasicEnglishDictionary>().As<IWordsDictionary>().SingleInstance();
+            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<NRCDictionary>().As<INRCDictionary>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>().SingleInstance();
+            if (SupportRepair)
+            {
+                builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
+            }
+            else
+            {
+                builder.Register(item => (ISentenceRepairHandler)null).As<ISentenceRepairHandler>();
+            }
+
+            builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance();
+            builder.RegisterType<AspectSerializer>().As<IWordsHandler>().SingleInstance();
+            builder.RegisterType<QueueTextSplitter>().As<ITextSplitter>();
+
             switch (value)
             {
                 case POSTaggerType.Simple:
-                    instance = new SimpleSplitterHelper(configuration);
+                    //builder.Register(c => new SimpleTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
+                    //builder.Register(c => new SimpleTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
                     break;
                 case POSTaggerType.SharpNLP:
-                    instance = new OpenNlpSplitterHelper(cacheFactory, configuration);
+                    //builder.Register(c => new RecyclableTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
+                    //builder.RegisterType<RecyclableTextSplitter>().As<ITextSplitter>();
                     break;
                 default:
                     throw new NotSupportedException(value.ToString());
             }
 
-            log.Debug("Loading lexicon...");
-            instance.Load();
-            return instance;
+            return new ContainerHelper(builder.Build());
         }
     }
 }

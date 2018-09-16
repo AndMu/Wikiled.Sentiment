@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private ISplitterHelper splitter;
+        private IContainerHelper container;
 
         protected SemaphoreSlim Semaphore { get; set; }
 
@@ -59,22 +59,23 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 cacheFactory = new RedisDocumentCacheFactory(redis);
             }
 
-            splitter = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
-            splitter.DataLoader.DisableFeatureSentiment = InvertOff;
-            log.Info("Processing...");
+            container = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
+            throw new NotImplementedException();
+            //container.DataLoader.DisableFeatureSentiment = InvertOff;
+            //log.Info("Processing...");
 
-            if (!string.IsNullOrEmpty(Weights))
-            {
-                log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
-                if (FullWeightReset)
-                {
-                    log.Info("Full weight reset");
-                    splitter.DataLoader.SentimentDataHolder.Clear();
-                }
+            //if (!string.IsNullOrEmpty(Weights))
+            //{
+            //    log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
+            //    if (FullWeightReset)
+            //    {
+            //        log.Info("Full weight reset");
+            //        container.DataLoader.SentimentDataHolder.Clear();
+            //    }
 
-                var adjuster = new WeightSentimentAdjuster(splitter.DataLoader.SentimentDataHolder);
-                adjuster.Adjust(Weights);
-            }
+            //    var adjuster = new WeightSentimentAdjuster(container.DataLoader.SentimentDataHolder);
+            //    adjuster.Adjust(Weights);
+            //}
 
             IObservable<IParsedDocumentHolder> review;
 
@@ -91,11 +92,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
                              
-            Process(review.Select(SynchronizedReviews), splitter);
+            Process(review.Select(SynchronizedReviews), container);
             return Task.CompletedTask;
         }
 
-        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter);
+        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container);
 
         private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
         {
@@ -107,25 +108,25 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         {
             log.Info("Loading {0}", Articles);
             var data = new DataLoader().Load(Articles);
-            return splitter.Splitter.GetParsedReviewHolders(data);
+            return container.GetTextSplitter().GetParsedReviewHolders(data);
         }
 
         private IObservable<IParsedDocumentHolder> GetPositiveReviews()
         {
             log.Info("Positive {0}", Positive);
-            return splitter.Splitter.GetParsedReviewHolders(Positive, true).ToObservable();
+            return container.GetTextSplitter().GetParsedReviewHolders(Positive, true).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetNegativeReviews()
         {
             log.Info("Negative {0}", Negative);
-            return splitter.Splitter.GetParsedReviewHolders(Negative, false).ToObservable();
+            return container.GetTextSplitter().GetParsedReviewHolders(Negative, false).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
             log.Info("Other {0}", Input);
-            return splitter.Splitter.GetParsedReviewHolders(Input, null).ToObservable();
+            return container.Splitter.GetParsedReviewHolders(Input, null).ToObservable();
         }
     }
 }

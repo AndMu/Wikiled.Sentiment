@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             }
 
             instance = new AspectDectector(words.ToArray(), words.ToArray());
-            serializer = new AspectSerializer(ActualWordsHandler.Instance.WordsHandler);
+            serializer = new AspectSerializer(ActualWordsHandler.InstanceSimple.WordsHandler);
         }
 
         [Test]

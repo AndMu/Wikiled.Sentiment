@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -18,7 +17,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly SemaphoreSlim semaphore;
 
-        public QueueTextSplitter(int maxSplitters, ISplitterFactory factory)
+        public QueueTextSplitter(int maxSplitters, Func<ITextSplitter> factory)
         {
             if (factory == null)
             {
@@ -33,7 +32,7 @@ namespace Wikiled.Sentiment.Text.Parser
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
             for (int i = 0; i < maxSplitters; i++)
             {
-                var item = new Lazy<ITextSplitter>(factory.ConstructSingle);
+                var item = new Lazy<ITextSplitter>(factory);
                 splitters.Add(item);
                 workStack.Enqueue(item);
             }

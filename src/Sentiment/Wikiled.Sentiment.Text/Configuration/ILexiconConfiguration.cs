@@ -2,8 +2,8 @@ using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
-    public interface ILexiconContainerFactory
+    public interface ILexiconConfiguration
     {
-        IWordsHandler Construct();
+        string LexiconPath { get; }
     }
 }

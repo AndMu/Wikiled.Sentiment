@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Autofac;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Data;
@@ -92,26 +92,36 @@ namespace Wikiled.Sentiment.Text.Words
 
         public InquirerDefinition Inquirer { get; private set; }
 
-        public static WordOccurrence Create(IWordsHandler wordsHandlers, string text, string raw, BasePOSType pos)
+        public static WordOccurrence Create(IWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager, string text, string raw, BasePOSType pos)
         {
             if (wordsHandlers == null)
             {
                 throw new ArgumentNullException(nameof(wordsHandlers));
             }
 
+            if (extractor == null)
+            {
+                throw new ArgumentNullException(nameof(extractor));
+            }
+
+            if (inquirerManager == null)
+            {
+                throw new ArgumentNullException(nameof(inquirerManager));
+            }
+
             text = text?.ToLower();
-            string rawWord = string.IsNullOrEmpty(raw) ? wordsHandlers.Extractor.GetWord(text) : raw;
+            string rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
             rawWord = rawWord?.ToLower();
             var item = new WordOccurrence(text, rawWord, pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
             item.IsSentiment = wordsHandlers.IsSentiment(item);
             item.IsFeature = wordsHandlers.IsFeature(item);
-            item.IsTopAttribute = wordsHandlers.AspectDectector.IsAttribute(item);
+            item.IsTopAttribute = wordsHandlers.IsAttribute(item);
             item.QuantValue = wordsHandlers.MeasureQuantifier(item);
             item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
             item.IsQuestion = wordsHandlers.IsQuestion(item);
             item.IsStopWord = wordsHandlers.IsStop(item);
-            item.Inquirer = wordsHandlers.Container.Resolve<IInquirerManager>().GetDefinitions(text);
+            item.Inquirer = inquirerManager.GetDefinitions(text);
             return item;
         }
 

@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
         private MainAspectHandler featureExtractor;
 
-        private ISplitterHelper splitter;
+        private IContainerHelper container;
 
         public override string Name { get; } = "extract";
 
@@ -48,8 +48,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
-            splitter = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory());
+            container = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP);
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container, new ParsedReviewManagerFactory());
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))
             {
@@ -65,14 +65,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
             var file = Path.Combine(Out, "features.xml");
             log.Info("Saving {0}...", file);
-            AspectSerializer serializer = new AspectSerializer(splitter.DataLoader);
+            AspectSerializer serializer = new AspectSerializer(container.DataLoader);
             serializer.Serialize(featureExtractor).Save(file);
         }
 
         private IEnumerable<IParsedDocumentHolder> GetReviews()
         {
             log.Info("Input {0}", Source);
-            return splitter.Splitter.GetParsedReviewHolders(Source, null);
+            return container.Splitter.GetParsedReviewHolders(Source, null);
         }
 
         private void Processing(ProcessingContext reviewHolder)

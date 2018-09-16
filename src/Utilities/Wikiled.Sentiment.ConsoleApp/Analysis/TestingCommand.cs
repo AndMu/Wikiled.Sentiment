@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container)
         {
             TestingClient client;
             Out.EnsureDirectoryExistence();
@@ -60,7 +60,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
                 SetupHeader();
-                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory());
+                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container, new ParsedReviewManagerFactory());
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                           .Select(
                               item => 
                               {
-                                  SaveDocument(splitter.DataLoader, item);
+                                  SaveDocument(container.DataLoader, item);
                                   pipeline.Monitor.Increment();
                                   return item;
                               })

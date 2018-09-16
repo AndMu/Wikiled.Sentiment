@@ -24,12 +24,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         {
             this.helper = helper;
             this.definition = definition;
-            Active = helper.SplitterHelper;
+            Active = helper.ContainerHelper;
             var maxParallel = Environment.ProcessorCount / 2;
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
 
-        public ISplitterHelper Active { get; }
+        public IContainerHelper Active { get; }
 
         public IObservable<IParsedDocumentHolder> Load()
         {

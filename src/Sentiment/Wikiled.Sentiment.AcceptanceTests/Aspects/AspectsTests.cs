@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
             await result;
 
-            AspectSerializer serializer = new AspectSerializer(TestHelper.Instance.SplitterHelper.DataLoader);
+            AspectSerializer serializer = new AspectSerializer(TestHelper.Instance.ContainerHelper.DataLoader);
             serializer.Serialize(aspectHandler).Save(Path.Combine(TestContext.CurrentContext.TestDirectory, data.Sentiment.Product + ".xml"));
 
             var features = aspectHandler.GetFeatures(10).ToArray();
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
                 var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = new ParsedReviewManager(TestHelper.Instance.SplitterHelper.DataLoader, parsedDoc).Create();
+                var parseReview = new ParsedReviewManager(TestHelper.Instance.ContainerHelper.DataLoader, parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

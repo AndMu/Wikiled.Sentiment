@@ -22,11 +22,11 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [SetUp]
         public async Task Setup()
         {
-            SimpleTextSplitter splitter = new SimpleTextSplitter(ActualWordsHandler.Instance.WordsHandler);
-            ActualWordsHandler.Instance.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
-            ActualWordsHandler.Instance.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
+            SimpleTextSplitter splitter = new SimpleTextSplitter(ActualWordsHandler.InstanceSimple.WordsHandler);
+            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
+            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.InstanceSimple.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             var data = await splitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
+            review = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, data).Create();
             var sentence = review.Sentences[0];
             instance = new ExtractSentenceTextVector(sentence);
         }
@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [TearDown]
         public void Cleanup()
         {
-            ActualWordsHandler.Instance.WordsHandler.AspectDectector = NullAspectDectector.Instance;
+            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = NullAspectDectector.Instance;
         }
 
         [Test]

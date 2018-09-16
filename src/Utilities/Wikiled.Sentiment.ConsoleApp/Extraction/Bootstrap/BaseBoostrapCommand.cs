@@ -31,13 +31,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
-        private ISplitterHelper bootStrapSplitter;
+        private IContainerHelper bootStrapContainer;
 
         private ParsedReviewManagerFactory managerFactory = new ParsedReviewManagerFactory();
 
         private PerformanceMonitor monitor;
 
-        private ISplitterHelper defaultSplitter;
+        private IContainerHelper defaultContainer;
 
         private PrecisionRecallCalculator<bool> performance;
 
@@ -152,11 +152,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             var splitterFactory = new MainSplitterFactory(
                 new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())),
                 config);
-            bootStrapSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
+            bootStrapContainer = splitterFactory.Create(POSTaggerType.SharpNLP);
             log.Info("Removing default lexicon");
-            bootStrapSplitter.DataLoader.SentimentDataHolder.Clear();
-            bootStrapSplitter.DataLoader.DisableFeatureSentiment = InvertOff;
-            var adjuster = new WeightSentimentAdjuster(bootStrapSplitter.DataLoader.SentimentDataHolder);
+            bootStrapContainer.DataLoader.SentimentDataHolder.Clear();
+            bootStrapContainer.DataLoader.DisableFeatureSentiment = InvertOff;
+            var adjuster = new WeightSentimentAdjuster(bootStrapContainer.DataLoader.SentimentDataHolder);
             adjuster.Adjust(Words);
         }
 
@@ -165,7 +165,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             log.Info("Loading default text splitter");
             var config = new ConfigurationHandler();
             var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), config);
-            defaultSplitter = splitterFactory.Create(POSTaggerType.SharpNLP);
+            defaultContainer = splitterFactory.Create(POSTaggerType.SharpNLP);
         }
 
         private async Task<EvalData> ProcessReview(EvalData data)
@@ -173,8 +173,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             await semaphore.WaitAsync().ConfigureAwait(false);
             try
             {
-                var original = await bootStrapSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                var bootReview = managerFactory.Create(bootStrapSplitter.DataLoader, original).Create();
+                var original = await bootStrapContainer.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                var bootReview = managerFactory.Create(bootStrapContainer.DataLoader, original).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
@@ -188,8 +188,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 else if (Neutral)
                 {
                     // check also using default lexicon
-                    var main = await defaultSplitter.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                    var originalReview = managerFactory.Create(bootStrapSplitter.DataLoader, main).Create();
+                    var main = await defaultContainer.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                    var originalReview = managerFactory.Create(bootStrapContainer.DataLoader, main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)

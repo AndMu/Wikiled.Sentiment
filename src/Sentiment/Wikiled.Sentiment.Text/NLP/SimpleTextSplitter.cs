@@ -1,5 +1,4 @@
-﻿using System;
-using Wikiled.Sentiment.Text.Parser;
+﻿using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Tokenizer;
@@ -9,15 +8,12 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public class SimpleTextSplitter : BaseTextSplitter
     {
-        private readonly IWordsHandler wordsHandler;
+        private readonly ISentenceTokenizerFactory sentenceTokenizer;
 
-        private readonly SentenceTokenizerFactory sentenceTokenizer;
-
-        public SimpleTextSplitter(IWordsHandler wordsHandler)
-            : base(wordsHandler, NullCachedDocumentsSource.Instance)
+        public SimpleTextSplitter(ISentenceTokenizerFactory sentenceTokenizer)
+            : base(NullCachedDocumentsSource.Instance)
         {
-            this.wordsHandler = wordsHandler ?? throw new ArgumentNullException(nameof(wordsHandler));
-            sentenceTokenizer = new SentenceTokenizerFactory(wordsHandler.PosTagger, wordsHandler.Extractor);
+            this.sentenceTokenizer = sentenceTokenizer;
         }
 
         protected override Document ActualProcess(ParseRequest request)

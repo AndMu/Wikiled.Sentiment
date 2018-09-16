@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [TestCase("run", false)]
         public void IsVerbLook(string word, bool expected)
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
             var result = wordItem.IsVerbLook();
             Assert.AreEqual(expected, result);
         }
@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [TestCase("smile", false)]
         public void IsEmoticon(string word, bool expected)
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
             var result = wordItem.IsEmoticon();
             Assert.AreEqual(expected, result);
         }
@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [TestCase("like", false)]
         public void IsNoise(string word, bool expected)
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
             var result = wordItem.IsNoise();
             Assert.AreEqual(expected, result);
         }
@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [TestCase("likething", NamedEntities.None, true)]
         public void CanNotBeFeature(string word, NamedEntities entities, bool expected)
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
             wordItem.Entity = entities;
             var result = wordItem.CanNotBeFeature();
             Assert.AreEqual(expected, result);
@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [TestCase("likething", NamedEntities.None, false)]
         public void CanNotBeAttribute(string word, NamedEntities entities, bool expected)
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord(word, "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
             wordItem.Entity = entities;
             var result = wordItem.CanNotBeAttribute();
             Assert.AreEqual(expected, result);
@@ -94,7 +94,7 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [Test]
         public void GetPossibleText()
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("running", "NN");
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("running", "NN");
             var result = wordItem.GetPossibleText().ToArray();
             Assert.AreEqual(2, result.Length);
             Assert.AreEqual("running", result[0]);
@@ -104,9 +104,9 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         [Test]
         public void PhraseGetPossibleText()
         {
-            var wordItem = ActualWordsHandler.Instance.WordsHandler.WordFactory.CreatePhrase("NNS");
-            wordItem.Add(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("so", "JJ"));
-            wordItem.Add(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("good", "JJ"));
+            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreatePhrase("NNS");
+            wordItem.Add(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("so", "JJ"));
+            wordItem.Add(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("good", "JJ"));
             var result = wordItem.GetPossibleText().ToArray();
             Assert.AreEqual(1, result.Length);
             Assert.AreEqual("so good", result[0]);

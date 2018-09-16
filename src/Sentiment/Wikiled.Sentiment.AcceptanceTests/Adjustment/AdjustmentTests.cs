@@ -22,14 +22,14 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         [Test]
         public async Task Adjusted()
         {
-            testHelper.SplitterHelper.DataLoader.SentimentDataHolder.Clear();
-            testHelper.SplitterHelper.DataLoader.DisableFeatureSentiment = true;
-            var adjuster = new WeightSentimentAdjuster(testHelper.SplitterHelper.DataLoader.SentimentDataHolder);
+            testHelper.ContainerHelper.DataLoader.SentimentDataHolder.Clear();
+            testHelper.ContainerHelper.DataLoader.DisableFeatureSentiment = true;
+            var adjuster = new WeightSentimentAdjuster(testHelper.ContainerHelper.DataLoader.SentimentDataHolder);
             var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
             adjuster.Adjust(words);
             var text = "I Veto it";
-            var result = await testHelper.SplitterHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(testHelper.SplitterHelper.DataLoader, result).Create();
+            var result = await testHelper.ContainerHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = new ParsedReviewManager(testHelper.ContainerHelper.DataLoader, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
@@ -37,8 +37,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         public async Task TestEmoticon()
         {
             var text = "EMOTICON_confused I do";
-            var result = await testHelper.SplitterHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(testHelper.SplitterHelper.DataLoader, result).Create();
+            var result = await testHelper.ContainerHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = new ParsedReviewManager(testHelper.ContainerHelper.DataLoader, result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

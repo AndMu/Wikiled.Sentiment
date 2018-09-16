@@ -9,47 +9,47 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void IsInvertor()
         {
-            bool value = ActualWordsHandler.Instance.WordsHandler.IsInvertAdverb(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("not", "NN"));
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsInvertAdverb(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("not", "NN"));
             Assert.IsTrue(value);
             
-            value = ActualWordsHandler.Instance.WordsHandler.IsInvertAdverb(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("nota", "NN"));
+            value = ActualWordsHandler.InstanceSimple.WordsHandler.IsInvertAdverb(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
             Assert.IsFalse(value);
         }
 
         [Test]
         public void IsQuestion()
         {
-            bool value = ActualWordsHandler.Instance.WordsHandler.IsQuestion(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("why", "NN"));
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsQuestion(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
             Assert.IsTrue(value);
 
-            value = ActualWordsHandler.Instance.WordsHandler.IsInvertAdverb(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("nota", "NN"));
+            value = ActualWordsHandler.InstanceSimple.WordsHandler.IsInvertAdverb(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
             Assert.IsFalse(value);
         }
 
         [Test]
         public void IsKnown()
         {
-            bool value = ActualWordsHandler.Instance.WordsHandler.IsKnown(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("why", "NN"));
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
             Assert.IsTrue(value);
 
-            value = ActualWordsHandler.Instance.WordsHandler.IsKnown(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("nota", "NN"));
+            value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
             Assert.IsFalse(value);
         }
 
         [Test]
         public void IsSentiment()
         {
-            bool value = ActualWordsHandler.Instance.WordsHandler.IsSentiment(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("why", "NN"));
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsSentiment(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
             Assert.IsFalse(value);
         }
 
         [Test]
         public void IsStop()
         {
-            bool value = ActualWordsHandler.Instance.WordsHandler.IsStop(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("it", "NN"));
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsStop(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("it", "NN"));
             Assert.IsTrue(value);
 
-            value = ActualWordsHandler.Instance.WordsHandler.IsStop(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("nota", "NN"));
+            value = ActualWordsHandler.InstanceSimple.WordsHandler.IsStop(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
             Assert.IsFalse(value);
         }
     }

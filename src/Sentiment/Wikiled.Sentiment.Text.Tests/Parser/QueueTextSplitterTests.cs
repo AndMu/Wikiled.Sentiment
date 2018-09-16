@@ -11,8 +11,6 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
     [TestFixture]
     public class QueueTextSplitterTests
     {
-        private Mock<ISplitterFactory> factory;
-
         private Mock<ITextSplitter> splitter;
 
         private QueueTextSplitter instance;
@@ -20,17 +18,15 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [SetUp]
         public void Setup()
         {
-            factory = new Mock<ISplitterFactory>();
             splitter = new Mock<ITextSplitter>();
-            instance = new QueueTextSplitter(3, factory.Object);
-            factory.Setup(item => item.ConstructSingle()).Returns(splitter.Object);
+            instance = new QueueTextSplitter(3, () => splitter.Object);
         }
 
         [Test]
         public void Construct()
         {
             Assert.Throws<ArgumentNullException>(() => new QueueTextSplitter(5, null));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new QueueTextSplitter(0, factory.Object));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new QueueTextSplitter(0, () => splitter.Object));
         }
 
         [TestCase(1, 1)]
@@ -57,7 +53,6 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
             await Task.WhenAll(tasks).ConfigureAwait(false);
             instance.Dispose();
             splitter.Verify(item => item.Process(request), Times.Exactly(times));
-            factory.Verify(item => item.ConstructSingle(), Times.Exactly(construction));
             splitter.Verify(item => item.Dispose(), Times.Exactly(construction));
         }
     }

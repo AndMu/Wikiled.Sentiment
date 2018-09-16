@@ -32,14 +32,14 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
             var localCache = new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions()));
-            SplitterHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
+            ContainerHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
         }
 
         public static TestHelper Instance { get; } = new TestHelper();
 
         public AmazonRepository AmazonRepository => amazonRepository.Value;
 
-        public ISplitterHelper SplitterHelper { get; }
+        public IContainerHelper ContainerHelper { get; }
 
         public IRedisLink Redis => redis.Value;
     }

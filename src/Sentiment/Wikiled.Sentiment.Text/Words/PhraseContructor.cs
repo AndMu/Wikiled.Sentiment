@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Wikiled.Sentiment.Text.Extensions;
-using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.Structure;
@@ -12,11 +11,11 @@ namespace Wikiled.Sentiment.Text.Words
 {
     public class PhraseContructor : IPhraseContructor
     {
-        private readonly IWordsHandler handler;
+        private readonly IWordFactory handler;
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public PhraseContructor(IWordsHandler handler)
+        public PhraseContructor(IWordFactory handler)
         {
             this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
@@ -59,7 +58,7 @@ namespace Wikiled.Sentiment.Text.Words
             nGramBlocks.AddRange(words.GetNearNGram(wordIndex, 2));
             foreach (var nGramBlock in nGramBlocks)
             {
-                var phrase = handler.WordFactory.CreatePhrase("NP");
+                var phrase = handler.CreatePhrase("NP");
                 foreach (var occurence in nGramBlock.WordOccurrences)
                 {
                     phrase.Add(wordsTable[occurence]);

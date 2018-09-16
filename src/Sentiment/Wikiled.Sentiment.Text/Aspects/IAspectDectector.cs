@@ -5,10 +5,6 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public interface IAspectDectector
     {
-        void Remove(IWordItem feature);
-
-        void AddFeature(IWordItem feature);
-
         bool IsAspect(IWordItem word);
 
         bool IsAttribute(IWordItem word);

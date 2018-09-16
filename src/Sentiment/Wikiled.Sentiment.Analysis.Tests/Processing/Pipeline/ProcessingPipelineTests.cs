@@ -21,13 +21,13 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
 
         private ITestableObservable<IParsedDocumentHolder> documentSource;
 
-        private Mock<ISplitterHelper> mockSplitterHelper;
+        private Mock<IContainerHelper> mockSplitterHelper;
 
         private TestScheduler scheduler;
 
         private Mock<IParsedDocumentHolder> holder;
 
-        private Mock<IParsedReviewManagerFactory> reviewMock;
+        private Mock<IContainerHelper> container;
 
         private Mock<IParsedReviewManager> manager;
 
@@ -38,9 +38,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
         {
             scheduler = new TestScheduler();
             manager = new Mock<IParsedReviewManager>();
-            reviewMock = new Mock<IParsedReviewManagerFactory>();
+            container = new Mock<IContainerHelper>();
             review = new Mock<IParsedReview>();
-            reviewMock.Setup(item => item.Create(It.IsAny<IWordsHandler>(), It.IsAny<Document>())).Returns(manager.Object);
             manager.Setup(item => item.Create()).Returns(review.Object);
             holder = new Mock<IParsedDocumentHolder>();
             documentSource = scheduler.CreateColdObservable(
@@ -54,16 +53,15 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
                     TimeSpan.FromSeconds(3).Ticks,
                     Notification.CreateOnCompleted<IParsedDocumentHolder>()));
             
-            mockSplitterHelper = new Mock<ISplitterHelper>();
+            mockSplitterHelper = new Mock<IContainerHelper>();
             instance = CreateProcessingPipeline();
         }
 
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, mockSplitterHelper.Object, reviewMock.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null, reviewMock.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, mockSplitterHelper.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, container.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null));
         }
 
         [Test]
@@ -79,7 +77,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, mockSplitterHelper.Object, reviewMock.Object);
+            return new ProcessingPipeline(scheduler, container.Object);
         }
     }
 }

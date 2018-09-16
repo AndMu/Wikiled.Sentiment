@@ -33,25 +33,9 @@ namespace Wikiled.Sentiment.Text.Aspects
             }
         }
 
-        public void Remove(IWordItem feature)
-        {
-            if (feature is null)
-            {
-                throw new ArgumentNullException(nameof(feature));
-            }
+        public IEnumerable<IWordItem> AllFeatures => aspectsTable.Values;
 
-            aspectsTable.Remove(feature.Text);
-        }
-
-        public void AddFeature(IWordItem feature)
-        {
-            if (feature is null)
-            {
-                throw new ArgumentNullException(nameof(feature));
-            }
-
-            aspectsTable[feature.Text] = feature;
-        }
+        public IEnumerable<IWordItem> AllAttributes => attributesTable.Values;
 
         public bool IsAspect(IWordItem word)
         {
@@ -72,9 +56,5 @@ namespace Wikiled.Sentiment.Text.Aspects
 
             return attributesTable.TryGetWordValue(word, out _);
         }
-
-        public IEnumerable<IWordItem> AllFeatures => aspectsTable.Values;
-
-        public IEnumerable<IWordItem> AllAttributes => attributesTable.Values;
     }
 }

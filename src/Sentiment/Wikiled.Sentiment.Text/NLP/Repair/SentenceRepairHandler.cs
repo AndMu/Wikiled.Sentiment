@@ -5,8 +5,12 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Wikiled.Common.Extensions;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Dictionary.Streams;
+using Wikiled.Text.Analysis.NLP;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
 {
@@ -18,21 +22,27 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly IWordsHandler wordsHandlers;
 
+        private readonly IWordFactory wordFactory;
+
+        private readonly IWordsDictionary dictionary;
+
         private Dictionary<string, int> emoticons = new Dictionary<string, int>();
 
         private Dictionary<string, int> idioms = new Dictionary<string, int>();
 
         private Dictionary<string, string> slangs = new Dictionary<string, string>();
 
-        public SentenceRepairHandler(string path, IWordsHandler wordsHandlers)
+        public SentenceRepairHandler(ILexiconConfiguration path, IWordsHandler wordsHandlers, IWordFactory wordFactory, IWordsDictionary dictionary)
         {
-            if (string.IsNullOrEmpty(path))
+            if (path == null)
             {
-                throw new ArgumentException("Value cannot be null or empty.", nameof(path));
+                throw new ArgumentNullException(nameof(path));
             }
 
-            resourcesPath = path;
+            resourcesPath = Path.Combine(path.LexiconPath, "Repair");
             this.wordsHandlers = wordsHandlers ?? throw new ArgumentNullException(nameof(wordsHandlers));
+            this.wordFactory = wordFactory ?? throw new ArgumentNullException(nameof(wordFactory));
+            this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             Load();
         }
 
@@ -92,7 +102,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                     throw new NullReferenceException("Replace");
                 }
 
-                var repair = new SentenceRepair(wordsHandlers.Extractor.Dictionary, test.Value, match.Value, replace.Value);
+                var repair = new SentenceRepair(dictionary, test.Value, match.Value, replace.Value);
                 var verify = item.Element("Verify");
                 if (verify != null)
                 {
@@ -128,7 +138,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
             foreach (var item in stream.ReadDataFromStream(item => item))
             {
                 slangs[item.Word] = item.Value;
-                if (wordsHandlers.IsSentiment(wordsHandlers.WordFactory.CreateWord(item.Word, "JJ")))
+                if (wordsHandlers.IsSentiment(wordFactory.CreateWord(item.Word, "JJ")))
                 {
                     slangs.Remove(item.Word);
                 }

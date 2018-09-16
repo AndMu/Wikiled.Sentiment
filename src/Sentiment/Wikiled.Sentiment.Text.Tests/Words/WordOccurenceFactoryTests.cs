@@ -17,13 +17,15 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             helper = new WordsHandlerHelper();
-            instance = new WordOccurenceFactory(helper.Handler.Object);
+            instance = new WordOccurenceFactory(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object);
         }
 
         [Test]
         public void Create()
         {
-            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(null));
+            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(null, helper.RawTextExractor.Object, helper.InquirerManager.Object));
+            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(helper.Handler.Object, null, helper.InquirerManager.Object));
+            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(helper.Handler.Object, helper.RawTextExractor.Object, null));
             Assert.IsNotNull(instance);
         }
 

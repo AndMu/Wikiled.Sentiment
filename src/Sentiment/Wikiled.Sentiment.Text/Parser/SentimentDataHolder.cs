@@ -24,33 +24,51 @@ namespace Wikiled.Sentiment.Text.Parser
             return holder;
         }
 
-        public void SetValue(string word, SentimentValueData value)
+        public static SentimentDataHolder PopulateEmotionsData(Dictionary<string, double> data)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            SentimentDataHolder instance = new SentimentDataHolder();
+            foreach (var item in data)
+            {
+                var value = new SentimentValueData(item.Value);
+                if (item.Key[item.Key.Length - 1] == '*')
+                {
+                    string word = item.Key.Substring(0, item.Key.Length - 1);
+                    instance.SetValue(word, value);
+                    if (word.Length > 4)
+                    {
+                        instance.EmotionsLookup.Add(string.Intern(word), value);
+                    }
+                }
+                else
+                {
+                    instance.SetValue(item.Key, value);
+                }
+            }
+
+            foreach (var emoji in EmojiSentiment.Positive)
+            {
+                instance.SetValue(emoji.AsShortcode(), new SentimentValueData(2));
+            }
+
+            foreach (var emoji in EmojiSentiment.Negative)
+            {
+                instance.SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
+            }
+
+            return instance;
+        }
+
+        private void SetValue(string word, SentimentValueData value)
         {
             EmotionsTable.Remove(word);
             AddSentimentValue(word, value);
         }
 
-        public void Clear()
-        {
-            EmotionsLookup.Clear();
-            EmotionsTable.Clear();
-        }
-
-        public Dictionary<string, SentimentValueData> CreateEmotionsData()
-        {
-            Dictionary<string, SentimentValueData> table = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
-            foreach (var item in EmotionsTable)
-            {
-                table[string.Intern(item.Key)] = item.Value;
-            }
-
-            foreach (var item in EmotionsLookup)
-            {
-                table[string.Intern(item.Key + "*")] = item.Value;
-            }
-
-            return table;
-        }
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
@@ -61,43 +79,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
             var sentiment = new SentimentValue(word, new SentimentValueData(value.Value));
             return sentiment;
-        }
-
-        public void PopulateEmotionsData(Dictionary<string, double> data)
-        {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            Clear();
-            foreach (var item in data)
-            {
-                var value = new SentimentValueData(item.Value);
-                if (item.Key[item.Key.Length - 1] == '*')
-                {
-                    string word = item.Key.Substring(0, item.Key.Length - 1);
-                    SetValue(word, value);
-                    if (word.Length > 4)
-                    {
-                        EmotionsLookup.Add(string.Intern(word), value);
-                    }
-                }
-                else
-                {
-                    SetValue(item.Key, value);
-                }
-            }
-
-            foreach (var emoji in EmojiSentiment.Positive)
-            {
-                SetValue(emoji.AsShortcode(), new SentimentValueData(2));
-            }
-
-            foreach (var emoji in EmojiSentiment.Negative)
-            {
-                SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
-            }
         }
 
         private void AddSentimentValue(string word, SentimentValueData value)

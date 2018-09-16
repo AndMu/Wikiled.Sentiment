@@ -34,8 +34,8 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         public async Task Process(string sentence, int totalAttributes, int totalFeatures, string topAttribute)
         {
             Assert.Throws<ArgumentNullException>(() => instance.Process(null));
-            var data = await ActualWordsHandler.Instance.TextSplitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
+            var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();
             instance.Process(review);
             var attributes = instance.GetAttributes(10).ToArray();
             var features = instance.GetFeatures(10).ToArray();

@@ -3,18 +3,17 @@ using System.Linq;
 using System.Xml.Linq;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Aspects.Data;
-using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Aspects
 {
     public class AspectSerializer : IAspectSerializer
     {
-        private readonly IWordsHandler handler;
+        private readonly IWordFactory wordFactory;
 
-        public AspectSerializer(IWordsHandler handler)
+        public AspectSerializer(IWordFactory handler)
         {
-            this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            wordFactory = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         public XDocument Serialize(IMainAspectHandler aspectHandler)
@@ -63,8 +62,8 @@ namespace Wikiled.Sentiment.Text.Aspects
             }
 
             var data = document.XmlDeserialize<AspectData>();
-            var aspects = data.Aspects.Select(item => handler.WordFactory.CreateWord(item, "NN")).ToArray();
-            var attributes = data.Attributes.Select(item => handler.WordFactory.CreateWord(item, "JJ")).ToArray();
+            var aspects = data.Aspects.Select(item => wordFactory.CreateWord(item, "NN")).ToArray();
+            var attributes = data.Attributes.Select(item => wordFactory.CreateWord(item, "JJ")).ToArray();
             return new AspectDectector(aspects, attributes);
         }
     }

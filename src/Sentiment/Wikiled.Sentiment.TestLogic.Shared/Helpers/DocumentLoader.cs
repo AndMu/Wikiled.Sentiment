@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -13,23 +15,20 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class DocumentLoader
     {
-        private readonly ITextSplitter extraction;
+        private readonly IContainerHelper helper;
 
         private readonly string path;
 
-        private readonly IWordsHandler handler;
-
-        public DocumentLoader(ITextSplitter splitter, IWordsHandler handler)
+        public DocumentLoader(IContainerHelper helper)
         {
-            this.handler = handler;
-            extraction = splitter;
+            this.helper = helper ?? throw new ArgumentNullException(nameof(helper));
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"MachineLearning/Data/");
         }
 
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
         {
-            var result = await extraction.Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
-            var review = new ParsedReviewManager(handler, result).Create();
+            var result = await helper.GetTextSplitter().Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
+            var review = helper.Resolve(result).Create();
             var documentFromReview = new DocumentFromReviewFactory();
             return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }

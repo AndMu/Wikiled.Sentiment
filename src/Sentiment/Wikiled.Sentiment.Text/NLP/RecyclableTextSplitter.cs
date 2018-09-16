@@ -9,8 +9,6 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public class RecyclableTextSplitter : ITextSplitter
     {
-        private readonly ISplitterFactory factory;
-
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly int maxProcessing;
@@ -23,7 +21,9 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private ITextSplitter splitter;
 
-        public RecyclableTextSplitter(ISplitterFactory factory, int maxProcessing = 5000)
+        private readonly Func<ITextSplitter> factory;
+
+        public RecyclableTextSplitter(Func<ITextSplitter> factory, int maxProcessing = 5000)
         {
             id = Interlocked.Increment(ref total);
             id = total;
@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.Text.NLP
             {
                 log.Info("Constructing NEW {0} splitter...", id);
                 Interlocked.Exchange(ref current, 0);
-                splitter = factory.ConstructSingle();
+                splitter = factory();
             }
 
             var result = await splitter.Process(request).ConfigureAwait(false);

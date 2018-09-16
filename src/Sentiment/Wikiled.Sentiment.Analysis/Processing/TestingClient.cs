@@ -9,7 +9,6 @@ using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
@@ -98,9 +97,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 {
                     log.Info("Loading {0} aspects", path);
                     XDocument features = XDocument.Load(path);
-                    var aspect = pipeline.Splitter.DataLoader.AspectFactory.ConstructSerializer().Deserialize(features);
-                    pipeline.Splitter.DataLoader.AspectDectector = aspect;
-                    pipeline.Splitter.DataLoader.DisableFeatureSentiment = true;
+                    var aspect = pipeline.ContainerHolder.Container.Resolve<IAspectSerializer>().Deserialize(features);
+                    pipeline.ContainerHolder.ChangeWordsHandler(aspect);
                 }
                 else
                 {
@@ -133,7 +131,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             try
             {
                 var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
-                pipeline.Splitter.DataLoader.Container.Resolve<INRCDictionary>().ExtractToVector(SentimentVector, context.Review.Items);
+                pipeline.ContainerHolder.Container.Resolve<INRCDictionary>().ExtractToVector(SentimentVector, context.Review.Items);
 
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);

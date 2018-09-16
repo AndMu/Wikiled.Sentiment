@@ -7,7 +7,6 @@ using System.Xml.Linq;
 using Autofac;
 using NLog;
 using Wikiled.Arff.Persistence;
-using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Processing.Arff;
@@ -121,7 +120,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             featureExtractor.Process(context.Review);
-            pipeline.Splitter.DataLoader.Container.Resolve<INRCDictionary>().ExtractToVector(sentimentVector, context.Review.Items);
+            pipeline.ContainerHolder.Container.Resolve<INRCDictionary>().ExtractToVector(sentimentVector, context.Review.Items);
             return context;
         }
 
@@ -153,7 +152,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private void SelectAdditional()
         {
             log.Info("Extracting aspects...");
-            AspectSerializer serializer = new AspectSerializer(pipeline.Splitter.DataLoader);
+            var serializer = pipeline.ContainerHolder.Container.Resolve<IAspectSerializer>();
             var features = featureExtractor.GetFeatures(100).ToArray();
             var attributes = featureExtractor.GetAttributes(100).ToArray();
             var document = serializer.Serialize(features, attributes);
@@ -170,7 +169,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 attributes = aspect.AllAttributes.ToArray();
             }
 
-            pipeline.Splitter.DataLoader.AspectDectector = new AspectDectector(features, attributes);
+            pipeline.ContainerHolder.ChangeWordsHandler(new AspectDectector(features, attributes));
             var vector = sentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(analyze.SvmPath, "sentiment_vector.json")).Serialize(new[] { vector });
             log.Info("Extracting features... DONE!");

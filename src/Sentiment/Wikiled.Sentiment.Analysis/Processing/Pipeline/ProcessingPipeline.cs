@@ -3,9 +3,11 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NLog;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 
@@ -17,16 +19,13 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 
         private readonly IScheduler scheduler;
 
-        private readonly IParsedReviewManagerFactory factory;
-
-        public ProcessingPipeline(IScheduler scheduler, ISplitterHelper splitter, IParsedReviewManagerFactory factory)
+        public ProcessingPipeline(IScheduler scheduler, IContainerHelper container)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
-            Splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
-            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            ContainerHolder = container ?? throw new ArgumentNullException(nameof(container));
         }
 
-        public ISplitterHelper Splitter { get; }
+        public IContainerHelper ContainerHolder { get; }
 
         public PerformanceMonitor Monitor { get; private set; }
 
@@ -64,7 +63,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
                 }
 
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                var review = factory.Create(Splitter.DataLoader, doc).Create();
+                IParsedReview review = ContainerHolder.Container.Resolve<IParsedReviewManager>(new NamedParameter("document", doc)).Create();
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);
                 return context;
             }

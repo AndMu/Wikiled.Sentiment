@@ -24,26 +24,26 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 
         private Mock<IParsedReview> reviewMock;
 
-        private SimpleTextSplitter splitter;
+        private ITextSplitter splitter;
 
         [SetUp]
         public void Setup()
         {
             reviewMock = new Mock<IParsedReview>();
-            splitter = new SimpleTextSplitter(ActualWordsHandler.Instance.WordsHandler);
-            ActualWordsHandler.Instance.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] {}, new IWordItem[] {});
+            splitter = ActualWordsHandler.InstanceSimple.TextSplitter;
+            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] {}, new IWordItem[] {});
         }
 
         [TearDown]
         public void Cleanup()
         {
-            ActualWordsHandler.Instance.WordsHandler.AspectDectector = NullAspectDectector.Instance;
+            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = NullAspectDectector.Instance;
         }
 
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.Container.Resolve<INRCDictionary>(), null));
+            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Container.Resolve<INRCDictionary>(), null));
             Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(null, reviewMock.Object));
         }
 
@@ -59,12 +59,12 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         {
             if (addFeature)
             {
-                ActualWordsHandler.Instance.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.Instance.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
+                ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.InstanceSimple.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             }
 
             var data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
-            review = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, data).Create();
-            instance = new ExtractReviewTextVector(ActualWordsHandler.Instance.WordsHandler.Container.Resolve<INRCDictionary>(), review);
+            review = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, data).Create();
+            instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.WordsHandler.Container.Resolve<INRCDictionary>(), review);
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);

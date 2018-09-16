@@ -6,8 +6,10 @@ using NLog;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Tokenizer;
@@ -19,7 +21,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private readonly IWordsHandler handler;
+        private readonly IWordFactory handler;
 
         private readonly ISentenceTokenizer sentenceSplitter;
 
@@ -29,12 +31,17 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private POSTaggerME posTagger;
 
-        public OpenNLPTextSplitter(IWordsHandler handler, string resourcesFolder, ICachedDocumentsSource cache)
-            : base(handler, cache)
+        public OpenNLPTextSplitter(IWordFactory handler, LexiconConfiguration configuration, ICachedDocumentsSource cache, ISentenceTokenizerFactory tokenizerFactory)
+            : base(cache)
         {
             if (handler is null)
             {
                 throw new ArgumentNullException(nameof(handler));
+            }
+
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
             }
 
             if (cache is null)
@@ -42,17 +49,11 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 throw new ArgumentNullException(nameof(cache));
             }
 
-            if (string.IsNullOrEmpty(resourcesFolder))
-            {
-                throw new ArgumentException("Value cannot be null or empty.", nameof(resourcesFolder));
-            }
-
-            log.Debug("Creating with resource path: {0}", resourcesFolder);
+            log.Debug("Creating with resource path: {0}", configuration);
             this.handler = handler;
             tokenizer = TreebankWordTokenizer.Tokenizer;
-            var sentenceTokenizer = new SentenceTokenizerFactory(handler.PosTagger, handler.Extractor);
-            sentenceSplitter = sentenceTokenizer.Create(true, false);
-            LoadModels(resourcesFolder);
+            sentenceSplitter = tokenizerFactory.Create(true, false);
+            LoadModels(configuration.LexiconPath);
         }
 
         protected override Document ActualProcess(ParseRequest request)
@@ -95,7 +96,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 {
                     var tag = sentenceData.Tags[i];
                     var word = sentenceData.Tokens[i];
-                    var wordItem = handler.WordFactory.CreateWord(word, tag);
+                    var wordItem = handler.CreateWord(word, tag);
                     wordItem.WordIndex = index;
                     var wordData = WordExFactory.Construct(wordItem);
                     currentSentence.Add(wordData);

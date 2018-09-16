@@ -18,10 +18,16 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private ParsedReview review;
 
-        public ParsedReviewManager(IWordsHandler manager, Document document)
+        private readonly IWordFactory wordsFactory;
+
+        private INRCDictionary nrcDictionary;
+
+        public ParsedReviewManager(IWordsHandler manager, IWordFactory wordsFactory, INRCDictionary nrcDictionary, Document document)
         {
             this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
             this.document = document ?? throw new ArgumentNullException(nameof(document));
+            this.nrcDictionary = nrcDictionary ?? throw new ArgumentNullException(nameof(nrcDictionary));
+            this.wordsFactory = wordsFactory ?? throw new ArgumentNullException(nameof(wordsFactory));
         }
 
         private bool CanSplit => review.CurrentSentence.CurrentPart.Occurrences.Count > 0 &&
@@ -37,7 +43,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 return review;
             }
 
-            review = new ParsedReview(manager.Container.Resolve<INRCDictionary>(), document);
+            review = new ParsedReview(nrcDictionary, document);
             foreach (var sentence in document.Sentences)
             {
                 CreateSentence(sentence);
@@ -52,7 +58,7 @@ namespace Wikiled.Sentiment.Text.NLP
                         {
                             phraseWord = documentWord.Phrase;
                             phrase = documentWord.UnderlyingWord as IPhrase ??
-                                     manager.WordFactory.CreatePhrase(phraseWord);
+                                     wordsFactory.CreatePhrase(phraseWord);
                         }
                     }
                     else
@@ -63,7 +69,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
                     // !! we need to create new - because if we use underlying
                     // we can lose if words is changed to aspect
-                    IWordItem word = manager.WordFactory.CreateWord(documentWord.Text, documentWord.Type);
+                    IWordItem word = wordsFactory.CreateWord(documentWord.Text, documentWord.Type);
                     word.NormalizedEntity = documentWord.NormalizedEntity;
                     word.Entity = documentWord.EntityType;
                     word.WordIndex = i;
@@ -78,7 +84,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 {
                     phrase.IsSentiment = manager.IsSentiment(phrase);
                     phrase.IsFeature = manager.IsFeature(phrase);
-                    phrase.IsTopAttribute = manager.AspectDectector.IsAttribute(phrase);
+                    phrase.IsTopAttribute = manager.IsAttribute(phrase);
                 }
             }
             

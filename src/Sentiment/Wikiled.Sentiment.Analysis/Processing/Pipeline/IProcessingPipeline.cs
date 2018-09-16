@@ -8,7 +8,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {
     public interface IProcessingPipeline
     {
-        ISplitterHelper Splitter { get; }
+        IContainerHelper ContainerHolder { get; }
 
         PerformanceMonitor Monitor { get; }
 

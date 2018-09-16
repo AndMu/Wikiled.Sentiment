@@ -14,13 +14,13 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public async Task Process()
         {
-            var splitter = new SimpleTextSplitter(ActualWordsHandler.Instance.WordsHandler);
+            var splitter = new SimpleTextSplitter(ActualWordsHandler.InstanceSimple.WordsHandler);
             string sentence =
                 "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
             string sentence2 =
                 "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             var result = await splitter.Process(new ParseRequest(sentence + " " + sentence2)).ConfigureAwait(false);
-            var data = new ParsedReviewManager(ActualWordsHandler.Instance.WordsHandler, result).Create();
+            var data = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, result).Create();
 
             Assert.AreEqual(2, data.Sentences.Count);
             Assert.AreEqual(24, data.Sentences[0].Occurrences.Count());

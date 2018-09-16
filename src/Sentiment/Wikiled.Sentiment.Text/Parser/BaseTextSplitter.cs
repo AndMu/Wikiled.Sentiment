@@ -15,11 +15,8 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly ICachedDocumentsSource cache;
 
-        private readonly IWordsHandler handler;
-
-        protected BaseTextSplitter(IWordsHandler handler, ICachedDocumentsSource cache)
+        protected BaseTextSplitter(ICachedDocumentsSource cache)
         {
-            this.handler = handler ?? throw new System.ArgumentNullException(nameof(handler));
             this.cache = cache ?? throw new System.ArgumentNullException(nameof(cache));
         }
 

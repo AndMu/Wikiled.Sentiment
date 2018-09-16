@@ -32,10 +32,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISplitterHelper splitter)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, splitter, new ParsedReviewManagerFactory()), Model);
+            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, container, new ParsedReviewManagerFactory()), Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;
