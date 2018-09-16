@@ -98,7 +98,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     log.Info("Loading {0} aspects", path);
                     XDocument features = XDocument.Load(path);
                     var aspect = pipeline.ContainerHolder.Container.Resolve<IAspectSerializer>().Deserialize(features);
-                    pipeline.ContainerHolder.ChangeWordsHandler(aspect);
+                    pipeline.ContainerHolder.Context.ChangeAspect(aspect);
                 }
                 else
                 {

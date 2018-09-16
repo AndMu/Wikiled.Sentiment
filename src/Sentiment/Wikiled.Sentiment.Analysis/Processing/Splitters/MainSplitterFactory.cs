@@ -31,12 +31,18 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         public bool SupportRepair { get; set; } = true;
 
-        public IContainerHelper Create(POSTaggerType value)
+        public IContainerHelper Create(POSTaggerType value, SentimentContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             log.Debug("Create: {0}", value);
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterInstance(cacheFactory);
             builder.RegisterInstance(configuration);
+            builder.RegisterInstance(context).As<ISentimentContext>();
             builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
             builder.RegisterType<BasicEnglishDictionary>().As<IWordsDictionary>().SingleInstance();
             builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivated(item => item.Instance.Load());
@@ -69,7 +75,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
                     throw new NotSupportedException(value.ToString());
             }
 
-            return new ContainerHelper(builder.Build());
+            return new ContainerHelper(builder.Build(), context);
         }
     }
 }

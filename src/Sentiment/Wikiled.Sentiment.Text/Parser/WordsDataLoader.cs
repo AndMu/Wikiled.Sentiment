@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Wikiled.Common.Serialization;
-using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP.Repair;
@@ -18,7 +17,7 @@ namespace Wikiled.Sentiment.Text.Parser
     {
         private readonly ILexiconConfiguration config;
 
-        private ISentimentContext context;
+        private ISentimentDataHolder sentimentData;
 
         private Dictionary<string, double> booster;
 
@@ -41,11 +40,11 @@ namespace Wikiled.Sentiment.Text.Parser
         public WordsDataLoader(ILexiconConfiguration config, ISentimentContext context)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
-            SentimentData = new SentimentDataHolder();
+            Context = context ?? throw new ArgumentNullException(nameof(context));
+            sentimentData = new SentimentDataHolder();
         }
 
-        public ISentimentDataHolder SentimentData { get; private set; }
+        public ISentimentContext Context { get; }
 
         public WordRepairRule FindRepairRule(IWordItem word)
         {
@@ -64,18 +63,18 @@ namespace Wikiled.Sentiment.Text.Parser
                 return false;
             }
 
-            bool value = context.Aspect != null && context.Aspect.IsAspect(word);
+            bool value = Context.Aspect != null && Context.Aspect.IsAspect(word);
             return value;
         }
 
         public bool IsAttribute(IWordItem word)
         {
-            return context.Aspect.IsAttribute(word);
+            return Context.Aspect.IsAttribute(word);
         }
 
         public bool IsInvertAdverb(IWordItem word)
         {
-            if (context.DisableInvertors)
+            if (Context.DisableInvertors)
             {
                 return false;
             }
@@ -148,7 +147,7 @@ namespace Wikiled.Sentiment.Text.Parser
             question = ReadTextData("QuestionWords.txt");
             stopWords = ReadTextData("StopWords.txt");
             stopPos = ReadTextData("StopPos.txt");
-            SentimentData = SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt"));
+            sentimentData = SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt"));
             ReadRepairRules();
         }
 
@@ -174,13 +173,13 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
-            if (context.DisableFeatureSentiment &&
+            if (Context.DisableFeatureSentiment &&
                 word.IsFeature)
             {
                 return null;
             }
 
-            return SentimentData.MeasureSentiment(word);
+            return sentimentData.MeasureSentiment(word);
         }
 
         private void ReadRepairRules()

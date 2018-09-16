@@ -5,18 +5,6 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public class NullAspectDectector : IAspectDectector
     {
-        private NullAspectDectector() { }
-
-        public static IAspectDectector Instance { get; } = new NullAspectDectector();
-
-        public void Remove(IWordItem aspect)
-        {
-        }
-
-        public void AddFeature(IWordItem feature)
-        {
-        }
-
         public bool IsAspect(IWordItem word)
         {
             return false;

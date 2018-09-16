@@ -1,11 +1,12 @@
-﻿using Wikiled.Sentiment.Text.Sentiment;
+﻿using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public interface IWordsHandler
     {
-        ISentimentDataHolder SentimentData { get; }
+        ISentimentContext Context { get; }
 
         bool IsFeature(IWordItem word);
 

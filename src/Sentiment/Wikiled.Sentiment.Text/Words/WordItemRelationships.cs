@@ -150,7 +150,7 @@ namespace Wikiled.Sentiment.Text.Words
             if (Owner.IsInvertor &&
                 !Owner.IsUsedInSentiment())
             {
-                if (handler?.DisableFeatureSentiment == true)
+                if (handler?.Context.DisableFeatureSentiment == true)
                 {
                     return null;
                 }

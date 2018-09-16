@@ -26,18 +26,21 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 
         private ITextSplitter splitter;
 
+        private AspectDectector detector;
+
         [SetUp]
         public void Setup()
         {
             reviewMock = new Mock<IParsedReview>();
             splitter = ActualWordsHandler.InstanceSimple.TextSplitter;
-            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] {}, new IWordItem[] {});
+            detector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
+            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(detector);
         }
 
         [TearDown]
         public void Cleanup()
         {
-            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = NullAspectDectector.Instance;
+            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(null);
         }
 
         [Test]
@@ -59,12 +62,12 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         {
             if (addFeature)
             {
-                ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.InstanceSimple.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
+                detector.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             }
 
             var data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
-            review = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, data).Create();
-            instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.WordsHandler.Container.Resolve<INRCDictionary>(), review);
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();
+            instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Container.Resolve<INRCDictionary>(), review);
             instance.GenerateUsingImportantOnly = generate;
             var cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);

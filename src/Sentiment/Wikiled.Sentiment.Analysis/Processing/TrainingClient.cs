@@ -169,7 +169,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 attributes = aspect.AllAttributes.ToArray();
             }
 
-            pipeline.ContainerHolder.ChangeWordsHandler(new AspectDectector(features, attributes));
+            pipeline.ContainerHolder.Context.ChangeAspect(new AspectDectector(features, attributes));
             var vector = sentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(analyze.SvmPath, "sentiment_vector.json")).Serialize(new[] { vector });
             log.Info("Extracting features... DONE!");

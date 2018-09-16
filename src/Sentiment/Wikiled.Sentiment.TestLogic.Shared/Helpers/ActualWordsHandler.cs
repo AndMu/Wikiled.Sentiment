@@ -1,7 +1,8 @@
-﻿using System.IO;
-using Autofac;
+﻿using Autofac;
 using NUnit.Framework;
+using System.IO;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
@@ -15,15 +16,19 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         private ActualWordsHandler(POSTaggerType type)
         {
             Configuration = new ConfigurationHandler();
-            var resources = Configuration.GetConfiguration("Resources");
-            var resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
+            string resources = Configuration.GetConfiguration("Resources");
+            string resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
             Configuration.SetConfiguration("Resources", resourcesPath);
-            Container = new MainSplitterFactory(new NullCacheFactory(), Configuration) {SupportRepair = false}.Create(type);
+
+            Context = new SentimentContext();
+            Container = new MainSplitterFactory(new NullCacheFactory(), Configuration) { SupportRepair = false }.Create(type, Context);
             WordsHandler = Container.GetDataLoader();
             TextSplitter = Container.GetTextSplitter();
             WordFactory = Container.Container.Resolve<IWordFactory>();
             Loader = new DocumentLoader(Container);
         }
+
+        public SentimentContext Context { get; }
 
         public static ActualWordsHandler InstanceSimple { get; } = new ActualWordsHandler(POSTaggerType.Simple);
 

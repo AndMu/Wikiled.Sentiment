@@ -69,7 +69,6 @@ namespace Wikiled.Sentiment.Text.Parser
             AddSentimentValue(word, value);
         }
 
-
         public SentimentValue MeasureSentiment(IWordItem word)
         {
             if (!EmotionsTable.TryGetWordValue(word, out SentimentValueData value))

@@ -3,7 +3,6 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;

@@ -22,12 +22,12 @@ namespace Wikiled.Sentiment.Text.Aspects
                 throw new ArgumentNullException(nameof(attributes));
             }
 
-            foreach (var attribute in attributes)
+            foreach (IWordItem attribute in attributes)
             {
                 attributesTable[attribute.Text] = attribute;
             }
 
-            foreach (var aspect in aspects)
+            foreach (IWordItem aspect in aspects)
             {
                 aspectsTable[aspect.Text] = aspect;
             }
@@ -36,6 +36,26 @@ namespace Wikiled.Sentiment.Text.Aspects
         public IEnumerable<IWordItem> AllFeatures => aspectsTable.Values;
 
         public IEnumerable<IWordItem> AllAttributes => attributesTable.Values;
+
+        public void Remove(IWordItem feature)
+        {
+            if (feature is null)
+            {
+                throw new ArgumentNullException(nameof(feature));
+            }
+
+            aspectsTable.Remove(feature.Text);
+        }
+
+        public void AddFeature(IWordItem feature)
+        {
+            if (feature is null)
+            {
+                throw new ArgumentNullException(nameof(feature));
+            }
+
+            aspectsTable[feature.Text] = feature;
+        }
 
         public bool IsAspect(IWordItem word)
         {

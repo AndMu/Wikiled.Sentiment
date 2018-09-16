@@ -152,6 +152,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             var splitterFactory = new MainSplitterFactory(
                 new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())),
                 config);
+            splitterFactory.SupportRepair
             bootStrapContainer = splitterFactory.Create(POSTaggerType.SharpNLP);
             log.Info("Removing default lexicon");
             bootStrapContainer.DataLoader.SentimentDataHolder.Clear();
