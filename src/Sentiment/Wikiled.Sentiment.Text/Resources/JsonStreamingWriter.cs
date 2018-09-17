@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.Text.Resources
         {
             counter++;
             var json = JsonConvert.SerializeObject(instance, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-            json = JValue.Parse(json).ToString(Formatting.Indented);
+            json = JToken.Parse(json).ToString(Formatting.Indented);
             lock (writer)
             {
                 if (counter > 1)

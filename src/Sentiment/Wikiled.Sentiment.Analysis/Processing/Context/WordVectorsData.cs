@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Context
 
         public WordVectorsData(WordEx word)
         {
-            Word = word ?? throw new System.ArgumentNullException(nameof(word));
+            Word = word ?? throw new ArgumentNullException(nameof(word));
             Vectors = new List<WordsContext>();
         }
 

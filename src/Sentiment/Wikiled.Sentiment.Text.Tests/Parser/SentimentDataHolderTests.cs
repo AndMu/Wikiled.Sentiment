@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -17,12 +18,12 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [SetUp]
         public void Setup()
         {
-            var path = ActualWordsHandler.InstanceSimple.Configuration.GetConfiguration("Resources");
+            string path = ActualWordsHandler.InstanceSimple.Configuration.GetConfiguration("Resources");
             path = Path.Combine(path, @"Library\Standard");
-            var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
-            var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
-            sentimentData = new SentimentDataHolder();
-            sentimentData.PopulateEmotionsData(data);
+            DictionaryStream stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
+            Dictionary<string, double> data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
+            sentimentData = SentimentDataHolder.PopulateEmotionsData(data);
+
         }
 
         [TestCase("good", "NN", 2)]
@@ -32,8 +33,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [TestCase("EMOTICON_Joy", "NN", 2)]
         public void MeasureSentiment(string word, string pos, int sentiment)
         {
-            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, pos);
-            var measurment = sentimentData.MeasureSentiment(wordItem);
+            Text.Words.IWordItem wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, pos);
+            SentimentValue measurment = sentimentData.MeasureSentiment(wordItem);
             Assert.AreEqual(sentiment, measurment?.DataValue.Value ?? 0);
         }
 
@@ -43,9 +44,11 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [TestCase("bad", -0.5, -0.5)]
         public void Adjust(string word, double weight, double sentiment)
         {
-            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
-            sentimentData.SetValue(word, new SentimentValueData(weight));
-            var measurement = sentimentData.MeasureSentiment(wordItem);
+            Dictionary<string, double> table = new Dictionary<string, double>();
+            table[word] = weight;
+            sentimentData = SentimentDataHolder.PopulateEmotionsData(table);
+            Text.Words.IWordItem wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
+            SentimentValue measurement = sentimentData.MeasureSentiment(wordItem);
             Assert.AreEqual(sentiment, measurement.DataValue.Value);
         }
     }

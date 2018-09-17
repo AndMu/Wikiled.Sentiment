@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Wikiled.Sentiment.Analysis\Wikiled.Sentiment.Analysis.csproj" />
+    <ProjectReference Include="..\Wikiled.Sentiment.TestLogic.Shared\Wikiled.Sentiment.TestLogic.Shared.csproj" />
     <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj" />
   </ItemGroup>
 

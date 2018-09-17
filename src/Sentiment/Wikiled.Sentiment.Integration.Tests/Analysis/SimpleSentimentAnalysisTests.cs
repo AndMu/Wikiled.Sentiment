@@ -1,26 +1,34 @@
-﻿using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Integration.Tests.Helpers;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Integration.Tests.Analysis
 {
     [TestFixture]
     public class SimpleSentimentAnalysisTests
     {
-        private SimpleTextSplitter textSplitter;
+        private ITextSplitter textSplitter;
 
-        private DictionaryHelper helper;
+        private IDocumentFromReviewFactory parsedFactory;
 
         [SetUp]
         public void Setup()
         {
-            helper = new DictionaryHelper();
-            textSplitter = new SimpleTextSplitter(helper.WordsHandlers);
+            textSplitter = ActualWordsHandler.InstanceSimple.TextSplitter;
+            parsedFactory = new DocumentFromReviewFactory();
+        }
+
+        [TearDown]
+        public void Clean()
+        {
+            ActualWordsHandler.InstanceSimple.Reset();
         }
 
         [TestCase("I like this pc", 5, 1, false)]
@@ -30,40 +38,46 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't go to like this kik", 3, 2, false)]
         public async Task TestBasic(string text, int rating, int totalSentiments, bool disableInvertor)
         {
-            helper.WordsHandlers.DisableFeatureSentiment = disableInvertor;
-            var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(helper.WordsHandlers, request).Create();
+            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = disableInvertor;
+            Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
-            var sentiments = review.GetAllSentiments();
+            SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
-            var adjustment = RatingAdjustment.Create(review, new NullMachineSentiment());
+            IRatingAdjustment adjustment = RatingAdjustment.Create(review, new NullMachineSentiment());
             Assert.AreEqual(rating, (int)adjustment.Rating.StarsRating);
         }
 
         [Test]
-        public async Task FullSentece()
+        public async Task FullSentence()
         {
             string text = "This tale based on two Edgar Allen Poe pieces (\"The Fall of the House of Usher\", \"Dance of Death\" (poem) ) is actually quite creepy from beginning to end. It is similar to some of the old black-and-white movies about people that meet in an old decrepit house (for example, \"The Cat and the Canary\", \"The Old Dark House\", \"Night of Terror\" and so on). Boris Karloff plays a demented inventor of life-size dolls that terrorize the guests. He dies early in the film (or does he ? ) and the residents of the house are subjected to a number of terrifying experiences. I won't go into too much detail here, but it is definitely a must-see for fans of old dark house mysteries.<br /><br />Watch it with plenty of popcorn and soda in a darkened room.<br /><br />Dan Basinger 8/10";
-            helper.WordsHandlers.DisableFeatureSentiment = true;
-            helper.WordsHandlers.SentimentDataHolder.Clear();
-            helper.WordsHandlers.DisableFeatureSentiment = true;
+            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = true;
+            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = true;
 
-            var positiveAdj = new[] { "good", "lovely", "excellent", "delightful", "perfect" };
-            var negativeAdj = new[] { "bad", "horrible", "poor", "disgusting", "unhappy" };
-            foreach (var item in positiveAdj)
+            string[] positiveAdj = { "good", "lovely", "excellent", "delightful", "perfect" };
+            string[] negativeAdj = { "bad", "horrible", "poor", "disgusting", "unhappy" };
+            Dictionary<string, double> sentiment = new Dictionary<string, double>();
+            foreach (string item in positiveAdj)
             {
-                helper.WordsHandlers.SentimentDataHolder.SetValue(item, new SentimentValueData(2));
+                sentiment[item] = 2;
             }
 
-            foreach (var item in negativeAdj)
+            foreach (string item in negativeAdj)
             {
-                helper.WordsHandlers.SentimentDataHolder.SetValue(item, new SentimentValueData(-2));
+                sentiment[item] = -2;
             }
 
+            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(helper.WordsHandlers, request).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
+
+            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, adjustment);
+            Document doc = parsedFactory.ReparseDocument(lexiconRating);
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve(doc).Create();
+
             Assert.IsNull(review.CalculateRawRating().StarsRating);
-            var sentiments = review.GetAllSentiments();
+            SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(0, sentiments.Length);
         }
 
@@ -74,11 +88,11 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("nope", -2, null)]
         public async Task AdjustSentiment(string word, int value, double? rating)
         {
-            var request = await textSplitter.Process(new ParseRequest("Like or hate it")).ConfigureAwait(false);
-            var review = new ParsedReviewManager(helper.WordsHandlers, request).Create();
+            Document request = await textSplitter.Process(new ParseRequest("Like or hate it")).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
             LexiconRatingAdjustment adjustment = new LexiconRatingAdjustment(
-                review, 
-                SentimentDataHolder.Load(new []
+                review,
+                SentimentDataHolder.Load(new[]
                 {
                     new WordSentimentValueData(word, new SentimentValueData(value)),
                 }));
@@ -91,12 +105,19 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't like to like this kik", 1, 1)]
         public async Task TestCustom(string text, double? rating, int totalSentiments)
         {
-            helper.WordsHandlers.SentimentDataHolder.Clear();
-            helper.WordsHandlers.SentimentDataHolder.SetValue("hate", new SentimentValueData(2));
-            var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(helper.WordsHandlers, request).Create();
+            Dictionary<string, double> sentiment = new Dictionary<string, double>();
+            sentiment["hate"] = 2;
+            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
+
+            Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
+
+            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, adjustment);
+            Document doc = parsedFactory.ReparseDocument(lexiconRating);
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve(doc).Create();
+
             Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);
-            var sentiments = review.GetAllSentiments();
+            SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
         }
     }

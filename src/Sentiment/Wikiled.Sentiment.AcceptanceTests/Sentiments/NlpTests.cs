@@ -4,11 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.NLP.OpenNLP;
+using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.Dictionary;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
@@ -18,17 +17,19 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     {
         private string path;
 
-        private WordsDataLoader wordsHandler;
-
-        private OpenNLPTextSplitter splitter;
+        private IDocumentFromReviewFactory parsedFactory;
 
         [SetUp]
         public void Setup()
         {
+            parsedFactory = new DocumentFromReviewFactory();
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]);
-            var libraryPath = Path.Combine(path, @"Library/Standard/");
-            wordsHandler = new WordsDataLoader(libraryPath);
-            splitter = new OpenNLPTextSplitter(wordsHandler, path, NullCachedDocumentsSource.Instance);
+        }
+
+        [TearDown]
+        public void Clean()
+        {
+            ActualWordsHandler.InstanceOpen.Reset();
         }
 
         [TestCase(true)]
@@ -43,13 +44,16 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                 data.Remove(item);
             }
 
-            wordsHandler.SentimentDataHolder.Clear();
-            wordsHandler.SentimentDataHolder.PopulateEmotionsData(data);
-            wordsHandler.DisableInvertors = disableInvert;
+            var lexicon = SentimentDataHolder.PopulateEmotionsData(data);
+            ActualWordsHandler.InstanceOpen.Container.Context.DisableInvertors = disableInvert;
 
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
 
-            var result = await splitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(wordsHandler, result).Create();
+            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, lexicon);
+            result = parsedFactory.ReparseDocument(lexiconRating);
+            review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
+
             var ratings = review.CalculateRawRating();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(disableInvert, ratings.IsPositive);
@@ -58,9 +62,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task TestPhrase()
         {
-            var result = await splitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
-            ParsedReviewManager factory = new ParsedReviewManager(wordsHandler, result);
-            var review = factory.Create();
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
             Assert.AreEqual(4, review.Items.Count());
         }
     }

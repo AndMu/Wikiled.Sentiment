@@ -7,6 +7,7 @@ using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -32,7 +33,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
             var localCache = new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions()));
-            ContainerHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP);
+            ContainerHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP, new SentimentContext());
         }
 
         public static TestHelper Instance { get; } = new TestHelper();

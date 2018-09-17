@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public ParseRequest(Document document)
         {
-            Document = document ?? throw new System.ArgumentNullException(nameof(document));
+            Document = document ?? throw new ArgumentNullException(nameof(document));
         }
 
         public Document Document { get; }

@@ -28,6 +28,13 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             Loader = new DocumentLoader(Container);
         }
 
+        public void Reset()
+        {
+            Context.DisableFeatureSentiment = false;
+            Context.DisableInvertors = false;
+            Context.ChangeAspect(null);
+        }
+
         public SentimentContext Context { get; }
 
         public static ActualWordsHandler InstanceSimple { get; } = new ActualWordsHandler(POSTaggerType.Simple);

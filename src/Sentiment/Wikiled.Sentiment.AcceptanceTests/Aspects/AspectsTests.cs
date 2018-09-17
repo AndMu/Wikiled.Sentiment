@@ -5,6 +5,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
@@ -44,7 +45,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
             await result;
 
-            AspectSerializer serializer = new AspectSerializer(TestHelper.Instance.ContainerHelper.DataLoader);
+            var serializer = TestHelper.Instance.ContainerHelper.Container.Resolve<IAspectSerializer>();
             serializer.Serialize(aspectHandler).Save(Path.Combine(TestContext.CurrentContext.TestDirectory, data.Sentiment.Product + ".xml"));
 
             var features = aspectHandler.GetFeatures(10).ToArray();
@@ -66,7 +67,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
                 var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = new ParsedReviewManager(TestHelper.Instance.ContainerHelper.DataLoader, parsedDoc).Create();
+                var parseReview = TestHelper.Instance.ContainerHelper.Resolve(parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

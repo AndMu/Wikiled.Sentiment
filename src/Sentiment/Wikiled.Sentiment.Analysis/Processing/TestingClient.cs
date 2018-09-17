@@ -17,6 +17,7 @@ using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP.NRC;
@@ -82,7 +83,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public void Init()
         {
             MachineSentiment = DisableSvm ? new NullMachineSentiment() : Text.MachineLearning.MachineSentiment.Load(SvmPath);
-
             arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = TrackArff ? factory.Create(arff) : null;
@@ -132,7 +132,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
                 pipeline.ContainerHolder.Container.Resolve<INRCDictionary>().ExtractToVector(SentimentVector, context.Review.Items);
-
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);
                 context.Adjustment = adjustment;

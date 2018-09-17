@@ -8,7 +8,6 @@ using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
-using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
@@ -39,7 +38,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             TestRunner testing = new TestRunner(Helper, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active, new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active);
             TestingClient testingClient = new TestingClient(pipeline, trainingLocation);
             testingClient.TrackArff = true;
             testingClient.Init();
@@ -55,7 +54,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             Training = new TestRunner(Helper, new SentimentTestData(product) { Category = category });
 
             logger.Info("Loading data...");
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active, new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active);
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingLocation);
             logger.Info("Training...");
             return trainingClient.Train(Training.Load());

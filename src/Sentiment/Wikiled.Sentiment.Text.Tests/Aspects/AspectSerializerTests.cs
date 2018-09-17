@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Autofac;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Tests.Aspects
@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             }
 
             instance = new AspectDectector(words.ToArray(), words.ToArray());
-            serializer = new AspectSerializer(ActualWordsHandler.InstanceSimple.WordsHandler);
+            serializer = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<AspectSerializer>();
         }
 
         [Test]
@@ -41,8 +41,8 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         [Test]
         public void Serialize()
         {
-            var document = serializer.Serialize(instance);
-            var result = serializer.Deserialize(document);
+            System.Xml.Linq.XDocument document = serializer.Serialize(instance);
+            IAspectDectector result = serializer.Deserialize(document);
             Assert.AreEqual(100, result.AllAttributes.Count());
             Assert.AreEqual(100, result.AllFeatures.Count());
         }

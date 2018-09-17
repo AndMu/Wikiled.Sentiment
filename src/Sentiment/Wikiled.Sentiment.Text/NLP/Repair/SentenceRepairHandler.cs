@@ -10,7 +10,6 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Dictionary.Streams;
-using Wikiled.Text.Analysis.NLP;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
 {

@@ -1,35 +1,36 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
 {
     [TestFixture]
     public class AdjustmentTests
     {
-        private TestHelper testHelper;
-
-        [SetUp]
-        public void Setup()
+        [TearDown]
+        public void Clean()
         {
-            testHelper = new TestHelper();
+            ActualWordsHandler.InstanceOpen.Reset();
         }
 
         [Test]
         public async Task Adjusted()
         {
-            testHelper.ContainerHelper.DataLoader.SentimentDataHolder.Clear();
-            testHelper.ContainerHelper.DataLoader.DisableFeatureSentiment = true;
-            var adjuster = new WeightSentimentAdjuster(testHelper.ContainerHelper.DataLoader.SentimentDataHolder);
+            ActualWordsHandler.InstanceOpen.Context.DisableFeatureSentiment = true;
             var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
-            adjuster.Adjust(words);
+            var lexicon = SentimentDataHolder.Load(words);
             var text = "I Veto it";
-            var result = await testHelper.ContainerHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(testHelper.ContainerHelper.DataLoader, result).Create();
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
+
+            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, lexicon);
+            result = new DocumentFromReviewFactory().ReparseDocument(lexiconRating);
+            review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
+
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
@@ -37,8 +38,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         public async Task TestEmoticon()
         {
             var text = "EMOTICON_confused I do";
-            var result = await testHelper.ContainerHelper.Splitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(testHelper.ContainerHelper.DataLoader, result).Create();
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

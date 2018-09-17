@@ -5,7 +5,6 @@ using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
@@ -22,11 +21,11 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [SetUp]
         public async Task Setup()
         {
-            SimpleTextSplitter splitter = new SimpleTextSplitter(ActualWordsHandler.InstanceSimple.WordsHandler);
-            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
-            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector.AddFeature(ActualWordsHandler.InstanceSimple.WordsHandler.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
-            var data = await splitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            review = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, data).Create();
+            var aspect = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
+            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(aspect);
+            aspect.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
+            var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();
             var sentence = review.Sentences[0];
             instance = new ExtractSentenceTextVector(sentence);
         }
@@ -34,7 +33,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [TearDown]
         public void Cleanup()
         {
-            ActualWordsHandler.InstanceSimple.WordsHandler.AspectDectector = NullAspectDectector.Instance;
+            ActualWordsHandler.InstanceSimple.Reset();
         }
 
         [Test]

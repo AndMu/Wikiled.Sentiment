@@ -51,8 +51,8 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Add()
         {
             Assert.Throws<ArgumentNullException>(() => instance.Add(null));
-            instance.Add(WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.NN));
-            instance.Add(WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.NN));
+            instance.Add(WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
+            instance.Add(WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
 
             Assert.AreEqual("test test", instance.Text);
             Assert.AreEqual("t t", instance.Stemmed);
@@ -72,7 +72,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [Test]
         public void CreateFixed()
         {
-            instance.Add(WordOccurrence.Create(helper.Handler.Object, "xxxbad", null, POSTags.Instance.NN));
+            instance.Add(WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "xxxbad", null, POSTags.Instance.NN));
             Assert.IsTrue(instance.IsFixed);
         }
     }

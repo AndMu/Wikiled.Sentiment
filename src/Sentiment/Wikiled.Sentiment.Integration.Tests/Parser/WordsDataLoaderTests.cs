@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Wikiled.Sentiment.Integration.Tests.Helpers;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Integration.Tests.Parser
@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsQuestion(string word, bool expected)
         {
-            var result = DictionaryHelper.Default.WordsHandlers.IsQuestion(GetWord(word));
+            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsQuestion(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", true)]
         public void IsStop(string word, bool expected)
         {
-            var result = DictionaryHelper.Default.WordsHandlers.IsStop(GetWord(word));
+            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsStop(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsSentiment(string word, bool expected)
         {
-            var result = DictionaryHelper.Default.WordsHandlers.IsSentiment(GetWord(word));
+            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsSentiment(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -40,13 +40,13 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("book", false)]
         public void IsKnown(string word, bool expected)
         {
-            var result = DictionaryHelper.Default.WordsHandlers.IsKnown(GetWord(word));
+            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
         private IWordItem GetWord(string word)
         {
-            return DictionaryHelper.Default.WordsHandlers.WordFactory.CreateWord(word, "NN");
+            return ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
         }
     }
 }

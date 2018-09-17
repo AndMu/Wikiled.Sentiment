@@ -40,7 +40,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                         item.Stars = 1;
                         item.Text = item.Text;
                         item.Id = Guid.NewGuid().ToString();
-                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.Splitter, item);
+                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
                     });
 
             var positive = data.All.Where(item => item.Sentiment == SentimentClass.Positive)
@@ -52,15 +52,15 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                                        item.Stars = 5;
                                        item.Text = item.Text;
                                        item.Id = Guid.NewGuid().ToString();
-                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.Splitter, item);
+                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
                                    });
 
 
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper, new ParsedReviewManagerFactory());
+            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper);
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
             TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
             await trainingClient.Train(negative.Concat(positive)).ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper, new ParsedReviewManagerFactory());
+            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper);
             TestingClient testingClient = new TestingClient(pipeline, trainingPath);
             testingClient.TrackArff = true;
             testingClient.Init();
@@ -82,8 +82,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             log.Info("SimpleTest");
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
-            var doc = await TestHelper.Instance.ContainerHelper.Splitter.Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
-            var result = new ParsedReviewManager(TestHelper.Instance.ContainerHelper.DataLoader, doc).Create();
+            var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
+            var result = TestHelper.Instance.ContainerHelper.Resolve(doc).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
@@ -97,7 +97,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task TestNull()
         {
-            var doc = await TestHelper.Instance.ContainerHelper.Splitter.Process(new ParseRequest(new Document())).ConfigureAwait(false);
+            var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(new Document())).ConfigureAwait(false);
             Assert.AreEqual(0, doc.Sentences.Count);
         }
 
@@ -120,7 +120,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             ConcurrentBag<ISentence> sentences = new ConcurrentBag<ISentence>();
             var doc = await parsedDocument.GetParsed().ConfigureAwait(false);
-            var review = new ParsedReviewManager(TestHelper.Instance.ContainerHelper.DataLoader, doc).Create();
+            var review = TestHelper.Instance.ContainerHelper.Resolve(doc).Create();
             foreach (var sentence in review.Sentences)
             {
                 var sentiments = sentence.Occurrences.Where(item => item.IsSentiment).ToArray();

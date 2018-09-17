@@ -13,7 +13,6 @@ using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.NLP.NRC;
@@ -51,7 +50,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
         {
             TestingClient client;
             Out.EnsureDirectoryExistence();
@@ -60,7 +59,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
                 SetupHeader();
-                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container, new ParsedReviewManagerFactory());
+                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
+                pipeline.LexiconAdjustment = sentimentAdjustment;
+                var dictionary = container.Container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(pipeline.Monitor)))
                 {
@@ -74,7 +75,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                           .Select(
                               item => 
                               {
-                                  SaveDocument(container.DataLoader, item);
+                                  SaveDocument(dictionary, item);
                                   pipeline.Monitor.Increment();
                                   return item;
                               })
@@ -91,14 +92,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             log.Info($"Testing performance {client.GetPerformanceDescription()}");
         }
 
-        private void SaveDocument(IWordsHandler handler, ProcessingContext context)
+        private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)
         {
             SentimentVector vector = new SentimentVector();
             if (ExtractStyle)
             {
                 foreach (var word in context.Processed.Words)
                 {
-                    vector.ExtractData(handler.Container.Resolve<INRCDictionary>().FindRecord(word));
+                    vector.ExtractData(dictionary.FindRecord(word));
                 }
             }
 

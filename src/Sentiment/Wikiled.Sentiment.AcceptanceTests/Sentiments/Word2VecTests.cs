@@ -10,7 +10,7 @@ using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
-using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -34,18 +34,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             new SentimentTestData("B000PYF768", 507, 0, "Total:<480> Positive:<92.045%> Negative:<67.500%> F1:<0.944> RMSE:0.97") { Category = ProductCategory.Kitchen },
             new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<288> Positive:<83.643%> Negative:<100.000%> F1:<0.911> RMSE:1.28") { Category = ProductCategory.Kitchen }
         };
-
-        [TearDown]
-        public void TearDown()
-        {
-            TestHelper.Instance.ContainerHelper.DataLoader.Reset();
-        }
-
-        [SetUp]
-        public void SetUp()
-        {
-            TestHelper.Instance.ContainerHelper.DataLoader.Reset();
-        }
 
         [TestCaseSource(nameof(testData))]
         public async Task SentimentTests(SentimentTestData data)
@@ -72,10 +60,11 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                     throw new ArgumentOutOfRangeException();
             }
 
-            var adjuster = new WeightSentimentAdjuster(TestHelper.Instance.ContainerHelper.DataLoader.SentimentDataHolder);
-            adjuster.Adjust(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
+            var holder = SentimentDataHolder.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, new ParsedReviewManagerFactory()), string.Empty);
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active);
+            pipeline.LexiconAdjustment = holder;
+            TestingClient testing = new TestingClient(pipeline, string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;

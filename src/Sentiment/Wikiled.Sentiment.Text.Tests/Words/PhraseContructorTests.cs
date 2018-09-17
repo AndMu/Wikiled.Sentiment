@@ -19,8 +19,8 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [SetUp]
         public void Setup()
         {
-            splitter = new SimpleTextSplitter(ActualWordsHandler.InstanceSimple.WordsHandler);
-            phraseContructor = new PhraseContructor(ActualWordsHandler.InstanceSimple.WordsHandler);
+            splitter = (SimpleTextSplitter)ActualWordsHandler.InstanceSimple.TextSplitter;
+            phraseContructor = new PhraseContructor(ActualWordsHandler.InstanceSimple.WordFactory);
         }
 
         [TestCase("I like my school teacher.", 2, 1, "school teacher")]
@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public async Task Process(string sentence, int word, int total, string lastPhrase)
         {
             var result = await splitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = new ParsedReviewManager(ActualWordsHandler.InstanceSimple.WordsHandler, result).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(result).Create();
             var words = review.Items.ToArray();
             var phrases = phraseContructor.GetPhrases(words[word]).ToArray();
             Assert.AreEqual(total, phrases.Length);

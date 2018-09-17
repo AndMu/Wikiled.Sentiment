@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.Splitter, doc);
+                return new ParsingDocumentHolder(Active.GetTextSplitter(), doc);
             }
             catch (Exception ex)
             {

@@ -9,7 +9,9 @@ using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Cache;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -25,8 +27,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected SemaphoreSlim Semaphore { get; set; }
 
         public string Weights { get; set; }
-
-        public bool FullWeightReset { get; set; }
 
         public bool Redis { get; set; }
 
@@ -59,23 +59,18 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 cacheFactory = new RedisDocumentCacheFactory(redis);
             }
 
-            container = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger);
-            throw new NotImplementedException();
-            //container.DataLoader.DisableFeatureSentiment = InvertOff;
-            //log.Info("Processing...");
+            SentimentContext context = new SentimentContext();
+            context.DisableFeatureSentiment = InvertOff;
+            container = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger, context);
 
-            //if (!string.IsNullOrEmpty(Weights))
-            //{
-            //    log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
-            //    if (FullWeightReset)
-            //    {
-            //        log.Info("Full weight reset");
-            //        container.DataLoader.SentimentDataHolder.Clear();
-            //    }
+            log.Info("Processing...");
 
-            //    var adjuster = new WeightSentimentAdjuster(container.DataLoader.SentimentDataHolder);
-            //    adjuster.Adjust(Weights);
-            //}
+            ISentimentDataHolder sentimentAdjustment = default;
+            if (!string.IsNullOrEmpty(Weights))
+            {
+                log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
+                sentimentAdjustment = SentimentDataHolder.Load(Weights);
+            }
 
             IObservable<IParsedDocumentHolder> review;
 
@@ -92,11 +87,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
                              
-            Process(review.Select(SynchronizedReviews), container);
+            Process(review.Select(SynchronizedReviews), container, sentimentAdjustment);
             return Task.CompletedTask;
         }
 
-        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container);
+        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment);
 
         private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
         {
@@ -126,7 +121,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
             log.Info("Other {0}", Input);
-            return container.Splitter.GetParsedReviewHolders(Input, null).ToObservable();
+            return container.GetTextSplitter().GetParsedReviewHolders(Input, null).ToObservable();
         }
     }
 }

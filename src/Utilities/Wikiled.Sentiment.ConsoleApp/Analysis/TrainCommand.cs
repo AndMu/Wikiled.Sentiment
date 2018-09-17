@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -8,7 +7,7 @@ using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
@@ -32,10 +31,12 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
         {
             log.Info("Training Operation...");
-            TrainingClient client = new TrainingClient(new ProcessingPipeline(TaskPoolScheduler.Default, container, new ParsedReviewManagerFactory()), Model);
+            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
+            pipeline.LexiconAdjustment = sentimentAdjustment;
+            TrainingClient client = new TrainingClient(pipeline, Model);
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

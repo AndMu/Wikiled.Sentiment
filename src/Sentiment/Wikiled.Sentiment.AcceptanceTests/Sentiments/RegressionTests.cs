@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             TestHelper helper = new TestHelper();
             TestRunner runner = new TestRunner(helper, data);
             await runner.Load().LastOrDefaultAsync();
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active, new ParsedReviewManagerFactory()), string.Empty);
+            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active), string.Empty);
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;

@@ -24,16 +24,18 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             helper.Handler.Setup(item => item.IsSentiment(It.IsAny<WordOccurrence>())).Returns(true);
             helper.Handler.Setup(item => item.IsStop(It.IsAny<WordOccurrence>())).Returns(true);
             helper.Handler.Setup(item => item.MeasureQuantifier(It.IsAny<WordOccurrence>())).Returns(2);
-            instance = WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.NN);
+            instance = WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN);
         }
 
         [Test]
         public void Create()
         {
-            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(null, "Test", null, POSTags.Instance.NN));
-            Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, null, null, POSTags.Instance.NN));
-            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, "Test", null, null));
-            Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, "Test", null, POSTags.Instance.SBAR));
+            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(null, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
+            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, null, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
+            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, null, "Test", null, POSTags.Instance.NN));
+            Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, null, null, POSTags.Instance.NN));
+            Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, null));
+            Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.SBAR));
 
             Assert.AreEqual("test", instance.Text);
             Assert.AreEqual("t", instance.Stemmed);
@@ -58,14 +60,14 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [Test]
         public void CreateFixed()
         {
-            instance = WordOccurrence.Create(helper.Handler.Object, "xxxbad", null, POSTags.Instance.NN);
+            instance = WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "xxxbad", null, POSTags.Instance.NN);
             Assert.IsTrue(instance.IsFixed);
         }
 
         [Test]
         public void Createhashtag()
         {
-            instance = WordOccurrence.Create(helper.Handler.Object, "#word", null, POSTags.Instance.NN);
+            instance = WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "#word", null, POSTags.Instance.NN);
             Assert.AreEqual(NamedEntities.Hashtag, instance.Entity);
             instance.Entity = NamedEntities.Date;
             Assert.AreEqual(NamedEntities.Hashtag, instance.Entity);

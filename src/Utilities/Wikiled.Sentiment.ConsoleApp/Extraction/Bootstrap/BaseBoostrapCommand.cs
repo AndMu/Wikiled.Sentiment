@@ -17,9 +17,10 @@ using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
-using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
@@ -33,7 +34,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private IContainerHelper bootStrapContainer;
 
-        private ParsedReviewManagerFactory managerFactory = new ParsedReviewManagerFactory();
+        private ISentimentDataHolder adjustment;
+
+        private readonly IDocumentFromReviewFactory parsedFactory = new DocumentFromReviewFactory();
 
         private PerformanceMonitor monitor;
 
@@ -152,13 +155,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             var splitterFactory = new MainSplitterFactory(
                 new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())),
                 config);
-            splitterFactory.SupportRepair
-            bootStrapContainer = splitterFactory.Create(POSTaggerType.SharpNLP);
-            log.Info("Removing default lexicon");
-            bootStrapContainer.DataLoader.SentimentDataHolder.Clear();
-            bootStrapContainer.DataLoader.DisableFeatureSentiment = InvertOff;
-            var adjuster = new WeightSentimentAdjuster(bootStrapContainer.DataLoader.SentimentDataHolder);
-            adjuster.Adjust(Words);
+            SentimentContext context = new SentimentContext();
+            context.DisableFeatureSentiment = InvertOff;
+            bootStrapContainer = splitterFactory.Create(POSTaggerType.SharpNLP, context);
+            log.Info("Loading lexicon: {0}", Words);
+            adjustment = SentimentDataHolder.Load(Words);
         }
 
         private void LoadDefault()
@@ -166,7 +167,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             log.Info("Loading default text splitter");
             var config = new ConfigurationHandler();
             var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), config);
-            defaultContainer = splitterFactory.Create(POSTaggerType.SharpNLP);
+            defaultContainer = splitterFactory.Create(POSTaggerType.SharpNLP, new SentimentContext());
         }
 
         private async Task<EvalData> ProcessReview(EvalData data)
@@ -174,8 +175,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             await semaphore.WaitAsync().ConfigureAwait(false);
             try
             {
-                var original = await bootStrapContainer.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                var bootReview = managerFactory.Create(bootStrapContainer.DataLoader, original).Create();
+                var original = await bootStrapContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                var bootReview = bootStrapContainer.Resolve(original).Create();
+                LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(bootReview, adjustment);
+                original = parsedFactory.ReparseDocument(lexiconRating);
+                bootReview = bootStrapContainer.Resolve(original).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
@@ -189,8 +193,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 else if (Neutral)
                 {
                     // check also using default lexicon
-                    var main = await defaultContainer.Splitter.Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                    var originalReview = managerFactory.Create(bootStrapContainer.DataLoader, main).Create();
+                    var main = await defaultContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
+                    var originalReview = defaultContainer.Resolve(main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)

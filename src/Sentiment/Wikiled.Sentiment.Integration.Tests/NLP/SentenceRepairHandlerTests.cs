@@ -1,6 +1,7 @@
 ﻿using System.IO;
+using Autofac;
 using NUnit.Framework;
-using Wikiled.Sentiment.Integration.Tests.Helpers;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP.Repair;
 
 namespace Wikiled.Sentiment.Integration.Tests.NLP
@@ -8,18 +9,17 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
     [TestFixture]
     public class SentenceRepairHandlerTests
     {
-        private string repairPath;
+        private ISentenceRepairHandler handler;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            repairPath = Path.Combine(DictionaryHelper.Default.LibraryPath, "Repair");
+            ActualWordsHandler.InstanceSimple.Container.Container.Resolve<ISentenceRepairHandler>();
         }
 
         [Test]
         public void RepairNotOnly()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             for (int i = 0; i < 1000; i++)
             {
                 var result = handler.Repair("We not only brought this book but also liked it");
@@ -30,7 +30,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void Alot()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("bottom line camera give a lot of bang for buck");
             Assert.AreEqual("bottom line camera give alot bang for buck", result);
         }
@@ -38,7 +37,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void RepairEmoticons()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("It was :) but I :(");
             Assert.AreEqual("It was xxxgoodxxxtwo but I xxxbadxxxtwo", result);
         }
@@ -46,7 +44,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void RepairSlang()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("It was afaik");
             Assert.AreEqual("It was as far as I know", result);
         }
@@ -54,7 +51,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void Enough()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("It is heavy enough to make it stable, but not too heavy to preclude hand use.");
             Assert.AreEqual("It is heavy enough to make it stable, but not too heavy to preclude hand use.", result);
         }
@@ -62,7 +58,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void Unison()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("i think this girl unison is nice");
             Assert.AreEqual("i think this girl unison is nice", result);
         }
@@ -70,7 +65,6 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void Non()
         {
-            SentenceRepairHandler handler = new SentenceRepairHandler(repairPath, DictionaryHelper.Default.WordsHandlers);
             var result = handler.Repair("i think non-worthy this girl nonworthy is nice");
             Assert.AreEqual("i think not worthy this girl not worthy is nice", result);
         }
