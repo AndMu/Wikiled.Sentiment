@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Autofac;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using Autofac.Core;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
@@ -32,7 +33,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         public IParsedReviewManager Resolve(Document document)
         {
-            throw new NotImplementedException();
+            return Container.Resolve<IParsedReviewManager>(new NamedParameter("document", document));
         }
     }
 }

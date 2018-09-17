@@ -1,16 +1,23 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using System;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Dictionary;
+using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Analysis.NLP.Frequency;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.Tokenizer.Pipelined;
+using Wikiled.Text.Analysis.Words;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Splitters
@@ -47,6 +54,16 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             builder.RegisterType<BasicEnglishDictionary>().As<IWordsDictionary>().SingleInstance();
             builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivated(item => item.Instance.Load());
             builder.RegisterType<NRCDictionary>().As<INRCDictionary>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<ParsedReviewManager>().As<IParsedReviewManager>();
+            
+            builder.RegisterType<SentenceTokenizerFactory>().As<ISentenceTokenizerFactory>().SingleInstance();
+            builder.RegisterType<NaivePOSTagger>().As<IPOSTagger>().SingleInstance();
+            builder.RegisterType<BNCList>().As<IPosTagResolver>().As<IWordFrequencyList>().SingleInstance();
+            builder.Register(c => WordTypeResolver.Instance).As<IWordTypeResolver>().SingleInstance();
+
+            builder.RegisterType<RawWordExtractor>().As<IRawTextExtractor>().SingleInstance();
+            builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
+
             builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>().SingleInstance();
             if (SupportRepair)
             {
@@ -57,19 +74,19 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
                 builder.Register(item => (ISentenceRepairHandler)null).As<ISentenceRepairHandler>();
             }
 
-            builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance();
-            builder.RegisterType<AspectSerializer>().As<IWordsHandler>().SingleInstance();
-            builder.RegisterType<QueueTextSplitter>().As<ITextSplitter>();
+            int parallel = Environment.ProcessorCount / 2;
+            builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<AspectSerializer>().As<IAspectSerializer>().SingleInstance();
+            builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
 
             switch (value)
             {
                 case POSTaggerType.Simple:
-                    //builder.Register(c => new SimpleTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
-                    //builder.Register(c => new SimpleTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
+                    builder.RegisterType<SimpleTextSplitter>().Named<ITextSplitter>("Underlying");
                     break;
                 case POSTaggerType.SharpNLP:
-                    //builder.Register(c => new RecyclableTextSplitter(c.Resolve<ISentenceTokenizerFactory>()));
-                    //builder.RegisterType<RecyclableTextSplitter>().As<ITextSplitter>();
+                    builder.Register(c => new RecyclableTextSplitter(() => c.ResolveNamed<ITextSplitter>("UnderlyingNested"), 5000)).Named<ITextSplitter>("Underlying");
+                    builder.RegisterType<OpenNLPTextSplitter>().Named<ITextSplitter>("UnderlyingNested");
                     break;
                 default:
                     throw new NotSupportedException(value.ToString());
