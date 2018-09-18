@@ -21,6 +21,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [SetUp]
         public void Setup()
         {
+            ActualWordsHandler.InstanceSimple.Reset();
             textSplitter = ActualWordsHandler.InstanceSimple.TextSplitter;
             parsedFactory = new DocumentFromReviewFactory();
         }
@@ -53,7 +54,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         {
             string text = "This tale based on two Edgar Allen Poe pieces (\"The Fall of the House of Usher\", \"Dance of Death\" (poem) ) is actually quite creepy from beginning to end. It is similar to some of the old black-and-white movies about people that meet in an old decrepit house (for example, \"The Cat and the Canary\", \"The Old Dark House\", \"Night of Terror\" and so on). Boris Karloff plays a demented inventor of life-size dolls that terrorize the guests. He dies early in the film (or does he ? ) and the residents of the house are subjected to a number of terrifying experiences. I won't go into too much detail here, but it is definitely a must-see for fans of old dark house mysteries.<br /><br />Watch it with plenty of popcorn and soda in a darkened room.<br /><br />Dan Basinger 8/10";
             ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = true;
-            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = true;
+            ActualWordsHandler.InstanceSimple.Context.DisableInvertors = true;
 
             string[] positiveAdj = { "good", "lovely", "excellent", "delightful", "perfect" };
             string[] negativeAdj = { "bad", "horrible", "poor", "disgusting", "unhappy" };
@@ -70,11 +71,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
 
             SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
-
-            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, adjustment);
-            Document doc = parsedFactory.ReparseDocument(lexiconRating);
-            review = ActualWordsHandler.InstanceSimple.Container.Resolve(doc).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request, adjustment).Create();
 
             Assert.IsNull(review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();
@@ -110,11 +107,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
 
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
-
-            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, adjustment);
-            Document doc = parsedFactory.ReparseDocument(lexiconRating);
-            review = ActualWordsHandler.InstanceSimple.Container.Resolve(doc).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(request, adjustment).Create();
 
             Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();

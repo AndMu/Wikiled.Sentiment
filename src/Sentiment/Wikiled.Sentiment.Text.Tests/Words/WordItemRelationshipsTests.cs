@@ -3,6 +3,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
@@ -21,6 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             handler = new Mock<IWordsHandler>();
+            handler.Setup(item => item.Context).Returns(new SentimentContext());
             parent = new TestWordItem();
             parent.WordIndex = 1;
             instance = new WordItemRelationships(handler.Object, parent);

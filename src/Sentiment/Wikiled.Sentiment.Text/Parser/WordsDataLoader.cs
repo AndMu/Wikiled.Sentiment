@@ -17,9 +17,9 @@ namespace Wikiled.Sentiment.Text.Parser
     {
         private readonly ILexiconConfiguration config;
 
-        private ISentimentDataHolder sentimentData;
-
         private Dictionary<string, double> booster;
+
+        private bool loaded;
 
         private Dictionary<string, double> negating;
 
@@ -31,11 +31,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> question;
 
+        private ISentimentDataHolder sentimentData;
+
         private Dictionary<string, double> stopPos;
 
         private Dictionary<string, double> stopWords;
-
-        private bool loaded;
 
         public WordsDataLoader(ILexiconConfiguration config, ISentimentContext context)
         {
@@ -46,14 +46,20 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public ISentimentContext Context { get; }
 
-        public WordRepairRule FindRepairRule(IWordItem word)
+        public SentimentValue CheckSentiment(IWordItem word)
         {
-            if (!word.IsSimple)
+            if (Context.DisableFeatureSentiment &&
+                word.IsFeature)
             {
                 return null;
             }
 
-            return negatingRepairRule.TryGetWordValue(word, out WordRepairRule rule) ? rule : null;
+            return sentimentData.MeasureSentiment(word);
+        }
+
+        public bool IsAttribute(IWordItem word)
+        {
+            return Context.Aspect.IsAttribute(word);
         }
 
         public bool IsFeature(IWordItem word)
@@ -65,11 +71,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
             bool value = Context.Aspect != null && Context.Aspect.IsAspect(word);
             return value;
-        }
-
-        public bool IsAttribute(IWordItem word)
-        {
-            return Context.Aspect.IsAttribute(word);
         }
 
         public bool IsInvertAdverb(IWordItem word)
@@ -102,24 +103,9 @@ namespace Wikiled.Sentiment.Text.Parser
             return false;
         }
 
-        public bool IsKnown(IWordItem word)
-        {
-            return IsQuestion(word) ||
-                   IsFeature(word) ||
-                   IsInvertAdverb(word) ||
-                   IsSentiment(word) ||
-                   MeasureQuantifier(word) > 0;
-        }
-
         public bool IsQuestion(IWordItem word)
         {
             return question.ContainsKey(word.Text);
-        }
-
-        public bool IsSentiment(IWordItem word)
-        {
-            SentimentValue sentiment = MeasureSentiment(word);
-            return sentiment != null;
         }
 
         public bool IsStop(IWordItem wordItem)
@@ -147,7 +133,7 @@ namespace Wikiled.Sentiment.Text.Parser
             question = ReadTextData("QuestionWords.txt");
             stopWords = ReadTextData("StopWords.txt");
             stopPos = ReadTextData("StopPos.txt");
-            sentimentData = SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt"));
+            sentimentData = SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt")).AddEmoji();
             ReadRepairRules();
         }
 
@@ -171,15 +157,14 @@ namespace Wikiled.Sentiment.Text.Parser
             return null;
         }
 
-        public SentimentValue MeasureSentiment(IWordItem word)
+        private WordRepairRule FindRepairRule(IWordItem word)
         {
-            if (Context.DisableFeatureSentiment &&
-                word.IsFeature)
+            if (!word.IsSimple)
             {
                 return null;
             }
 
-            return sentimentData.MeasureSentiment(word);
+            return negatingRepairRule.TryGetWordValue(word, out WordRepairRule rule) ? rule : null;
         }
 
         private void ReadRepairRules()

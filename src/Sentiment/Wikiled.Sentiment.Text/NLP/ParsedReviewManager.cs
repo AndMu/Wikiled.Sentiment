@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private readonly IWordFactory wordsFactory;
 
-        private INRCDictionary nrcDictionary;
+        private readonly INRCDictionary nrcDictionary;
 
         public ParsedReviewManager(IWordsHandler manager, IWordFactory wordsFactory, INRCDictionary nrcDictionary, Document document)
         {

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Moq;
 using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.NRC;
@@ -19,6 +20,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             
             InquirerManager = new Mock<IInquirerManager>();
             Dictionary = new Mock<INRCDictionary>();
+            Handler.Setup(item => item.Context).Returns(new SentimentContext());
         }
 
         public Mock<IInquirerManager> InquirerManager { get; }

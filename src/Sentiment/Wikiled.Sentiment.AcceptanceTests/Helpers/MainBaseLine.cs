@@ -28,14 +28,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             trainingLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, @"SVM", product);
         }
 
-        public TestHelper Helper { get; private set; }
-
         public TestRunner Training { get; private set; }
 
         public async Task<TestingClient> Test(string testProduct, ProductCategory testCategory)
         {
             logger.Info("Testing...");
-            TestRunner testing = new TestRunner(Helper, new SentimentTestData(testProduct) { Category = testCategory });
+            TestRunner testing = new TestRunner(TestHelper.Instance, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.Info("Loading data...");
             ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, testing.Active);
@@ -50,8 +48,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         public Task Train()
         {
             logger.Info("Trainning...");
-            Helper = new TestHelper();
-            Training = new TestRunner(Helper, new SentimentTestData(product) { Category = category });
+            Training = new TestRunner(TestHelper.Instance, new SentimentTestData(product) { Category = category });
 
             logger.Info("Loading data...");
             ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, Training.Active);

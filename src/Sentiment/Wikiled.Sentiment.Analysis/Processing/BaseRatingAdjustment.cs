@@ -11,6 +11,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
     {
         private readonly Dictionary<IWordItem, SentimentValue> calculatedSentiments;
 
+        private bool isCalculated;
+
         protected BaseRatingAdjustment(IParsedReview review)
         {
             Review = review ?? throw new System.ArgumentNullException(nameof(review));
@@ -30,7 +32,18 @@ namespace Wikiled.Sentiment.Analysis.Processing
             return value;
         }
 
-        public abstract void CalculateRating();
+        public void CalculateRating()
+        {
+            if (isCalculated)
+            {
+                return;
+            }
+
+            isCalculated = true;
+            CalculateRatingLogic();
+        }
+
+        protected abstract void CalculateRatingLogic();
 
         protected bool ContainsSentiment(IWordItem word)
         {

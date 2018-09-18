@@ -9,7 +9,6 @@ using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
@@ -20,8 +19,6 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
         private ProcessingPipeline instance;
 
         private ITestableObservable<IParsedDocumentHolder> documentSource;
-
-        private Mock<IContainerHelper> mockSplitterHelper;
 
         private TestScheduler scheduler;
 
@@ -42,6 +39,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
             review = new Mock<IParsedReview>();
             manager.Setup(item => item.Create()).Returns(review.Object);
             holder = new Mock<IParsedDocumentHolder>();
+            container.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
             documentSource = scheduler.CreateColdObservable(
                 new Recorded<Notification<IParsedDocumentHolder>>(
                     TimeSpan.FromSeconds(1).Ticks,
@@ -53,7 +51,6 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
                     TimeSpan.FromSeconds(3).Ticks,
                     Notification.CreateOnCompleted<IParsedDocumentHolder>()));
             
-            mockSplitterHelper = new Mock<IContainerHelper>();
             instance = CreateProcessingPipeline();
         }
 

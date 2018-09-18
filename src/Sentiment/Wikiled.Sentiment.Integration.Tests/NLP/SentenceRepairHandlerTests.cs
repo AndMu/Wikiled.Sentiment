@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Autofac;
+﻿using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP.Repair;
@@ -14,7 +13,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [OneTimeSetUp]
         public void Setup()
         {
-            ActualWordsHandler.InstanceSimple.Container.Container.Resolve<ISentenceRepairHandler>();
+            handler = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<SentenceRepairHandler>();
         }
 
         [Test]
@@ -68,6 +67,5 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
             var result = handler.Repair("i think non-worthy this girl nonworthy is nice");
             Assert.AreEqual("i think not worthy this girl not worthy is nice", result);
         }
-       
     }
 }

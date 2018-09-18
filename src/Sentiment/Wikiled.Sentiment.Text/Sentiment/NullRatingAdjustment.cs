@@ -16,6 +16,10 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public IParsedReview Review { get; }
 
+        public void CalculateRating()
+        {
+        }
+
         public SentimentValue GetSentiment(IWordItem word)
         {
             return word?.Relationship?.Sentiment;

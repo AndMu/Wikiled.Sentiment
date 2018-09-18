@@ -2,10 +2,6 @@
 {
     public class NullSentenceRepairHandler : ISentenceRepairHandler
     {
-        public static NullSentenceRepairHandler Instance { get; } = new NullSentenceRepairHandler();
-
-        private NullSentenceRepairHandler(){}
-
         public string Repair(string sentence)
         {
             return sentence;

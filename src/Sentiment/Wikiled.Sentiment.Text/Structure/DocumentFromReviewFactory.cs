@@ -12,6 +12,7 @@ namespace Wikiled.Sentiment.Text.Structure
                 throw new System.ArgumentNullException(nameof(adjustment));
             }
 
+            adjustment.CalculateRating();
             var document = new Document();
             document.DocumentTime = adjustment.Review.Document.DocumentTime;
             document.Stars = adjustment.Review.Document.Stars;

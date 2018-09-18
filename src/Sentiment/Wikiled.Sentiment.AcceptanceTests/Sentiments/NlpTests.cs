@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [TestCase(false)]
         public async Task TestReview(bool disableInvert)
         {
-            var txt = "#paulryan #killed #rnc2016 #america #died #wisconsin no more :kissing_heart: since you gave up on #trump, you don't represent #us";
+            var txt = "#paulryan #killed #rnc2016 #america #died #wisconsin no more EMOTICON_kissing_heart since you gave up on #trump, you don't represent #us";
             var stream = new DictionaryStream(Path.Combine(path, "Library", "Standard", "EmotionLookupTable.txt"), new FileStreamSource());
             var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             foreach (var item in data.Keys.ToArray().Where(k => !k.StartsWith("EMOTICON")))
@@ -48,12 +48,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             ActualWordsHandler.InstanceOpen.Container.Context.DisableInvertors = disableInvert;
 
             var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
-
-            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, lexicon);
-            result = parsedFactory.ReparseDocument(lexiconRating);
-            review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
-
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result, lexicon).Create();
             var ratings = review.CalculateRawRating();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(disableInvert, ratings.IsPositive);

@@ -8,6 +8,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
     {
         RatingData Rating { get; }
 
+        void CalculateRating();
+
         SentimentValue GetSentiment(IWordItem word);
 
         IParsedReview Review { get; }

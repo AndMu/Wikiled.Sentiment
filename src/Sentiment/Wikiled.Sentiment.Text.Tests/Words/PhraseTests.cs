@@ -3,6 +3,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
 
@@ -20,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         {
             helper = new WordsHandlerHelper();
             helper.RawTextExractor.Setup(item => item.GetWord("test")).Returns("T");
-            helper.Handler.Setup(item => item.IsSentiment(It.IsAny<WordOccurrence>())).Returns(true);
+            helper.Handler.Setup(item => item.CheckSentiment(It.IsAny<WordOccurrence>())).Returns(new SentimentValue(new TestWordItem(), 2));
             helper.Handler.Setup(item => item.IsStop(It.IsAny<WordOccurrence>())).Returns(false);
             helper.Handler.Setup(item => item.MeasureQuantifier(It.IsAny<WordOccurrence>())).Returns(2);
             instance = Phrase.Create(helper.Handler.Object, POSTags.Instance.NN);

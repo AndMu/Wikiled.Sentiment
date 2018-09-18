@@ -17,7 +17,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         {
             log.Info("TestElectronics: {0} {1}", product, category);
             var result = await Global.ElectronicBaseLine.Test(product, category).ConfigureAwait(false);
-            Assert.AreEqual(accuracy, Math.Ceiling(result.Performance.GetSingleAccuracy(true) * 10));
+            Assert.GreaterOrEqual(Math.Ceiling(result.Performance.GetSingleAccuracy(true) * 10), accuracy);
         }
 
         [TestCase("B0002L5R78", ProductCategory.Electronics, 9)]
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         {
             log.Info("TestVideo: {0} {1}", product, category);
             var result = await Global.VideoBaseLine.Test(product, category).ConfigureAwait(false);
-            Assert.AreEqual(accuracy, Math.Ceiling(result.Performance.GetSingleAccuracy(true) * 10));
+            Assert.GreaterOrEqual(Math.Ceiling(result.Performance.GetSingleAccuracy(true) * 10), accuracy);
         }
     }
 }

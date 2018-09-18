@@ -16,8 +16,8 @@ namespace Wikiled.Sentiment.Text.Configuration
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var path = configuration.ResolvePath("Resources");
-            LexiconPath = Path.Combine(path, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
+            ResourcePath = configuration.ResolvePath("Resources");
+            LexiconPath = Path.Combine(ResourcePath, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
             if (!Directory.Exists(LexiconPath))
             {
                 log.Error("Path doesn't exist: {0}", LexiconPath);
@@ -26,5 +26,7 @@ namespace Wikiled.Sentiment.Text.Configuration
         }
        
         public string LexiconPath { get; }
+
+        public string ResourcePath { get; }
     }
 }

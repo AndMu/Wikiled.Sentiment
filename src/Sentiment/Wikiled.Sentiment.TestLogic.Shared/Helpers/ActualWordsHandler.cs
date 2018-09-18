@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class ActualWordsHandler
     {
-        private ActualWordsHandler(POSTaggerType type)
+        public ActualWordsHandler(POSTaggerType type, bool supportRepair = false)
         {
             Configuration = new ConfigurationHandler();
             string resources = Configuration.GetConfiguration("Resources");

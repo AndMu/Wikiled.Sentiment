@@ -3,16 +3,12 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.MachineLearning;
-using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
 {
@@ -21,8 +17,6 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         private readonly IScheduler scheduler;
-
-        private readonly IDocumentFromReviewFactory parsedFactory = new DocumentFromReviewFactory();
 
         public ProcessingPipeline(IScheduler scheduler, IContainerHelper container)
         {
@@ -70,12 +64,14 @@ namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
                 }
 
                 var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                IParsedReview review = ContainerHolder.Container.Resolve<IParsedReviewManager>(new NamedParameter("document", doc)).Create();
+                IParsedReview review;
                 if (LexiconAdjustment != null)
                 {
                     log.Debug("Using lexicon adjustment");
-                    var adjustment = new LexiconRatingAdjustment(review, LexiconAdjustment);
-                    doc = parsedFactory.ReparseDocument(adjustment);
+                    review = ContainerHolder.Resolve(doc, LexiconAdjustment).Create();
+                }
+                else
+                {
                     review = ContainerHolder.Resolve(doc).Create();
                 }
 

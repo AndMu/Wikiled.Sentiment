@@ -25,12 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             var lexicon = SentimentDataHolder.Load(words);
             var text = "I Veto it";
             var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
-
-            LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(review, lexicon);
-            result = new DocumentFromReviewFactory().ReparseDocument(lexiconRating);
-            review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
-
+            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result, lexicon).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 

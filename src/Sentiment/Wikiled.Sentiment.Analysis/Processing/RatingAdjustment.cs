@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             return adjustment;
         }
 
-        public override void CalculateRating()
+        protected override void CalculateRatingLogic()
         {
             var cells = Review.Vector.GetCells().ToArray();
             var result = Model.GetVector(cells);

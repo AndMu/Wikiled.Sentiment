@@ -25,7 +25,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
             logger.Info("Starting training...");
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            await Task.WhenAll(ElectronicBaseLine.Train(), VideoBaseLine.Train()).ConfigureAwait(false);
+            await ElectronicBaseLine.Train().ConfigureAwait(false);
+            await VideoBaseLine.Train().ConfigureAwait(false);
             timer.Stop();
             Console.WriteLine("Training took: {0}", timer.Elapsed);
         }

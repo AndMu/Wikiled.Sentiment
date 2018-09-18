@@ -1,5 +1,4 @@
 using Autofac;
-using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -17,6 +16,6 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
 
         IWordsHandler GetDataLoader();
 
-        IParsedReviewManager Resolve(Document document);
+        IParsedReviewManager Resolve(Document document, ISentimentDataHolder lexicon = null);
     }
 }

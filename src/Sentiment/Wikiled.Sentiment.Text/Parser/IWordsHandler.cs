@@ -14,18 +14,12 @@ namespace Wikiled.Sentiment.Text.Parser
 
         bool IsInvertAdverb(IWordItem word);
 
-        bool IsKnown(IWordItem word);
-
         bool IsQuestion(IWordItem word);
-
-        bool IsSentiment(IWordItem word);
 
         bool IsStop(IWordItem wordItem);
 
-        void Load();
-
         double? MeasureQuantifier(IWordItem word);
 
-        SentimentValue MeasureSentiment(IWordItem word);
+        SentimentValue CheckSentiment(IWordItem word);
     }
 }

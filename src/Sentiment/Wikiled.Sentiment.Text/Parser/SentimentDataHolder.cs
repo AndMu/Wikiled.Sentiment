@@ -75,17 +75,22 @@ namespace Wikiled.Sentiment.Text.Parser
                 }
             }
 
+            return instance;
+        }
+
+        public SentimentDataHolder AddEmoji()
+        {
             foreach (var emoji in EmojiSentiment.Positive)
             {
-                instance.SetValue(emoji.AsShortcode(), new SentimentValueData(2));
+                SetValue(emoji.AsShortcode(), new SentimentValueData(2));
             }
 
             foreach (var emoji in EmojiSentiment.Negative)
             {
-                instance.SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
+                SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
             }
 
-            return instance;
+            return this;
         }
 
         private void SetValue(string word, SentimentValueData value)

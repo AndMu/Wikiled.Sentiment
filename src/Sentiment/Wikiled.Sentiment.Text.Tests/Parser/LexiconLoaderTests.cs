@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void Load()
         {
-            var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Data", "Lexicons");
+            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
             instance.Load(path);
             Assert.AreEqual(2, instance.Supported.Count());
             var lexicons = instance.Supported.OrderBy(item => item).ToArray();
@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetLexicon()
         {
-            var path = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Data", "Lexicons");
+            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
             instance.Load(path);
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.GetLexicon("Unknown"));
             TestWordItem word = new TestWordItem();

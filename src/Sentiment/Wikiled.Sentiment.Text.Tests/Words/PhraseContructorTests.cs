@@ -12,14 +12,14 @@ namespace Wikiled.Sentiment.Text.Tests.Words
     [TestFixture]
     public class PhraseContructorTests
     {
-        private SimpleTextSplitter splitter;
+        private ITextSplitter splitter;
 
         private PhraseContructor phraseContructor;
 
         [SetUp]
         public void Setup()
         {
-            splitter = (SimpleTextSplitter)ActualWordsHandler.InstanceSimple.TextSplitter;
+            splitter = ActualWordsHandler.InstanceSimple.TextSplitter;
             phraseContructor = new PhraseContructor(ActualWordsHandler.InstanceSimple.WordFactory);
         }
 

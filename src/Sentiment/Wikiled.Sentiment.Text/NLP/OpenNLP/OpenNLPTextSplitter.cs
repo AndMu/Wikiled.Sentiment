@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private POSTaggerME posTagger;
 
-        public OpenNLPTextSplitter(IWordFactory handler, LexiconConfiguration configuration, ICachedDocumentsSource cache, ISentenceTokenizerFactory tokenizerFactory)
+        public OpenNLPTextSplitter(IWordFactory handler, ILexiconConfiguration configuration, ICachedDocumentsSource cache, ISentenceTokenizerFactory tokenizerFactory)
             : base(cache)
         {
             if (handler is null)
@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             this.handler = handler;
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
-            LoadModels(configuration.LexiconPath);
+            LoadModels(configuration.ResourcePath);
         }
 
         protected override Document ActualProcess(ParseRequest request)

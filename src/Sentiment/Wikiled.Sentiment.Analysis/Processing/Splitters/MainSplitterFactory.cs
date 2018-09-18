@@ -48,12 +48,13 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             log.Debug("Create: {0}", value);
             ContainerBuilder builder = new ContainerBuilder();
             builder.RegisterInstance(cacheFactory);
+            builder.Register(c => cacheFactory.Create(value)).SingleInstance();
             builder.RegisterInstance(configuration);
             builder.RegisterInstance(context).As<ISentimentContext>();
             builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
             builder.RegisterType<BasicEnglishDictionary>().As<IWordsDictionary>().SingleInstance();
-            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivated(item => item.Instance.Load());
-            builder.RegisterType<NRCDictionary>().As<INRCDictionary>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivating(item => item.Instance.Load());
+            builder.RegisterType<NRCDictionary>().As<INRCDictionary>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<ParsedReviewManager>().As<IParsedReviewManager>();
             
             builder.RegisterType<SentenceTokenizerFactory>().As<ISentenceTokenizerFactory>().SingleInstance();
@@ -64,18 +65,20 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
             builder.RegisterType<RawWordExtractor>().As<IRawTextExtractor>().SingleInstance();
             builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
 
-            builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>().SingleInstance();
+            builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>();
             if (SupportRepair)
             {
                 builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
             }
             else
             {
-                builder.Register(item => (ISentenceRepairHandler)null).As<ISentenceRepairHandler>();
+                builder.RegisterType<NullSentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
+                // add as specific if somebody still wants it
+                builder.RegisterType<SentenceRepairHandler>().SingleInstance();
             }
 
             int parallel = Environment.ProcessorCount / 2;
-            builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivated(item => item.Instance.Load());
+            builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<AspectSerializer>().As<IAspectSerializer>().SingleInstance();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
 
@@ -85,14 +88,18 @@ namespace Wikiled.Sentiment.Analysis.Processing.Splitters
                     builder.RegisterType<SimpleTextSplitter>().Named<ITextSplitter>("Underlying");
                     break;
                 case POSTaggerType.SharpNLP:
-                    builder.Register(c => new RecyclableTextSplitter(() => c.ResolveNamed<ITextSplitter>("UnderlyingNested"), 5000)).Named<ITextSplitter>("Underlying");
+                    builder.Register(c => new RecyclableTextSplitter(c.ResolveNamed<Func<ITextSplitter>>("UnderlyingNested"), 5000)).Named<ITextSplitter>("Underlying");
                     builder.RegisterType<OpenNLPTextSplitter>().Named<ITextSplitter>("UnderlyingNested");
                     break;
                 default:
                     throw new NotSupportedException(value.ToString());
             }
 
-            return new ContainerHelper(builder.Build(), context);
+            var helper = new ContainerHelper(builder.Build(), context);
+            log.Info("Initializing...");
+            helper.GetDataLoader();
+            helper.GetTextSplitter();
+            return helper;
         }
     }
 }

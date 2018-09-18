@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             this.sentimentData = sentimentData ?? throw new ArgumentNullException(nameof(sentimentData));
         }
 
-        public override void CalculateRating()
+        protected override void CalculateRatingLogic()
         {
             foreach (var reviewItem in Review.Items)
             {

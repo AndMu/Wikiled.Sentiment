@@ -176,10 +176,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             try
             {
                 var original = await bootStrapContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                var bootReview = bootStrapContainer.Resolve(original).Create();
-                LexiconRatingAdjustment lexiconRating = new LexiconRatingAdjustment(bootReview, adjustment);
-                original = parsedFactory.ReparseDocument(lexiconRating);
-                bootReview = bootStrapContainer.Resolve(original).Create();
+                var bootReview = bootStrapContainer.Resolve(original, adjustment).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();

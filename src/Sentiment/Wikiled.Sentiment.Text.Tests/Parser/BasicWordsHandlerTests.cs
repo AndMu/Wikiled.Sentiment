@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
 {
