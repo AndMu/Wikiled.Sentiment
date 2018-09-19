@@ -11,6 +11,7 @@ namespace Wikiled.Sentiment.Integration.Tests
         public void Setup()
         {
             GlobalSettings.Random = new Random(48);
+            Accord.Math.Random.Generator.Seed = 48;
         }
 
         [OneTimeTearDown]
