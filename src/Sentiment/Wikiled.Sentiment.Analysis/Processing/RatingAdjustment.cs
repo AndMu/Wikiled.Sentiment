@@ -90,10 +90,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     new SentimentValueData(bias, SentimentSource.AdjustedSVM)));
             }
 
-            if (Rating.IsPositive &&
-                result.Probability < 0.5)
+            if (Rating.HasValue)
             {
-                log.Debug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
+                if (Rating.IsPositive.Value &&
+                    result.Probability < 0.5)
+                {
+                    log.Debug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
+                }
             }
         }
     }

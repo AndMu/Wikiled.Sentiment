@@ -27,16 +27,21 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
 
             review.Reset();
             review.Vector.GenerateUsingImportantOnly = true;
-            AddData(review.Date, review.Vector, positivity);
+            var item = AddData(review.Date, review.Vector, positivity);
+            if (item != null)
+            {
+                item.Key = review.Document.Id;
+            }
+
             review.Vector.GenerateUsingImportantOnly = false;
         }
 
-        private void AddData(DateTime? date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
+        private IArffDataRow AddData(DateTime? date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
         {
             var cells = extractTextVector.GetCells();
             if (cells.Count == 0)
             {
-                return;
+                return null;
             }
 
             lock (DataSet)
@@ -59,6 +64,8 @@ namespace Wikiled.Sentiment.Analysis.Processing.Arff
                         data.Value = cell.Value;
                     }
                 }
+
+                return review;
             }
         }
     }

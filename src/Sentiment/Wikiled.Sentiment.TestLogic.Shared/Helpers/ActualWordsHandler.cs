@@ -30,9 +30,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public void Reset()
         {
-            Context.DisableFeatureSentiment = false;
-            Context.DisableInvertors = false;
-            Context.ChangeAspect(null);
+            Context.Reset();
         }
 
         public SentimentContext Context { get; }

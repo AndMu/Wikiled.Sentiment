@@ -42,5 +42,13 @@ namespace Wikiled.Sentiment.Text.Configuration
             log.Info("Changing aspect detector");
             this.aspect = aspect;
         }
+
+        public void Reset()
+        {
+            log.Info("Reset");
+            ChangeAspect(null);
+            DisableInvertors = false;
+            DisableFeatureSentiment = false;
+        }
     }
 }

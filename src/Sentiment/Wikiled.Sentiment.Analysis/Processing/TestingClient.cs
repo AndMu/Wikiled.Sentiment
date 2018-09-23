@@ -88,7 +88,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             arffProcess = TrackArff ? factory.Create(arff) : null;
 
             log.Info("Track ARFF: {0}", TrackArff);
-
+            pipeline.ContainerHolder.Context.Reset();
             if (!DisableAspects &&
                 (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))
             {

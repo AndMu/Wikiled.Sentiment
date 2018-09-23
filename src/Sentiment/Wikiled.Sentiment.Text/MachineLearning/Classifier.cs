@@ -37,7 +37,6 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                                      Loss = (actual, expected, m) => new ZeroOneLoss(expected).Loss(actual)
             };
 
-            
             gridsearch.Token = token;
             var result = gridsearch.Learn(x, y);
             Model = result.BestModel;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Autofac;
 using NLog;
+using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
@@ -48,6 +49,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze = new AnalyseReviews();
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
             sentimentVector = new SentimentVector();
+            pipeline.ContainerHolder.Context.Reset();
         }
 
         public string OverrideAspects { get; set; }
@@ -57,6 +59,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public bool UseAll { get; set; }
 
         public bool UseBagOfWords { get; set; }
+
+        public bool DisableAspects { get; set; }
 
         public async Task Train(IObservable<IParsedDocumentHolder> reviews)
         {
@@ -76,13 +80,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
                                   });
             }
 
-            SelectAdditional();
+            if (!DisableAspects)
+            {
+                SelectAdditional();
+            }
+
             var arff = ArffDataSet.Create<PositivityType>("MAIN");
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 
-            using (Observable.Interval(TimeSpan.FromSeconds(30))
-                             .Subscribe(item => log.Info(pipeline.Monitor)))
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(pipeline.Monitor)))
             {
                 await pipeline.ProcessStep(reviews)
                               .Select(
@@ -102,6 +109,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 await arffProcess.CleanupDataHolder(3, 10).ConfigureAwait(false);
             }
 
+            arff = arff.Sort();
             analyze.SetArff(arff);
             try
             {

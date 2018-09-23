@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
         private static readonly SentimentTestData[] testData =
         {
-            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7208> Positive:<81.057%> Negative:<61.549%> F1:<0.874> RMSE:1.56"),
+            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7208> Positive:<81.026%> Negative:<61.549%> F1:<0.874> RMSE:1.56"),
             new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<81.726%> Negative:<86.667%> F1:<0.894> RMSE:1.46"),
             new SentimentTestData("B000BAX50G", 288, 0, "Total:<265> Positive:<96.863%> Negative:<60.000%> F1:<0.976> RMSE:0.90"),
             new SentimentTestData("B000ERAON2", 440, 0, "Total:<413> Positive:<84.958%> Negative:<70.370%> F1:<0.897> RMSE:1.39"),
@@ -69,7 +69,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.DisableSvm = true;
             testing.TrackArff = true;
             testing.Init();
-            var last = await testing.Process(runner.Load()).LastOrDefaultAsync();
+            await testing.Process(runner.Load()).LastOrDefaultAsync();
             testing.Save(Path.Combine(TestContext.CurrentContext.TestDirectory, "Word2Vec"));
             Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
             Assert.AreEqual(data.Errors, testing.Errors);
