@@ -8,19 +8,13 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.Analysis.Processing.Pipeline;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.Resources;
-using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.ConsoleApp.Extraction
 {
@@ -50,7 +44,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
-            container = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), new ConfigurationHandler()).Create(POSTaggerType.SharpNLP, new SentimentContext());
+            container = MainContainerFactory.CreateStandard().Create();
             var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
             using (Observable.Interval(TimeSpan.FromSeconds(30))
                              .Subscribe(item => log.Info(pipeline.Monitor)))

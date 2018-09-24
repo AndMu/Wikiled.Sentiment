@@ -33,13 +33,13 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             reviewMock = new Mock<IParsedReview>();
             splitter = ActualWordsHandler.InstanceSimple.TextSplitter;
             detector = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
-            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(detector);
+            ActualWordsHandler.InstanceSimple.Container.Context.ChangeAspect(detector);
         }
 
         [TearDown]
         public void Cleanup()
         {
-            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(null);
+            ActualWordsHandler.InstanceSimple.Container.Context.ChangeAspect(null);
         }
 
         [Test]

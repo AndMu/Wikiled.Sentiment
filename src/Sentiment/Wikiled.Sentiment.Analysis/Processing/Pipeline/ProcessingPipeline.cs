@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Common.Logging;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;

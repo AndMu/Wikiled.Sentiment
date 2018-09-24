@@ -4,16 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using NLog;
 using Wikiled.Console.Arguments;
-using Wikiled.Redis.Config;
-using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
-using Wikiled.Sentiment.Text.Cache;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
-using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
@@ -49,22 +43,17 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected override Task Execute(CancellationToken token)
         {
             log.Info("Initialize...");
-            ICacheFactory cacheFactory = new NullCacheFactory();
-            if (Redis)
-            {
-                log.Info("Using REDIS...");
-                int port = Port ?? 6370;
-                var redis = new RedisLink("Twitter", new RedisMultiplexer(new RedisConfiguration("localhost", port)));
-                redis.Open();
-                cacheFactory = new RedisDocumentCacheFactory(redis);
-            }
 
-            SentimentContext context = new SentimentContext();
-            context.DisableFeatureSentiment = InvertOff;
-            container = new MainSplitterFactory(cacheFactory, new ConfigurationHandler()).Create(Tagger, context);
+            var factory = MainContainerFactory.Setup()
+                .SetupRepair()
+                .WithContext(context => context.DisableFeatureSentiment = InvertOff)
+                .Config()
+                .Splitter();
 
+            factory = Redis ? factory.SetupRedisCache("Twitter", "localhost", Port ?? 6370) : factory.SetupNullCache();
+
+            container = factory.Create();
             log.Info("Processing...");
-
             ISentimentDataHolder sentimentAdjustment = default;
             if (!string.IsNullOrEmpty(Weights))
             {

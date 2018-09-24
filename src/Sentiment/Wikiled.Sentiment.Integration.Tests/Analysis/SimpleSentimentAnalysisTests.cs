@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't go to like this kik", 3, 2, false)]
         public async Task TestBasic(string text, int rating, int totalSentiments, bool disableInvertor)
         {
-            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = disableInvertor;
+            ActualWordsHandler.InstanceSimple.Container.Context.DisableFeatureSentiment = disableInvertor;
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             Text.Data.IParsedReview review = ActualWordsHandler.InstanceSimple.Container.Resolve(request).Create();
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
@@ -53,8 +53,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         public async Task FullSentence()
         {
             string text = "This tale based on two Edgar Allen Poe pieces (\"The Fall of the House of Usher\", \"Dance of Death\" (poem) ) is actually quite creepy from beginning to end. It is similar to some of the old black-and-white movies about people that meet in an old decrepit house (for example, \"The Cat and the Canary\", \"The Old Dark House\", \"Night of Terror\" and so on). Boris Karloff plays a demented inventor of life-size dolls that terrorize the guests. He dies early in the film (or does he ? ) and the residents of the house are subjected to a number of terrifying experiences. I won't go into too much detail here, but it is definitely a must-see for fans of old dark house mysteries.<br /><br />Watch it with plenty of popcorn and soda in a darkened room.<br /><br />Dan Basinger 8/10";
-            ActualWordsHandler.InstanceSimple.Context.DisableFeatureSentiment = true;
-            ActualWordsHandler.InstanceSimple.Context.DisableInvertors = true;
+            ActualWordsHandler.InstanceSimple.Container.Context.DisableFeatureSentiment = true;
+            ActualWordsHandler.InstanceSimple.Container.Context.DisableInvertors = true;
 
             string[] positiveAdj = { "good", "lovely", "excellent", "delightful", "perfect" };
             string[] negativeAdj = { "bad", "horrible", "poor", "disgusting", "unhappy" };

@@ -4,7 +4,7 @@ using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Splitters
+namespace Wikiled.Sentiment.Analysis.Processing.Containers
 {
     public interface IContainerHelper
     {

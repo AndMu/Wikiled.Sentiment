@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         public async Task Setup()
         {
             var aspect = new AspectDectector(new IWordItem[] { }, new IWordItem[] { });
-            ActualWordsHandler.InstanceSimple.Context.ChangeAspect(aspect);
+            ActualWordsHandler.InstanceSimple.Container.Context.ChangeAspect(aspect);
             aspect.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
             review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();

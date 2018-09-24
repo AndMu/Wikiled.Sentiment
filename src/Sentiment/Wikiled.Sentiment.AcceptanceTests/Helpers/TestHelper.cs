@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
@@ -22,8 +22,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public TestHelper(string server = "192.168.0.70", int port = 6373)
         {
-            ConfigurationHandler configuration = new ConfigurationHandler();
-            configuration.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]));
             redis = new Lazy<RedisLink>(() =>
             {
                 var instance = new RedisLink("Wikiled", new RedisMultiplexer(new RedisConfiguration(server, port)));
@@ -32,8 +30,14 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             });
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
-            var localCache = new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions()));
-            ContainerHelper = new MainSplitterFactory(localCache, configuration).Create(POSTaggerType.SharpNLP, new SentimentContext());
+            ContainerHelper = MainContainerFactory
+                .Setup()
+                .SetupRepair()
+                .SetupLocalCache()
+                .WithContext()
+                .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
+                .Splitter()
+                .Create();
         }
 
         public static TestHelper Instance { get; } = new TestHelper();

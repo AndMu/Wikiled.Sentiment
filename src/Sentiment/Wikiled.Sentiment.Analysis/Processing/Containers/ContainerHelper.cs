@@ -8,19 +8,18 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Splitters
+namespace Wikiled.Sentiment.Analysis.Processing.Containers
 {
     public class ContainerHelper : IContainerHelper
     {
-        public ContainerHelper(IContainer container, SentimentContext context)
+        public ContainerHelper(IContainer container)
         {
             Container = container ?? throw new ArgumentNullException(nameof(container));
-            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public IContainer Container { get; }
 
-        public SentimentContext Context { get; }
+        public SentimentContext Context => (SentimentContext)Container.Resolve<ISentimentContext>();
 
         public ITextSplitter GetTextSplitter()
         {

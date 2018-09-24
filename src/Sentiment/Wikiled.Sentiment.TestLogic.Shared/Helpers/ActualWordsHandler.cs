@@ -1,12 +1,10 @@
 ﻿using Autofac;
 using NUnit.Framework;
 using System.IO;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
-using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
@@ -15,13 +13,19 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
     {
         public ActualWordsHandler(POSTaggerType type, bool supportRepair = false)
         {
-            Configuration = new ConfigurationHandler();
-            string resources = Configuration.GetConfiguration("Resources");
-            string resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
-            Configuration.SetConfiguration("Resources", resourcesPath);
+            var factory = MainContainerFactory.Setup()
+                .SetupRepair(supportRepair)
+                .WithContext()
+                .Config(configuration =>
+                {
+                    string resources = configuration.GetConfiguration("Resources");
+                    string resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
+                    configuration.SetConfiguration("Resources", resourcesPath);
+                })
+                .Splitter(type)
+                .SetupNullCache();
 
-            Context = new SentimentContext();
-            Container = new MainSplitterFactory(new NullCacheFactory(), Configuration) { SupportRepair = false }.Create(type, Context);
+            Container = factory.Create();
             WordsHandler = Container.GetDataLoader();
             TextSplitter = Container.GetTextSplitter();
             WordFactory = Container.Container.Resolve<IWordFactory>();
@@ -30,10 +34,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public void Reset()
         {
-            Context.Reset();
+            Container.Context.Reset();
         }
-
-        public SentimentContext Context { get; }
 
         public static ActualWordsHandler InstanceSimple { get; } = new ActualWordsHandler(POSTaggerType.Simple);
 
@@ -41,7 +43,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public IContainerHelper Container { get; }
 
-        public IConfigurationHandler Configuration { get; }
+        public IConfigurationHandler Configuration => Container.Container.Resolve<IConfigurationHandler>();
 
         public IWordsHandler WordsHandler { get; }
 

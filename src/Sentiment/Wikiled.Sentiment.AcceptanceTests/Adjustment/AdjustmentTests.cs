@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         [Test]
         public async Task Adjusted()
         {
-            ActualWordsHandler.InstanceOpen.Context.DisableFeatureSentiment = true;
+            ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = true;
             var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
             var lexicon = SentimentDataHolder.Load(words);
             var text = "I Veto it";

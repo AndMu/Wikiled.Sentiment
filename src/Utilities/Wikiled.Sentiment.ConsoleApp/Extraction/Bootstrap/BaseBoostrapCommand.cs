@@ -15,7 +15,7 @@ using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Splitters;
+using Wikiled.Sentiment.Analysis.Processing.Containers;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
@@ -151,13 +151,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         private void LoadBootstrap()
         {
             log.Info("Loading text splitter for bootstrapping");
-            var config = new ConfigurationHandler();
-            var splitterFactory = new MainSplitterFactory(
-                new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())),
-                config);
-            SentimentContext context = new SentimentContext();
-            context.DisableFeatureSentiment = InvertOff;
-            bootStrapContainer = splitterFactory.Create(POSTaggerType.SharpNLP, context);
+            var splitterFactory = MainContainerFactory.Setup()
+                .SetupRepair()
+                .SetupLocalCache()
+                .WithContext(context => context.DisableFeatureSentiment = InvertOff)
+                .Config()
+                .Splitter();
+            bootStrapContainer = splitterFactory.Create();
             log.Info("Loading lexicon: {0}", Words);
             adjustment = SentimentDataHolder.Load(Words);
         }
@@ -165,9 +165,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         private void LoadDefault()
         {
             log.Info("Loading default text splitter");
-            var config = new ConfigurationHandler();
-            var splitterFactory = new MainSplitterFactory(new LocalCacheFactory(new MemoryCache(new MemoryCacheOptions())), config);
-            defaultContainer = splitterFactory.Create(POSTaggerType.SharpNLP, new SentimentContext());
+            defaultContainer = MainContainerFactory.CreateStandard().Create();
         }
 
         private async Task<EvalData> ProcessReview(EvalData data)
