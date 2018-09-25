@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         }
 
 
-        [TestCase("B0002L5R78", "Total:<7275> Positive:<91.065%> Negative:<31.394%> F1:<0.916> RMSE:1.25")]
+        [TestCase("B0002L5R78", "Total:<7275> Positive:<90.835%> Negative:<32.070%> F1:<0.915> RMSE:1.25")]
         public async Task TestVideo(string product, string performance)
         {
             log.Info("TestVideo: {0} {1}", product, performance);
