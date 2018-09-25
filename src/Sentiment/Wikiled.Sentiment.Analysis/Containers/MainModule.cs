@@ -15,7 +15,7 @@ using Wikiled.Text.Analysis.Tokenizer.Pipelined;
 using Wikiled.Text.Analysis.Words;
 using Wikiled.Text.Inquirer.Logic;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Containers
+namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class MainModule : Module
     {

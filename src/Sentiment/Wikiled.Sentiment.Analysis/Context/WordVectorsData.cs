@@ -6,7 +6,7 @@ using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Context
+namespace Wikiled.Sentiment.Analysis.Context
 {
     public class WordVectorsData
     {

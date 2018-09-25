@@ -1,7 +1,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Wikiled.Arff.Persistence;
-using Wikiled.Sentiment.Analysis.Processing.Arff;
+using Wikiled.Sentiment.Analysis.Arff;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.NLP;

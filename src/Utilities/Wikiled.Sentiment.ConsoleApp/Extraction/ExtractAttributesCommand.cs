@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using Autofac;
 using NLog;
 using Wikiled.Console.Arguments;
+using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
-using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
 

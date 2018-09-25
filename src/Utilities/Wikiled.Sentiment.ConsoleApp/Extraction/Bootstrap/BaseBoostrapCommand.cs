@@ -8,21 +8,15 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Structure;
-using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {

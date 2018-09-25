@@ -1,11 +1,11 @@
-using NUnit.Framework;
 using System;
 using Moq;
+using NUnit.Framework;
 using Wikiled.Arff.Persistence;
 using Wikiled.Arff.Persistence.Headers;
-using Wikiled.Sentiment.Analysis.Processing.Arff;
+using Wikiled.Sentiment.Analysis.Arff;
 
-namespace Wikiled.Sentiment.Analysis.Tests.Processing.Arff
+namespace Wikiled.Sentiment.Analysis.Tests.Arff
 {
     [TestFixture]
     public class ProcessArffTests

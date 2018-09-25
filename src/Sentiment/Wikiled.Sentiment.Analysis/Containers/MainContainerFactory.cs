@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using Autofac;
 using NLog;
@@ -17,7 +16,7 @@ using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Containers
+namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class MainContainerFactory
     {

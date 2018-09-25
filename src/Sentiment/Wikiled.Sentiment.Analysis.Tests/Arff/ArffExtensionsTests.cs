@@ -2,10 +2,10 @@
 using System.Linq;
 using NUnit.Framework;
 using Wikiled.Arff.Persistence;
-using Wikiled.Sentiment.Analysis.Processing.Arff;
+using Wikiled.Sentiment.Analysis.Arff;
 using Wikiled.Sentiment.Text.Data;
 
-namespace Wikiled.Sentiment.Analysis.Tests.Processing.Arff
+namespace Wikiled.Sentiment.Analysis.Tests.Arff
 {
     [TestFixture]
     public class ArffExtensionsTests

@@ -1,6 +1,6 @@
 ﻿using Wikiled.Arff.Persistence;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Arff
+namespace Wikiled.Sentiment.Analysis.Arff
 {
     public class ProcessArffFactory : IProcessArffFactory
     {

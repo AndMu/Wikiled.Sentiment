@@ -6,8 +6,8 @@ using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
@@ -48,9 +48,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.TrackArff = true;
             testing.Init();
             await testing.Process(runner.Load()).LastOrDefaultAsync();
-            //var result = await testing.Process().ToArray();
-            //result = result.OrderBy(item => item.Processed.Id).ToArray();
-            //var text = result.Select(item => item.Adjustment.Rating.RawRating?.ToString()).Aggregate((one, two) => one + Environment.NewLine + two);
             Assert.AreEqual(data.Errors, testing.Errors);
             Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
         }

@@ -4,14 +4,14 @@ using System.Reactive;
 using Microsoft.Reactive.Testing;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
-using Wikiled.Sentiment.Analysis.Processing.Pipeline;
+using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Tests.Processing.Pipeline
+namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 {
     [TestFixture]
     public class ProcessingPipelineTests : ReactiveTest

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Processing.Context;
+using Wikiled.Sentiment.Analysis.Context;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Context

@@ -10,8 +10,8 @@ using NUnit.Framework;
 using Wikiled.Arff.Extensions;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
@@ -53,7 +53,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                                        item.Id = Guid.NewGuid().ToString();
                                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
                                    });
-
 
             ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper);
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");

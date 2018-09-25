@@ -8,8 +8,8 @@ using NLog;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Analysis.Processing.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers

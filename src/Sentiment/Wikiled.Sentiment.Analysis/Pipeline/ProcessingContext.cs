@@ -2,7 +2,7 @@
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
+namespace Wikiled.Sentiment.Analysis.Pipeline
 {
     public class ProcessingContext
     {

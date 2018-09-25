@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NLog;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Context
+namespace Wikiled.Sentiment.Analysis.Context
 {
     public class WordsContext
     {

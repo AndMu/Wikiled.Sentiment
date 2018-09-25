@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Processing.Context;
+using Wikiled.Sentiment.Analysis.Context;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Context
@@ -7,7 +7,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
     [TestFixture]
     public class WordVectorsDataTests
     {
-        readonly WordEx word = new WordEx();
+        private readonly WordEx word = new WordEx();
 
         [Test]
         public void Constructor()

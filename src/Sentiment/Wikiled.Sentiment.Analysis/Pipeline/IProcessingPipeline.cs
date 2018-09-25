@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using Wikiled.Common.Logging;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Pipeline
+namespace Wikiled.Sentiment.Analysis.Pipeline
 {
     public interface IProcessingPipeline
     {

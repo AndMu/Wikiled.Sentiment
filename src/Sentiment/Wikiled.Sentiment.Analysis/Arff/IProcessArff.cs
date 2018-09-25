@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Wikiled.Arff.Persistence;
 using Wikiled.Sentiment.Text.Data;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Arff
+namespace Wikiled.Sentiment.Analysis.Arff
 {
     public interface IProcessArff
     {

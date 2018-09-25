@@ -8,7 +8,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Containers
+namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class ContainerHelper : IContainerHelper
     {

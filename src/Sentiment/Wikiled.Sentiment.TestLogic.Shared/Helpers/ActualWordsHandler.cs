@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using NUnit.Framework;
 using System.IO;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;

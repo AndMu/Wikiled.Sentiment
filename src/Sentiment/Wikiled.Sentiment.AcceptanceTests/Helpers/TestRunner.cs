@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using NLog;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers

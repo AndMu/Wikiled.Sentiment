@@ -8,7 +8,7 @@ using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
 
-namespace Wikiled.Sentiment.Analysis.Processing.Context
+namespace Wikiled.Sentiment.Analysis.Context
 {
     public class VectorsExtractor
     {

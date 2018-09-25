@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
-using Wikiled.Sentiment.Analysis.Processing.Containers;
-using Wikiled.Sentiment.Text.Configuration;
-using Wikiled.Sentiment.Text.Resources;
-using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.POS;
+using Wikiled.Sentiment.Analysis.Containers;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
