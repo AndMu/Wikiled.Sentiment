@@ -183,5 +183,5 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             return sentence.ReplaceString(value, replaceValue, option);
         }
-    }
+      }
 }

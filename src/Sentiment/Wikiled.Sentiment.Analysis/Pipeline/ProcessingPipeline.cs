@@ -3,11 +3,13 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NLog;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Pipeline
@@ -68,11 +70,11 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
                 if (LexiconAdjustment != null)
                 {
                     log.Debug("Using lexicon adjustment");
-                    review = ContainerHolder.Resolve(doc, LexiconAdjustment).Create();
+                    review = ContainerHolder.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc, LexiconAdjustment).Create();
                 }
                 else
                 {
-                    review = ContainerHolder.Resolve(doc).Create();
+                    review = ContainerHolder.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc).Create();
                 }
 
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);

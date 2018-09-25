@@ -67,7 +67,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
                 var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = TestHelper.Instance.ContainerHelper.Resolve(parsedDoc).Create();
+                var parseReview = TestHelper.Instance.ContainerHelper.Container.Resolve<IParsedReviewManagerFactory>().Resolve(parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

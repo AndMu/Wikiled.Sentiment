@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Reactive;
+using Autofac;
+using Autofac.Extras.Moq;
 using Microsoft.Reactive.Testing;
 using Moq;
 using NUnit.Framework;
@@ -35,11 +37,15 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         {
             scheduler = new TestScheduler();
             manager = new Mock<IParsedReviewManager>();
+            var factory = new Mock<IParsedReviewManagerFactory>();
+            factory.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
             container = new Mock<IContainerHelper>();
             review = new Mock<IParsedReview>();
             manager.Setup(item => item.Create()).Returns(review.Object);
             holder = new Mock<IParsedDocumentHolder>();
-            container.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
+            var innerContainer = AutoMock.GetLoose();
+            innerContainer.Provide(factory.Object);
+            container.Setup(item => item.Container).Returns(innerContainer.Container);
             documentSource = scheduler.CreateColdObservable(
                 new Recorded<Notification<IParsedDocumentHolder>>(
                     TimeSpan.FromSeconds(1).Ticks,

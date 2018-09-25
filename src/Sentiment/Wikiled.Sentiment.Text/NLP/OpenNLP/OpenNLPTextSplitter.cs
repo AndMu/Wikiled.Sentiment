@@ -7,6 +7,7 @@ using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
 using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
@@ -27,11 +28,17 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private readonly ITreebankWordTokenizer tokenizer;
 
+        private ISentenceRepairHandler repairHandler;
+
         private ChunkerME chunker;
 
         private POSTaggerME posTagger;
 
-        public OpenNLPTextSplitter(IWordFactory handler, ILexiconConfiguration configuration, ICachedDocumentsSource cache, ISentenceTokenizerFactory tokenizerFactory)
+        public OpenNLPTextSplitter(IWordFactory handler,
+                                   ILexiconConfiguration configuration,
+                                   ICachedDocumentsSource cache,
+                                   ISentenceTokenizerFactory tokenizerFactory,
+                                   ISentenceRepairHandler repairHandler)
             : base(cache)
         {
             if (handler is null)
@@ -44,6 +51,11 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 throw new ArgumentNullException(nameof(configuration));
             }
 
+            if (repairHandler == null)
+            {
+                throw new ArgumentNullException(nameof(repairHandler));
+            }
+
             if (cache is null)
             {
                 throw new ArgumentNullException(nameof(cache));
@@ -51,6 +63,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
             log.Debug("Creating with resource path: {0}", configuration);
             this.handler = handler;
+            this.repairHandler = repairHandler;
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
             LoadModels(configuration.ResourcePath);
@@ -62,7 +75,8 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             var sentenceDataList = new List<SentenceData>(sentences.Length);
             for (int i = 0; i < sentences.Length; i++)
             {
-                var sentenceData = new SentenceData { Text = sentences[i] };
+                var text = repairHandler.Repair(sentences[i]);
+                var sentenceData = new SentenceData { Text = text };
                 sentenceData.Tokens = tokenizer.Tokenize(sentenceData.Text);
                 if (sentenceData.Tokens.Length > 0)
                 {

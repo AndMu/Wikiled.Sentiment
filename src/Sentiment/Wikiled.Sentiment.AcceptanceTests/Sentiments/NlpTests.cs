@@ -3,9 +3,11 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Dictionary.Streams;
@@ -48,7 +50,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             ActualWordsHandler.InstanceOpen.Container.Context.DisableInvertors = disableInvert;
 
             var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result, lexicon).Create();
+            var review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result, lexicon).Create();
             var ratings = review.CalculateRawRating();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(disableInvert, ratings.IsPositive);
@@ -58,7 +60,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task TestPhrase()
         {
             var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
+            var review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
             Assert.AreEqual(4, review.Items.Count());
         }
     }

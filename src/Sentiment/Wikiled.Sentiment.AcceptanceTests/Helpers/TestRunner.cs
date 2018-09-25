@@ -2,11 +2,13 @@
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using NLog;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
@@ -51,7 +53,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.GetTextSplitter(), doc);
+                return new ParsingDocumentHolder(Active.Container.Resolve<ITextSplitter>(), doc);
             }
             catch (Exception ex)
             {

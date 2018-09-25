@@ -1,4 +1,5 @@
 using System.Linq;
+using Autofac;
 using NUnit.Framework;
 using Wikiled.Arff.Persistence;
 using Wikiled.Sentiment.Analysis.Arff;
@@ -51,7 +52,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
                         Text = "#Three",
                         Stemmed = "#Three"
                     }));
-            var factory = ActualWordsHandler.InstanceSimple.Container.Resolve(document);
+            var factory = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(document);
             review = factory.Create();
         }
 
@@ -59,7 +60,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         public void ParseEmpty()
         {
             document.Sentences.Clear();
-            var factory = ActualWordsHandler.InstanceSimple.Container.Resolve(document);
+            var factory = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(document);
             review = factory.Create();
 
             instance.PopulateArff(review, PositivityType.Positive);

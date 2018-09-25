@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
@@ -35,7 +36,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         {
             Assert.Throws<ArgumentNullException>(() => instance.Process(null));
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(data).Create();
             instance.Process(review);
             var attributes = instance.GetAttributes(10).ToArray();
             var features = instance.GetFeatures(10).ToArray();

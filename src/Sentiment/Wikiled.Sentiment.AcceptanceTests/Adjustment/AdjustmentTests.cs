@@ -1,10 +1,10 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using Autofac;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Processing;
+using System.IO;
+using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
 {
@@ -21,20 +21,20 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         public async Task Adjusted()
         {
             ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = true;
-            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
-            var lexicon = SentimentDataHolder.Load(words);
-            var text = "I Veto it";
-            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result, lexicon).Create();
+            string words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
+            ISentimentDataHolder lexicon = SentimentDataHolder.Load(words);
+            string text = "I Veto it";
+            Wikiled.Text.Analysis.Structure.Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result, lexicon).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
         [Test]
         public async Task TestEmoticon()
         {
-            var text = "EMOTICON_confused I do";
-            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Resolve(result).Create();
+            string text = "EMOTICON_confused I do";
+            Wikiled.Text.Analysis.Structure.Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

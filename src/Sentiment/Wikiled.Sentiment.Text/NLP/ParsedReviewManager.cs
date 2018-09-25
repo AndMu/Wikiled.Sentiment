@@ -33,7 +33,11 @@ namespace Wikiled.Sentiment.Text.NLP
                                  Previous != null &&
                                  !Previous.IsConjunction();
 
-        private IWordItem Previous => review.CurrentSentence.CurrentPart.Occurrences.Count == 0 ? null : review.CurrentSentence.CurrentPart.Occurrences[review.CurrentSentence.CurrentPart.Occurrences.Count - 1];
+        private IWordItem Previous
+            => review.CurrentSentence.CurrentPart.Occurrences.Count == 0
+                ? null
+                : review.CurrentSentence.CurrentPart.Occurrences[
+                    review.CurrentSentence.CurrentPart.Occurrences.Count - 1];
 
         public IParsedReview Create()
         {

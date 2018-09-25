@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Tests.Aspects
@@ -21,7 +23,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         public async Task Process()
         {
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve(data).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(data).Create();
             var context = new AspectContext(true, review.Items.ToArray());
             context.Process();
             var attributes = context.GetAttributes().ToArray();
