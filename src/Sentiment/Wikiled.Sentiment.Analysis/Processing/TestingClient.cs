@@ -41,11 +41,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public TestingClient(IClientContext clientContext, string svmPath = null)
         {
-            if (svmPath == null)
-            {
-                throw new ArgumentNullException(nameof(svmPath));
-            }
-
             if (string.IsNullOrEmpty(svmPath))
             {
                 DisableSvm = true;
@@ -185,8 +180,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     }
                 }
 
-                arffProcess.PopulateArff(context.Review,
-                    context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
+                arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
             }
         }
     }
