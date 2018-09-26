@@ -29,12 +29,12 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public ITestingClient GetTesting(string path = null)
         {
-            throw new NotImplementedException();
+            return Container.Resolve<ITestingClient>(new NamedParameter("svmPath", path));
         }
 
         public ITrainingClient GetTraining(string path)
         {
-            throw new NotImplementedException();
+            return Container.Resolve<ITrainingClient>(new NamedParameter("svmPath", path));
         }
     }
 }
