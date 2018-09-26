@@ -43,7 +43,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             int parallel = Environment.ProcessorCount / 2;
             builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
-            builder.RegisterType<AspectSerializer>().As<IAspectSerializer>().SingleInstance();
+            builder.RegisterType<AspectSerializer>().As<IAspectSerializer>();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
 
             builder.RegisterType<ProcessingPipeline>().As<IProcessingPipeline>();
@@ -51,7 +51,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.RegisterType<TrainingClient>().As<ITrainingClient>();
             builder.RegisterInstance(TaskPoolScheduler.Default).As<IScheduler>();
 
+            builder.RegisterType<SentimentContext>().As<ISentimentContext>().InstancePerLifetimeScope();
+            builder.RegisterType<ContextWordsDataLoader>().As<IContextWordsHandler>().InstancePerLifetimeScope();
             builder.RegisterAggregateService<IClientContext>();
+
         }
     }
 }

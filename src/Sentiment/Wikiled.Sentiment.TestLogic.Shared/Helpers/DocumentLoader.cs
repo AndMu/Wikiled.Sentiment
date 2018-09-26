@@ -16,11 +16,11 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class DocumentLoader
     {
-        private readonly IContainerHelper helper;
+        private readonly ISessionContainer helper;
 
         private readonly string path;
 
-        public DocumentLoader(IContainerHelper helper)
+        public DocumentLoader(ISessionContainer helper)
         {
             this.helper = helper ?? throw new ArgumentNullException(nameof(helper));
             path = Path.Combine(TestContext.CurrentContext.TestDirectory, @"MachineLearning/Data/");
@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
         {
             var result = await helper.GetTextSplitter().Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
-            var review = helper.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
+            var review = helper.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             var documentFromReview = new DocumentFromReviewFactory();
             return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }

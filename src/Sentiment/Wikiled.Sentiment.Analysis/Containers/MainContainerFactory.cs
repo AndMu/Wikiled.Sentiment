@@ -7,7 +7,6 @@ using Wikiled.Common.Extensions;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Text.Cache;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
@@ -24,7 +23,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         private readonly ContainerBuilder builder = new ContainerBuilder();
 
-        private Dictionary<string, bool> initialized = new Dictionary<string, bool>();
+        private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
 
         private MainContainerFactory()
         {
@@ -33,7 +32,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             initialized["Splitter"] = false;
             initialized["Cache"] = false;
             initialized["Config"] = false;
-            initialized["Context"] = false;
         }
 
         public static MainContainerFactory CreateStandard()
@@ -42,7 +40,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             MainContainerFactory instance = new MainContainerFactory();
             return instance.SetupRepair()
                 .SetupLocalCache()
-                .WithContext()
                 .Config()
                 .Splitter();
         }
@@ -94,15 +91,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return this;
         }
 
-        public MainContainerFactory WithContext(Action<SentimentContext> action = null)
-        {
-            initialized["Context"] = true;
-            SentimentContext context = new SentimentContext();
-            action?.Invoke(context);
-            builder.RegisterInstance(context).As<ISentimentContext>();
-            return this;
-        }
-
         public MainContainerFactory Config(Action<ConfigurationHandler> action = null)
         {
             initialized["Config"] = true;
@@ -134,7 +122,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return this;
         }
 
-        public IContainerHelper Create()
+        public IGlobalContainer Create()
         {
             var notInitialized = initialized.Where(item => !item.Value).ToArray();
             if (notInitialized.Length > 0)
@@ -143,10 +131,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 throw new ApplicationException("Not all modules initialized: " + modules);
             }
 
-            var helper = new ContainerHelper(builder.Build());
+            var container = builder.Build();
+            var helper = new GlobalContainer(container);
             log.Info("Initializing...");
-            helper.Container.Resolve<IWordsHandler>();
-            helper.Container.Resolve<ITextSplitter>();
+            container.Resolve<IWordsHandler>();
+            container.Resolve<ITextSplitter>();
             return helper;
         }
     }

@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
         private MainAspectHandler featureExtractor;
 
-        private IContainerHelper container;
+        private ISessionContainer container;
 
         public override string Name { get; } = "extract";
 
@@ -44,8 +44,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
         {
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
-            container = MainContainerFactory.CreateStandard().Create();
-            var pipeline = container.Container.Resolve<IProcessingPipeline>();
+            container = MainContainerFactory.CreateStandard().Create().StartSession();
+            var pipeline = container.Resolve<IProcessingPipeline>();
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(pipeline.Monitor)))
             {
                 await pipeline.ProcessStep(GetReviews().ToObservable(TaskPoolScheduler.Default))
@@ -60,7 +60,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
             var file = Path.Combine(Out, "features.xml");
             log.Info("Saving {0}...", file);
-            var serializer = container.Container.Resolve<IAspectSerializer>();
+            var serializer = container.Resolve<IAspectSerializer>();
             serializer.Serialize(featureExtractor).Save(file);
         }
 

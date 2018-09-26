@@ -6,30 +6,41 @@ using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class ContainerHelper : IContainerHelper
+    public class SessionContainer : ISessionContainer
     {
-        public ContainerHelper(IContainer container)
+        private readonly ILifetimeScope container;
+
+        public SessionContainer(ILifetimeScope container)
         {
-            Container = container ?? throw new ArgumentNullException(nameof(container));
+            this.container = container ?? throw new ArgumentNullException(nameof(container));
+            Context = (SentimentContext)container.Resolve<ISentimentContext>();
         }
 
-        public IContainer Container { get; }
-
-        public SentimentContext Context => (SentimentContext)Container.Resolve<ISentimentContext>();
+        public SentimentContext Context { get; }
 
         public ITextSplitter GetTextSplitter()
         {
-            return Container.Resolve<ITextSplitter>();
+            return container.Resolve<ITextSplitter>();
         }
 
         public ITestingClient GetTesting(string path = null)
         {
-            return Container.Resolve<ITestingClient>(new NamedParameter("svmPath", path));
+            return container.Resolve<ITestingClient>(new NamedParameter("svmPath", path));
         }
 
         public ITrainingClient GetTraining(string path)
         {
-            return Container.Resolve<ITrainingClient>(new NamedParameter("svmPath", path));
+            return container.Resolve<ITrainingClient>(new NamedParameter("svmPath", path));
+        }
+
+        public T Resolve<T>()
+        {
+            return container.Resolve<T>();
+        }
+
+        public void Dispose()
+        {
+            container?.Dispose();
         }
     }
 }

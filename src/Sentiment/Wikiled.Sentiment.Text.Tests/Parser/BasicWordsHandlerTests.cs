@@ -30,20 +30,18 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void IsKnown()
         {
-            Assert.Fail();
-            //bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
-            //Assert.IsTrue(value);
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
+            Assert.IsTrue(value);
 
-            //value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
-            //Assert.IsFalse(value);
+            value = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("nota", "NN"));
+            Assert.IsFalse(value);
         }
 
         [Test]
         public void IsSentiment()
         {
-            Assert.Fail();
-            //bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsSentiment(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
-            //Assert.IsFalse(value);
+            bool value = ActualWordsHandler.InstanceSimple.WordsHandler.IsSentiment(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("why", "NN"));
+            Assert.IsFalse(value);
         }
 
         [Test]

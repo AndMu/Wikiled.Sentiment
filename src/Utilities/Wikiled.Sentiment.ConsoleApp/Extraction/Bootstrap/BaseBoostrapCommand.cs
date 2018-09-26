@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
-        private IContainerHelper bootStrapContainer;
+        private ISessionContainer bootStrapContainer;
 
         private ISentimentDataHolder adjustment;
 
@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private PerformanceMonitor monitor;
 
-        private IContainerHelper defaultContainer;
+        private ISessionContainer defaultContainer;
 
         private PrecisionRecallCalculator<bool> performance;
 
@@ -151,10 +151,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             var splitterFactory = MainContainerFactory.Setup()
                 .SetupRepair()
                 .SetupLocalCache()
-                .WithContext(context => context.DisableFeatureSentiment = InvertOff)
                 .Config()
                 .Splitter();
-            bootStrapContainer = splitterFactory.Create();
+            bootStrapContainer = splitterFactory.Create().StartSession();
+            bootStrapContainer.Context.DisableFeatureSentiment = InvertOff;
             log.Info("Loading lexicon: {0}", Words);
             adjustment = SentimentDataHolder.Load(Words);
         }
@@ -162,7 +162,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         private void LoadDefault()
         {
             log.Info("Loading default text splitter");
-            defaultContainer = MainContainerFactory.CreateStandard().Create();
+            defaultContainer = MainContainerFactory.CreateStandard().Create().StartSession();
         }
 
         private async Task<EvalData> ProcessReview(EvalData data)
@@ -171,9 +171,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             try
             {
                 var original = await bootStrapContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                //adjustment
-                throw new NotImplementedException();
-                var bootReview = bootStrapContainer.Container.Resolve<Func<Document, IParsedReviewManager>>()(original).Create();
+                var bootReview = bootStrapContainer.Resolve<Func<Document, IParsedReviewManager>>()(original).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
@@ -188,7 +186,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 {
                     // check also using default lexicon
                     var main = await defaultContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                    var originalReview = defaultContainer.Container.Resolve<Func<Document, IParsedReviewManager>>()(main).Create();
+                    var originalReview = defaultContainer.Resolve<Func<Document, IParsedReviewManager>>()(main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)

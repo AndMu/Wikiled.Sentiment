@@ -34,6 +34,18 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
+        [SetUp]
+        public void Setup()
+        {
+            TestHelper.Instance.Reset();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            TestHelper.Instance.Reset();
+        }
+
         [TestCaseSource(nameof(aspectData))]
         public async Task ProductTest(SentimentAspectData data)
         {
@@ -46,7 +58,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
             await result;
 
-            var serializer = TestHelper.Instance.ContainerHelper.Container.Resolve<IAspectSerializer>();
+            var serializer = TestHelper.Instance.ContainerHelper.Resolve<IAspectSerializer>();
             serializer.Serialize(aspectHandler).Save(Path.Combine(TestContext.CurrentContext.TestDirectory, data.Sentiment.Product + ".xml"));
 
             var features = aspectHandler.GetFeatures(10).ToArray();
@@ -68,7 +80,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
                 var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = TestHelper.Instance.ContainerHelper.Container.Resolve<Func<Document, IParsedReviewManager>>()(parsedDoc).Create();
+                var parseReview = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

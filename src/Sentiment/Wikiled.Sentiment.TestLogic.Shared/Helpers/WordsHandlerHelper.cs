@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Moq;
+﻿using Moq;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;

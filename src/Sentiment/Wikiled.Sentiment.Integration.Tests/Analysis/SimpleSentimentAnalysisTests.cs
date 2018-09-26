@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         {
             ActualWordsHandler.InstanceSimple.Container.Context.DisableFeatureSentiment = disableInvertor;
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            Text.Data.IParsedReview review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
@@ -74,9 +74,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
 
             SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            //adjustment;
-            Assert.Fail();
-            var review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
+            ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
 
             Assert.IsNull(review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();
@@ -91,7 +90,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         public async Task AdjustSentiment(string word, int value, double? rating)
         {
             Document request = await textSplitter.Process(new ParseRequest("Like or hate it")).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
             LexiconRatingAdjustment adjustment = new LexiconRatingAdjustment(
                 review,
                 SentimentDataHolder.Load(new[]
@@ -112,7 +111,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
 
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(request, adjustment).Create();
+            ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
 
             Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();

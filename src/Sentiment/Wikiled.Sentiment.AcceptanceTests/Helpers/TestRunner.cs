@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
 
-        public IContainerHelper Active { get; }
+        public ISessionContainer Active { get; }
 
         public IObservable<IParsedDocumentHolder> Load()
         {
@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.Container.Resolve<ITextSplitter>(), doc);
+                return new ParsingDocumentHolder(Active.Resolve<ITextSplitter>(), doc);
             }
             catch (Exception ex)
             {

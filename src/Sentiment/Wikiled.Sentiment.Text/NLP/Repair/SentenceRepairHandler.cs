@@ -41,8 +41,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         {
             // first do not remove sentiment words
             // second it clashes with anther emoticon imlementations
-            // third mayb we should replace with masks, but not so generic.
-            throw new NotImplementedException();
+            // third maybe we should replace with masks, but not so generic.
             if (string.IsNullOrEmpty(sentence))
             {
                 return string.Empty;
@@ -130,7 +129,14 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         {
             slangs.Clear();
             DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
-            slangs = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Word, StringComparer.OrdinalIgnoreCase);
+            foreach (var item in stream.ReadDataFromStream(item => item))
+            {
+                slangs[item.Word] = item.Value;
+                //if (wordsHandlers.IsSentiment(wordFactory.CreateWord(item.Word, "JJ")))
+                //{
+                //    slangs.Remove(item.Word);
+                //}
+            }
         }
 
         private string RepairByLevel(int level, string value, string sentence)

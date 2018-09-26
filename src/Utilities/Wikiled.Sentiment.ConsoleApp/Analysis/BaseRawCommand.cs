@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        private IContainerHelper container;
+        private ISessionContainer container;
 
         protected SemaphoreSlim Semaphore { get; set; }
 
@@ -46,13 +46,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
             var factory = MainContainerFactory.Setup()
                 .SetupRepair()
-                .WithContext(context => context.DisableFeatureSentiment = InvertOff)
                 .Config()
                 .Splitter();
 
             factory = Redis ? factory.SetupRedisCache("Twitter", "localhost", Port ?? 6370) : factory.SetupNullCache();
 
-            container = factory.Create();
+            container = factory.Create().StartSession();
+            container.Context.DisableFeatureSentiment = InvertOff;
             log.Info("Processing...");
             ISentimentDataHolder sentimentAdjustment = default;
             if (!string.IsNullOrEmpty(Weights))
@@ -80,7 +80,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             return Task.CompletedTask;
         }
 
-        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment);
+        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment);
 
         private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
         {

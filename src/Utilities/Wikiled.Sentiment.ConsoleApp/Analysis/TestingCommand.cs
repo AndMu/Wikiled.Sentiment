@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             ITestingClient client;
             Out.EnsureDirectoryExistence();
@@ -61,8 +61,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 SetupHeader();
                 //var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
                 client = container.GetTesting(Model);
-                client.Pipeline.LexiconAdjustment = sentimentAdjustment;
-                var dictionary = container.Container.Resolve<INRCDictionary>();
+                container.Context.Lexicon= sentimentAdjustment;
+                var dictionary = container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                                  .Subscribe(item => log.Info(client.Pipeline.Monitor)))
                 {

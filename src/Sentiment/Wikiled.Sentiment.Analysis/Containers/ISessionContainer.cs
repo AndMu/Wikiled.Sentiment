@@ -1,14 +1,12 @@
-using Autofac;
+using System;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public interface IContainerHelper
+    public interface ISessionContainer : IDisposable
     {
-        IContainer Container { get; }
-
         SentimentContext Context { get; }
 
         ITextSplitter GetTextSplitter();
@@ -16,5 +14,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         ITestingClient GetTesting(string path = null);
 
         ITrainingClient GetTraining(string path);
+
+        T Resolve<T>();
     }
 }

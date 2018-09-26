@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
@@ -8,8 +7,6 @@ using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Pipeline;
-using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
@@ -34,6 +31,18 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             new SentimentTestData("B000PYF768", 507, 0, "Total:<475> Positive:<82.989%> Negative:<62.500%> F1:<0.890> RMSE:1.34") { Category = ProductCategory.Kitchen },
             new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<279> Positive:<89.272%> Negative:<55.556%> F1:<0.928> RMSE:1.16") { Category = ProductCategory.Kitchen }
         };
+
+        [SetUp]
+        public void Setup()
+        {
+            TestHelper.Instance.Reset();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            TestHelper.Instance.Reset();
+        }
 
         [TestCaseSource(nameof(testData))]
         public async Task SentimentTests(SentimentTestData data)
@@ -63,7 +72,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var holder = SentimentDataHolder.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             var testing = runner.Active.GetTesting();
-            testing.Pipeline.LexiconAdjustment = holder;
+            runner.Active.Context.Lexicon = holder;
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;

@@ -16,6 +16,11 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         private bool disableFeatureSentiment;
 
+        public SentimentContext()
+        {
+            log.Debug("Creating");
+        }
+
         public IAspectDectector Aspect => aspect ?? nullDetector;
 
         public bool DisableFeatureSentiment
@@ -38,7 +43,7 @@ namespace Wikiled.Sentiment.Text.Configuration
             }
         }
 
-        public ISentimentDataHolder Lexicon { get; }
+        public ISentimentDataHolder Lexicon { get; set; }
 
         public void ChangeAspect(IAspectDectector aspectDetector)
         {

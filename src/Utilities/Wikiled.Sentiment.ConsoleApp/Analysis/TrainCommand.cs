@@ -31,11 +31,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
+        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             log.Info("Training Operation...");
             var client = container.GetTraining(Model);
-            client.Pipeline.LexiconAdjustment = sentimentAdjustment;
+            container.Context.Lexicon = sentimentAdjustment;
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

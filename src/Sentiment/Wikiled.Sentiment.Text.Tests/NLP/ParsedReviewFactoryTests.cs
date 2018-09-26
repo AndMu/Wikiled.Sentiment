@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void TestPhraseConversion()
         {
-            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
+            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             document.Sentences[0].Words[0].Phrase = "1";
             document.Sentences[0].Words[1].Phrase = "1";
 
@@ -40,7 +40,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
 
             var data = document.XmlSerialize();
             var doc = data.XmlDeserialize<Document>();
-            factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(doc);
+            factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(doc);
 
             review = factory.Create();
             phrases = review.Sentences[0].Occurrences.GetPhrases().ToArray();
@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void AddWord()
         {
-            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
+            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         public void AddWordConjunction(int index, int parts)
         {
             (document.Sentences[0].Words[index]).Type = ",";
-            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
+            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(parts, review.Sentences[0].Parts.Count());
@@ -79,7 +79,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             document.Sentences[0].Words[1].Type = ",";
             document.Sentences[0].Words[2].Type = ",";
 
-            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
+            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(1, review.Sentences[0].Parts.Count());
@@ -90,7 +90,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void AddPhraseWord()
         {
-            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
+            var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             document.Sentences[0].Words[0].Phrase = "1";
             document.Sentences[0].Words[1].Phrase = "1";
 

@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Container.Resolve<INRCDictionary>(), null));
+            Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Resolve<INRCDictionary>(), null));
             Assert.Throws<ArgumentNullException>(() => new ExtractReviewTextVector(null, reviewMock.Object));
         }
 
@@ -67,8 +67,8 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             }
 
             Wikiled.Text.Analysis.Structure.Document data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
-            review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
-            instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Container.Resolve<INRCDictionary>(), review)
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
+            instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Resolve<INRCDictionary>(), review)
             {
                 GenerateUsingImportantOnly = generate
             };

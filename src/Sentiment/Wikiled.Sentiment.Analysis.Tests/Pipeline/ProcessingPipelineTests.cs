@@ -1,17 +1,13 @@
 using System;
 using System.Linq;
 using System.Reactive;
-using Autofac;
-using Autofac.Extras.Moq;
 using Microsoft.Reactive.Testing;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 {
@@ -29,8 +25,6 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         private Mock<IParsedReviewManager> manager;
 
         private Mock<IParsedReview> review;
-
-        private Mock<IParsedReviewManager> parsedReviewManager;
 
         [SetUp]
         public void SetUp()
@@ -57,7 +51,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, doc => parsedReviewManager.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, doc => manager.Object));
             Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null));
         }
 
@@ -74,7 +68,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, doc => parsedReviewManager.Object);
+            return new ProcessingPipeline(scheduler, doc => manager.Object);
         }
     }
 }

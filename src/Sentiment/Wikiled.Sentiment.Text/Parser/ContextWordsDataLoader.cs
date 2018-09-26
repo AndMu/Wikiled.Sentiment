@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -8,10 +9,13 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public class ContextWordsDataLoader : IContextWordsHandler
     {
+        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
         private readonly IWordsHandler inner;
 
         public ContextWordsDataLoader(IWordsHandler inner, ISentimentContext context)
         {
+            log.Debug("Construct");
             this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }

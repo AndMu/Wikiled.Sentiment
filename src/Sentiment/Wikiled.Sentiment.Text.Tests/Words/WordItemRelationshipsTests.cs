@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
     [TestFixture]
     public class WordItemRelationshipsTests
     {
-        private Mock<IWordsHandler> handler;
+        private Mock<IContextWordsHandler> handler;
 
         private TestWordItem parent;
 
@@ -21,13 +21,12 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [SetUp]
         public void Setup()
         {
-            handler = new Mock<IWordsHandler>();
-            Assert.Fail();
-            //handler.Setup(item => item.Context).Returns(new SentimentContext());
-            //parent = new TestWordItem();
-            //parent.WordIndex = 1;
-            //instance = new WordItemRelationships(handler.Object, parent);
-            //parent.Relationship = instance;
+            handler = new Mock<IContextWordsHandler>();
+            handler.Setup(item => item.Context).Returns(new SentimentContext());
+            parent = new TestWordItem();
+            parent.WordIndex = 1;
+            instance = new WordItemRelationships(handler.Object, parent);
+            parent.Relationship = instance;
         }
 
         [Test]
@@ -50,27 +49,25 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [Test]
         public void Create()
         {
-            Assert.Fail();
-            //Assert.Throws<ArgumentNullException>(() => new WordItemRelationships(handler.Object, null));
-            //Assert.AreEqual(parent, instance.Owner);
-            //Assert.IsNull(instance.Previous);
-            //Assert.IsNull(instance.Next);
-            //Assert.IsNull(instance.Sentiment);
-            //Assert.IsNull(instance.Inverted);
-            //Assert.IsNull(instance.Part);
+            Assert.Throws<ArgumentNullException>(() => new WordItemRelationships(handler.Object, null));
+            Assert.AreEqual(parent, instance.Owner);
+            Assert.IsNull(instance.Previous);
+            Assert.IsNull(instance.Next);
+            Assert.IsNull(instance.Sentiment);
+            Assert.IsNull(instance.Inverted);
+            Assert.IsNull(instance.Part);
         }
 
         [Test]
         public void SimpleInverted()
         {
-            Assert.Fail();
-            //var previous = new Mock<IWordItem>();
-            //var previousRelationship = new WordItemRelationships(handler.Object, previous.Object);
-            //previousRelationship.Next = instance.Owner;
-            //previous.Setup(item => item.Relationship).Returns(previousRelationship);
-            //previous.Setup(item => item.IsInvertor).Returns(true);
-            //instance.Previous = previous.Object;
-            //Assert.AreEqual(previous.Object, instance.Inverted);
+            var previous = new Mock<IWordItem>();
+            var previousRelationship = new WordItemRelationships(handler.Object, previous.Object);
+            previousRelationship.Next = instance.Owner;
+            previous.Setup(item => item.Relationship).Returns(previousRelationship);
+            previous.Setup(item => item.IsInvertor).Returns(true);
+            instance.Previous = previous.Object;
+            Assert.AreEqual(previous.Object, instance.Inverted);
         }
     }
 }

@@ -3,7 +3,6 @@ using NUnit.Framework;
 using System.IO;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
@@ -13,11 +12,12 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class ActualWordsHandler
     {
+        private IGlobalContainer container;
+
         public ActualWordsHandler(POSTaggerType type, bool supportRepair = false)
         {
             var factory = MainContainerFactory.Setup()
                 .SetupRepair(supportRepair)
-                .WithContext()
                 .Config(configuration =>
                 {
                     string resources = configuration.GetConfiguration("Resources");
@@ -27,43 +27,30 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
                 .Splitter(type)
                 .SetupNullCache();
 
-            Container = factory.Create();
-            WordsHandler = Container.Container.Resolve<IWordsHandler>();
-            TextSplitter = Container.GetTextSplitter();
-            WordFactory = Container.Container.Resolve<IWordFactory>(
-                new NamedParameter("wordsHandlers", new ContextWordsDataLoader(WordsHandler, new SentimentContext())));
-            using (var scope = Container.Container.BeginLifetimeScope(
-                builder =>
-                {
-                    var loader = new ContextWordsDataLoader(WordsHandler, new SentimentContext());
-                    builder.RegisterInstance(loader).As<IContextWordsHandler>();
-                }))
-            {
-                var client = scope.Resolve<ITestingClient>();
-            }
-
+            container = factory.Create();
+            Container = container.StartSession();
             Loader = new DocumentLoader(Container);
         }
 
         public void Reset()
         {
-            Container.Context.Reset();
+            Container = container.StartSession();
         }
 
         public static ActualWordsHandler InstanceSimple { get; } = new ActualWordsHandler(POSTaggerType.Simple);
 
         public static ActualWordsHandler InstanceOpen { get; } = new ActualWordsHandler(POSTaggerType.SharpNLP);
 
-        public IContainerHelper Container { get; }
+        public ISessionContainer Container { get; private set; }
 
-        public IConfigurationHandler Configuration => Container.Container.Resolve<IConfigurationHandler>();
+        public IConfigurationHandler Configuration => Container.Resolve<IConfigurationHandler>();
 
-        public IWordsHandler WordsHandler { get; }
+        public IContextWordsHandler WordsHandler => Container.Resolve<IContextWordsHandler>();
 
         public DocumentLoader Loader { get; }
 
-        public ITextSplitter TextSplitter { get; }
+        public ITextSplitter TextSplitter => Container.Resolve<ITextSplitter>();
 
-        public IWordFactory WordFactory { get; }
+        public IWordFactory WordFactory => Container.Resolve<IWordFactory>();
     }
 }

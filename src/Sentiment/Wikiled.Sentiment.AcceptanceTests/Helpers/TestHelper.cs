@@ -15,6 +15,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         private readonly Lazy<AmazonRepository> amazonRepository;
 
+        private IGlobalContainer container;
+
         public TestHelper(string server = "192.168.0.70", int port = 6373)
         {
             redis = new Lazy<RedisLink>(() =>
@@ -25,21 +27,27 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             });
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
-            ContainerHelper = MainContainerFactory
-                .Setup()
-                .SetupRepair()
-                .SetupLocalCache()
-                .WithContext()
-                .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
-                .Splitter()
-                .Create();
+            container = MainContainerFactory
+                              .Setup()
+                              .SetupRepair()
+                              .SetupLocalCache()
+                              .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
+                              .Splitter()
+                              .Create();
+
+            Reset();
         }
 
         public static TestHelper Instance { get; } = new TestHelper();
 
+        public void Reset()
+        {
+            ContainerHelper = container.StartSession();
+        }
+
         public AmazonRepository AmazonRepository => amazonRepository.Value;
 
-        public IContainerHelper ContainerHelper { get; }
+        public ISessionContainer ContainerHelper { get; private set; }
 
         public IRedisLink Redis => redis.Value;
     }
