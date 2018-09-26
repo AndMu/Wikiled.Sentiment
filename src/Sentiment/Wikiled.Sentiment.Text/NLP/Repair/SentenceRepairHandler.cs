@@ -6,8 +6,6 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Configuration;
-using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 
@@ -19,10 +17,6 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly string resourcesPath;
 
-        private readonly IWordsHandler wordsHandlers;
-
-        private readonly IWordFactory wordFactory;
-
         private readonly IWordsDictionary dictionary;
 
         private Dictionary<string, int> emoticons = new Dictionary<string, int>();
@@ -31,7 +25,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private Dictionary<string, string> slangs = new Dictionary<string, string>();
 
-        public SentenceRepairHandler(ILexiconConfiguration path, IWordsHandler wordsHandlers, IWordFactory wordFactory, IWordsDictionary dictionary)
+        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary)
         {
             if (path == null)
             {
@@ -39,14 +33,16 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
             }
 
             resourcesPath = Path.Combine(path.LexiconPath, "Repair");
-            this.wordsHandlers = wordsHandlers ?? throw new ArgumentNullException(nameof(wordsHandlers));
-            this.wordFactory = wordFactory ?? throw new ArgumentNullException(nameof(wordFactory));
             this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             Load();
         }
 
         public string Repair(string sentence)
         {
+            // first do not remove sentiment words
+            // second it clashes with anther emoticon imlementations
+            // third mayb we should replace with masks, but not so generic.
+            throw new NotImplementedException();
             if (string.IsNullOrEmpty(sentence))
             {
                 return string.Empty;
@@ -134,14 +130,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         {
             slangs.Clear();
             DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
-            foreach (var item in stream.ReadDataFromStream(item => item))
-            {
-                slangs[item.Word] = item.Value;
-                if (wordsHandlers.IsSentiment(wordFactory.CreateWord(item.Word, "JJ")))
-                {
-                    slangs.Remove(item.Word);
-                }
-            }
+            slangs = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Word, StringComparer.OrdinalIgnoreCase);
         }
 
         private string RepairByLevel(int level, string value, string sentence)

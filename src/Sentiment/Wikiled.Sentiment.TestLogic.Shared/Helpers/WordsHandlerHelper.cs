@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
     {
         public WordsHandlerHelper()
         {
-            Handler = new Mock<IWordsHandler>();
+            Handler = new Mock<IContextWordsHandler>();
             AspectDectector = new Mock<IAspectDectector>();
             RawTextExractor = new Mock<IRawTextExtractor>();
             RawTextExractor.Setup(item => item.GetWord(It.IsAny<string>())).Returns((string myval) => myval);
@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public Mock<INRCDictionary> Dictionary { get; }
 
-        public Mock<IWordsHandler> Handler { get; }
+        public Mock<IContextWordsHandler> Handler { get; }
 
         public Mock<IAspectDectector> AspectDectector { get; }
 

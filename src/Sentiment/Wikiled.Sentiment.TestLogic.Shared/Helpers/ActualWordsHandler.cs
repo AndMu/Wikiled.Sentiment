@@ -2,6 +2,8 @@
 using NUnit.Framework;
 using System.IO;
 using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
@@ -26,9 +28,20 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
                 .SetupNullCache();
 
             Container = factory.Create();
-            WordsHandler = Container.GetDataLoader();
+            WordsHandler = Container.Container.Resolve<IWordsHandler>();
             TextSplitter = Container.GetTextSplitter();
-            WordFactory = Container.Container.Resolve<IWordFactory>();
+            WordFactory = Container.Container.Resolve<IWordFactory>(
+                new NamedParameter("wordsHandlers", new ContextWordsDataLoader(WordsHandler, new SentimentContext())));
+            using (var scope = Container.Container.BeginLifetimeScope(
+                builder =>
+                {
+                    var loader = new ContextWordsDataLoader(WordsHandler, new SentimentContext());
+                    builder.RegisterInstance(loader).As<IContextWordsHandler>();
+                }))
+            {
+                var client = scope.Resolve<ITestingClient>();
+            }
+
             Loader = new DocumentLoader(Container);
         }
 

@@ -19,6 +19,7 @@ using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
@@ -170,7 +171,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             try
             {
                 var original = await bootStrapContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                var bootReview = bootStrapContainer.Container.Resolve<IParsedReviewManagerFactory>().Resolve(original, adjustment).Create();
+                //adjustment
+                throw new NotImplementedException();
+                var bootReview = bootStrapContainer.Container.Resolve<Func<Document, IParsedReviewManager>>()(original).Create();
 
                 var bootSentimentValue = bootReview.CalculateRawRating();
                 var bootAllSentiments = bootReview.GetAllSentiments().Where(item => !item.Owner.IsInvertor || item.Owner.IsSentiment).ToArray();
@@ -185,7 +188,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 {
                     // check also using default lexicon
                     var main = await defaultContainer.GetTextSplitter().Process(new ParseRequest(data.Text)).ConfigureAwait(false);
-                    var originalReview = defaultContainer.Container.Resolve<IParsedReviewManagerFactory>().Resolve(main).Create();
+                    var originalReview = defaultContainer.Container.Resolve<Func<Document, IParsedReviewManager>>()(main).Create();
                     var originalRating = originalReview.CalculateRawRating();
 
                     // main.GetReview().Items.SelectMany(item => item.Inquirer.Records).Where(item=>  item.Description.Harward.)

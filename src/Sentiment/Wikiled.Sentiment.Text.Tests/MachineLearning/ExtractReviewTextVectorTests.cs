@@ -12,6 +12,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 {
@@ -66,7 +67,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             }
 
             Wikiled.Text.Analysis.Structure.Document data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
-            review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(data).Create();
+            review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
             instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Container.Resolve<INRCDictionary>(), review)
             {
                 GenerateUsingImportantOnly = generate

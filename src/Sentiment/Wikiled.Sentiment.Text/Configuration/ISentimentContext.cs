@@ -1,4 +1,5 @@
 ﻿using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
@@ -10,7 +11,7 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         bool DisableInvertors { get; }
 
-        void Reset();
+        ISentimentDataHolder Lexicon { get; }
 
         void ChangeAspect(IAspectDectector aspect);
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using NUnit.Framework;
@@ -6,6 +7,7 @@ using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.OpenNLP
 {
@@ -26,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
             string sentence = "By default, the application is set to search for new virus definitions daily, but you always can use the scheduling tool to change this.";
             string sentence2 = "Should a virus create serious system problems, AVG creates a rescue disk to scan your computer in MS-DOS mode.";
             var result = await splitter.Process(new ParseRequest(sentence + ". " + sentence2)).ConfigureAwait(false);
-            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
+            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             Assert.AreEqual(2, data.Sentences.Count);
             Assert.AreEqual(24, data.Sentences[0].Occurrences.Count());
             Assert.AreEqual(13, data.Sentences[0].Occurrences.GetImportant().Count());
@@ -41,7 +43,7 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
         public async Task SentenceWithSymbols()
         {
             var result = await splitter.Process(new ParseRequest("Woo! Score one for the penny-pinchers!")).ConfigureAwait(false);
-            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
+            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             Assert.AreEqual(2, data.Sentences.Count);
             Assert.AreEqual(1, data.Sentences[0].Occurrences.Count());
             Assert.AreEqual(5, data.Sentences[1].Occurrences.Count());
@@ -60,7 +62,7 @@ namespace Wikiled.Sentiment.Text.Tests.OpenNLP
                 "Well, there were a few laugh out loud cheese moments- I couldn't contain a fit of giggles when the final girl did a bizarre type of backwards moon-walk to get away from the kille and there were a few good kill scenes- my favourites being the girl suffocated to death with the sleeping bag; and the phoney looking." +
                 "<br /><br />All in all The Prey is dumb, boring and the killer I didn't find scary at all, this movie could have been a whole lot better.";
             var result = await splitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
-            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
+            var data = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             Assert.AreEqual(6, data.Sentences.Count);
             Assert.AreEqual(41, data.Sentences[1].Occurrences.Count());
         }

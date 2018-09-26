@@ -93,7 +93,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         public int WordIndex { get; set; }
 
-        public static Phrase Create(IWordsHandler wordsHandlers, BasePOSType pos)
+        public static Phrase Create(IContextWordsHandler wordsHandlers, BasePOSType pos)
         {
             if (wordsHandlers == null)
             {

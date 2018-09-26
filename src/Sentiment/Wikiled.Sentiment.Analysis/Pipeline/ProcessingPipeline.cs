@@ -1,14 +1,13 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Common.Logging;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
-using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Pipeline
 {
@@ -18,17 +17,15 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         private readonly IScheduler scheduler;
 
-        private readonly IParsedReviewManagerFactory reviewManagerFactory;
+        private readonly Func<Document, IParsedReviewManager> reviewManager;
 
-        public ProcessingPipeline(IScheduler scheduler, IParsedReviewManagerFactory reviewManagerFactory)
+        public ProcessingPipeline(IScheduler scheduler, Func<Document, IParsedReviewManager> reviewManager)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
-            this.reviewManagerFactory = reviewManagerFactory ?? throw new ArgumentNullException(nameof(reviewManagerFactory));
+            this.reviewManager = reviewManager ?? throw new ArgumentNullException(nameof(reviewManager));
         }
 
         public PerformanceMonitor Monitor { get; private set; }
-
-        public ISentimentDataHolder LexiconAdjustment { get; set; }
 
         public SemaphoreSlim ProcessingSemaphore { get; set; }
 
@@ -41,7 +38,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
             log.Info("ProcessStep");
             Monitor = new PerformanceMonitor(100);
-            var selectedData = reviews
+            IObservable<ProcessingContext> selectedData = reviews
                 .Select(item => Observable.Start(() => StepProcessing(item), scheduler))
                 .Merge()
                 .Merge();
@@ -56,26 +53,16 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
                 Monitor.ManualyCount();
                 if (ProcessingSemaphore != null)
                 {
-                    var isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
+                    bool isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
                     if (!isSuccesful)
                     {
                         throw new TimeoutException();
                     }
                 }
 
-                var doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                IParsedReview review;
-                if (LexiconAdjustment != null)
-                {
-                    log.Debug("Using lexicon adjustment");
-                    review = reviewManagerFactory.Resolve(doc, LexiconAdjustment).Create();
-                }
-                else
-                {
-                    review = reviewManagerFactory.Resolve(doc).Create();
-                }
-
-                var context = new ProcessingContext(reviewHolder.Original, doc, review);
+                Document doc = await reviewHolder.GetParsed().ConfigureAwait(false);
+                var review = reviewManager(doc).Create();
+                ProcessingContext context = new ProcessingContext(reviewHolder.Original, doc, review);
                 return context;
             }
             catch (Exception ex)

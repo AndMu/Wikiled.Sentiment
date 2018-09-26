@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.Text.Words
 {
     public class WordItemRelationships : IWordItemRelationships
     {
-        private readonly IWordsHandler handler;
+        private readonly IContextWordsHandler handler;
 
         private readonly List<IWordItem> related = new List<IWordItem>();
 
@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         private bool sentimentResolved;
 
-        public WordItemRelationships(IWordsHandler handler, IWordItem parent)
+        public WordItemRelationships(IContextWordsHandler handler, IWordItem parent)
         {
             this.handler = handler;
             Owner = parent ?? throw new System.ArgumentNullException(nameof(parent));

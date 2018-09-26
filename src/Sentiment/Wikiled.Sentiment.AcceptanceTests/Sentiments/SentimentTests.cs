@@ -80,7 +80,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
             var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
-            var result = TestHelper.Instance.ContainerHelper.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc).Create();
+            var result = TestHelper.Instance.ContainerHelper.Container.Resolve<Func<Document, IParsedReviewManager>>()(doc).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
@@ -117,7 +117,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             ConcurrentBag<ISentence> sentences = new ConcurrentBag<ISentence>();
             var doc = await parsedDocument.GetParsed().ConfigureAwait(false);
-            var review = TestHelper.Instance.ContainerHelper.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc).Create();
+            var review = TestHelper.Instance.ContainerHelper.Container.Resolve<Func<Document, IParsedReviewManager>>()(doc).Create();
             foreach (var sentence in review.Sentences)
             {
                 var sentiments = sentence.Occurrences.Where(item => item.IsSentiment).ToArray();

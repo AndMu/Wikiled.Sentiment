@@ -30,15 +30,13 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private Mock<IParsedReview> review;
 
-        private Mock<IParsedReviewManagerFactory> parsedReviewManager;
+        private Mock<IParsedReviewManager> parsedReviewManager;
 
         [SetUp]
         public void SetUp()
         {
             scheduler = new TestScheduler();
             manager = new Mock<IParsedReviewManager>();
-            parsedReviewManager = new Mock<IParsedReviewManagerFactory>();
-            parsedReviewManager.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
             review = new Mock<IParsedReview>();
             manager.Setup(item => item.Create()).Returns(review.Object);
             holder = new Mock<IParsedDocumentHolder>();
@@ -59,7 +57,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, parsedReviewManager.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, doc => parsedReviewManager.Object));
             Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null));
         }
 
@@ -76,7 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, parsedReviewManager.Object);
+            return new ProcessingPipeline(scheduler, doc => parsedReviewManager.Object);
         }
     }
 }

@@ -48,7 +48,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze = new AnalyseReviews();
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
             sentimentVector = new SentimentVector();
-            clientContext.Context.Reset();
         }
 
         public IProcessingPipeline Pipeline => clientContext.Pipeline;

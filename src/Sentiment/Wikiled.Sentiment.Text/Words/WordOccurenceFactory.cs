@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.Text.Words
 {
     public class WordOccurenceFactory : IWordFactory
     {
-        private readonly IWordsHandler wordsHandlers;
+        private readonly IContextWordsHandler wordsHandlers;
 
         private readonly IRawTextExtractor extractor;
 
@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-        public WordOccurenceFactory(IWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager)
+        public WordOccurenceFactory(IContextWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager)
         {
             this.wordsHandlers = wordsHandlers ?? throw new ArgumentNullException(nameof(wordsHandlers));
             this.extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
@@ -54,6 +54,5 @@ namespace Wikiled.Sentiment.Text.Words
         {
             return WordOccurrence.Create(wordsHandlers, extractor, inquirerManager, word, null, wordPosType);
         }
-
     }
 }

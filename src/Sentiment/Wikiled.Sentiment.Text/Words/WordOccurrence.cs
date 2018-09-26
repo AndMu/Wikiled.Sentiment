@@ -91,7 +91,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         public InquirerDefinition Inquirer { get; private set; }
 
-        public static WordOccurrence Create(IWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager, string text, string raw, BasePOSType pos)
+        public static WordOccurrence Create(IContextWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager, string text, string raw, BasePOSType pos)
         {
             if (wordsHandlers == null)
             {

@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public class ParsedReviewManager : IParsedReviewManager
     {
-        private readonly IWordsHandler manager;
+        private readonly IContextWordsHandler manager;
 
         private readonly Document document;
 
@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private readonly INRCDictionary nrcDictionary;
 
-        public ParsedReviewManager(IWordsHandler manager, IWordFactory wordsFactory, INRCDictionary nrcDictionary, Document document)
+        public ParsedReviewManager(IContextWordsHandler manager, IWordFactory wordsFactory, INRCDictionary nrcDictionary, Document document)
         {
             this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
             this.document = document ?? throw new ArgumentNullException(nameof(document));

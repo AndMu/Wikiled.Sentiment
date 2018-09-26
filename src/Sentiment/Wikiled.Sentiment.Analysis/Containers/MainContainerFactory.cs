@@ -145,8 +145,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             var helper = new ContainerHelper(builder.Build());
             log.Info("Initializing...");
-            helper.GetDataLoader();
-            helper.GetTextSplitter();
+            helper.Container.Resolve<IWordsHandler>();
+            helper.Container.Resolve<ITextSplitter>();
             return helper;
         }
     }

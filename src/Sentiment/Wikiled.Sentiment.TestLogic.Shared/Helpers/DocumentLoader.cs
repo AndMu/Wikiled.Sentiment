@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
         {
             var result = await helper.GetTextSplitter().Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
-            var review = helper.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
+            var review = helper.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             var documentFromReview = new DocumentFromReviewFactory();
             return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }

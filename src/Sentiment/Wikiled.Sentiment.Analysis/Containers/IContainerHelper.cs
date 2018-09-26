@@ -13,8 +13,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         ITextSplitter GetTextSplitter();
 
-        IWordsHandler GetDataLoader();
-
         ITestingClient GetTesting(string path = null);
 
         ITrainingClient GetTraining(string path);

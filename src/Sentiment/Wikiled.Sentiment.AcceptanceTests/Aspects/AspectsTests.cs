@@ -13,6 +13,7 @@ using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 {
@@ -67,7 +68,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
                 var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = TestHelper.Instance.ContainerHelper.Container.Resolve<IParsedReviewManagerFactory>().Resolve(parsedDoc).Create();
+                var parseReview = TestHelper.Instance.ContainerHelper.Container.Resolve<Func<Document, IParsedReviewManager>>()(parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

@@ -22,11 +22,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return Container.Resolve<ITextSplitter>();
         }
 
-        public IWordsHandler GetDataLoader()
-        {
-            return Container.Resolve<IWordsHandler>();
-        }
-
         public ITestingClient GetTesting(string path = null)
         {
             return Container.Resolve<ITestingClient>(new NamedParameter("svmPath", path));

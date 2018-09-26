@@ -2,7 +2,6 @@
 using System.Threading;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Pipeline
 {
@@ -13,7 +12,5 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
         IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews);
 
         SemaphoreSlim ProcessingSemaphore { get; set; }
-
-        ISentimentDataHolder LexiconAdjustment { get; set; }
     }
 }

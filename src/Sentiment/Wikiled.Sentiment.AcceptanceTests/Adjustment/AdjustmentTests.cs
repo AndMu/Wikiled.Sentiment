@@ -1,10 +1,12 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using NUnit.Framework;
 using System.IO;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
 {
@@ -25,7 +27,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             ISentimentDataHolder lexicon = SentimentDataHolder.Load(words);
             string text = "I Veto it";
             Wikiled.Text.Analysis.Structure.Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result, lexicon).Create();
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(result, lexicon).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
 
@@ -34,7 +36,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         {
             string text = "EMOTICON_confused I do";
             Wikiled.Text.Analysis.Structure.Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(result).Create();
+            var review = ActualWordsHandler.InstanceOpen.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
         }
     }

@@ -5,7 +5,7 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public static class WordsHandlerExtension
     {
-        public static bool IsKnown(this IWordsHandler instance, IWordItem word)
+        public static bool IsKnown(this IContextWordsHandler instance, IWordItem word)
         {
             return instance.IsQuestion(word) ||
                    instance.IsFeature(word) ||
@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Text.Parser
                    instance.MeasureQuantifier(word) > 0;
         }
 
-        public static SentimentValue MeasureSentiment(this IWordsHandler instance, IWordItem word)
+        public static SentimentValue MeasureSentiment(this IContextWordsHandler instance, IWordItem word)
         {
             if (instance.Context.DisableFeatureSentiment &&
                 word.IsFeature)
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.Text.Parser
             return instance.CheckSentiment(word);
         }
 
-        public static bool IsSentiment(this IWordsHandler instance, IWordItem word)
+        public static bool IsSentiment(this IContextWordsHandler instance, IWordItem word)
         {
             SentimentValue sentiment = instance.MeasureSentiment(word);
             return sentiment != null;

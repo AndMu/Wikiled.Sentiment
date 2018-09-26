@@ -10,6 +10,7 @@ using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.MachineLearning
 {
@@ -27,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             ActualWordsHandler.InstanceSimple.Container.Context.ChangeAspect(aspect);
             aspect.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<IParsedReviewManagerFactory>().Resolve(data).Create();
+            review = ActualWordsHandler.InstanceSimple.Container.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
             var sentence = review.Sentences[0];
             instance = new ExtractSentenceTextVector(sentence);
         }

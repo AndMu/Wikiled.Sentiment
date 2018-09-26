@@ -37,49 +37,29 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
-        public WordsDataLoader(ILexiconConfiguration config, ISentimentContext context)
+        public WordsDataLoader(ILexiconConfiguration config)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
-            Context = context ?? throw new ArgumentNullException(nameof(context));
             sentimentData = new SentimentDataHolder();
         }
 
-        public ISentimentContext Context { get; }
-
         public SentimentValue CheckSentiment(IWordItem word)
         {
-            if (Context.DisableFeatureSentiment &&
-                word.IsFeature)
-            {
-                return null;
-            }
-
             return sentimentData.MeasureSentiment(word);
         }
 
         public bool IsAttribute(IWordItem word)
         {
-            return Context.Aspect.IsAttribute(word);
+            return false;
         }
 
         public bool IsFeature(IWordItem word)
         {
-            if (word.CanNotBeFeature())
-            {
-                return false;
-            }
-
-            bool value = Context.Aspect != null && Context.Aspect.IsAspect(word);
-            return value;
+            return false;
         }
 
         public bool IsInvertAdverb(IWordItem word)
         {
-            if (Context.DisableInvertors)
-            {
-                return false;
-            }
-
             if (negating.ContainsKey(word.Text))
             {
                 if (negatingRule.TryGetValue(WordItemType.Invertor, out WordRepairRule rule))

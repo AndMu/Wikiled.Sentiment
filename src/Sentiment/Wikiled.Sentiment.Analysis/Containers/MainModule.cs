@@ -40,7 +40,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
 
             builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>();
-            builder.RegisterType<ParsedReviewManagerFactory>().As<IParsedReviewManagerFactory>();
 
             int parallel = Environment.ProcessorCount / 2;
             builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
