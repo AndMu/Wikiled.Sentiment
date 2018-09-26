@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
 
@@ -24,6 +25,16 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public IWordsHandler GetDataLoader()
         {
             return Container.Resolve<IWordsHandler>();
+        }
+
+        public ITestingClient GetTesting(string path = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITrainingClient GetTraining(string path)
+        {
+            throw new NotImplementedException();
         }
     }
 }

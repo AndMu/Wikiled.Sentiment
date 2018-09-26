@@ -52,22 +52,22 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
         {
-            TestingClient client;
+            ITestingClient client;
             Out.EnsureDirectoryExistence();
             using (var streamWriter = new StreamWriter(Path.Combine(Out, "results.csv"), false))
             using (csvDataOut = new CsvWriter(streamWriter))
             using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
             {
                 SetupHeader();
-                var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
-                pipeline.LexiconAdjustment = sentimentAdjustment;
+                //var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
+                client = container.GetTesting(Model);
+                client.Pipeline.LexiconAdjustment = sentimentAdjustment;
                 var dictionary = container.Container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
-                                 .Subscribe(item => log.Info(pipeline.Monitor)))
+                                 .Subscribe(item => log.Info(client.Pipeline.Monitor)))
                 {
-                    client = new TestingClient(pipeline, Model);
                     Semaphore = new SemaphoreSlim(2000);
-                    pipeline.ProcessingSemaphore = Semaphore;
+                    client.Pipeline.ProcessingSemaphore = Semaphore;
                     client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                               item => 
                               {
                                   SaveDocument(dictionary, item);
-                                  pipeline.Monitor.Increment();
+                                  client.Pipeline.Monitor.Increment();
                                   return item;
                               })
                           .LastOrDefaultAsync()

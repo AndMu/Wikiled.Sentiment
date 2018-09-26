@@ -34,9 +34,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         protected override void Process(IObservable<IParsedDocumentHolder> reviews, IContainerHelper container, ISentimentDataHolder sentimentAdjustment)
         {
             log.Info("Training Operation...");
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
-            pipeline.LexiconAdjustment = sentimentAdjustment;
-            TrainingClient client = new TrainingClient(pipeline, Model);
+            var client = container.GetTraining(Model);
+            client.Pipeline.LexiconAdjustment = sentimentAdjustment;
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Reactive.Concurrency;
 using Autofac;
+using Autofac.Extras.AggregateService;
 using Microsoft.Extensions.Caching.Memory;
+using Wikiled.Sentiment.Analysis.Pipeline;
+using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
@@ -42,6 +46,13 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.RegisterType<WordsDataLoader>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<AspectSerializer>().As<IAspectSerializer>().SingleInstance();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
+
+            builder.RegisterType<ProcessingPipeline>().As<IProcessingPipeline>();
+            builder.RegisterType<TestingClient>().As<ITestingClient>();
+            builder.RegisterType<TrainingClient>().As<ITrainingClient>();
+            builder.RegisterInstance(TaskPoolScheduler.Default).As<IScheduler>();
+
+            builder.RegisterAggregateService<IClientContext>();
         }
     }
 }

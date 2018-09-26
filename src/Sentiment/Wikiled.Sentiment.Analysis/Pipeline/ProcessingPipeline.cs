@@ -3,10 +3,8 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using Wikiled.Common.Logging;
-using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
@@ -20,13 +18,13 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         private readonly IScheduler scheduler;
 
-        public ProcessingPipeline(IScheduler scheduler, IContainerHelper container)
+        private readonly IParsedReviewManagerFactory reviewManagerFactory;
+
+        public ProcessingPipeline(IScheduler scheduler, IParsedReviewManagerFactory reviewManagerFactory)
         {
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
-            ContainerHolder = container ?? throw new ArgumentNullException(nameof(container));
+            this.reviewManagerFactory = reviewManagerFactory ?? throw new ArgumentNullException(nameof(reviewManagerFactory));
         }
-
-        public IContainerHelper ContainerHolder { get; }
 
         public PerformanceMonitor Monitor { get; private set; }
 
@@ -70,11 +68,11 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
                 if (LexiconAdjustment != null)
                 {
                     log.Debug("Using lexicon adjustment");
-                    review = ContainerHolder.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc, LexiconAdjustment).Create();
+                    review = reviewManagerFactory.Resolve(doc, LexiconAdjustment).Create();
                 }
                 else
                 {
-                    review = ContainerHolder.Container.Resolve<IParsedReviewManagerFactory>().Resolve(doc).Create();
+                    review = reviewManagerFactory.Resolve(doc).Create();
                 }
 
                 var context = new ProcessingContext(reviewHolder.Original, doc, review);

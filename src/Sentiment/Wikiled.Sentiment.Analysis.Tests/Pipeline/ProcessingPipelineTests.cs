@@ -26,26 +26,22 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private Mock<IParsedDocumentHolder> holder;
 
-        private Mock<IContainerHelper> container;
-
         private Mock<IParsedReviewManager> manager;
 
         private Mock<IParsedReview> review;
+
+        private Mock<IParsedReviewManagerFactory> parsedReviewManager;
 
         [SetUp]
         public void SetUp()
         {
             scheduler = new TestScheduler();
             manager = new Mock<IParsedReviewManager>();
-            var factory = new Mock<IParsedReviewManagerFactory>();
-            factory.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
-            container = new Mock<IContainerHelper>();
+            parsedReviewManager = new Mock<IParsedReviewManagerFactory>();
+            parsedReviewManager.Setup(item => item.Resolve(It.IsAny<Document>(), null)).Returns(manager.Object);
             review = new Mock<IParsedReview>();
             manager.Setup(item => item.Create()).Returns(review.Object);
             holder = new Mock<IParsedDocumentHolder>();
-            var innerContainer = AutoMock.GetLoose();
-            innerContainer.Provide(factory.Object);
-            container.Setup(item => item.Container).Returns(innerContainer.Container);
             documentSource = scheduler.CreateColdObservable(
                 new Recorded<Notification<IParsedDocumentHolder>>(
                     TimeSpan.FromSeconds(1).Ticks,
@@ -63,7 +59,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, container.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, parsedReviewManager.Object));
             Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null));
         }
 
@@ -80,7 +76,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, container.Object);
+            return new ProcessingPipeline(scheduler, parsedReviewManager.Object);
         }
     }
 }

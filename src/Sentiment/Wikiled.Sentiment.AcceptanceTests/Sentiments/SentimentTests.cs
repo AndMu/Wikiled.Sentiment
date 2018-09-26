@@ -11,7 +11,6 @@ using NUnit.Framework;
 using Wikiled.Arff.Extensions;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -56,12 +55,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
                                    });
 
-            ProcessingPipeline pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper);
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
-            TrainingClient trainingClient = new TrainingClient(pipeline, trainingPath);
+            var trainingClient = TestHelper.Instance.ContainerHelper.GetTraining(trainingPath);
             await trainingClient.Train(negative.Concat(positive)).ConfigureAwait(false);
-            pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, TestHelper.Instance.ContainerHelper);
-            TestingClient testingClient = new TestingClient(pipeline, trainingPath);
+            var testingClient = TestHelper.Instance.ContainerHelper.GetTesting(trainingPath);
             testingClient.TrackArff = true;
             testingClient.Init();
             var result = await testingClient.Process(negative.Take(1).Concat(positive.Take(1))).ToArray();

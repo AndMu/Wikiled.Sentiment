@@ -62,9 +62,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
             var holder = SentimentDataHolder.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active);
-            pipeline.LexiconAdjustment = holder;
-            TestingClient testing = new TestingClient(pipeline, string.Empty);
+            var testing = runner.Active.GetTesting();
+            testing.Pipeline.LexiconAdjustment = holder;
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;

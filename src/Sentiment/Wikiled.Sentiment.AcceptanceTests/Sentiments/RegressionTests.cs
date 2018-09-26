@@ -1,14 +1,10 @@
-﻿using System.Reactive.Concurrency;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
-using Wikiled.Sentiment.Analysis.Pipeline;
-using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Text.NLP;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -42,7 +38,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             TestHelper helper = new TestHelper();
             TestRunner runner = new TestRunner(helper, data);
             await runner.Load().LastOrDefaultAsync();
-            TestingClient testing = new TestingClient(new ProcessingPipeline(TaskPoolScheduler.Default, runner.Active), string.Empty);
+            var testing = runner.Active.GetTesting();
             testing.DisableAspects = true;
             testing.DisableSvm = true;
             testing.TrackArff = true;

@@ -9,5 +9,9 @@ namespace Wikiled.Sentiment.Text.Configuration
         bool DisableFeatureSentiment { get; }
 
         bool DisableInvertors { get; }
+
+        void Reset();
+
+        void ChangeAspect(IAspectDectector aspect);
     }
 }

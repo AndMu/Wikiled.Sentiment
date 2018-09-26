@@ -37,10 +37,10 @@ namespace Wikiled.Sentiment.Text.Configuration
             }
         }
 
-        public void ChangeAspect(IAspectDectector aspect)
+        public void ChangeAspect(IAspectDectector aspectDetector)
         {
             log.Info("Changing aspect detector");
-            this.aspect = aspect;
+            aspect = aspectDetector;
         }
 
         public void Reset()

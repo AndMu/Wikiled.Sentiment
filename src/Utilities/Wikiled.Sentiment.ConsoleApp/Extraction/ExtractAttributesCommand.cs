@@ -45,9 +45,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
             log.Info("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
             container = MainContainerFactory.CreateStandard().Create();
-            var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
-            using (Observable.Interval(TimeSpan.FromSeconds(30))
-                             .Subscribe(item => log.Info(pipeline.Monitor)))
+            var pipeline = container.Container.Resolve<IProcessingPipeline>();
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(pipeline.Monitor)))
             {
                 await pipeline.ProcessStep(GetReviews().ToObservable(TaskPoolScheduler.Default))
                         .Select(item => Observable.Start(() =>
