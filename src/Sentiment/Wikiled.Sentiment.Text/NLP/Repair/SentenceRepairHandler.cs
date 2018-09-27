@@ -18,9 +18,9 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly IWordsDictionary dictionary;
 
-        private readonly MessageCleanup cleanup;
+        private readonly IMessageCleanup cleanup;
 
-        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary, MessageCleanup cleanup)
+        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary, IMessageCleanup cleanup)
         {
             if (path == null)
             {

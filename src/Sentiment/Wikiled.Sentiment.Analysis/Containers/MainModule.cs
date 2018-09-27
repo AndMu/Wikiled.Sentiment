@@ -40,8 +40,15 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
             builder.RegisterType<ExtendedWords>().As<IExtendedWords>().SingleInstance();
 
-            builder.RegisterType<MessageCleanup>().SingleInstance();
-            
+            builder.RegisterType<MessageCleanup>().As<IMessageCleanup>()
+                   .SingleInstance()
+                   .OnActivating(
+                       item =>
+                       {
+                           item.Instance.CleanCashTags = false;
+                           item.Instance.LowerCase = false;
+                       });
+
             builder.RegisterType<RawWordExtractor>().As<IRawTextExtractor>().SingleInstance();
             builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
 

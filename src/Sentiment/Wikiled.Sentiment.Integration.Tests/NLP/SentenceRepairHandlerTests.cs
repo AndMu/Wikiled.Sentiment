@@ -1,5 +1,4 @@
-﻿using Autofac;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.NLP.Repair;
 
@@ -8,12 +7,12 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
     [TestFixture]
     public class SentenceRepairHandlerTests
     {
-        private ISentenceRepairHandler handler;
+        private IContextSentenceRepairHandler handler;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            handler = ActualWordsHandler.InstanceSimple.Container.Resolve<ISentenceRepairHandler>();
+            handler = ActualWordsHandler.InstanceSimple.Container.Resolve<IContextSentenceRepairHandler>();
         }
 
         [Test]
@@ -37,7 +36,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         public void RepairEmoticons()
         {
             var result = handler.Repair("It was :) but I :(");
-            Assert.AreEqual("It was xxxgoodxxxtwo but I xxxbadxxxtwo", result);
+            Assert.AreEqual("It was EMOTICON_slightly_smiling_face but I EMOTICON_disappointed", result);
         }
 
         [Test]
