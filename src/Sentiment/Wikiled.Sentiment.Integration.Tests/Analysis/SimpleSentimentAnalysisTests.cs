@@ -2,14 +2,12 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Autofac;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Integration.Tests.Analysis
@@ -19,14 +17,11 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
     {
         private ITextSplitter textSplitter;
 
-        private IDocumentFromReviewFactory parsedFactory;
-
         [SetUp]
         public void Setup()
         {
             ActualWordsHandler.InstanceSimple.Reset();
             textSplitter = ActualWordsHandler.InstanceSimple.TextSplitter;
-            parsedFactory = new DocumentFromReviewFactory();
         }
 
         [TearDown]
