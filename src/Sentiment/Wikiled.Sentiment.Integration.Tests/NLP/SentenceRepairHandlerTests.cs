@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [OneTimeSetUp]
         public void Setup()
         {
-            handler = ActualWordsHandler.InstanceSimple.Container.Resolve<SentenceRepairHandler>();
+            handler = ActualWordsHandler.InstanceSimple.Container.Resolve<ISentenceRepairHandler>();
         }
 
         [Test]

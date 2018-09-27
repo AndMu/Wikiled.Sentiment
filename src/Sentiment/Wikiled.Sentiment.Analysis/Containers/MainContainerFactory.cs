@@ -9,7 +9,6 @@ using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
-using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
@@ -28,7 +27,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
         private MainContainerFactory()
         {
             builder.RegisterModule(new MainModule());
-            initialized["Repair"] = false;
             initialized["Splitter"] = false;
             initialized["Cache"] = false;
             initialized["Config"] = false;
@@ -38,8 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             log.Info("CreateStandard");
             MainContainerFactory instance = new MainContainerFactory();
-            return instance.SetupRepair()
-                .SetupLocalCache()
+            return instance.SetupLocalCache()
                 .Config()
                 .Splitter();
         }
@@ -49,23 +46,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             log.Info("Setup");
             MainContainerFactory instance = new MainContainerFactory();
             return instance;
-        }
-
-        public MainContainerFactory SetupRepair(bool supportRepair = true)
-        {
-            initialized["Repair"] = true;
-            if (supportRepair)
-            {
-                builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
-            }
-            else
-            {
-                builder.RegisterType<NullSentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
-                // add as specific if somebody still wants it
-                builder.RegisterType<SentenceRepairHandler>().SingleInstance();
-            }
-
-            return this;
         }
 
         public MainContainerFactory SetupLocalCache()

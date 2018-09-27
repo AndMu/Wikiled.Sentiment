@@ -7,7 +7,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 {
     public interface ISessionContainer : IDisposable
     {
-        SentimentContext Context { get; }
+        SessionContext Context { get; }
 
         ITextSplitter GetTextSplitter();
 

@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             handler = new Mock<IContextWordsHandler>();
-            handler.Setup(item => item.Context).Returns(new SentimentContext());
+            handler.Setup(item => item.Context).Returns(new SessionContext());
             parent = new TestWordItem();
             parent.WordIndex = 1;
             instance = new WordItemRelationships(handler.Object, parent);

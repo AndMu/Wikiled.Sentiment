@@ -4,7 +4,7 @@ using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
-    public class SentimentContext : ISentimentContext
+    public class SessionContext : ISessionContext
     {
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         private bool disableFeatureSentiment;
 
-        public SentimentContext()
+        public SessionContext()
         {
             log.Debug("Creating");
         }

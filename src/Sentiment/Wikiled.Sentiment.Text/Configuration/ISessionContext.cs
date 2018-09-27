@@ -3,7 +3,7 @@ using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
-    public interface ISentimentContext
+    public interface ISessionContext
     {
         IAspectDectector Aspect { get; }
 

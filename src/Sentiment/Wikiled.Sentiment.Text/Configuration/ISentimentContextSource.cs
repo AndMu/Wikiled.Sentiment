@@ -2,7 +2,7 @@
 {
     public interface ISentimentContextSource
     {
-        ISentimentContext Current { get; }
+        ISessionContext Current { get; }
     }
 }
 

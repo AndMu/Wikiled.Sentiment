@@ -14,21 +14,11 @@
     <Test>a lot</Test>
     <Match>(\s|^)a lot</Match>
     <Replace>$1alot</Replace>
-  </Rule>
-  <Rule Name="special">
-    <Test></Test>
-    <Match>[^\u0000-\u007F]+</Match>
-    <Replace></Replace>
-  </Rule>
+  </Rule>  
   <Rule Name="plus1">
     <Test>+1</Test>
     <Match>\+1</Match>
     <Replace>plusone</Replace>
-  </Rule>  
-  <Rule Name="emoticon">
-    <Test>:</Test>
-    <Match>\:\b(\S+?)\b\:</Match>
-    <Replace>EMOTICON_$1</Replace>
   </Rule>  
   <Rule Name="super">
     <Test>super</Test>

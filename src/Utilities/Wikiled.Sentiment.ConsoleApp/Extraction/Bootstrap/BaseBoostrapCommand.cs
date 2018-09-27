@@ -149,7 +149,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
         {
             log.Info("Loading text splitter for bootstrapping");
             var splitterFactory = MainContainerFactory.Setup()
-                .SetupRepair()
                 .SetupLocalCache()
                 .Config()
                 .Splitter();

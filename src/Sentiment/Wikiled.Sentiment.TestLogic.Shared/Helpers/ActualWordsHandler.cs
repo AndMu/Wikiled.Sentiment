@@ -1,8 +1,6 @@
-﻿using Autofac;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.IO;
 using Wikiled.Sentiment.Analysis.Containers;
-using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
@@ -12,12 +10,11 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class ActualWordsHandler
     {
-        private IGlobalContainer container;
+        private readonly IGlobalContainer container;
 
-        public ActualWordsHandler(POSTaggerType type, bool supportRepair = false)
+        public ActualWordsHandler(POSTaggerType type)
         {
             var factory = MainContainerFactory.Setup()
-                .SetupRepair(supportRepair)
                 .Config(configuration =>
                 {
                     string resources = configuration.GetConfiguration("Resources");

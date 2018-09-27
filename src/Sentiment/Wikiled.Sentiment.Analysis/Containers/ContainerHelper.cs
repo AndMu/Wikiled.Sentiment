@@ -13,10 +13,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public SessionContainer(ILifetimeScope container)
         {
             this.container = container ?? throw new ArgumentNullException(nameof(container));
-            Context = (SentimentContext)container.Resolve<ISentimentContext>();
+            Context = (SessionContext)container.Resolve<ISessionContext>();
         }
 
-        public SentimentContext Context { get; }
+        public SessionContext Context { get; }
 
         public ITextSplitter GetTextSplitter()
         {

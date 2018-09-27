@@ -9,7 +9,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         IProcessingPipeline Pipeline { get;}
 
-        ISentimentContext Context { get; }
+        ISessionContext Context { get; }
 
         IAspectSerializer AspectSerializer { get; }
 

@@ -13,14 +13,14 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly IWordsHandler inner;
 
-        public ContextWordsDataLoader(IWordsHandler inner, ISentimentContext context)
+        public ContextWordsDataLoader(IWordsHandler inner, ISessionContext context)
         {
             log.Debug("Construct");
             this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public ISentimentContext Context { get; }
+        public ISessionContext Context { get; }
 
         public bool IsFeature(IWordItem word)
         {

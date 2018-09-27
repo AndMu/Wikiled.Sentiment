@@ -4,6 +4,6 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public interface IContextWordsHandler : IWordsHandler
     {
-        ISentimentContext Context { get; }
+        ISessionContext Context { get; }
     }
 }

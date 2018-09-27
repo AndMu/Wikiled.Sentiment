@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private readonly ITreebankWordTokenizer tokenizer;
 
-        private ISentenceRepairHandler repairHandler;
+        private readonly IContextSentenceRepairHandler repairHandler;
 
         private ChunkerME chunker;
 
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                                    ILexiconConfiguration configuration,
                                    ICachedDocumentsSource cache,
                                    ISentenceTokenizerFactory tokenizerFactory,
-                                   ISentenceRepairHandler repairHandler)
+                                   IContextSentenceRepairHandler repairHandler)
             : base(cache)
         {
             if (handler is null)

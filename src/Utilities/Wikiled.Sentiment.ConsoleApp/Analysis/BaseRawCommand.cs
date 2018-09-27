@@ -45,7 +45,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             log.Info("Initialize...");
 
             var factory = MainContainerFactory.Setup()
-                .SetupRepair()
                 .Config()
                 .Splitter();
 

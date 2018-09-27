@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Configuration;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
@@ -13,7 +12,7 @@ using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
-    public class WordsDataLoader : IWordsHandler
+    public class WordsHandler : IWordsHandler
     {
         private readonly ILexiconConfiguration config;
 
@@ -37,9 +36,12 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
-        public WordsDataLoader(ILexiconConfiguration config)
+        private IExtendedWords extended;
+
+        public WordsHandler(ILexiconConfiguration config, IExtendedWords extended)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
+            this.extended = extended ?? throw new ArgumentNullException(nameof(extended));
             sentimentData = new SentimentDataHolder();
         }
 
@@ -113,7 +115,16 @@ namespace Wikiled.Sentiment.Text.Parser
             question = ReadTextData("QuestionWords.txt");
             stopWords = ReadTextData("StopWords.txt");
             stopPos = ReadTextData("StopPos.txt");
-            sentimentData = SentimentDataHolder.PopulateEmotionsData(ReadTextData("EmotionLookupTable.txt")).AddEmoji();
+            var emotions = ReadTextData("EmotionLookupTable.txt");
+            foreach (var sentiment in extended.GetSentiments())
+            {
+                if (!emotions.ContainsKey(sentiment.Word))
+                {
+                    emotions[sentiment.Word] = sentiment.Sentiment;
+                }
+            }
+
+            sentimentData = SentimentDataHolder.PopulateEmotionsData(emotions);
             ReadRepairRules();
         }
 

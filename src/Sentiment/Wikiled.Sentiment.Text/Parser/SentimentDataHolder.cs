@@ -4,17 +4,14 @@ using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
-using Wikiled.Text.Analysis.Twitter;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public class SentimentDataHolder : ISentimentDataHolder
     {
-        private MaskDictionary<SentimentValueData> EmotionsLookup { get; } =
-            new MaskDictionary<SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+        private MaskDictionary<SentimentValueData> EmotionsLookup { get; } = new MaskDictionary<SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
-        private Dictionary<string, SentimentValueData> EmotionsTable { get; } =
-            new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
@@ -76,21 +73,6 @@ namespace Wikiled.Sentiment.Text.Parser
             }
 
             return instance;
-        }
-
-        public SentimentDataHolder AddEmoji()
-        {
-            foreach (var emoji in EmojiSentiment.Positive)
-            {
-                SetValue(emoji.AsShortcode(), new SentimentValueData(2));
-            }
-
-            foreach (var emoji in EmojiSentiment.Negative)
-            {
-                SetValue(emoji.AsShortcode(), new SentimentValueData(-2));
-            }
-
-            return this;
         }
 
         private void SetValue(string word, SentimentValueData value)

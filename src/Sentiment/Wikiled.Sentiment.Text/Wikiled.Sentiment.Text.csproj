@@ -22,7 +22,7 @@
     <PackageReference Include="Polly" Version="6.1.0" />
     <PackageReference Include="protobuf-net" Version="2.4.0" />
     <PackageReference Include="SharpZipLib" Version="1.0.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.0.505" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.510" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="System.Reactive" Version="4.1.0" />
     <PackageReference Include="System.Reactive.Core" Version="4.1.0" />

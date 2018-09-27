@@ -29,7 +29,6 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
             container = MainContainerFactory
                               .Setup()
-                              .SetupRepair()
                               .SetupLocalCache()
                               .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
                               .Splitter()

@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             
             InquirerManager = new Mock<IInquirerManager>();
             Dictionary = new Mock<INRCDictionary>();
-            Handler.Setup(item => item.Context).Returns(new SentimentContext());
+            Handler.Setup(item => item.Context).Returns(new SessionContext());
         }
 
         public Mock<IInquirerManager> InquirerManager { get; }
