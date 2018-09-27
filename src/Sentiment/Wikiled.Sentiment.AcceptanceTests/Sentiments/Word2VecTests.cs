@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
         private static readonly SentimentTestData[] testData =
         {
-            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7207> Positive:<80.992%> Negative:<61.821%> F1:<0.874> RMSE:1.56"),
+            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7207> Positive:<80.853%> Negative:<61.685%> F1:<0.873> RMSE:1.56"),
             new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<81.726%> Negative:<86.667%> F1:<0.894> RMSE:1.46"),
             new SentimentTestData("B000BAX50G", 288, 0, "Total:<265> Positive:<96.471%> Negative:<60.000%> F1:<0.974> RMSE:0.90"),
             new SentimentTestData("B000ERAON2", 440, 0, "Total:<413> Positive:<84.958%> Negative:<72.222%> F1:<0.898> RMSE:1.39"),
