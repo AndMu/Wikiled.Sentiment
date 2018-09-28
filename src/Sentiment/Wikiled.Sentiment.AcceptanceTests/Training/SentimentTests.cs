@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
         [TestCase("B00002EQCW", "Total:<215> Positive:<98.000%> Negative:<46.667%> F1:<0.970> RMSE:0.90")]
-        [TestCase("B0026127Y8", "Total:<854> Positive:<91.721%> Negative:<43.210%> F1:<0.928> RMSE:1.10")]
+        [TestCase("B0026127Y8", "Total:<854> Positive:<91.721%> Negative:<43.210%> F1:<0.928> RMSE:1.11")]
         public async Task TestElectronics(string product, string performance)
         {
             log.Info("TestElectronics: {0} {1}", product, performance);
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         }
 
 
-        [TestCase("B0002L5R78", "Total:<7274> Positive:<90.926%> Negative:<32.070%> F1:<0.916> RMSE:1.25")]
+        [TestCase("B0002L5R78", "Total:<7274> Positive:<91.079%> Negative:<31.800%> F1:<0.916> RMSE:1.25")]
         public async Task TestVideo(string product, string performance)
         {
             log.Info("TestVideo: {0} {1}", product, performance);
