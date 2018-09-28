@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsQuestion(string word, bool expected)
         {
-            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsQuestion(GetWord(word));
+            var result = ActualWordsHandler.InstanceOpen.WordsHandler.IsQuestion(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", true)]
         public void IsStop(string word, bool expected)
         {
-            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsStop(GetWord(word));
+            var result = ActualWordsHandler.InstanceOpen.WordsHandler.IsStop(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("Some", false)]
         public void IsSentiment(string word, bool expected)
         {
-            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsSentiment(GetWord(word));
+            var result = ActualWordsHandler.InstanceOpen.WordsHandler.IsSentiment(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
@@ -41,13 +41,13 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [TestCase("book", false)]
         public void IsKnown(string word, bool expected)
         {
-            var result = ActualWordsHandler.InstanceSimple.WordsHandler.IsKnown(GetWord(word));
+            var result = ActualWordsHandler.InstanceOpen.WordsHandler.IsKnown(GetWord(word));
             Assert.AreEqual(expected, result);
         }
 
         private IWordItem GetWord(string word)
         {
-            return ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");
+            return ActualWordsHandler.InstanceOpen.WordFactory.CreateWord(word, "NN");
         }
     }
 }

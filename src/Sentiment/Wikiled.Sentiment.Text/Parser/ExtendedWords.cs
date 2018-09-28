@@ -46,11 +46,12 @@ namespace Wikiled.Sentiment.Text.Parser
         {
             DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "IdiomLookupTable.txt"), new FileStreamSource());
             idiomsSentiment = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
-            foreach (var item in idiomsSentiment)
+            foreach (var item in idiomsSentiment.ToArray())
             {
                 char[] arr = item.Key.Where(c => (char.IsLetterOrDigit(c) || c == '-')).ToArray();
                 var alternative = new string(arr);
                 replacements[item.Key] = alternative;
+                idiomsSentiment[alternative] = item.Value;
             }
         }
 
