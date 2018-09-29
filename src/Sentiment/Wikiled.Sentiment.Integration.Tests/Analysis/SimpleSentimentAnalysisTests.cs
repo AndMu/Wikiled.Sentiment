@@ -113,5 +113,22 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);
         }
+
+        [TestCase("I like this pc", false, null)]
+        [TestCase("I like this pc", true, 5)]
+        [TestCase("I hate this pc", false, 5)]
+        [TestCase("I hate this pc", true, 5)]
+        public async Task TestCustom(string text, bool useFallback, double? rating)
+        {
+            Dictionary<string, double> sentiment = new Dictionary<string, double>();
+            sentiment["hate"] = 2;
+            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
+            ActualWordsHandler.InstanceSimple.Container.Context.UseBuiltInSentiment = useFallback;
+            Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
+
+            Assert.AreEqual(rating, review.CalculateRawRating().StarsRating);
+        }
     }
 }

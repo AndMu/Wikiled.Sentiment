@@ -51,19 +51,14 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if (repairHandler == null)
-            {
-                throw new ArgumentNullException(nameof(repairHandler));
-            }
-
             if (cache is null)
             {
                 throw new ArgumentNullException(nameof(cache));
             }
 
-            log.Debug("Creating with resource path: {0}", configuration);
+            log.Debug("Creating with resource path: {0}", configuration.ResourcePath);
             this.handler = handler;
-            this.repairHandler = repairHandler;
+            this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
             LoadModels(configuration.ResourcePath);

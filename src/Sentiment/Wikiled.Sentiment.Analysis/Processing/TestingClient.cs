@@ -72,6 +72,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public bool DisableSvm { get; set; }
 
+        public bool UseBuiltInSentiment
+        {
+            get => clientContext.Context.UseBuiltInSentiment;
+            set => clientContext.Context.UseBuiltInSentiment = value;
+        }
+
         public int Errors => error;
 
         public IMachineSentiment MachineSentiment { get; private set; }

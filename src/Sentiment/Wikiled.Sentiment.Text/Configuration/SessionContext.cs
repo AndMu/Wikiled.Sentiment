@@ -33,6 +33,8 @@ namespace Wikiled.Sentiment.Text.Configuration
             }
         }
 
+        public bool UseBuiltInSentiment { get; set; }
+
         public bool DisableInvertors
         {
             get => disableInvertors;

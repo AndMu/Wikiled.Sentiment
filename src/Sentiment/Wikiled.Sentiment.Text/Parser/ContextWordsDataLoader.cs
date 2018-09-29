@@ -73,7 +73,12 @@ namespace Wikiled.Sentiment.Text.Parser
 
             if (Context.Lexicon != null)
             {
-                return Context.Lexicon.MeasureSentiment(word);
+                var sentiment = Context.Lexicon.MeasureSentiment(word);
+                if (sentiment != null ||
+                    !Context.UseBuiltInSentiment)
+                {
+                    return sentiment;
+                }
             }
 
             return inner.CheckSentiment(word);

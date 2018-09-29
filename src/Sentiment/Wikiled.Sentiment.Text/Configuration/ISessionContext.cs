@@ -9,6 +9,8 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         bool DisableFeatureSentiment { get; }
 
+        bool UseBuiltInSentiment { get; }
+
         bool DisableInvertors { get; }
 
         ISentimentDataHolder Lexicon { get; }
