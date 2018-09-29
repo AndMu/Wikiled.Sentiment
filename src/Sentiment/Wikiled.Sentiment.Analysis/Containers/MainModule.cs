@@ -64,7 +64,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.RegisterType<TrainingClient>().As<ITrainingClient>();
             builder.RegisterInstance(TaskPoolScheduler.Default).As<IScheduler>();
 
-            builder.RegisterType<SessionContext>().As<ISessionContext>().InstancePerLifetimeScope();
+            builder.RegisterType<SessionContext>().As<ISessionContext>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<ContextWordsDataLoader>().As<IContextWordsHandler>().InstancePerLifetimeScope();
             builder.RegisterType<ContextSentenceRepairHandler>().As<IContextSentenceRepairHandler>().InstancePerLifetimeScope();
             builder.RegisterAggregateService<IClientContext>();
