@@ -13,7 +13,7 @@
     <PackageReference Include="NUnit" version="3.10.1" />
     <PackageReference Include="Polly" version="6.1.0" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.0.505" />
+    <PackageReference Include="StackExchange.Redis" Version="2.0.513" />
     <PackageReference Include="System.Reactive" version="4.1.0" />
     <PackageReference Include="System.Reactive.Core" version="4.1.0" />
     <PackageReference Include="System.Reactive.Interfaces" version="4.1.0" />
@@ -21,8 +21,8 @@
     <PackageReference Include="System.Reactive.PlatformServices" version="4.1.0" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.7" />
-    <PackageReference Include="Wikiled.Redis" version="3.2.2" />
-    <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.1" />
+    <PackageReference Include="Wikiled.Redis" version="3.2.6" />
+    <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.11" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.6.30" />
   </ItemGroup>
 
