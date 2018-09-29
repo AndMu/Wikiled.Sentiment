@@ -12,7 +12,5 @@ namespace Wikiled.Sentiment.Text.Configuration
         bool DisableInvertors { get; }
 
         ISentimentDataHolder Lexicon { get; }
-
-        void ChangeAspect(IAspectDectector aspect);
     }
 }

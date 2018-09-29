@@ -29,6 +29,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public string Name { get; set; }
 
+        public string Lexicons { get; set; }
+
         protected override void Load(ContainerBuilder builder)
         {
             if (RedisConfiguration == null)
@@ -41,6 +43,12 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 log.Debug("Using Redis cache");
                 builder.Register(c => new RedisLink(Name, new RedisMultiplexer(RedisConfiguration))).OnActivating(item => item.Instance.Open());
                 builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
+            }
+
+            if (!string.IsNullOrEmpty(Lexicons))
+            {
+                log.Debug("Adding lexicons");
+                builder.RegisterType<LexiconLoader>().As<ILexiconLoader>().OnActivating(item => item.Instance.Load(Lexicons));
             }
 
             builder.RegisterInstance(configuration).As<IConfigurationHandler>();

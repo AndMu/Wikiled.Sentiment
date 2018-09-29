@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.RegisterType<WordsHandler>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<AspectSerializer>().As<IAspectSerializer>();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
-
+            
             builder.RegisterType<ProcessingPipeline>().As<IProcessingPipeline>();
             builder.RegisterType<TestingClient>().As<ITestingClient>();
             builder.RegisterType<TrainingClient>().As<ITrainingClient>();

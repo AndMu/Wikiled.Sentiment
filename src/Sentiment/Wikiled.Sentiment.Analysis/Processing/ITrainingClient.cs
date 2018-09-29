@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
     public interface ITrainingClient
     {
-        IClientContext Context { get; }
+        IProcessingPipeline Pipeline { get; }
+
+        ISentimentDataHolder Lexicon { get; set; }
 
         bool DisableAspects { get; set; }
 

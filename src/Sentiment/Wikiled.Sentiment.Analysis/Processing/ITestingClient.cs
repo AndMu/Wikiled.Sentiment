@@ -1,17 +1,19 @@
 ﻿using System;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
     public interface ITestingClient
     {
-        IClientContext Context { get; }
+        IProcessingPipeline Pipeline { get; }
+
+        ISentimentDataHolder Lexicon { get; set; }
 
         string AspectPath { get; set; }
 
