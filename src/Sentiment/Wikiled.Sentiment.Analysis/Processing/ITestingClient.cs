@@ -19,6 +19,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         AspectSentimentTracker AspectSentiment { get; }
 
+        bool UseBuiltInSentiment { get; }
+
         bool DisableAspects { get; set; }
 
         bool DisableSvm { get; set; }
