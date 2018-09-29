@@ -1,5 +1,6 @@
 ﻿using System;
 using Wikiled.MachineLearning.Mathematics;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -10,7 +11,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public interface ITestingClient
     {
-        IProcessingPipeline Pipeline { get; }
+        IClientContext Context { get; }
 
         string AspectPath { get; set; }
 

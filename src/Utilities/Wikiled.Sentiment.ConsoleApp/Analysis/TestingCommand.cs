@@ -64,10 +64,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 container.Context.Lexicon= sentimentAdjustment;
                 var dictionary = container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
-                                 .Subscribe(item => log.Info(client.Pipeline.Monitor)))
+                                 .Subscribe(item => log.Info(client.Context.Pipeline.Monitor)))
                 {
                     Semaphore = new SemaphoreSlim(2000);
-                    client.Pipeline.ProcessingSemaphore = Semaphore;
+                    client.Context.Pipeline.ProcessingSemaphore = Semaphore;
                     client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                               item => 
                               {
                                   SaveDocument(dictionary, item);
-                                  client.Pipeline.Monitor.Increment();
+                                  client.Context.Pipeline.Monitor.Increment();
                                   return item;
                               })
                           .LastOrDefaultAsync()

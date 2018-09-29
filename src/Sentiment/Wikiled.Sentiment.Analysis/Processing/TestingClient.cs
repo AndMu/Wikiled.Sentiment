@@ -37,8 +37,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private int error;
 
-        private readonly IClientContext clientContext;
-
         public TestingClient(IClientContext clientContext, string svmPath = null)
         {
             if (string.IsNullOrEmpty(svmPath))
@@ -46,13 +44,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 DisableSvm = true;
             }
 
-            this.clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+            Context = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
             SvmPath = svmPath;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
             SentimentVector = new SentimentVector();
         }
 
-        public IProcessingPipeline Pipeline => clientContext.Pipeline;
+        public IClientContext Context { get; }
 
         public string AspectPath { get; set; }
 
@@ -97,8 +95,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 {
                     log.Info("Loading {0} aspects", path);
                     XDocument features = XDocument.Load(path);
-                    var aspect = clientContext.AspectSerializer.Deserialize(features);
-                    clientContext.Context.ChangeAspect(aspect);
+                    var aspect = Context.AspectSerializer.Deserialize(features);
+                    Context.Context.ChangeAspect(aspect);
                 }
                 else
                 {
@@ -111,7 +109,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
-            var documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
+            var documentSelector = Context.Pipeline.ProcessStep(reviews).Select(RetrieveData);
             return documentSelector.Where(item => item != null);
         }
 
@@ -131,7 +129,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             try
             {
                 var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
-                clientContext.NrcDictionary.ExtractToVector(SentimentVector, context.Review.Items);
+                Context.NrcDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);
                 context.Adjustment = adjustment;
@@ -149,7 +147,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             finally
             {
-                clientContext.Pipeline.ProcessingSemaphore?.Release();
+                Context.Pipeline.ProcessingSemaphore?.Release();
             }
 
             return context;

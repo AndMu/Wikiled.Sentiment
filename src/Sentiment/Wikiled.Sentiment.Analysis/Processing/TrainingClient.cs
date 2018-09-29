@@ -33,8 +33,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private IProcessArff arffProcess;
 
-        private readonly IClientContext clientContext;
-
         public TrainingClient(IClientContext clientContext, string svmPath)
         {
             if (string.IsNullOrEmpty(svmPath))
@@ -43,14 +41,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             this.svmPath = svmPath;
-            this.clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+            Context = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
             SentimentVector = new SentimentVector();
             analyze = new AnalyseReviews();
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
             sentimentVector = new SentimentVector();
         }
 
-        public IProcessingPipeline Pipeline => clientContext.Pipeline;
+        public IClientContext Context { get; }
 
         public string OverrideAspects { get; set; }
 
@@ -67,14 +65,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
             log.Info("Starting Training");
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(clientContext.Pipeline.Monitor)))
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(Context.Pipeline.Monitor)))
             {
-                await clientContext.Pipeline.ProcessStep(reviews)
+                await Context.Pipeline.ProcessStep(reviews)
                               .Select(AdditionalProcessing)
                               .Select(
                                   item =>
                                   {
-                                      clientContext.Pipeline.Monitor.Increment();
+                                      Context.Pipeline.Monitor.Increment();
                                       return item;
                                   });
             }
@@ -88,15 +86,15 @@ namespace Wikiled.Sentiment.Analysis.Processing
             var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(clientContext.Pipeline.Monitor)))
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(Context.Pipeline.Monitor)))
             {
-                await clientContext.Pipeline.ProcessStep(reviews)
+                await Context.Pipeline.ProcessStep(reviews)
                               .Select(
                                   item => Observable.Start(
                                       () =>
                                       {
                                           var result = ProcessSingleItem(item);
-                                          clientContext.Pipeline.Monitor.Increment();
+                                          Context.Pipeline.Monitor.Increment();
                                           return result;
                                       }))
                               .Merge();
@@ -128,7 +126,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             featureExtractor.Process(context.Review);
-            clientContext.NrcDictionary.ExtractToVector(sentimentVector, context.Review.Items);
+            Context.NrcDictionary.ExtractToVector(sentimentVector, context.Review.Items);
             return context;
         }
 
@@ -160,7 +158,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private void SelectAdditional()
         {
             log.Info("Extracting aspects...");
-            var serializer = clientContext.AspectSerializer;
+            var serializer = Context.AspectSerializer;
             var features = featureExtractor.GetFeatures(100).ToArray();
             var attributes = featureExtractor.GetAttributes(100).ToArray();
             var document = serializer.Serialize(features, attributes);
@@ -177,7 +175,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 attributes = aspect.AllAttributes.ToArray();
             }
 
-            clientContext.Context.ChangeAspect(new AspectDectector(features, attributes));
+            Context.Context.ChangeAspect(new AspectDectector(features, attributes));
             var vector = sentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(analyze.SvmPath, "sentiment_vector.json")).Serialize(new[] { vector });
             log.Info("Extracting features... DONE!");
