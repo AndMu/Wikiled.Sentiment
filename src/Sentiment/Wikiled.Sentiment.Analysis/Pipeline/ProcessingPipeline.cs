@@ -5,6 +5,8 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
+using Wikiled.Common.Utilities.Helpers;
+using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.Structure;
@@ -48,30 +50,33 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         private async Task<ProcessingContext> StepProcessing(IParsedDocumentHolder reviewHolder)
         {
+            Document document = null;
+            IParsedReview review = null;
             try
             {
                 Monitor.ManualyCount();
                 if (ProcessingSemaphore != null)
                 {
-                    bool isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(2)).ConfigureAwait(false);
+                    bool isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(5)).ConfigureAwait(false);
                     if (!isSuccesful)
                     {
                         throw new TimeoutException();
                     }
                 }
 
-                Document doc = await reviewHolder.GetParsed().ConfigureAwait(false);
-                var review = reviewManager(doc).Create();
-                ProcessingContext context = new ProcessingContext(reviewHolder.Original, doc, review);
-                return context;
+                document = await reviewHolder.GetParsed().ConfigureAwait(false);
+                review = reviewManager(document).Create();
             }
             catch (Exception ex)
             {
                 log.Error(ex);
+                document = reviewHolder.Original.CloneJson();
+                document.Status = Status.Error;
             }
 
             Monitor.Increment();
-            return null;
+            ProcessingContext context = new ProcessingContext(reviewHolder.Original, document, review);
+            return context;
         }
     }
 }

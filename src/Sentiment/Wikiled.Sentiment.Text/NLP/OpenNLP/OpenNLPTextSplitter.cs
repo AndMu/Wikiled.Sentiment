@@ -51,10 +51,6 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            if (cache is null)
-            {
-                throw new ArgumentNullException(nameof(cache));
-            }
 
             log.Debug("Creating with resource path: {0}", configuration.ResourcePath);
             this.handler = handler;

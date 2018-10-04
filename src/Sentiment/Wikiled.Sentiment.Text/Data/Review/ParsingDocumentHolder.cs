@@ -32,9 +32,11 @@ namespace Wikiled.Sentiment.Text.Data.Review
 
         public Document Original { get; }
         
-        public Task<Document> GetParsed()
+        public async Task<Document> GetParsed()
         {
-            return splitter.Process(new ParseRequest(Original));
+            var document = await splitter.Process(new ParseRequest(Original)).ConfigureAwait(false);
+            document.Status = Status.Parsed;
+            return document;
         }
     }
 }
