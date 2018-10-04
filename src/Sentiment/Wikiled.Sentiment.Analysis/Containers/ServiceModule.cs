@@ -42,6 +42,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             {
                 log.Debug("Using Redis cache");
                 builder.Register(c => new RedisLink(Name, new RedisMultiplexer(RedisConfiguration))).OnActivating(item => item.Instance.Open());
+                builder.RegisterType<LocalDocumentsCache>();
                 builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
             }
 

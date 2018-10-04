@@ -10,8 +10,8 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         private readonly ISentenceTokenizerFactory sentenceTokenizer;
 
-        public SimpleTextSplitter(ISentenceTokenizerFactory sentenceTokenizer)
-            : base(NullCachedDocumentsSource.Instance)
+        public SimpleTextSplitter(ISentenceTokenizerFactory sentenceTokenizer, ICachedDocumentsSource cache)
+            : base(cache)
         {
             this.sentenceTokenizer = sentenceTokenizer;
         }

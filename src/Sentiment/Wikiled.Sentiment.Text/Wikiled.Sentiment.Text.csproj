@@ -37,7 +37,7 @@
     <PackageReference Include="Wikiled.MachineLearning" Version="2.2.11" />
     <PackageReference Include="Knuppe.SharpNL" Version="1.3.0" />
     <PackageReference Include="Wikiled.Redis" Version="3.2.6" />
-    <PackageReference Include="Wikiled.Text.Analysis" Version="1.6.32" />
+    <PackageReference Include="Wikiled.Text.Analysis" Version="1.6.34" />
     <PackageReference Include="Wikiled.Text.Inquirer" Version="1.2.20" />
   </ItemGroup>
 

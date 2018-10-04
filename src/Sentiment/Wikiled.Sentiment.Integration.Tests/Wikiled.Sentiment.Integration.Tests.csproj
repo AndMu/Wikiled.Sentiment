@@ -23,7 +23,7 @@
     <PackageReference Include="Wikiled.Arff" version="2.2.7" />
     <PackageReference Include="Wikiled.Redis" version="3.2.6" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.11" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.6.32" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.6.34" />
   </ItemGroup>
 
   <ItemGroup>

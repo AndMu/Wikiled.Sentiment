@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using NLog;
+using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
 using Wikiled.Redis.Persistency;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.Extensions;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
@@ -22,12 +22,13 @@ namespace Wikiled.Sentiment.Text.Cache
 
         private readonly POSTaggerType tagger;
 
-        private readonly ConcurrentDictionary<string, Document> nearCache = new ConcurrentDictionary<string, Document>();
+        private readonly LocalDocumentsCache local;
 
-        public RedisDocumentCache(POSTaggerType tagger, IRedisLink manager)
+        public RedisDocumentCache(POSTaggerType tagger, IRedisLink manager, LocalDocumentsCache local)
         {
             this.tagger = tagger;
             this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            this.local = local ?? throw new ArgumentNullException(nameof(local));
             if (!manager.HasDefinition<Document>())
             {
                 manager.RegisterNormalized<Document>(new XmlDataSerializer()).IsSingleInstance = true;
@@ -36,34 +37,7 @@ namespace Wikiled.Sentiment.Text.Cache
 
         public string Name => $"Cache:{tagger}";
 
-        public async Task<Document> GetById(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentException("Value cannot be null or empty.", nameof(id));
-            }
-
-            if (nearCache.TryGetValue(id, out Document doc))
-            {
-                return doc.CloneJson();
-            }
-
-            var key = new RepositoryKey(this, new ObjectKey(id));
-            try
-            {
-                doc = await manager.Client.GetRecords<Document>(key).LastOrDefaultAsync();
-                nearCache[id] = doc;
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex);
-                return null;
-            }
-
-            return doc.CloneJson();
-        }
-
-        public Task<Document> GetCached(Document original)
+        public async Task<Document> GetCached(Document original)
         {
             if (original is null)
             {
@@ -75,12 +49,33 @@ namespace Wikiled.Sentiment.Text.Cache
                 throw new ArgumentException("Value cannot be null or empty id.", nameof(original.Id));
             }
 
-            return GetById(original.Id);
-        }
+            Document result = await local.GetCached(original).ConfigureAwait(false);
+            if (result != null)
+            {
+                log.Debug("Found in local cache");
+                return result;
+            }
 
-        public Task<Document> GetCached(string text)
-        {
-            return Task.FromResult((Document)null);
+            RepositoryKey key = new RepositoryKey(this, new ObjectKey(original.Id));
+            result = await manager.Client.GetRecords<Document>(key).LastOrDefaultAsync();
+            if (result != null)
+            {
+                if (result.Text == original.Text)
+                {
+                    await local.Save(result).ConfigureAwait(false);
+                    return result;
+                }
+
+                log.Warn("Mistmatch in document text: {0}", original.Id);
+            }
+
+            result = await GetById(original.GetId(), original).ConfigureAwait(false);
+            if (result != null)
+            {
+                return result;
+            }
+
+            return await GetById(original.GetTextId(), original);
         }
 
         public async Task<bool> Save(Document document)
@@ -95,11 +90,27 @@ namespace Wikiled.Sentiment.Text.Cache
                 throw new ArgumentException("Value cannot be null or empty id.", nameof(document.Id));
             }
 
-            nearCache[document.Id] = document;
-            var key = new RepositoryKey(this, new ObjectKey(document.Id));
+            await local.Save(document).ConfigureAwait(false);
+            RepositoryKey key = new RepositoryKey(this, new ObjectKey(document.Id));
             key.AddIndex(new IndexKey(this, "Index:All", false));
-            await manager.Client.AddRecord(key, document).ConfigureAwait(false);
+            key.AddIndex(new IndexKey(this, $"Index:{document.GetId()}", true));
+            key.AddIndex(new IndexKey(this, $"Index:{document.GetTextId()}", true));
+            await manager.Client.AddRecord(key, document.CloneJson()).ConfigureAwait(false);
             return true;
+        }
+
+        private async Task<Document> GetById(string id, Document original)
+        {
+            IndexKey index = new IndexKey(this, id, true);
+            Document result = await manager.Client.GetRecords<Document>(index).LastOrDefaultAsync();
+            if (result?.Text == original.Text)
+            {
+                await local.Save(result).ConfigureAwait(false);
+                return result;
+            }
+
+            log.Warn("Mistmatch in document text: {0}", id);
+            return null;
         }
     }
 }

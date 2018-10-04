@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public MainContainerFactory SetupNullCache()
         {
             initialized["Cache"] = true;
-            builder.RegisterInstance(NullCachedDocumentsSource.Instance).As<ICachedDocumentsSource>();
+            builder.RegisterType<NullCachedDocumentsSource>().As<ICachedDocumentsSource>();
             return this;
         }
 
@@ -67,6 +67,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             initialized["Cache"] = true;
             log.Info("Using REDIS...");
             builder.Register(c => new RedisLink(name, new RedisMultiplexer(new RedisConfiguration(host, port)))).OnActivating(item => item.Instance.Open());
+            builder.RegisterType<LocalDocumentsCache>();
             builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
             return this;
         }

@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using NLog;
-using Wikiled.Common.Extensions;
+﻿using NLog;
+using System;
+using System.Threading.Tasks;
 using Wikiled.Common.Logging;
-using Wikiled.Common.Serialization;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
@@ -37,20 +36,11 @@ namespace Wikiled.Sentiment.Text.Parser
                 request.Document.Text = text;
                 if (string.IsNullOrWhiteSpace(request.Document.Id))
                 {
-                    var tag = request.Document.Id = GenerateKey(request.Document.Text);
+                    string tag = request.Document.Id = Guid.NewGuid().ToString();
                     log.Debug("Key not found on document. generating: {0}...", tag);
                 }
 
                 Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
-                if (document == null)
-                {
-                    if (!string.IsNullOrEmpty(text))
-                    {
-                        text = text.SanitizeXmlString();
-                        document = await cache.GetCached(text).ConfigureAwait(false);
-                    }
-                }
-
                 if (document != null)
                 {
                     log.Debug("Cache HIT");
@@ -73,7 +63,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 document.DocumentTime = request.Document.DocumentTime;
                 document.Author = request.Document.Author;
                 document.Title = request.Document.Title;
-                if (await cache.Save(document.CloneJson()).ConfigureAwait(false))
+                if (await cache.Save(document).ConfigureAwait(false))
                 {
                     return document;
                 }
@@ -84,19 +74,6 @@ namespace Wikiled.Sentiment.Text.Parser
 
         protected abstract Document ActualProcess(ParseRequest request);
 
-        private string GenerateKey(string text)
-        {
-            int total = text.Length < 10 ? text.Length : 10;
-            var beggining = text.Substring(0, total).CreatePureLetterText();
-            var ending = text.Substring(text.Length - total, total).CreatePureLetterText();
-            var length = text.Length;
-            return string.Format(
-                "{0}{3}{1}{4}{2}",
-                beggining,
-                ending,
-                length,
-                "__End__",
-                "__Len__");
-        }
+
     }
 }
