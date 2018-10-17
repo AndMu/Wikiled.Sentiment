@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 var cell = (TextVectorCell)item.Data;
                 if (cell.Name == Constants.RATING_STARS)
                 {
-                    fallbackWeight = Math.Abs(cell.Value) / 2;
+                    fallbackWeight = cell.Value / 2;
                 }
 
                 if (cell.Item != null)
