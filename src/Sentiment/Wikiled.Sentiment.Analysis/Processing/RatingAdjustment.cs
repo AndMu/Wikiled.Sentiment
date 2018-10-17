@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -52,13 +53,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             var bias = vector.RHO;
-            double fallbackWeight = 0;
+            double fallbackWeight = 0.1;
+            VectorCell lexicon = default;
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
                 if (cell.Name == Constants.RATING_STARS)
                 {
-                    fallbackWeight = cell.Value / 2;
+                    lexicon = item;
                 }
 
                 if (cell.Item != null)
@@ -78,6 +80,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 {
                     notAddedSentiments.Add(sentimentValue);
                 }
+            }
+
+            if (lexicon != null)
+            {
+                var totalWords = Review.GetAllSentiments().Length;
+                fallbackWeight = Math.Abs(lexicon.Theta) / totalWords;
             }
 
             if (notAddedSentiments.Count > 0)

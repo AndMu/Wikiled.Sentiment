@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using NLog;
 using NUnit.Framework;
 using Wikiled.Arff.Extensions;
