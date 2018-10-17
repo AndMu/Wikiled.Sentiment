@@ -24,11 +24,11 @@
     <PackageReference Include="SharpZipLib" Version="1.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.513" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-    <PackageReference Include="System.Reactive" Version="4.1.1" />
-    <PackageReference Include="System.Reactive.Core" Version="4.1.1" />
-    <PackageReference Include="System.Reactive.Interfaces" Version="4.1.1" />
-    <PackageReference Include="System.Reactive.Linq" Version="4.1.1" />
-    <PackageReference Include="System.Reactive.PlatformServices" Version="4.1.1" />
+    <PackageReference Include="System.Reactive" Version="4.1.2" />
+    <PackageReference Include="System.Reactive.Core" Version="4.1.2" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="4.1.2" />
+    <PackageReference Include="System.Reactive.Linq" Version="4.1.2" />
+    <PackageReference Include="System.Reactive.PlatformServices" Version="4.1.2" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" Version="2.2.7" />

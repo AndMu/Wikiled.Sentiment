@@ -52,9 +52,15 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             var bias = vector.RHO;
+            double fallbackWeight = 0;
             foreach (var item in vector.Cells)
             {
                 var cell = (TextVectorCell)item.Data;
+                if (cell.Name == Constants.RATING_STARS)
+                {
+                    fallbackWeight = Math.Abs(cell.Value) / 2;
+                }
+
                 if (cell.Item != null)
                 {
                     Add(new SentimentValue((IWordItem)cell.Item, new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
@@ -74,12 +80,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
-            var weight = 0.25 / vector.Normalization.Coeficient;
             if (notAddedSentiments.Count > 0)
             {
                 foreach (var sentiment in notAddedSentiments)
                 {
-                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(sentiment.DataValue.Value * weight, SentimentSource.AdjustedCalculated)));
+                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(sentiment.DataValue.Value * fallbackWeight, SentimentSource.AdjustedCalculated)));
                 }
             }
 

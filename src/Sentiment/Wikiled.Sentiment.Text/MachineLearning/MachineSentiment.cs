@@ -107,7 +107,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             return new MachineSentiment(arff, classifier);
         }
 
-        public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
+        public (double Probability, double Normalization, VectorData Vector) GetVector(TextVectorCell[] cells)
         {
             if (cells is null)
             {
@@ -145,9 +145,12 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 }
             }
 
-            vector = vector.Normalize(NormalizationType.L2).GetNormalized.ToArray();
+            var normalized = vector.Normalize(NormalizationType.L2);
+            vector = normalized.GetNormalized.ToArray();
             var probability = Classifier.Probability(vector);
-            return (probability, new VectorData(vectorCells.ToArray(), unknownIndexes, Classifier.Model.Threshold, NormalizationType.L2));
+
+            // do not normalize data - SVM operates with normalized already. Second time normalization is not required.
+            return (probability, normalized.Coeficient, new VectorData(vectorCells.ToArray(), unknownIndexes, Classifier.Model.Threshold, NormalizationType.None));
         }
 
         private VectorCell GetCell(TextVectorCell textCell)

@@ -8,9 +8,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
         }
 
-        public (double Probability, VectorData Vector) GetVector(TextVectorCell[] cells)
+        public (double Probability, double Normalization, VectorData Vector) GetVector(TextVectorCell[] cells)
         {
-            return (0, null);
+            return (0, 1, null);
         }
 
         public void SetAspectFilter(string path)
