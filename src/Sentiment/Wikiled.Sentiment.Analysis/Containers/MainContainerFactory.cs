@@ -5,6 +5,7 @@ using Autofac;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
+using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Text.Cache;
@@ -27,6 +28,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         private MainContainerFactory()
         {
+            builder.RegisterModule<CommonModule>();
+            builder.RegisterModule(new LoggingModule(ApplicationLogging.LoggerFactory));
             builder.RegisterModule(new MainModule());
             initialized["Splitter"] = false;
             initialized["Cache"] = false;

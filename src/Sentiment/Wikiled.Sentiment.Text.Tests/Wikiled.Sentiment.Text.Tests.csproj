@@ -30,12 +30,10 @@
     <PackageReference Include="Wikiled.Redis" version="3.3.0" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.0" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
-
+    <packagereference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"></packagereference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.11.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Wikiled.Sentiment.TestLogic.Shared\Wikiled.Sentiment.TestLogic.Shared.csproj" />
@@ -100,10 +98,6 @@
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
   <Target Name="ForceGenerationOfBindingRedirects" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GenerateBindingRedirects" Condition="'$(AutoGenerateBindingRedirects)' == 'true'">

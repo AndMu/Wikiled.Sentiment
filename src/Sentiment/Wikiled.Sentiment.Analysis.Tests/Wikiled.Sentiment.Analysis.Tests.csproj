@@ -26,10 +26,8 @@
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.5" />
     <PackageReference Include="Wikiled.Redis" version="3.3.0" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
+    <packagereference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"></packagereference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.11.2" />
   </ItemGroup>
 
   <ItemGroup>
