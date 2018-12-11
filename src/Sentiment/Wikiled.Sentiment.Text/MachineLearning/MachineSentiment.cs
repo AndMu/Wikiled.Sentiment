@@ -134,7 +134,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 }
                 else
                 {
-                    // if invereted exist in database, it is very likely that normal version has opposite meaning
+                    // if inverted exist in database, it is very likely that normal version has opposite meaning
                     cell = GetCell(new TextVectorCell(textCell.Name.GetOpposite(), Math.Abs(textCell.Value)));
                     if (cell != null)
                     {

@@ -79,8 +79,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
             var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
             var table = dataSet.GetFeatureTable();
-            var invertedSentiment = testingClient.MachineSentiment.GetVector(new[] {new TextVectorCell("NOTxxxseem", 1)});
-            var unknownSentiment = testingClient.MachineSentiment.GetVector(new[] { new TextVectorCell("seem", 1) });
+            var invertedSentiment = testingClient.MachineSentiment.GetVector(new[] { new TextVectorCell("NOTxxxexpect", 1) });
+            var unknownSentiment = testingClient.MachineSentiment.GetVector(new[] { new TextVectorCell("expect", 1) });
             Assert.AreEqual(unknownSentiment.Vector.Cells[0].Calculated * 4, -invertedSentiment.Vector.Cells[0].Calculated);
             var weights = classifier.Model.ToWeights().Skip(1).ToArray();
         }

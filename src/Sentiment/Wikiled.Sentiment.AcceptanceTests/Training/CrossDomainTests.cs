@@ -12,8 +12,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     {
          private static readonly ILogger log = ApplicationLogging.CreateLogger<CrossDomainTests>();
 
-        [TestCase("B0026127Y8", ProductCategory.Video, 9)]
-        [TestCase("9562910334", ProductCategory.Book, 9)]
+        [TestCase("B0026127Y8", ProductCategory.Video, 8)]
+        [TestCase("9562910334", ProductCategory.Book, 7)]
         public async Task TestElectronics(string product, ProductCategory category, int accuracy)
         {
             log.LogInformation("TestElectronics: {0} {1}", product, category);

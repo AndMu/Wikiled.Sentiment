@@ -131,7 +131,6 @@ namespace Wikiled.Sentiment.Text.Extensions
             return word.IndexOf(InvertTag, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-
         public static string GetOpposite(this string word)
         {
             if (IsInverted(word))
