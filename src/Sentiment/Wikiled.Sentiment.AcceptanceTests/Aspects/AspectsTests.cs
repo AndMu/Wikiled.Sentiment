@@ -1,13 +1,13 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using NLog;
-using NUnit.Framework;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Text.Aspects;
@@ -32,7 +32,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
                     new TopItems { Total = 10, Items = new[] { "switch" } }) // features
             };
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<AspectsTests>();
 
         [SetUp]
         public void Setup()
@@ -49,20 +49,20 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
         [TestCaseSource(nameof(aspectData))]
         public async Task ProductTest(SentimentAspectData data)
         {
-            log.Info("ProductTest: {0}", data);
+            log.LogInformation("ProductTest: {0}", data);
             MainAspectHandler aspectHandler = new MainAspectHandler(new AspectContextFactory());
             TestRunner runner = new TestRunner(TestHelper.Instance, data.Sentiment);
 
             SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2, Environment.ProcessorCount / 2);
-            var result = runner.Load().ObserveOn(TaskPoolScheduler.Default).Select(review => ProcessItem(semaphore, aspectHandler, review)).Merge();
+            IObservable<IParsedDocumentHolder> result = runner.Load().ObserveOn(TaskPoolScheduler.Default).Select(review => ProcessItem(semaphore, aspectHandler, review)).Merge();
 
             await result;
 
-            var serializer = TestHelper.Instance.ContainerHelper.Resolve<IAspectSerializer>();
+            IAspectSerializer serializer = TestHelper.Instance.ContainerHelper.Resolve<IAspectSerializer>();
             serializer.Serialize(aspectHandler).Save(Path.Combine(TestContext.CurrentContext.TestDirectory, data.Sentiment.Product + ".xml"));
 
-            var features = aspectHandler.GetFeatures(10).ToArray();
-            var attributes = aspectHandler.GetAttributes(10).ToArray();
+            Text.Words.IWordItem[] features = aspectHandler.GetFeatures(10).ToArray();
+            Text.Words.IWordItem[] attributes = aspectHandler.GetAttributes(10).ToArray();
             for (int i = 0; i < data.Features.Items.Length; i++)
             {
                 Assert.IsTrue(features.Any(item => string.Compare(item.Text, data.Features.Items[i], StringComparison.OrdinalIgnoreCase) == 0));
@@ -79,8 +79,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
             try
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
-                var parsedDoc = await review.GetParsed().ConfigureAwait(false);
-                var parseReview = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(parsedDoc).Create();
+                Document parsedDoc = await review.GetParsed().ConfigureAwait(false);
+                Text.Data.IParsedReview parseReview = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(parsedDoc).Create();
                 aspectHandler.Process(parseReview);
                 return review;
             }

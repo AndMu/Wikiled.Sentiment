@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using NLog;
+﻿using Microsoft.Extensions.Logging;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
 using SharpNL.Utility;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
@@ -20,7 +21,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 {
     public class OpenNLPTextSplitter : BaseTextSplitter
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<OpenNLPTextSplitter>();
 
         private readonly IWordFactory handler;
 
@@ -52,7 +53,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             }
 
 
-            log.Debug("Creating with resource path: {0}", configuration.ResourcePath);
+            log.LogDebug("Creating with resource path: {0}", configuration.ResourcePath);
             this.handler = handler;
             this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
             tokenizer = TreebankWordTokenizer.Tokenizer;
@@ -62,12 +63,12 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         protected override Document ActualProcess(ParseRequest request)
         {
-            var sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
-            var sentenceDataList = new List<SentenceData>(sentences.Length);
+            string[] sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
+            List<SentenceData> sentenceDataList = new List<SentenceData>(sentences.Length);
             for (int i = 0; i < sentences.Length; i++)
             {
-                var text = repairHandler.Repair(sentences[i]);
-                var sentenceData = new SentenceData { Text = text };
+                string text = repairHandler.Repair(sentences[i]);
+                SentenceData sentenceData = new SentenceData { Text = text };
                 sentenceData.Tokens = tokenizer.Tokenize(sentenceData.Text);
                 if (sentenceData.Tokens.Length > 0)
                 {
@@ -78,18 +79,18 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             }
 
             Document document = new Document(request.Document.Text);
-            foreach (var sentenceData in sentenceDataList)
+            foreach (SentenceData sentenceData in sentenceDataList)
             {
                 if (string.IsNullOrWhiteSpace(sentenceData.Text))
                 {
                     continue;
                 }
 
-                var currentSentence = new SentenceItem(sentenceData.Text);
+                SentenceItem currentSentence = new SentenceItem(sentenceData.Text);
                 document.Add(currentSentence);
                 int index = 0;
                 Dictionary<int, Span> chunks = new Dictionary<int, Span>();
-                foreach (var chunk in sentenceData.Chunks)
+                foreach (Span chunk in sentenceData.Chunks)
                 {
                     for (int i = chunk.Start; i < chunk.End; i++)
                     {
@@ -99,14 +100,14 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
                 for (int i = 0; i < sentenceData.Tokens.Length; i++)
                 {
-                    var tag = sentenceData.Tags[i];
-                    var word = sentenceData.Tokens[i];
-                    var wordItem = handler.CreateWord(word, tag);
+                    string tag = sentenceData.Tags[i];
+                    string word = sentenceData.Tokens[i];
+                    IWordItem wordItem = handler.CreateWord(word, tag);
                     wordItem.WordIndex = index;
-                    var wordData = WordExFactory.Construct(wordItem);
+                    WordEx wordData = WordExFactory.Construct(wordItem);
                     currentSentence.Add(wordData);
                     index++;
-                    if (chunks.TryGetValue(i, out var chunk))
+                    if (chunks.TryGetValue(i, out Span chunk))
                     {
                         wordData.Phrase = chunk.Type;
                     }
@@ -119,13 +120,13 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         private void LoadModels(string resourcesFolder)
         {
             POSModel posModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-pos-maxent.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-pos-maxent.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 posModel = new POSModel(modelFile);
             }
 
             ChunkerModel chunkerModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-chunker.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (FileStream modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-chunker.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 chunkerModel = new ChunkerModel(modelFile);
             }

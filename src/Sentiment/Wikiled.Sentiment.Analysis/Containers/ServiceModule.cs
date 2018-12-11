@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Autofac;
-using NLog;
+﻿using Autofac;
+using Microsoft.Extensions.Logging;
+using System;
+using Wikiled.Common.Logging;
 using Wikiled.Redis.Config;
-using Wikiled.Redis.Logic;
+using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
@@ -16,7 +15,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class ServiceModule : Module
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<ServiceModule>();
 
         private readonly ConfigurationHandler configuration;
 
@@ -35,20 +34,20 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             if (RedisConfiguration == null)
             {
-                log.Debug("Using local cache");
+                log.LogDebug("Using local cache");
                 builder.RegisterType<LocalDocumentsCache>().As<ICachedDocumentsSource>();
             }
             else
             {
-                log.Debug("Using Redis cache");
-                builder.Register(c => new RedisLink(Name, new RedisMultiplexer(RedisConfiguration))).OnActivating(item => item.Instance.Open());
+                log.LogDebug("Using Redis cache");
+                builder.RegisterModule(new RedisModule(Name, RedisConfiguration));
                 builder.RegisterType<LocalDocumentsCache>();
                 builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
             }
 
             if (!string.IsNullOrEmpty(Lexicons))
             {
-                log.Debug("Adding lexicons");
+                log.LogDebug("Adding lexicons");
                 builder.RegisterType<LexiconLoader>().As<ILexiconLoader>().OnActivating(item => item.Instance.Load(Lexicons));
             }
 

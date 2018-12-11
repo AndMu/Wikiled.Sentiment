@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
     public class LexiconConfiguration : ILexiconConfiguration
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<LexiconConfiguration>();
 
         public LexiconConfiguration(IConfigurationHandler configuration)
         {
@@ -20,11 +21,11 @@ namespace Wikiled.Sentiment.Text.Configuration
             LexiconPath = Path.Combine(ResourcePath, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));
             if (!Directory.Exists(LexiconPath))
             {
-                log.Error("Path doesn't exist: {0}", LexiconPath);
+                log.LogError("Path doesn't exist: {0}", LexiconPath);
                 throw new InvalidOperationException("Lexicon can't be constructed");
             }
         }
-       
+
         public string LexiconPath { get; }
 
         public string ResourcePath { get; }

@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 {
     public abstract class BaseBoostrapCommand : Command
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<BaseBoostrapCommand>();
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2);
 
@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
             monitor = new PerformanceMonitor(0);
             EvalData[] types;
             using (Observable.Interval(TimeSpan.FromSeconds(30))
-                             .Subscribe(item => log.Info(monitor)))
+                             .Subscribe(item => log.LogInformation(monitor.ToString())))
             {
                 var reviews = ReadFiles();
                 var subscriptionMessage = reviews.Concat()
@@ -94,7 +94,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                 var positiveOrg = types.Count(item => item.Original == PositivityType.Positive);
                 var negativeOrg = types.Count(item => item.Original == PositivityType.Negative);
                 var neutralOrg = types.Count(item => item.Original == PositivityType.Neutral);
-                log.Info($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg}) Total (Neutral): {neutral}({neutralOrg})");
+                log.LogInformation($"Total (Positive): {positive}({positiveOrg}) Total (Negative): {negative}({negativeOrg}) Total (Neutral): {neutral}({neutralOrg})");
                 if (BalancedTop.HasValue)
                 {
                     var cutoff = positive > negative ? negative : positive;
@@ -114,7 +114,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                     }
 
                     types = select.OrderBy(item => Guid.NewGuid()).ToArray();
-                    log.Info($"After balancing took: {cutoff}");
+                    log.LogInformation($"After balancing took: {cutoff}");
                 }
 
                 foreach (var item in types)
@@ -129,15 +129,15 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                     performanceSub.Add(item.Original == PositivityType.Neutral, item.CalculatedPositivity == PositivityType.Neutral);
                 }
 
-                log.Info($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
+                log.LogInformation($"{performance.GetTotalAccuracy()} Precision (true): {performance.GetPrecision(true)} Precision (false): {performance.GetPrecision(false)}");
                 if (Neutral)
                 {
-                    log.Info($"{performanceSub.GetTotalAccuracy()} Precision (true - Subjective): {performanceSub.GetPrecision(true)} Precision (false - Subjective): {performanceSub.GetPrecision(false)}");
+                    log.LogInformation($"{performanceSub.GetTotalAccuracy()} Precision (true - Subjective): {performanceSub.GetPrecision(true)} Precision (false - Subjective): {performanceSub.GetPrecision(false)}");
                 }
 
             }
 
-            log.Info("Saving results...");
+            log.LogInformation("Saving results...");
             SaveResult(types);
         }
 
@@ -147,20 +147,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private void LoadBootstrap()
         {
-            log.Info("Loading text splitter for bootstrapping");
+            log.LogInformation("Loading text splitter for bootstrapping");
             var splitterFactory = MainContainerFactory.Setup()
                 .SetupLocalCache()
                 .Config()
                 .Splitter();
             bootStrapContainer = splitterFactory.Create().StartSession();
             bootStrapContainer.Context.DisableFeatureSentiment = InvertOff;
-            log.Info("Loading lexicon: {0}", Words);
+            log.LogInformation("Loading lexicon: {0}", Words);
             adjustment = SentimentDataHolder.Load(Words);
         }
 
         private void LoadDefault()
         {
-            log.Info("Loading default text splitter");
+            log.LogInformation("Loading default text splitter");
             defaultContainer = MainContainerFactory.CreateStandard().Create().StartSession();
         }
 

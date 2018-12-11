@@ -7,8 +7,9 @@ using System.Reactive.Linq;
 using System.Threading;
 using Autofac;
 using CsvHelper;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -25,7 +26,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     [Description("pSenti testing")]
     public class TestingCommand : BaseRawCommand
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<TestingCommand>();
 
         private JsonStreamingWriter resultsWriter;
 
@@ -64,7 +65,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 container.Context.Lexicon= sentimentAdjustment;
                 var dictionary = container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
-                                 .Subscribe(item => log.Info(client.Pipeline.Monitor)))
+                                 .Subscribe(item => log.LogInformation(client.Pipeline.Monitor.ToString())))
                 {
                     Semaphore = new SemaphoreSlim(2000);
                     client.Pipeline.ProcessingSemaphore = Semaphore;
@@ -89,7 +90,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 }
             }
 
-            log.Info($"Testing performance {client.GetPerformanceDescription()}");
+            log.LogInformation($"Testing performance {client.GetPerformanceDescription()}");
         }
 
         private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)

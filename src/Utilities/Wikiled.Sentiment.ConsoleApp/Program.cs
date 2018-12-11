@@ -1,74 +1,79 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NLog;
-using NLog.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Resources;
 using Wikiled.Console.Arguments;
+using Wikiled.Console.HelperMethods;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Extraction;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap;
 using Wikiled.Sentiment.Text.Resources;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Wikiled.Sentiment.ConsoleApp
 {
     public class Program
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<Program>();
 
         public static async Task Main(string[] args)
         {
-            var loggerFactory = new LoggerFactory();
+            LoggerFactory loggerFactory = new LoggerFactory();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
-            log.Info("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
+            log.LogInformation("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
             ConfigurationHandler configuration = new ConfigurationHandler();
-            var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
+            string resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
             if (Directory.Exists(resourcesPath))
             {
-                log.Info("Resources folder {0} found.", resourcesPath);
+                log.LogInformation("Resources folder {0} found.", resourcesPath);
             }
             else
             {
                 DataDownloader dataDownloader = new DataDownloader(loggerFactory);
-                var task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
+                Task task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
                 task.Wait();
             }
 
-            List<Command> commandsList = new List<Command>();
-            commandsList.Add(new TrainCommand());
-            commandsList.Add(new SemEvalBoostrapCommand());
-            commandsList.Add(new SingleBoostrapCommand());
-            commandsList.Add(new ImdbBoostrapCommand());
-            commandsList.Add(new TestingCommand());
-            commandsList.Add(new ExtractAttributesCommand());
-            var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
+            List<Command> commandsList = new List<Command>
+            {
+                new TrainCommand(),
+                new SemEvalBoostrapCommand(),
+                new SingleBoostrapCommand(),
+                new ImdbBoostrapCommand(),
+                new TestingCommand(),
+                new ExtractAttributesCommand()
+            };
 
-            #if NET462
-                var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
-                if (fPreviousExecutionState == 0)
-                {
-                    log.Error("SetThreadExecutionState failed.");
-                    return;
-                }
-            #endif
+            Dictionary<string, Command> commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
+
+#if NET472
+            var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
+            if (fPreviousExecutionState == 0)
+            {
+                 log.LogError("SetThreadExecutionState failed.");
+                return;
+            }
+#endif
 
             try
             {
                 if (args.Length == 0)
                 {
-                    log.Warn("Please specify arguments");
+                    log.LogWarning("Please specify arguments");
                     CommandLineParser.PrintCommands(commands.Values);
                     return;
                 }
 
-                if (!commands.TryGetValue(args[0], out var command))
+                if (!commands.TryGetValue(args[0], out Command command))
                 {
-                    log.Error("Unknown Command");
+                    log.LogError("Unknown Command");
                     return;
                 }
 
@@ -77,7 +82,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                log.LogError(ex, "Error");
                 System.Console.ReadLine();
             }
         }

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Xml.Linq;
-using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
@@ -27,7 +28,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TestingClient : ITestingClient
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<TestingClient>();
 
         private readonly IDocumentFromReviewFactory documentFromReview = new DocumentFromReviewFactory();
 
@@ -101,43 +102,43 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             MachineSentiment = DisableSvm ? new NullMachineSentiment() : Text.MachineLearning.MachineSentiment.Load(SvmPath);
             arff = ArffDataSet.Create<PositivityType>("MAIN");
-            var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
+            IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = TrackArff ? factory.Create(arff) : null;
 
-            log.Info("Track ARFF: {0}", TrackArff);
+            log.LogInformation("Track ARFF: {0}", TrackArff);
             if (!DisableAspects &&
                 (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))
             {
                 string path = string.IsNullOrEmpty(AspectPath) ? Path.Combine(SvmPath, "aspects.xml") : AspectPath;
                 if (File.Exists(path))
                 {
-                    log.Info("Loading {0} aspects", path);
+                    log.LogInformation("Loading {0} aspects", path);
                     XDocument features = XDocument.Load(path);
-                    var aspect = clientContext.AspectSerializer.Deserialize(features);
+                    IAspectDectector aspect = clientContext.AspectSerializer.Deserialize(features);
                     clientContext.Context.ChangeAspect(aspect);
                 }
                 else
                 {
-                    log.Warn("{0} aspects file not found", path);
+                    log.LogWarning("{0} aspects file not found", path);
                 }
             }
 
-            log.Info("Processing...");
+            log.LogInformation("Processing...");
         }
 
         public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
-            var documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
+            IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
             return documentSelector.Where(item => item != null);
         }
 
         public void Save(string path)
         {
             path.EnsureDirectoryExistence();
-            log.Info("Saving results [{0}]...", path);
-            var aspectSentiments = AspectSentiment.GetResults();
+            log.LogInformation("Saving results [{0}]...", path);
+            Text.Aspects.Data.AspectSentimentData aspectSentiments = AspectSentiment.GetResults();
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
-            var vector = SentimentVector.GetVector(NormalizationType.None);
+            MachineLearning.Mathematics.Vectors.VectorData vector = SentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(path, "sentiment_vector.json")).Serialize(new[] { vector });
             arff.Save(Path.Combine(path, "data.arff"));
         }
@@ -146,14 +147,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             try
             {
-                var adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
+                IRatingAdjustment adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
                 clientContext.NrcDictionary.ExtractToVector(SentimentVector, context.Review.Items);
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);
                 context.Adjustment = adjustment;
                 if (context.Original.Stars == null)
                 {
-                    log.Debug("Document doesn't have star assigned");
+                    log.LogDebug("Document doesn't have star assigned");
                 }
 
                 StandaloneProcess(context, adjustment);
@@ -175,7 +176,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             if (arffProcess == null)
             {
-                log.Debug("Arff is disabled, statistics wil not be tracked");
+                log.LogDebug("Arff is disabled, statistics wil not be tracked");
                 return;
             }
 

@@ -1,7 +1,8 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
@@ -16,7 +17,7 @@ namespace Wikiled.Sentiment.Text.Cache
 {
     public class RedisDocumentCache : ICachedDocumentsSource, IRepository
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<RedisDocumentCache>();
 
         private readonly IRedisLink manager;
 
@@ -52,7 +53,7 @@ namespace Wikiled.Sentiment.Text.Cache
             Document result = await local.GetCached(original).ConfigureAwait(false);
             if (result != null)
             {
-                log.Debug("Found in local cache");
+                log.LogDebug("Found in local cache");
                 return result;
             }
 
@@ -66,7 +67,7 @@ namespace Wikiled.Sentiment.Text.Cache
                     return result;
                 }
 
-                log.Warn("Mistmatch in document text: {0}", original.Id);
+                log.LogWarning("Mistmatch in document text: {0}", original.Id);
             }
 
             result = await GetById(original.GetId(), original).ConfigureAwait(false);
@@ -109,7 +110,7 @@ namespace Wikiled.Sentiment.Text.Cache
                 return result;
             }
 
-            log.Warn("Mistmatch in document text: {0}", id);
+            log.LogWarning("Mistmatch in document text: {0}", id);
             return null;
         }
     }

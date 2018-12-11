@@ -2,9 +2,9 @@
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Wikiled.Amazon.Logic;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 {
     public class TestRunner
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<TestRunner>();
 
         private readonly SentimentTestData definition;
 
@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             this.helper = helper;
             this.definition = definition;
             Active = helper.ContainerHelper;
-            var maxParallel = Environment.ProcessorCount / 2;
+            int maxParallel = Environment.ProcessorCount / 2;
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
 
@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public IObservable<IParsedDocumentHolder> Load()
         {
-            log.Info("Load");
+            log.LogInformation("Load");
             return helper.AmazonRepository.LoadProductReviews(definition.Product)
                 .Select(ProcessReview)
                 .Merge();
@@ -46,10 +46,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             try
             {
                 await semaphore.WaitAsync().ConfigureAwait(false);
-                var doc = review.CreateDocument();
+                Wikiled.Text.Analysis.Structure.Document doc = review.CreateDocument();
                 if (doc == null)
                 {
-                    log.Error("Error processing document");
+                    log.LogError("Error processing document");
                     return null;
                 }
 
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                log.LogError(ex, "Error");
                 return null;
             }
             finally

@@ -1,8 +1,9 @@
 ﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 
@@ -11,7 +12,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class RegressionTests
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<RegressionTests>();
 
         private static readonly SentimentTestData[] testData =
         {
@@ -34,7 +35,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [TestCaseSource(nameof(testData))]
         public async Task RawSentimentDetection(SentimentTestData data)
         {
-            log.Info("RawSentimentDetection: {0}", data);
+            log.LogInformation("RawSentimentDetection: {0}", data);
             TestHelper helper = new TestHelper();
             TestRunner runner = new TestRunner(helper, data);
             await runner.Load().LastOrDefaultAsync();

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Training
@@ -11,7 +12,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     [SetUpFixture]
     public class Global
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger logger = ApplicationLogging.CreateLogger< Global>();
 
         public static MainBaseLine ElectronicBaseLine { get; private set; }
 
@@ -22,7 +23,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         {
             ElectronicBaseLine = new MainBaseLine("B0002L5R78", ProductCategory.Electronics);
             VideoBaseLine = new MainBaseLine("B0026127Y8", ProductCategory.Video);
-            logger.Info("Starting training...");
+            logger.LogInformation("Starting training...");
             Stopwatch timer = new Stopwatch();
             timer.Start();
             await ElectronicBaseLine.Train().ConfigureAwait(false);

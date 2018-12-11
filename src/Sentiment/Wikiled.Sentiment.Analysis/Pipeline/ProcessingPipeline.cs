@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 {
     public class ProcessingPipeline : IProcessingPipeline
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<ProcessingPipeline>();
 
         private readonly IScheduler scheduler;
 
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
                 throw new ArgumentNullException(nameof(reviews));
             }
 
-            log.Info("ProcessStep");
+            log.LogInformation("ProcessStep");
             Monitor = new PerformanceMonitor(100);
             IObservable<ProcessingContext> selectedData = reviews
                 .Select(item => Observable.Start(() => StepProcessing(item), scheduler))
@@ -69,7 +69,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                log.LogError(ex, "Error");
                 document = reviewHolder.Original.CloneJson();
                 document.Status = Status.Error;
             }

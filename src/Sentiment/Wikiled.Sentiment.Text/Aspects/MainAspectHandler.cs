@@ -2,7 +2,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Words;
 
@@ -10,7 +11,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public class MainAspectHandler : IMainAspectHandler
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainAspectHandler>();
 
         private readonly IAspectContextFactory aspectContextFactory;
 
@@ -30,13 +31,13 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public IEnumerable<IWordItem> GetAttributes(int total)
         {
-            log.Debug("GetAttributes: {0}", total);
+            log.LogDebug("GetAttributes: {0}", total);
             return GetWords(attributes, total);
         }
 
         public IEnumerable<IWordItem> GetFeatures(int total)
         {
-            log.Debug("GetFeatures: {0}", total);
+            log.LogDebug("GetFeatures: {0}", total);
             return GetWords(aspects, total);
         }
 
@@ -90,7 +91,7 @@ namespace Wikiled.Sentiment.Text.Aspects
                 }
             }
 
-            log.Debug("GetWords - occurences:{0} words:{1} tableOfWords:{2}", occurences.Length, words.Length, tableOfWords.Count);
+            log.LogDebug("GetWords - occurences:{0} words:{1} tableOfWords:{2}", occurences.Length, words.Length, tableOfWords.Count);
             var phrases = occurences.SelectMany(item => item.Value.GetPhrases(cutOff));
             return tableOfWords.Values.Union(phrases);
         }

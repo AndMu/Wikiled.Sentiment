@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
@@ -10,7 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 {
     public class WordRepairRuleEngine
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<WordRepairRuleEngine>();
 
         private readonly WordRepairRule repairRule;
 
@@ -54,7 +55,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
             {
                 if (item.POS.WordType != rule.NextWordPOS)
                 {
-                    log.Debug("POS haven't matched: {0} - {1}", item.POS.WordType, rule.NextWordPOS);
+                    log.LogDebug("POS haven't matched: {0} - {1}", item.POS.WordType, rule.NextWordPOS);
                     return false;
                 }
             }

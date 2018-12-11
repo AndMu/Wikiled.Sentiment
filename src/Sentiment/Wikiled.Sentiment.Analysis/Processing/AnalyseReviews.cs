@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Arff.Persistence;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.MachineLearning;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
-    public class AnalyseReviews 
+    public class AnalyseReviews
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<AnalyseReviews>();
 
         private IArffDataSet currentSet;
 
@@ -48,22 +49,22 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     throw new ArgumentNullException(nameof(currentSet));
                 }
 
-                var dataSet = currentSet;
-                var machine = await MachineSentiment.Train(dataSet, CancellationToken.None).ConfigureAwait(false);
+                IArffDataSet dataSet = currentSet;
+                MachineSentiment machine = await MachineSentiment.Train(dataSet, CancellationToken.None).ConfigureAwait(false);
                 machine.Save(SvmPath);
                 LoadSvm();
-                log.Info("SVM Training Completed...");
+                log.LogInformation("SVM Training Completed...");
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                log.LogError(ex, "Error");
                 throw;
             }
         }
 
         private void LoadSvm()
         {
-            log.Info("Loading SVM vectors...");
+            log.LogInformation("Loading SVM vectors...");
             Model = MachineSentiment.Load(SvmPath);
         }
     }

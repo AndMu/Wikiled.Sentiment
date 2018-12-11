@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Text.Analysis.Structure;
@@ -12,7 +13,7 @@ namespace Wikiled.Sentiment.Analysis.Context
 {
     public class VectorsExtractor
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<VectorsExtractor>();
 
         private readonly Dictionary<string, WordVectorsData> wordVectors = new Dictionary<string, WordVectorsData>(StringComparer.OrdinalIgnoreCase);
 
@@ -36,16 +37,16 @@ namespace Wikiled.Sentiment.Analysis.Context
                 new AutoEvictingDictionary<WordEx, WordsContext>(length: WindowSize);
             AutoEvictingDictionary<SentenceItem, SentenceItem> sentences =
                 new AutoEvictingDictionary<SentenceItem, SentenceItem>(length: WindowSize);
-            foreach(var sentenceItem in document.Sentences)
+            foreach (SentenceItem sentenceItem in document.Sentences)
             {
                 table.Increment();
                 sentences.Increment();
                 sentences.Add(sentenceItem, sentenceItem);
-                foreach(var word in sentenceItem.Words)
+                foreach (WordEx word in sentenceItem.Words)
                 {
                     WordsContext current = GetVector(word).CreateNewVector();
                     current.SentimentValue = sentences.Values.Select(item => item.CalculateSentiment().RawRating).Where(item => item.HasValue).Select(item => item.Value).Sum();
-                    foreach(var addedRecords in table.Values)
+                    foreach (WordsContext addedRecords in table.Values)
                     {
                         addedRecords.AddContext(word);
                         current.AddContext(addedRecords.Word);
@@ -63,7 +64,7 @@ namespace Wikiled.Sentiment.Analysis.Context
                 throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             }
 
-            log.Info("Saving Vectors to: {0}", path);
+            log.LogInformation("Saving Vectors to: {0}", path);
             path.EnsureDirectoryExistence();
             Parallel.ForEach(
                 WordVectors.Where(item => item.Word.Value > 0),

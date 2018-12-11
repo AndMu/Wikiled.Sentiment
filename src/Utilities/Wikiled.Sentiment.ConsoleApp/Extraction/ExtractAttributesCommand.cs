@@ -7,8 +7,8 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
     [Description("Extract Aspects and features from unlaballed dataset")]
     public class ExtractAttributesCommand : Command
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<ExtractAttributesCommand>();
 
         private MainAspectHandler featureExtractor;
 
@@ -42,11 +42,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
 
         protected override async Task Execute(CancellationToken token)
         {
-            log.Info("Starting...");
+            log.LogInformation("Starting...");
             featureExtractor = new MainAspectHandler(new AspectContextFactory(Sentiment));
             container = MainContainerFactory.CreateStandard().Create().StartSession();
-            var pipeline = container.Resolve<IProcessingPipeline>();
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(pipeline.Monitor)))
+            IProcessingPipeline pipeline = container.Resolve<IProcessingPipeline>();
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(pipeline.Monitor.ToString())))
             {
                 await pipeline.ProcessStep(GetReviews().ToObservable(TaskPoolScheduler.Default))
                         .Select(item => Observable.Start(() =>
@@ -58,15 +58,15 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
                         .LastOrDefaultAsync();
             }
 
-            var file = Path.Combine(Out, "features.xml");
-            log.Info("Saving {0}...", file);
-            var serializer = container.Resolve<IAspectSerializer>();
+            string file = Path.Combine(Out, "features.xml");
+            log.LogInformation("Saving {0}...", file);
+            IAspectSerializer serializer = container.Resolve<IAspectSerializer>();
             serializer.Serialize(featureExtractor).Save(file);
         }
 
         private IEnumerable<IParsedDocumentHolder> GetReviews()
         {
-            log.Info("Input {0}", Source);
+            log.LogInformation("Input {0}", Source);
             return container.GetTextSplitter().GetParsedReviewHolders(Source, null);
         }
 

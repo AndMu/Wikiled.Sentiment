@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using NLog;
+using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.Text.Cache;
@@ -18,7 +19,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class MainContainerFactory
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainContainerFactory>();
 
         private readonly ContainerBuilder builder = new ContainerBuilder();
 
@@ -34,7 +35,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public static MainContainerFactory CreateStandard()
         {
-            log.Info("CreateStandard");
+            log.LogInformation("CreateStandard");
             MainContainerFactory instance = new MainContainerFactory();
             return instance.SetupLocalCache()
                 .Config()
@@ -43,7 +44,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public static MainContainerFactory Setup()
         {
-            log.Info("Setup");
+            log.LogInformation("Setup");
             MainContainerFactory instance = new MainContainerFactory();
             return instance;
         }
@@ -65,7 +66,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public MainContainerFactory SetupRedisCache(string name, string host, int port)
         {
             initialized["Cache"] = true;
-            log.Info("Using REDIS...");
+            log.LogInformation("Using REDIS...");
             builder.Register(c => new RedisLink(name, new RedisMultiplexer(new RedisConfiguration(host, port)))).OnActivating(item => item.Instance.Open());
             builder.RegisterType<LocalDocumentsCache>();
             builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
@@ -114,7 +115,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             var container = builder.Build();
             var helper = new GlobalContainer(container);
-            log.Info("Initializing...");
+            log.LogInformation("Initializing...");
             container.Resolve<IWordsHandler>();
             container.Resolve<ITextSplitter>();
             return helper;

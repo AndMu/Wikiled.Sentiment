@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using NLog;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
+using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Arff;
@@ -22,7 +23,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TrainingClient : ITrainingClient
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<TrainingClient>();
 
         private readonly AnalyseReviews analyze;
 
@@ -73,8 +74,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
-            log.Info("Starting Training");
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(clientContext.Pipeline.Monitor)))
+            log.LogInformation("Starting Training");
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))
             {
                 await clientContext.Pipeline.ProcessStep(reviews)
                               .Select(AdditionalProcessing)
@@ -91,25 +92,25 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 SelectAdditional();
             }
 
-            var arff = ArffDataSet.Create<PositivityType>("MAIN");
-            var factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
+            IArffDataSet arff = ArffDataSet.Create<PositivityType>("MAIN");
+            IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 
-            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.Info(clientContext.Pipeline.Monitor)))
+            using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))
             {
                 await clientContext.Pipeline.ProcessStep(reviews)
                               .Select(
                                   item => Observable.Start(
                                       () =>
                                       {
-                                          var result = ProcessSingleItem(item);
+                                          ProcessingContext result = ProcessSingleItem(item);
                                           clientContext.Pipeline.Monitor.Increment();
                                           return result;
                                       }))
                               .Merge();
             }
 
-            log.Info("Cleaning up ARFF....");
+            log.LogInformation("Cleaning up ARFF....");
             if (!UseAll)
             {
                 await arffProcess.CleanupDataHolder(3, 10).ConfigureAwait(false);
@@ -123,7 +124,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                log.LogError(ex, "Error");
             }
         }
 
@@ -148,7 +149,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             if (context.Original.Stars == 3)
             {
-                log.Debug("Ignoring 3 stars...");
+                log.LogDebug("Ignoring 3 stars...");
                 return null;
             }
 
@@ -166,28 +167,28 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private void SelectAdditional()
         {
-            log.Info("Extracting aspects...");
-            var serializer = clientContext.AspectSerializer;
-            var features = featureExtractor.GetFeatures(100).ToArray();
-            var attributes = featureExtractor.GetAttributes(100).ToArray();
-            var document = serializer.Serialize(features, attributes);
-            var featuresFile = Path.Combine(analyze.SvmPath, "aspects.xml");
+            log.LogInformation("Extracting aspects...");
+            IAspectSerializer serializer = clientContext.AspectSerializer;
+            Text.Words.IWordItem[] features = featureExtractor.GetFeatures(100).ToArray();
+            Text.Words.IWordItem[] attributes = featureExtractor.GetAttributes(100).ToArray();
+            XDocument document = serializer.Serialize(features, attributes);
+            string featuresFile = Path.Combine(analyze.SvmPath, "aspects.xml");
             document.Save(featuresFile);
             if (!string.IsNullOrEmpty(OverrideAspects))
             {
-                log.Info($"Overriding aspects with {OverrideAspects}");
+                log.LogInformation($"Overriding aspects with {OverrideAspects}");
                 File.Copy(featuresFile, Path.Combine(analyze.SvmPath, "aspects_detected.xml"), true);
                 File.Copy(OverrideAspects, featuresFile, true);
                 XDocument featuresXml = XDocument.Load(featuresFile);
-                var aspect = serializer.Deserialize(featuresXml);
+                IAspectDectector aspect = serializer.Deserialize(featuresXml);
                 features = aspect.AllFeatures.ToArray();
                 attributes = aspect.AllAttributes.ToArray();
             }
 
             clientContext.Context.ChangeAspect(new AspectDectector(features, attributes));
-            var vector = sentimentVector.GetVector(NormalizationType.None);
+            MachineLearning.Mathematics.Vectors.VectorData vector = sentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(analyze.SvmPath, "sentiment_vector.json")).Serialize(new[] { vector });
-            log.Info("Extracting features... DONE!");
+            log.LogInformation("Extracting features... DONE!");
         }
     }
 }

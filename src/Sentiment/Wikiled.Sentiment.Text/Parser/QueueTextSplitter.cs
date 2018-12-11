@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public class QueueTextSplitter : ITextSplitter
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<QueueTextSplitter>();
 
         private readonly ConcurrentBag<Lazy<ITextSplitter>> splitters = new ConcurrentBag<Lazy<ITextSplitter>>();
 
@@ -32,7 +33,7 @@ namespace Wikiled.Sentiment.Text.Parser
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
             for (int i = 0; i < maxSplitters; i++)
             {
-                var item = new Lazy<ITextSplitter>(factory);
+                Lazy<ITextSplitter> item = new Lazy<ITextSplitter>(factory);
                 splitters.Add(item);
                 workStack.Enqueue(item);
             }
@@ -40,9 +41,9 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public void Dispose()
         {
-            log.Debug("Dispose");
+            log.LogDebug("Dispose");
             semaphore.Dispose();
-            foreach (var splitter in splitters)
+            foreach (Lazy<ITextSplitter> splitter in splitters)
             {
                 if (splitter.IsValueCreated)
                 {
@@ -54,7 +55,7 @@ namespace Wikiled.Sentiment.Text.Parser
         public async Task<Document> Process(ParseRequest request)
         {
             await semaphore.WaitAsync().ConfigureAwait(false);
-            if (!workStack.TryDequeue(out var splitter))
+            if (!workStack.TryDequeue(out Lazy<ITextSplitter> splitter))
             {
                 throw new InvalidOperationException("Synchronization error!");
             }

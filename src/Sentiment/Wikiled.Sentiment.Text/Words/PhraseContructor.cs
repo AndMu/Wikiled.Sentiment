@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP;
@@ -13,7 +14,7 @@ namespace Wikiled.Sentiment.Text.Words
     {
         private readonly IWordFactory handler;
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<PhraseContructor>();
 
         public PhraseContructor(IWordFactory handler)
         {
@@ -27,8 +28,8 @@ namespace Wikiled.Sentiment.Text.Words
                 throw new ArgumentNullException(nameof(word));
             }
 
-            log.Debug("GetPhrases {0}", word);
-            var currentWords = word.Relationship.Part.Occurrences
+            log.LogDebug("GetPhrases {0}", word);
+            IWordItem[] currentWords = word.Relationship.Part.Occurrences
                                    .Where(item => !item.CanNotBeFeature() && !item.IsSentiment).ToArray();
 
             if (currentWords.Length <= 1)
@@ -36,30 +37,30 @@ namespace Wikiled.Sentiment.Text.Words
                 yield break;
             }
 
-            var all = string.Join(" ", currentWords.Select(item => item.Text).ToArray());
-            int wordIndex =  Array.IndexOf(currentWords, word);
+            string all = string.Join(" ", currentWords.Select(item => item.Text).ToArray());
+            int wordIndex = Array.IndexOf(currentWords, word);
             if (wordIndex < 0)
             {
-                log.Debug("{0} is not found in important list in <{1}>", word, all);
+                log.LogDebug("{0} is not found in important list in <{1}>", word, all);
                 yield break;
             }
-            
+
             List<NGramBlock> nGramBlocks = new List<NGramBlock>();
             Dictionary<WordEx, IWordItem> wordsTable = new Dictionary<WordEx, IWordItem>();
             WordEx[] words = new WordEx[currentWords.Length];
-            foreach (var item in currentWords)
+            foreach (IWordItem item in currentWords)
             {
-                var wordEx = WordExFactory.Construct(item);
+                WordEx wordEx = WordExFactory.Construct(item);
                 words[wordsTable.Count] = wordEx;
                 wordsTable[wordEx] = item;
             }
 
             nGramBlocks.AddRange(words.GetNearNGram(wordIndex, 3));
             nGramBlocks.AddRange(words.GetNearNGram(wordIndex, 2));
-            foreach (var nGramBlock in nGramBlocks)
+            foreach (NGramBlock nGramBlock in nGramBlocks)
             {
-                var phrase = handler.CreatePhrase("NP");
-                foreach (var occurence in nGramBlock.WordOccurrences)
+                IPhrase phrase = handler.CreatePhrase("NP");
+                foreach (WordEx occurence in nGramBlock.WordOccurrences)
                 {
                     phrase.Add(wordsTable[occurence]);
                 }

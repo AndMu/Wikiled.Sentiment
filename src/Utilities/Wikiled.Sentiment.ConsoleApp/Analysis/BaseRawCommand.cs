@@ -2,7 +2,8 @@
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -14,7 +15,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     public abstract class BaseRawCommand : Command
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<BaseRawCommand>();
 
         private ISessionContainer container;
 
@@ -42,7 +43,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         protected override Task Execute(CancellationToken token)
         {
-            log.Info("Initialize...");
+            log.LogInformation("Initialize...");
 
             var factory = MainContainerFactory.Setup()
                 .Config()
@@ -52,11 +53,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
             container = factory.Create().StartSession();
             container.Context.DisableFeatureSentiment = InvertOff;
-            log.Info("Processing...");
+            log.LogInformation("Processing...");
             ISentimentDataHolder sentimentAdjustment = default;
             if (!string.IsNullOrEmpty(Weights))
             {
-                log.Info("Adjusting Embeddings sentiments using [{0}] ...", Weights);
+                log.LogInformation("Adjusting Embeddings sentiments using [{0}] ...", Weights);
                 sentimentAdjustment = SentimentDataHolder.Load(Weights);
             }
 
@@ -89,26 +90,26 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private IObservable<IParsedDocumentHolder> GetAllReviews()
         {
-            log.Info("Loading {0}", Articles);
+            log.LogInformation("Loading {0}", Articles);
             var data = new DataLoader().Load(Articles);
             return container.GetTextSplitter().GetParsedReviewHolders(data);
         }
 
         private IObservable<IParsedDocumentHolder> GetPositiveReviews()
         {
-            log.Info("Positive {0}", Positive);
+            log.LogInformation("Positive {0}", Positive);
             return container.GetTextSplitter().GetParsedReviewHolders(Positive, true).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetNegativeReviews()
         {
-            log.Info("Negative {0}", Negative);
+            log.LogInformation("Negative {0}", Negative);
             return container.GetTextSplitter().GetParsedReviewHolders(Negative, false).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
-            log.Info("Other {0}", Input);
+            log.LogInformation("Other {0}", Input);
             return container.GetTextSplitter().GetParsedReviewHolders(Input, null).ToObservable();
         }
     }

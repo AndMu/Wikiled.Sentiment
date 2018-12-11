@@ -2,9 +2,10 @@
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Text.Parser;
@@ -14,7 +15,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class Word2VecTests
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<Word2VecTests>();
 
         private static readonly SentimentTestData[] testData =
         {
@@ -47,7 +48,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [TestCaseSource(nameof(testData))]
         public async Task SentimentTests(SentimentTestData data)
         {
-            log.Info("SentimentTests: {0}", data);
+            log.LogInformation("SentimentTests: {0}", data);
             string file;
             switch (data.Category)
             {

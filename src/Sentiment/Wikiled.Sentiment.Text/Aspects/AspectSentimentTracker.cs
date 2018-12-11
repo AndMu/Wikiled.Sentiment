@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using NLog;
-using Wikiled.MachineLearning.Mathematics;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Aspects.Data;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -13,7 +13,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public class AspectSentimentTracker
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<AspectSentimentTracker>();
 
         private readonly IContextSentimentFactory factory;
 
@@ -35,19 +35,19 @@ namespace Wikiled.Sentiment.Text.Aspects
                 throw new ArgumentNullException(nameof(review));
             }
 
-            log.Debug("Process");
+            log.LogDebug("Process");
             Interlocked.Increment(ref totalReviews);
-            foreach (var aspect in review.Items.Where(item => item.IsFeature))
+            foreach (IWordItem aspect in review.Items.Where(item => item.IsFeature))
             {
-                var context = factory.Construct(aspect.Relationship);
+                IContextSentiment context = factory.Construct(aspect.Relationship);
                 lock (syncRoot)
                 {
-                    if (!table.TryGetWordValue(aspect, out var sentiments))
+                    if (!table.TryGetWordValue(aspect, out List<SentimentValue> sentiments))
                     {
                         sentiments = new List<SentimentValue>();
                         table[aspect.Stemmed] = sentiments;
                     }
-                    
+
                     sentiments.AddRange(context.Sentiments.Where(item => item.DataValue.Value != 0));
                 }
             }
@@ -55,9 +55,11 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public AspectSentimentData GetResults()
         {
-            log.Debug("Save");
-            AspectSentimentData data = new AspectSentimentData();
-            data.TotalReviews = totalReviews;
+            log.LogDebug("Save");
+            AspectSentimentData data = new AspectSentimentData
+            {
+                TotalReviews = totalReviews
+            };
             lock (syncRoot)
             {
                 data.Records = table
@@ -65,11 +67,11 @@ namespace Wikiled.Sentiment.Text.Aspects
                     .Where(item => item.Value.Count > 0)
                     .Select(
                         item => new AspectSentimentItem
-                                {
-                                    Text = item.Key,
-                                    Times = item.Value.Count,
-                                    Sentiment = item.Value.Select(x => x.DataValue).Accumulate().RawRating
-                                }).ToArray();
+                        {
+                            Text = item.Key,
+                            Times = item.Value.Count,
+                            Sentiment = item.Value.Select(x => x.DataValue).Accumulate().RawRating
+                        }).ToArray();
             }
 
             return data;

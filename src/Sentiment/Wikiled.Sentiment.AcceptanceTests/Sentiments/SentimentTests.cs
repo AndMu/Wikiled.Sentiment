@@ -5,9 +5,10 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Wikiled.Arff.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -23,7 +24,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class SentimentTests
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
 
         [SetUp]
         public void Setup()
@@ -87,7 +88,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task SimpleAmazonTest()
         {
-            log.Info("SimpleTest");
+            log.LogInformation("SimpleTest");
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
             var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
@@ -113,7 +114,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Ignore("Manually executed only")]
         public async Task FindAnomally()
         {
-            log.Info("FindAnomally");
+            log.LogInformation("FindAnomally");
             var data = new SentimentTestData("B00002EQCW");
             TestRunner runner = new TestRunner(TestHelper.Instance, data);
             var sentences = await runner.Load()

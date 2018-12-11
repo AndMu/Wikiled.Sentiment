@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 
@@ -6,7 +7,7 @@ namespace Wikiled.Sentiment.Text.Configuration
 {
     public class SessionContext : ISessionContext
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<SessionContext>();
 
         private readonly NullAspectDectector nullDetector = new NullAspectDectector();
 
@@ -18,7 +19,7 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         public SessionContext()
         {
-            log.Debug("Creating");
+            log.LogDebug("Creating");
         }
 
         public IAspectDectector Aspect => aspect ?? nullDetector;
@@ -28,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Configuration
             get => disableFeatureSentiment;
             set
             {
-                log.Info("DisableFeatureSentiment: {0}", value);
+                log.LogInformation("DisableFeatureSentiment: {0}", value);
                 disableFeatureSentiment = value;
             }
         }
@@ -40,7 +41,7 @@ namespace Wikiled.Sentiment.Text.Configuration
             get => disableInvertors;
             set
             {
-                log.Info("DisableInvertors: {0}", value);
+                log.LogInformation("DisableInvertors: {0}", value);
                 disableInvertors = value;
             }
         }
@@ -49,13 +50,13 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         public void ChangeAspect(IAspectDectector aspectDetector)
         {
-            log.Info("Changing aspect detector");
+            log.LogInformation("Changing aspect detector");
             aspect = aspectDetector;
         }
 
         public void Reset()
         {
-            log.Info("Reset");
+            log.LogInformation("Reset");
             ChangeAspect(null);
             DisableInvertors = false;
             DisableFeatureSentiment = false;

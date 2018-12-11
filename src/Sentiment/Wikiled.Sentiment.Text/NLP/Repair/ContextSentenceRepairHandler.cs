@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
-using NLog;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
@@ -9,7 +10,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 {
     public class ContextSentenceRepairHandler : IContextSentenceRepairHandler
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<ContextSentenceRepairHandler>();
 
         private readonly ISentenceRepairHandler repairHandler;
 
@@ -17,7 +18,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         public ContextSentenceRepairHandler(ISentenceRepairHandler repairHandler, IContextWordsHandler wordsHandler, IWordFactory wordFactory, IExtendedWords extendedWords)
         {
-            log.Debug("Construct");
+            log.LogDebug("Construct");
             if (wordsHandler == null)
             {
                 throw new ArgumentNullException(nameof(wordsHandler));
@@ -40,7 +41,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
         {
             sentence = repairHandler.Repair(sentence);
             ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
-            foreach (var replacement in replacements)
+            foreach ((string Word, string Replacement) replacement in replacements)
             {
                 sentence = sentence.ReplaceString(replacement.Word, replacement.Replacement, option);
             }

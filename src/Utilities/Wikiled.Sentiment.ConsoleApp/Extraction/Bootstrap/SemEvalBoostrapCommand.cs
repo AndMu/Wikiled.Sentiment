@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,8 +7,8 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Arff.Persistence;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap.Data;
 using Wikiled.Text.Analysis.Twitter;
 
@@ -21,7 +22,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
     {
         private readonly MessageCleanup cleanup = new MessageCleanup();
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<SemEvalBoostrapCommand>();
 
         private Dictionary<string, string> exist;
 
@@ -40,9 +41,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         protected override void SaveResult(EvalData[] subscriptionMessage)
         {
-            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+            using (StreamWriter streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
             {
-                foreach (var item in subscriptionMessage)
+                foreach (EvalData item in subscriptionMessage)
                 {
                     streamWrite.WriteLine($"{item.Id}\t{item.CalculatedPositivity.Value.ToString().ToLower()}\t{item.Text}");
                     streamWrite.Flush();
@@ -52,17 +53,17 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private IEnumerable<EvalData> GetDataPacketEnum(string file)
         {
-            using (var streamRead = new StreamReader(file))
+            using (StreamReader streamRead = new StreamReader(file))
             {
                 string line;
                 while ((line = streamRead.ReadLine()) != null)
                 {
                     long? id = null;
                     PositivityType? positivity = null;
-                    var blocks = line.Split(new[] {'\t'}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                     if (blocks.Length < 3)
                     {
-                        log.Error($"Error: {line}");
+                        log.LogError($"Error: {line}");
                         yield break;
                     }
 
@@ -71,8 +72,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                         id = idValue;
                     }
 
-                    var textBlock = blocks[blocks.Length - 1];
-                    var sentiment = blocks[blocks.Length - 2];
+                    string textBlock = blocks[blocks.Length - 1];
+                    string sentiment = blocks[blocks.Length - 2];
                     if (sentiment == "positive")
                     {
                         positivity = PositivityType.Positive;
@@ -99,7 +100,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                         textBlock = textBlock.Substring(1, textBlock.Length - 2);
                     }
 
-                    var text = cleanup.Cleanup(textBlock);
+                    string text = cleanup.Cleanup(textBlock);
                     if (!exist.ContainsKey(text))
                     {
                         exist[text] = text;

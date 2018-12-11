@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using NLog;
 using Wikiled.Arff.Persistence;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Logging;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Context
 {
     public class WordVectorsData
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<WordVectorsData>();
 
         public WordVectorsData(WordEx word)
         {
@@ -31,11 +32,11 @@ namespace Wikiled.Sentiment.Analysis.Context
             if (Vectors.Count != 0 &&
                 CurrentVector.Words.Count == 0)
             {
-                log.Debug("Ignoring call to create vector - current is empty");
+                log.LogDebug("Ignoring call to create vector - current is empty");
                 return CurrentVector;
             }
 
-            var vector = new WordsContext(Word);
+            WordsContext vector = new WordsContext(Word);
             Vectors.Add(vector);
             return vector;
         }
@@ -47,18 +48,18 @@ namespace Wikiled.Sentiment.Analysis.Context
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(path));
             }
 
-            log.Info("Saving {0}...", path);
+            log.LogInformation("Saving {0}...", path);
             string fileName = $"{Word.Text.CreatePureLetterText()}.arff";
             path = Path.Combine(path, fileName);
             IArffDataSet arff = ArffDataSet.Create<PositivityType>(Word.Text);
             arff.UseTotal = true;
-            foreach (var vector in Vectors)
+            foreach (WordsContext vector in Vectors)
             {
                 IArffDataRow review = arff.AddDocument();
                 review.Class.Value = vector.SentimentValue > 0
                     ? PositivityType.Positive
                     : PositivityType.Negative;
-                foreach (var wordItem in vector.Words)
+                foreach (WordEx wordItem in vector.Words)
                 {
                     if (!wordItem.IsAspect &&
                         wordItem.Value == 0)
@@ -66,13 +67,13 @@ namespace Wikiled.Sentiment.Analysis.Context
                         continue;
                     }
 
-                    var addedWord = review.AddRecord(wordItem.Text);
+                    DataRecord addedWord = review.AddRecord(wordItem.Text);
                     addedWord.Value = addedWord.Total;
                 }
             }
 
             arff.Save(path);
-            log.Info("Saving {0} Completed.", path);
+            log.LogInformation("Saving {0} Completed.", path);
         }
     }
 }

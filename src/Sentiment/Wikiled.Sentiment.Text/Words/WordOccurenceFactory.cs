@@ -1,9 +1,10 @@
-﻿using System;
-using NLog;
-using Wikiled.Text.Analysis.POS;
-using Wikiled.Text.Analysis.POS.Tags;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Analysis.POS;
+using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Text.Words
@@ -16,7 +17,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         private readonly IInquirerManager inquirerManager;
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<WordOccurenceFactory>();
 
         public WordOccurenceFactory(IContextWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager)
         {
@@ -30,7 +31,7 @@ namespace Wikiled.Sentiment.Text.Words
             BasePOSType postType = POSTags.Instance.UnknownPhrase;
             if (!POSTags.Instance.Contains(posPhrase))
             {
-                log.Warn("POS not found <{0}>", posPhrase);
+                log.LogWarning("POS not found <{0}>", posPhrase);
             }
             else
             {

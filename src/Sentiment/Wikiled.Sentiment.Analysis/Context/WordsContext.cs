@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Context
 {
     public class WordsContext
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<WordsContext>();
 
         public WordsContext(WordEx word)
         {
@@ -30,7 +31,7 @@ namespace Wikiled.Sentiment.Analysis.Context
 
             if (string.Compare(word.Text, Word.Text, StringComparison.OrdinalIgnoreCase) == 0)
             {
-                log.Debug("This is owner word: {0}", word.Text);
+                log.LogDebug("This is owner word: {0}", word.Text);
                 return;
             }
 

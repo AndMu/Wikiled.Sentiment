@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Persistence;
 using Wikiled.Arff.Persistence.Headers;
+using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.MachineLearning.Normalization;
@@ -17,7 +18,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 {
     public class MachineSentiment : IMachineSentiment
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<MachineSentiment>();
 
         private readonly Dictionary<IHeader, int> featureTable;
 
@@ -48,8 +49,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             }
 
-            log.Info("Loading {0}...", path);
-            var reviews = ArffDataSet.Load<PositivityType>(Path.Combine(path, "data.arff"));
+            log.LogInformation("Loading {0}...", path);
+            IArffDataSet reviews = ArffDataSet.Load<PositivityType>(Path.Combine(path, "data.arff"));
             Classifier classifier = new Classifier();
             classifier.Load(Path.Combine(path, "training.model"));
             return new MachineSentiment(reviews, classifier);
@@ -57,16 +58,16 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public static async Task<MachineSentiment> Train(IArffDataSet arff, CancellationToken token)
         {
-            log.Info("Training SVM...");
+            log.LogInformation("Training SVM...");
             Classifier classifier = new Classifier();
-            var data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
+            (int? Y, double[] X)[] data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
             if (data.Length < 40)
             {
                 throw new ArgumentOutOfRangeException("Not enough training records");
             }
 
             Dictionary<int, int> classCount = new Dictionary<int, int>();
-            foreach (var datRecord in data)
+            foreach ((int? Y, double[] X) datRecord in data)
             {
                 if (classCount.ContainsKey(datRecord.Y.Value))
                 {
@@ -80,7 +81,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 // Make all sentiments positive - counts with weights
                 for (int i = 0; i < datRecord.X.Length; i++)
                 {
-                    var x = datRecord.X[i];
+                    double x = datRecord.X[i];
                     datRecord.X[i] = Math.Abs(x);
                 }
             }
@@ -100,9 +101,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentOutOfRangeException("Not enough positive classes");
             }
 
-            var yData = data.Select(item => item.Y.Value).ToArray();
-            var xData = data.Select(item => item.X).ToArray();
-            var randomized = GlobalSettings.Random.Shuffle(yData, xData).ToArray();
+            int[] yData = data.Select(item => item.Y.Value).ToArray();
+            double[][] xData = data.Select(item => item.X).ToArray();
+            Array[] randomized = GlobalSettings.Random.Shuffle(yData, xData).ToArray();
             await Task.Run(() => classifier.Train(randomized[0].Cast<int>().ToArray(), randomized[1].Cast<double[]>().ToArray(), token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
         }
@@ -114,7 +115,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentNullException(nameof(cells));
             }
 
-            log.Debug("GetVector");
+            log.LogDebug("GetVector");
             List<VectorCell> vectorCells = new List<VectorCell>();
             double[] vector = new double[featureTable.Count];
             for (int i = 0; i < featureTable.Count; i++)
@@ -122,10 +123,10 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 vector[i] = 0;
             }
 
-            var unknownIndexes = vector.Length;
-            foreach (var textCell in cells)
+            int unknownIndexes = vector.Length;
+            foreach (TextVectorCell textCell in cells)
             {
-                var cell = GetCell(textCell);
+                VectorCell cell = GetCell(textCell);
                 if (cell != null)
                 {
                     vector[cell.Index] = cell.X;
@@ -137,7 +138,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                     cell = GetCell(new TextVectorCell(textCell.Name.GetOpposite(), Math.Abs(textCell.Value)));
                     if (cell != null)
                     {
-                        var theata = textCell.Name.IsInverted() ? cell.Theta / 2 : cell.Theta / 4;
+                        double theata = textCell.Name.IsInverted() ? cell.Theta / 2 : cell.Theta / 4;
                         cell = new VectorCell(unknownIndexes, textCell, -theata);
                         vectorCells.Add(cell);
                         unknownIndexes++;
@@ -145,9 +146,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 }
             }
 
-            var normalized = vector.Normalize(NormalizationType.L2);
+            INormalize normalized = vector.Normalize(NormalizationType.L2);
             vector = normalized.GetNormalized.ToArray();
-            var probability = Classifier.Probability(vector);
+            double probability = Classifier.Probability(vector);
 
             // do not normalize data - SVM operates with normalized already. Second time normalization is not required.
             return (probability, normalized.Coeficient, new VectorData(vectorCells.ToArray(), unknownIndexes, Classifier.Model.Threshold, NormalizationType.None));
@@ -155,18 +156,18 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         private VectorCell GetCell(TextVectorCell textCell)
         {
-            var header = DataSet.Header[textCell.Name];
+            IHeader header = DataSet.Header[textCell.Name];
             if (header == null ||
-                !featureTable.TryGetValue(header, out var index))
+                !featureTable.TryGetValue(header, out int index))
             {
                 return null;
             }
 
-            var absoluteCell = textCell.Item == null
+            TextVectorCell absoluteCell = textCell.Item == null
                 ? new TextVectorCell(textCell.Name, Math.Abs(textCell.Value))
                 : new TextVectorCell(textCell.Item, Math.Abs(textCell.Value));
 
-            var cellItem = new VectorCell(index, absoluteCell, weights[index]);
+            VectorCell cellItem = new VectorCell(index, absoluteCell, weights[index]);
             return cellItem;
         }
 
@@ -177,7 +178,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentException("Value cannot be null or empty.", nameof(path));
             }
 
-            log.Info("Saving {0}...", path);
+            log.LogInformation("Saving {0}...", path);
             DataSet.Save(Path.Combine(path, "data.arff"));
             Classifier.Save(Path.Combine(path, "training.model"));
             SaveCoef(Path.Combine(path, "coef.dat"));
@@ -185,7 +186,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         private void SaveCoef(string fileName)
         {
-            log.Info("Saving {0}...", fileName);
+            log.LogInformation("Saving {0}...", fileName);
             if (Classifier.Model == null)
             {
                 return;
@@ -193,7 +194,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
             using (StreamWriter stream = new StreamWriter(fileName, false))
             {
-                foreach (var feature in featureTable)
+                foreach (KeyValuePair<IHeader, int> feature in featureTable)
                 {
                     stream.WriteLine("{0} - {1}", feature.Key.Name, weights[feature.Value] + Classifier.Model.Threshold / DataSet.Header.Total);
                 }

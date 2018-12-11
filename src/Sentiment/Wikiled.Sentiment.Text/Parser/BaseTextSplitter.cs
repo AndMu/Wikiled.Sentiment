@@ -1,4 +1,4 @@
-﻿using NLog;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public abstract class BaseTextSplitter : ITextSplitter
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<BaseTextSplitter>();
 
         private readonly ICachedDocumentsSource cache;
 
@@ -30,20 +30,20 @@ namespace Wikiled.Sentiment.Text.Parser
                 throw new System.ArgumentNullException(nameof(request));
             }
 
-            using (new PerformanceTrace(log.Debug, "Process"))
+            using (new PerformanceTrace(item => log.LogDebug(item), "Process"))
             {
                 string text = request.Document.Text.Trim();
                 request.Document.Text = text;
                 if (string.IsNullOrWhiteSpace(request.Document.Id))
                 {
                     string tag = request.Document.Id = Guid.NewGuid().ToString();
-                    log.Debug("Key not found on document. generating: {0}...", tag);
+                    log.LogDebug("Key not found on document. generating: {0}...", tag);
                 }
 
                 Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
                 if (document != null)
                 {
-                    log.Debug("Cache HIT");
+                    log.LogDebug("Cache HIT");
                     document = document.CloneJson();
                     document.Id = request.Document.Id;
                     return document;
@@ -56,7 +56,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 else
                 {
                     document = new Document();
-                    log.Info("Empty document detected");
+                    log.LogInformation("Empty document detected");
                 }
 
                 document.Id = request.Document.Id;

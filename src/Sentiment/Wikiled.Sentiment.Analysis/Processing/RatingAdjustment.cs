@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics.Vectors;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
@@ -13,7 +14,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class RatingAdjustment : BaseRatingAdjustment
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<RatingAdjustment>();
 
         private RatingAdjustment(IParsedReview review, IMachineSentiment model)
             : base(review)
@@ -35,16 +36,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return new NullRatingAdjustment(review);
             }
 
-            var adjustment = new RatingAdjustment(review, model);
+            RatingAdjustment adjustment = new RatingAdjustment(review, model);
             adjustment.CalculateRating();
             return adjustment;
         }
 
         protected override void CalculateRatingLogic()
         {
-            var cells = Review.Vector.GetCells().ToArray();
-            var result = Model.GetVector(cells);
-            var vector = result.Vector;
+            TextVectorCell[] cells = Review.Vector.GetCells().ToArray();
+            (double Probability, double Normalization, VectorData Vector) result = Model.GetVector(cells);
+            VectorData vector = result.Vector;
             if (vector == null ||
                 vector.Length == 0)
             {
@@ -52,12 +53,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return;
             }
 
-            var bias = vector.RHO;
+            double bias = vector.RHO;
             double fallbackWeight = 0.1;
             VectorCell lexicon = default;
-            foreach (var item in vector.Cells)
+            foreach (VectorCell item in vector.Cells)
             {
-                var cell = (TextVectorCell)item.Data;
+                TextVectorCell cell = (TextVectorCell)item.Data;
                 if (cell.Name == Constants.RATING_STARS)
                 {
                     lexicon = item;
@@ -74,7 +75,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             List<SentimentValue> notAddedSentiments = new List<SentimentValue>();
-            foreach (var sentimentValue in Review.GetAllSentiments())
+            foreach (SentimentValue sentimentValue in Review.GetAllSentiments())
             {
                 if (!ContainsSentiment(sentimentValue.Owner))
                 {
@@ -84,13 +85,13 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             if (lexicon != null)
             {
-                var totalWords = Review.GetAllSentiments().Length;
+                int totalWords = Review.GetAllSentiments().Length;
                 fallbackWeight = Math.Abs(lexicon.Theta) / totalWords;
             }
 
             if (notAddedSentiments.Count > 0)
             {
-                foreach (var sentiment in notAddedSentiments)
+                foreach (SentimentValue sentiment in notAddedSentiments)
                 {
                     Add(new SentimentValue(sentiment.Owner, new SentimentValueData(sentiment.DataValue.Value * fallbackWeight, SentimentSource.AdjustedCalculated)));
                 }
@@ -108,7 +109,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 if (Rating.IsPositive.Value &&
                     result.Probability < 0.5)
                 {
-                    log.Debug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
+                    log.LogDebug("Mistmatch in sentiment with machine prediction: {0} - {1}", Rating.IsPositive, result.Probability);
                 }
             }
         }

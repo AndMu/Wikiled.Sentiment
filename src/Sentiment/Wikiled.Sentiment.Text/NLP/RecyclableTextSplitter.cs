@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -9,7 +10,7 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public class RecyclableTextSplitter : ITextSplitter
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<RecyclableTextSplitter>();
 
         private readonly int maxProcessing;
 
@@ -40,12 +41,12 @@ namespace Wikiled.Sentiment.Text.NLP
         {
             if (splitter == null)
             {
-                log.Info("Constructing NEW {0} splitter...", id);
+                log.LogInformation("Constructing NEW {0} splitter...", id);
                 Interlocked.Exchange(ref current, 0);
                 splitter = factory();
             }
 
-            var result = await splitter.Process(request).ConfigureAwait(false);
+            Document result = await splitter.Process(request).ConfigureAwait(false);
             if (Interlocked.Increment(ref current) >= maxProcessing)
             {
                 splitter.Dispose();

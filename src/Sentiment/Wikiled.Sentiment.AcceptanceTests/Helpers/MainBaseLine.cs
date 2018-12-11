@@ -2,10 +2,11 @@
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MoreLinq;
-using NLog;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -16,7 +17,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
     {
         private readonly ProductCategory category;
 
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<MainBaseLine>();
 
         private readonly string product;
 
@@ -33,10 +34,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public async Task<ITestingClient> Test(string testProduct, ProductCategory testCategory)
         {
-            logger.Info("Testing...");
+            logger.LogInformation("Testing...");
             TestRunner testing = new TestRunner(TestHelper.Instance, new SentimentTestData(testProduct) { Category = testCategory });
 
-            logger.Info("Loading data...");
+            logger.LogInformation("Loading data...");
             var testingClient = testing.Active.GetTesting(trainingLocation);
             testingClient.TrackArff = true;
             testingClient.DisableAspects = true;
@@ -48,12 +49,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public async Task Train()
         {
-            logger.Info("Trainning...");
+            logger.LogInformation("Trainning...");
             Training = new TestRunner(TestHelper.Instance, new SentimentTestData(product) { Category = category });
-            logger.Info("Loading data...");
+            logger.LogInformation("Loading data...");
             var trainingClient = Training.Active.GetTraining(trainingLocation);
             trainingClient.DisableAspects = true;
-            logger.Info("Training...");
+            logger.LogInformation("Training...");
             await trainingClient.Train(await GetData(Training.Load()).ConfigureAwait(false)).ConfigureAwait(false);
         }
 

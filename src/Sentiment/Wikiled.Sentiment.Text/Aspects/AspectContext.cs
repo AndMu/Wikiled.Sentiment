@@ -1,7 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
@@ -12,7 +13,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public class AspectContext : IAspectContext
     {
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<AspectContext>();
 
         private readonly ConcurrentBag<IWordItem> attributes = new ConcurrentBag<IWordItem>();
 
@@ -26,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public AspectContext(bool includeSentiment, IWordItem[] words)
         {
-            log.Debug("Construct");
+            log.LogDebug("Construct");
             this.includeSentiment = includeSentiment;
             this.words = words ?? throw new System.ArgumentNullException(nameof(words));
         }
@@ -43,10 +44,10 @@ namespace Wikiled.Sentiment.Text.Aspects
 
         public void Process()
         {
-            log.Debug("Process");
+            log.LogDebug("Process");
             if (processed)
             {
-                log.Warn("Allready processed");
+                log.LogWarning("Allready processed");
                 return;
             }
 
@@ -70,11 +71,11 @@ namespace Wikiled.Sentiment.Text.Aspects
                     wordItem.IsSentiment && !includeSentiment)
                 {
                     // if sentiment excluded
-                    log.Debug("Can't be attribute: {0}", wordItem);
+                    log.LogDebug("Can't be attribute: {0}", wordItem);
                     return;
                 }
 
-                log.Debug("Adding attribute: {0}", wordItem);
+                log.LogDebug("Adding attribute: {0}", wordItem);
                 attributes.Add(wordItem);
                 return;
             }
@@ -85,11 +86,11 @@ namespace Wikiled.Sentiment.Text.Aspects
                 // words with ending -ing and -ed can't be features
                 if (wordItem.CanNotBeFeature())
                 {
-                    log.Debug("Can't feature: {0}", wordItem);
+                    log.LogDebug("Can't feature: {0}", wordItem);
                     return;
                 }
 
-                log.Debug("Adding feature: {0}", wordItem);
+                log.LogDebug("Adding feature: {0}", wordItem);
                 features.Add(wordItem);
             }
         }
