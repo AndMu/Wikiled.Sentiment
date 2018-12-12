@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             builder.RegisterModule<CommonModule>();
             builder.RegisterModule(new LoggingModule(ApplicationLogging.LoggerFactory));
-            builder.RegisterModule(new MainModule());
+            builder.RegisterModule(new SentimentMainModule());
             initialized["Splitter"] = false;
             initialized["Cache"] = false;
             initialized["Config"] = false;

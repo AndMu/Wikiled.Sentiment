@@ -13,13 +13,13 @@ using Wikiled.Text.Analysis.Cache;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class ServiceModule : Module
+    public class SentimentServiceModule : Module
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<ServiceModule>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentServiceModule>();
 
         private readonly ConfigurationHandler configuration;
 
-        public ServiceModule(ConfigurationHandler configuration)
+        public SentimentServiceModule(ConfigurationHandler configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }

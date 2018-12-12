@@ -16,7 +16,7 @@ using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class MainModule : Module
+    public class SentimentMainModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
