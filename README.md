@@ -49,7 +49,7 @@ Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Model=
 
 ## Docker service
 
-An application is also available as a standalone docker based REST service, available in [GitHub](AndMu/Wikiled.Sentiment.Service).
+An application is also available as a standalone docker based REST service, available in [GitHub](https://github.com/AndMu/Wikiled.Sentiment.Service)
 
 ## Linux support
 
