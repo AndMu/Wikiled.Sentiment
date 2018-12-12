@@ -28,8 +28,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             All = Observable.Create<DataPair>(o =>
             {
-                using (StreamReader streamReader = new StreamReader(path))
-                using (JsonTextReader reader = new JsonTextReader(streamReader))
+                using (var streamReader = new StreamReader(path))
+                using (var reader = new JsonTextReader(streamReader))
                 {
                     reader.SupportMultipleContent = true;
 
@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                             throw new FormatException("Expected a property name, got: " + reader.TokenType);
                         }
 
-                        string propertyName = reader.Value.ToString();
+                        var propertyName = reader.Value.ToString();
                         if (!Enum.TryParse(propertyName, true, out SentimentClass value))
                         {
                             throw new FormatException("Expected Sentiment type but got:" + value);

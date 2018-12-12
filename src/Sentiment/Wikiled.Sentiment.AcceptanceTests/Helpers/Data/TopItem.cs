@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers.Data
 
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.AppendFormat("Top: {0}:", Total);
             foreach (var item in Items)
             {

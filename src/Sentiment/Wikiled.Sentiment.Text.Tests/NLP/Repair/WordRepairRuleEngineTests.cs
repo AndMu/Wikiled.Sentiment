@@ -25,9 +25,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         [Test]
         public void TestIsInvertorMultipleRules()
         {
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule1 = new Rule();
-            Rule rule2 = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule1 = new Rule();
+            var rule2 = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule1, rule2 };
             rule1.Index = 1;
@@ -42,9 +42,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         public void TestIsInvertorMultipleRulesFail()
         {
             var wordItem = SetupItem();
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule1 = new Rule();
-            Rule rule2 = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule1 = new Rule();
+            var rule2 = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule1, rule2 };
             rule1.Index = 1;
@@ -59,8 +59,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         public void TestIsInvertorByPos()
         {
             var wordItem = SetupItem();
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule };
             rule.Index = 1;
@@ -72,8 +72,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         [Test]
         public void TestIsInvertorByPosFail()
         {
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule };
             rule.Index = 1;
@@ -85,8 +85,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         [Test]
         public void TestIsInvertorByPosAndEnding()
         {
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule };
             rule.Index = 1;
@@ -100,8 +100,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         public void TestIsInvertorByPosAndEndingFail()
         {
 
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
-            Rule rule = new Rule();
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var rule = new Rule();
             repairRule.Set = new[] { new RuleSet() };
             repairRule.Set[0].Rules = new[] { rule };
             rule.Index = 1;
@@ -114,7 +114,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
         [Test]
         public void TestIsInvertorFail()
         {
-            WordRepairRuleEngine engine = new WordRepairRuleEngine(wordItem, repairRule);
+            var engine = new WordRepairRuleEngine(wordItem, repairRule);
             var isInvertor = engine.Evaluate();
             Assert.IsFalse(isInvertor.Value);
         }

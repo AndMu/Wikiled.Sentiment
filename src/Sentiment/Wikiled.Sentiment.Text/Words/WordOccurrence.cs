@@ -109,7 +109,7 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             text = text?.ToLower();
-            string rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
+            var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
             rawWord = rawWord?.ToLower();
             var item = new WordOccurrence(text, rawWord, pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);

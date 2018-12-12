@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         {
             var document = await InitDocument().ConfigureAwait(false);
             var words = document.Words.ToArray();
-            for (int i = 0; i < words.Length; i++)
+            for (var i = 0; i < words.Length; i++)
             {
                 words[i].CalculatedValue = i % 3;
             }
@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             {
                 var document = await InitDocument(file).ConfigureAwait(false);
                 var words = document.Words.ToArray();
-                for (int i = 0; i < words.Length; i++)
+                for (var i = 0; i < words.Length; i++)
                 {
                     words[i].Value = i % 3;
                 }

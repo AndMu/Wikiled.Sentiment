@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Text.NLP
         protected override Document ActualProcess(ParseRequest request)
         {
             var tokenizer = sentenceTokenizer.Create(true, false);
-            SimpleWordsExtraction wordsExtraction = new SimpleWordsExtraction(tokenizer);
+            var wordsExtraction = new SimpleWordsExtraction(tokenizer);
             Document document = wordsExtraction.GetDocument(request.Document.Text);
             return document;
         }

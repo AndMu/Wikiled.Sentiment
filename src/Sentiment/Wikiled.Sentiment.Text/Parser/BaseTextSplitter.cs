@@ -32,11 +32,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
             using (new PerformanceTrace(item => log.LogDebug(item), "Process"))
             {
-                string text = request.Document.Text.Trim();
+                var text = request.Document.Text.Trim();
                 request.Document.Text = text;
                 if (string.IsNullOrWhiteSpace(request.Document.Id))
                 {
-                    string tag = request.Document.Id = Guid.NewGuid().ToString();
+                    var tag = request.Document.Id = Guid.NewGuid().ToString();
                     log.LogDebug("Key not found on document. generating: {0}...", tag);
                 }
 

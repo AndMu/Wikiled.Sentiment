@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [TestCase(10, 3)]
         public async Task Process(int times, int construction)
         {
-            ParseRequest request = new ParseRequest("Test");
+            var request = new ParseRequest("Test");
             splitter.Setup(item => item.Process(request))
                     .Returns(
                         async () =>
@@ -44,8 +44,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
                             return null;
                         });
                 
-            List<Task> tasks = new List<Task>();
-            for(int i = 0; i < times; i++)
+            var tasks = new List<Task>();
+            for(var i = 0; i < times; i++)
             {
                 tasks.Add(instance.Process(request));
             }

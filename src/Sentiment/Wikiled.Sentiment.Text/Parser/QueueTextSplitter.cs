@@ -31,9 +31,9 @@ namespace Wikiled.Sentiment.Text.Parser
             }
 
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
-            for (int i = 0; i < maxSplitters; i++)
+            for (var i = 0; i < maxSplitters; i++)
             {
-                Lazy<ITextSplitter> item = new Lazy<ITextSplitter>(factory);
+                var item = new Lazy<ITextSplitter>(factory);
                 splitters.Add(item);
                 workStack.Enqueue(item);
             }

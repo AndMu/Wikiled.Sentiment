@@ -11,15 +11,15 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [Test]
         public void GetImportant()
         {
-            TestPhrase phrase = new TestPhrase();
-            TestWordItem word = new TestWordItem
+            var phrase = new TestPhrase();
+            var word = new TestWordItem
             {
                 IsSentiment = true,
                 Text = "A",
                 Parent = phrase
             };
 
-            TestWordItem word2 = new TestWordItem
+            var word2 = new TestWordItem
             {
                 IsStopWord = true,
                 Text = "B",

@@ -41,11 +41,10 @@ namespace Wikiled.Sentiment.Text.Data
 
         public DateTime? Date { get; }
 
-        public IEnumerable<IWordItem> Items =>
-            from sentence in Sentences
-            from item in sentence.Occurrences.GetImportant()
-            select item;
+        public IEnumerable<IWordItem> AllWords => Sentences.SelectMany(item => item.Occurrences);
 
+        public IEnumerable<IWordItem> ImportantWords => Sentences.SelectMany(item => item.Occurrences.GetImportant());
+        
         public IList<ISentence> Sentences
         {
             get
@@ -95,7 +94,7 @@ namespace Wikiled.Sentiment.Text.Data
 
         public SentimentValue[] GetAllSentiments()
         {
-            return (from item in Items
+            return (from item in ImportantWords
                     where item.Relationship.Sentiment != null
                     select item.Relationship.Sentiment)
                 .ToArray();
@@ -108,7 +107,7 @@ namespace Wikiled.Sentiment.Text.Data
                 foreach (var wordOccurrence in sentence.Occurrences)
                 {
                     wordOccurrence.Reset();
-                    Phrase parent = wordOccurrence.Parent as Phrase;
+                    var parent = wordOccurrence.Parent as Phrase;
                     parent?.Reset();
                 }
             }

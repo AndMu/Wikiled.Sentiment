@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Resources
 
         public string ResolvePath(string name)
         {
-            string resourcePath = Path.Combine(StartingLocation, GetConfiguration(name));
+            var resourcePath = Path.Combine(StartingLocation, GetConfiguration(name));
             return new DirectoryInfo(resourcePath).FullName;
         }
 
@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.Text.Resources
         public bool TryGetConfiguration<T>(string name, out T outValue)
         {
             outValue = default(T);
-            if (!overrides.TryGetValue(name, out string value))
+            if (!overrides.TryGetValue(name, out var value))
             {
                 value = ConfigurationManager.AppSettings[name];
             }

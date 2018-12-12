@@ -71,16 +71,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             if (File.Exists(path))
             {
-                foreach (string line in File.ReadLines(path))
+                foreach (var line in File.ReadLines(path))
                 {
                     yield return new Document(line.SanitizeXmlString());
                 }
             }
             else
             {
-                foreach (string file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
+                foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
                 {
-                    FileInfo fileInfo = new FileInfo(file);
+                    var fileInfo = new FileInfo(file);
                     yield return new Document(File.ReadAllText(file).SanitizeXmlString())
                     {
                         Id = $"{fileInfo.Directory.Name}_{Path.GetFileNameWithoutExtension(fileInfo.Name)}"

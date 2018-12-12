@@ -109,11 +109,11 @@ namespace Wikiled.Sentiment.Analysis.Processing
             if (!DisableAspects &&
                 (!string.IsNullOrEmpty(AspectPath) || !string.IsNullOrEmpty(SvmPath)))
             {
-                string path = string.IsNullOrEmpty(AspectPath) ? Path.Combine(SvmPath, "aspects.xml") : AspectPath;
+                var path = string.IsNullOrEmpty(AspectPath) ? Path.Combine(SvmPath, "aspects.xml") : AspectPath;
                 if (File.Exists(path))
                 {
                     log.LogInformation("Loading {0} aspects", path);
-                    XDocument features = XDocument.Load(path);
+                    var features = XDocument.Load(path);
                     IAspectDectector aspect = clientContext.AspectSerializer.Deserialize(features);
                     clientContext.Context.ChangeAspect(aspect);
                 }
@@ -148,7 +148,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             try
             {
                 IRatingAdjustment adjustment = RatingAdjustment.Create(context.Review, MachineSentiment);
-                clientContext.NrcDictionary.ExtractToVector(SentimentVector, context.Review.Items);
+                clientContext.NrcDictionary.ExtractToVector(SentimentVector, context.Review.ImportantWords);
                 context.Processed = documentFromReview.ReparseDocument(adjustment);
                 AspectSentiment.Process(context.Review);
                 context.Adjustment = adjustment;

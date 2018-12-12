@@ -25,23 +25,23 @@ namespace Wikiled.Sentiment.ConsoleApp
 
         public static async Task Main(string[] args)
         {
-            LoggerFactory loggerFactory = new LoggerFactory();
+            var loggerFactory = new LoggerFactory();
             loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
             log.LogInformation("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
-            ConfigurationHandler configuration = new ConfigurationHandler();
-            string resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
+            var configuration = new ConfigurationHandler();
+            var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
             if (Directory.Exists(resourcesPath))
             {
                 log.LogInformation("Resources folder {0} found.", resourcesPath);
             }
             else
             {
-                DataDownloader dataDownloader = new DataDownloader(loggerFactory);
+                var dataDownloader = new DataDownloader(loggerFactory);
                 Task task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
                 task.Wait();
             }
 
-            List<Command> commandsList = new List<Command>
+            var commandsList = new List<Command>
             {
                 new TrainCommand(),
                 new SemEvalBoostrapCommand(),
@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                 new ExtractAttributesCommand()
             };
 
-            Dictionary<string, Command> commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
+            var commands = commandsList.ToDictionary(item => item.Name, item => item, StringComparer.OrdinalIgnoreCase);
 
 #if NET472
             var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);

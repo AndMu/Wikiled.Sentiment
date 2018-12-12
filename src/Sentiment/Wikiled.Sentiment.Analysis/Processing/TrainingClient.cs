@@ -136,7 +136,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             featureExtractor.Process(context.Review);
-            clientContext.NrcDictionary.ExtractToVector(sentimentVector, context.Review.Items);
+            clientContext.NrcDictionary.ExtractToVector(sentimentVector, context.Review.ImportantWords);
             return context;
         }
 
@@ -172,14 +172,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
             Text.Words.IWordItem[] features = featureExtractor.GetFeatures(100).ToArray();
             Text.Words.IWordItem[] attributes = featureExtractor.GetAttributes(100).ToArray();
             XDocument document = serializer.Serialize(features, attributes);
-            string featuresFile = Path.Combine(analyze.SvmPath, "aspects.xml");
+            var featuresFile = Path.Combine(analyze.SvmPath, "aspects.xml");
             document.Save(featuresFile);
             if (!string.IsNullOrEmpty(OverrideAspects))
             {
                 log.LogInformation($"Overriding aspects with {OverrideAspects}");
                 File.Copy(featuresFile, Path.Combine(analyze.SvmPath, "aspects_detected.xml"), true);
                 File.Copy(OverrideAspects, featuresFile, true);
-                XDocument featuresXml = XDocument.Load(featuresFile);
+                var featuresXml = XDocument.Load(featuresFile);
                 IAspectDectector aspect = serializer.Deserialize(featuresXml);
                 features = aspect.AllFeatures.ToArray();
                 attributes = aspect.AllAttributes.ToArray();

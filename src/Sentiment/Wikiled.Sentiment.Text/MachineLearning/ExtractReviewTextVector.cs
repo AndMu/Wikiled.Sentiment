@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         protected override void Additional()
         {
-            SentimentVector vector = dictionary.Extract(review.Items);
+            SentimentVector vector = dictionary.Extract(review.ImportantWords);
             foreach (var probability in vector.GetProbabilities().Where(item => item.Probability > 0))
             {
                 AddItem(null, $"DIMENSION_{probability.Data}", probability.Probability);

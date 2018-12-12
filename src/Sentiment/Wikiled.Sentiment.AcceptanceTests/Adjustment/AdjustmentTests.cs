@@ -23,9 +23,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         public async Task Adjusted()
         {
             ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = true;
-            string words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
+            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
             ISentimentDataHolder lexicon = SentimentDataHolder.Load(words);
-            string text = "I Veto it";
+            var text = "I Veto it";
             Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             ActualWordsHandler.InstanceOpen.Container.Context.Lexicon = lexicon;
             Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
         [Test]
         public async Task TestEmoticon()
         {
-            string text = "EMOTICON_confused I do";
+            var text = "EMOTICON_confused I do";
             Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             var review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);

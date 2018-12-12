@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public IProcessingData LoadOldXml(string path)
         {
             var doc = XDocument.Load(path);
-            ProcessingData data = new ProcessingData();
+            var data = new ProcessingData();
             foreach (var item in GetRecords(doc.Descendants("Positive")))
             {
                 data.Add(PositivityType.Positive, item);
@@ -45,7 +45,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private SingleProcessingData GetRecord(XElement element)
         {
             var text = element.Descendants("Text").Select(x => x.Value).OrderByDescending(x => x.Length).FirstOrDefault();
-            SingleProcessingData item = new SingleProcessingData(text);
+            var item = new SingleProcessingData(text);
             var stars = element.Descendants("Stars").Select(x => double.Parse(x.Value)).OrderBy(x => x).FirstOrDefault();
             item.Stars = stars;
             var date = element.Descendants("Date").Select(x => DateTime.Parse(x.Value)).OrderBy(x => x).FirstOrDefault();

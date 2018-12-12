@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Text.Aspects
                 throw new ArgumentNullException(nameof(attributes));
             }
 
-            AspectData data = new AspectData();
+            var data = new AspectData();
             data.Aspects = aspects.Select(item => item.Text).ToArray();
             data.Attributes = attributes.Select(item => item.Text).ToArray();
             return data.XmlSerialize();

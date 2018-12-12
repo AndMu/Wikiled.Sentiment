@@ -39,7 +39,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public static MainContainerFactory CreateStandard()
         {
             log.LogInformation("CreateStandard");
-            MainContainerFactory instance = new MainContainerFactory();
+            var instance = new MainContainerFactory();
             return instance.SetupLocalCache()
                 .Config()
                 .Splitter();
@@ -48,7 +48,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public static MainContainerFactory Setup()
         {
             log.LogInformation("Setup");
-            MainContainerFactory instance = new MainContainerFactory();
+            var instance = new MainContainerFactory();
             return instance;
         }
 
@@ -79,7 +79,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public MainContainerFactory Config(Action<ConfigurationHandler> action = null)
         {
             initialized["Config"] = true;
-            ConfigurationHandler configuration = new ConfigurationHandler();
+            var configuration = new ConfigurationHandler();
             action?.Invoke(configuration);
             builder.RegisterInstance(configuration).As<IConfigurationHandler>();
             return this;

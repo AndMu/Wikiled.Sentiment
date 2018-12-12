@@ -17,8 +17,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             var factory = MainContainerFactory.Setup()
                 .Config(configuration =>
                 {
-                    string resources = configuration.GetConfiguration("Resources");
-                    string resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
+                    var resources = configuration.GetConfiguration("Resources");
+                    var resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
                     configuration.SetConfiguration("Resources", resourcesPath);
                 })
                 .Splitter(type)

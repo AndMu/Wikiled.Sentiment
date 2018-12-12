@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             {
                 sentence.Setup(item => item.Text).Returns("Sentence");
                 var currentWords = new List<TestWordItem>();
-                for (int i = 0; i < 2; i++)
+                for (var i = 0; i < 2; i++)
                 {
                     var wordItem = new TestWordItem();
                     wordItem.Text = "Word";
@@ -55,7 +55,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             adjustment.Setup(item => item.Rating)
                 .Returns(rating);
 
-            for (int i = 0; i < words.Count; i++)
+            for (var i = 0; i < words.Count; i++)
             {
                 var word = words[i];
                 adjustment.Setup(item => item.GetSentiment(word)).Returns(new SentimentValue(word, 10));
@@ -70,7 +70,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             {
                 Assert.AreEqual(2, sentenceItem.Words.Count);
                 Assert.AreEqual("Sentence", sentenceItem.Text);
-                for (int i = 0; i < sentenceItem.Words.Count; i++)
+                for (var i = 0; i < sentenceItem.Words.Count; i++)
                 {
                     Assert.AreEqual(i + 1, sentenceItem.Words[i].Value);
                     Assert.AreEqual(10, sentenceItem.Words[i].CalculatedValue);

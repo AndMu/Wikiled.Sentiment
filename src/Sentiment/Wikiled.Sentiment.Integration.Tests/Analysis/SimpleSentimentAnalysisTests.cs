@@ -50,24 +50,24 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [Test]
         public async Task FullSentence()
         {
-            string text = "This tale based on two Edgar Allen Poe pieces (\"The Fall of the House of Usher\", \"Dance of Death\" (poem) ) is actually quite creepy from beginning to end. It is similar to some of the old black-and-white movies about people that meet in an old decrepit house (for example, \"The Cat and the Canary\", \"The Old Dark House\", \"Night of Terror\" and so on). Boris Karloff plays a demented inventor of life-size dolls that terrorize the guests. He dies early in the film (or does he ? ) and the residents of the house are subjected to a number of terrifying experiences. I won't go into too much detail here, but it is definitely a must-see for fans of old dark house mysteries.<br /><br />Watch it with plenty of popcorn and soda in a darkened room.<br /><br />Dan Basinger 8/10";
+            var text = "This tale based on two Edgar Allen Poe pieces (\"The Fall of the House of Usher\", \"Dance of Death\" (poem) ) is actually quite creepy from beginning to end. It is similar to some of the old black-and-white movies about people that meet in an old decrepit house (for example, \"The Cat and the Canary\", \"The Old Dark House\", \"Night of Terror\" and so on). Boris Karloff plays a demented inventor of life-size dolls that terrorize the guests. He dies early in the film (or does he ? ) and the residents of the house are subjected to a number of terrifying experiences. I won't go into too much detail here, but it is definitely a must-see for fans of old dark house mysteries.<br /><br />Watch it with plenty of popcorn and soda in a darkened room.<br /><br />Dan Basinger 8/10";
             ActualWordsHandler.InstanceSimple.Container.Context.DisableFeatureSentiment = true;
             ActualWordsHandler.InstanceSimple.Container.Context.DisableInvertors = true;
 
             string[] positiveAdj = { "good", "lovely", "excellent", "delightful", "perfect" };
             string[] negativeAdj = { "bad", "horrible", "poor", "disgusting", "unhappy" };
-            Dictionary<string, double> sentiment = new Dictionary<string, double>();
-            foreach (string item in positiveAdj)
+            var sentiment = new Dictionary<string, double>();
+            foreach (var item in positiveAdj)
             {
                 sentiment[item] = 2;
             }
 
-            foreach (string item in negativeAdj)
+            foreach (var item in negativeAdj)
             {
                 sentiment[item] = -2;
             }
 
-            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
+            var adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
             var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;
             var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
@@ -86,7 +86,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         {
             Document request = await textSplitter.Process(new ParseRequest("Like or hate it")).ConfigureAwait(false);
             var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
-            LexiconRatingAdjustment adjustment = new LexiconRatingAdjustment(
+            var adjustment = new LexiconRatingAdjustment(
                 review,
                 SentimentDataHolder.Load(new[]
                 {
@@ -101,9 +101,9 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't like to like this kik", 1, 1)]
         public async Task TestCustom(string text, double? rating, int totalSentiments)
         {
-            Dictionary<string, double> sentiment = new Dictionary<string, double>();
+            var sentiment = new Dictionary<string, double>();
             sentiment["hate"] = 2;
-            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
+            var adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
 
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;
@@ -120,9 +120,9 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I hate this pc", true, 5)]
         public async Task TestCustom(string text, bool useFallback, double? rating)
         {
-            Dictionary<string, double> sentiment = new Dictionary<string, double>();
+            var sentiment = new Dictionary<string, double>();
             sentiment["hate"] = 2;
-            SentimentDataHolder adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
+            var adjustment = SentimentDataHolder.PopulateEmotionsData(sentiment);
             ActualWordsHandler.InstanceSimple.Container.Context.UseBuiltInSentiment = useFallback;
             Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
             ActualWordsHandler.InstanceSimple.Container.Context.Lexicon = adjustment;

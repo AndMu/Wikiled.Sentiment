@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         protected override async Task Execute(CancellationToken token)
         {
-            List<Task> initTasks = new List<Task>();
+            var initTasks = new List<Task>();
             initTasks.Add(Task.Run(() => LoadBootstrap()));
             if (Neutral)
             {

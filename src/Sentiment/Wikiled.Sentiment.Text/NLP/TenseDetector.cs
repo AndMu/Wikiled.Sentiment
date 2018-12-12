@@ -21,9 +21,9 @@ namespace Wikiled.Sentiment.Text.NLP
                 return TenseType.Unknown;
             }
 
-            int past = 0;
-            int future = 0;
-            int present = 0;
+            var past = 0;
+            var future = 0;
+            var present = 0;
 
             foreach (var tense in tenses)
             {

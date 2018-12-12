@@ -90,7 +90,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         [Test]
         public void GetOccurences()
         {
-            SentimentVector vector = new SentimentVector();
+            var vector = new SentimentVector();
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "love" } });
@@ -109,7 +109,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         [Test]
         public void GetProbabilities()
         {
-            SentimentVector vector = new SentimentVector();
+            var vector = new SentimentVector();
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
             dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "love" } });

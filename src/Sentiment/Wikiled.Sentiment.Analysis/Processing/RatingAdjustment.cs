@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return new NullRatingAdjustment(review);
             }
 
-            RatingAdjustment adjustment = new RatingAdjustment(review, model);
+            var adjustment = new RatingAdjustment(review, model);
             adjustment.CalculateRating();
             return adjustment;
         }
@@ -53,12 +53,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return;
             }
 
-            double bias = vector.RHO;
-            double fallbackWeight = 0.1;
+            var bias = vector.RHO;
+            var fallbackWeight = 0.1;
             VectorCell lexicon = default;
             foreach (VectorCell item in vector.Cells)
             {
-                TextVectorCell cell = (TextVectorCell)item.Data;
+                var cell = (TextVectorCell)item.Data;
                 if (cell.Name == Constants.RATING_STARS)
                 {
                     lexicon = item;
@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 }
             }
 
-            List<SentimentValue> notAddedSentiments = new List<SentimentValue>();
+            var notAddedSentiments = new List<SentimentValue>();
             foreach (SentimentValue sentimentValue in Review.GetAllSentiments())
             {
                 if (!ContainsSentiment(sentimentValue.Owner))
@@ -85,7 +85,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             if (lexicon != null)
             {
-                int totalWords = Review.GetAllSentiments().Length;
+                var totalWords = Review.GetAllSentiments().Length;
                 fallbackWeight = Math.Abs(lexicon.Theta) / totalWords;
             }
 

@@ -14,7 +14,9 @@ namespace Wikiled.Sentiment.Text.Data
 
         Document Document { get; }
 
-        IEnumerable<IWordItem> Items { get; }
+        IEnumerable<IWordItem> ImportantWords { get; }
+
+        IEnumerable<IWordItem> AllWords { get; }
 
         IList<ISentence> Sentences { get; }
 

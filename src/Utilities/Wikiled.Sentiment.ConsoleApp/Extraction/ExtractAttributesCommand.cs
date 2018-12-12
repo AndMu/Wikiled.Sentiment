@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction
                         .LastOrDefaultAsync();
             }
 
-            string file = Path.Combine(Out, "features.xml");
+            var file = Path.Combine(Out, "features.xml");
             log.LogInformation("Saving {0}...", file);
             IAspectSerializer serializer = container.Resolve<IAspectSerializer>();
             serializer.Serialize(featureExtractor).Save(file);

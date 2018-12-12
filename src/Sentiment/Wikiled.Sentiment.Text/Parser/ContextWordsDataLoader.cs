@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 return false;
             }
 
-            bool value = Context.Aspect != null && Context.Aspect.IsAspect(word);
+            var value = Context.Aspect != null && Context.Aspect.IsAspect(word);
             return value;
         }
 

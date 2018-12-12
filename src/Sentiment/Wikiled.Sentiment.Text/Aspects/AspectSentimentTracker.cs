@@ -37,7 +37,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 
             log.LogDebug("Process");
             Interlocked.Increment(ref totalReviews);
-            foreach (IWordItem aspect in review.Items.Where(item => item.IsFeature))
+            foreach (IWordItem aspect in review.ImportantWords.Where(item => item.IsFeature))
             {
                 IContextSentiment context = factory.Construct(aspect.Relationship);
                 lock (syncRoot)
@@ -56,7 +56,7 @@ namespace Wikiled.Sentiment.Text.Aspects
         public AspectSentimentData GetResults()
         {
             log.LogDebug("Save");
-            AspectSentimentData data = new AspectSentimentData
+            var data = new AspectSentimentData
             {
                 TotalReviews = totalReviews
             };

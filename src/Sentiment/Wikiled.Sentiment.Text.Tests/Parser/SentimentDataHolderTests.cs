@@ -18,10 +18,10 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [SetUp]
         public void Setup()
         {
-            string path = ActualWordsHandler.InstanceSimple.Configuration.GetConfiguration("Resources");
+            var path = ActualWordsHandler.InstanceSimple.Configuration.GetConfiguration("Resources");
             path = Path.Combine(path, @"Library\Standard");
-            DictionaryStream stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
-            Dictionary<string, double> data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
+            var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
+            var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             sentimentData = SentimentDataHolder.PopulateEmotionsData(data);
 
         }
@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [TestCase("bad", -0.5, -0.5)]
         public void Adjust(string word, double weight, double sentiment)
         {
-            Dictionary<string, double> table = new Dictionary<string, double>();
+            var table = new Dictionary<string, double>();
             table[word] = weight;
             sentimentData = SentimentDataHolder.PopulateEmotionsData(table);
             Text.Words.IWordItem wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord(word, "NN");

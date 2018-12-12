@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void Create()
         {
-            WordsContext vectorData = new WordsContext(word);
+            var vectorData = new WordsContext(word);
             Assert.AreEqual(word, vectorData.Word);
             Assert.AreEqual(0, vectorData.Words.Count);
         }
@@ -20,8 +20,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void AddContext()
         {
-            WordEx addingWord = new WordEx(new SimpleWord("Test"));
-            WordsContext vectorData = new WordsContext(word);
+            var addingWord = new WordEx(new SimpleWord("Test"));
+            var vectorData = new WordsContext(word);
             vectorData.AddContext(addingWord);
             Assert.AreEqual(1, vectorData.Words.Count);
             vectorData.AddContext(addingWord);
@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void AddContextSame()
         {
-            WordsContext vectorData = new WordsContext(word);
+            var vectorData = new WordsContext(word);
             vectorData.AddContext(word);
             Assert.AreEqual(0, vectorData.Words.Count);
         }

@@ -48,7 +48,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 var matches = Regex.Matches(originalSentence, mask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
                 foreach (Match match in matches)
                 {
-                    bool found = false;
+                    var found = false;
                     foreach (var item in VerifyDictionary)
                     {
                         if (match.Length >= item + 1)

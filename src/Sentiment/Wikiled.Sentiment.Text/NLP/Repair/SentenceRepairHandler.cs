@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private void Load()
         {
-            XDocument document = XDocument.Load(Path.Combine(resourcesPath, "Repair.xml"));
+            var document = XDocument.Load(Path.Combine(resourcesPath, "Repair.xml"));
             var items = from item in document.XPathSelectElements("//Rules/Rule")
                         select item;
             foreach (var item in items)

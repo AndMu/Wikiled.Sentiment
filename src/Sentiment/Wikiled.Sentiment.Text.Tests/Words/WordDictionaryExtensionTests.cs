@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [TestCase("Test1", "Test1", false)]
         public void TryGetValue(string word, string raw, bool expected)
         {
-            Mock<IWordItem> wordItem = new Mock<IWordItem>();
+            var wordItem = new Mock<IWordItem>();
             wordItem.Setup(item => item.Text).Returns(word);
             wordItem.Setup(item => item.Stemmed).Returns(raw);
 
@@ -46,11 +46,11 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         [TestCase("xxxx", "xxx", false)]
         public void MaskedTryGetValue(string word, string raw, bool expected)
         {
-            Mock<IWordItem> wordItem = new Mock<IWordItem>();
+            var wordItem = new Mock<IWordItem>();
             wordItem.Setup(item => item.Text).Returns(word);
             wordItem.Setup(item => item.Stemmed).Returns(raw);
 
-            var resultItem = masked.TryGetWordValue(wordItem.Object, out int result);
+            var resultItem = masked.TryGetWordValue(wordItem.Object, out var result);
             Assert.AreEqual(expected, resultItem);
         }
     }

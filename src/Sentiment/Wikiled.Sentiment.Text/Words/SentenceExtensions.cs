@@ -36,7 +36,11 @@ namespace Wikiled.Sentiment.Text.Words
             foreach (var wordItem in words)
             {
                 if (wordItem.CanNotBeAttribute() &&
-                    wordItem.CanNotBeFeature())
+                    wordItem.CanNotBeFeature()  &&
+                    !wordItem.IsFeature &&
+                    !wordItem.IsSentiment &&
+                    wordItem.Relationship.Sentiment == null &&
+                    !wordItem.IsInvertor)
                 {
                     continue;
                 }

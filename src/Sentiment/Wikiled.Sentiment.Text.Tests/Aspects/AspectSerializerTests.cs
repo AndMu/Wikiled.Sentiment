@@ -20,10 +20,10 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         [SetUp]
         public void Setup()
         {
-            List<IWordItem> words = new List<IWordItem>();
-            for (int i = 0; i < 100; i++)
+            var words = new List<IWordItem>();
+            for (var i = 0; i < 100; i++)
             {
-                Mock<IWordItem> word = new Mock<IWordItem>();
+                var word = new Mock<IWordItem>();
                 word.Setup(item => item.Text).Returns(i.ToString);
                 words.Add(word.Object);
             }

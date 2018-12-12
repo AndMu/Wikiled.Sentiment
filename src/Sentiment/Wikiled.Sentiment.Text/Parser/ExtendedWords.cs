@@ -44,11 +44,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadIdioms()
         {
-            DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "IdiomLookupTable.txt"), new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(resourcesPath, "IdiomLookupTable.txt"), new FileStreamSource());
             idiomsSentiment = stream.ReadDataFromStream(int.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             foreach (var item in idiomsSentiment.ToArray())
             {
-                char[] arr = item.Key.Where(c => (char.IsLetterOrDigit(c) || c == '-')).ToArray();
+                var arr = item.Key.Where(c => (char.IsLetterOrDigit(c) || c == '-')).ToArray();
                 var alternative = new string(arr);
                 replacements[item.Key] = alternative;
                 idiomsSentiment[alternative] = item.Value;
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadSlang()
         {
-            DictionaryStream stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(resourcesPath, "SlangLookupTable.txt"), new FileStreamSource());
             foreach (var item in stream.ReadDataFromStream(item => item))
             {
                 replacements[item.Word] = item.Value;

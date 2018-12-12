@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.Text.Cache
                 return result;
             }
 
-            RepositoryKey key = new RepositoryKey(this, new ObjectKey(original.Id));
+            var key = new RepositoryKey(this, new ObjectKey(original.Id));
             result = await manager.Client.GetRecords<Document>(key).LastOrDefaultAsync();
             if (result != null)
             {
@@ -92,7 +92,7 @@ namespace Wikiled.Sentiment.Text.Cache
             }
 
             await local.Save(document).ConfigureAwait(false);
-            RepositoryKey key = new RepositoryKey(this, new ObjectKey(document.Id));
+            var key = new RepositoryKey(this, new ObjectKey(document.Id));
             key.AddIndex(new IndexKey(this, "Index:All", false));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetId()}", true));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetTextId()}", true));
@@ -102,7 +102,7 @@ namespace Wikiled.Sentiment.Text.Cache
 
         private async Task<Document> GetById(string id, Document original)
         {
-            IndexKey index = new IndexKey(this, id, true);
+            var index = new IndexKey(this, id, true);
             Document result = await manager.Client.GetRecords<Document>(index).LastOrDefaultAsync();
             if (result?.Text == original.Text)
             {

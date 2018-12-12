@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         public void Train(int[] y, double[][] x, CancellationToken token)
         {
             log.LogInformation("Training SVM...");
-            GridSearch<SupportVectorMachine, double[], int> gridsearch = new GridSearch<SupportVectorMachine, double[], int>
+            var gridsearch = new GridSearch<SupportVectorMachine, double[], int>
             {
                 ParameterRanges =
                                          new GridSearchRangeCollection
@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             GridSearchResult<SupportVectorMachine, double[], int> result = gridsearch.Learn(x, y);
             Model = result.BestModel;
             GridSearchParameterCollection parameters = result.BestParameters;
-            double error = result.BestModelError;
+            var error = result.BestModelError;
             log.LogInformation("SVM Trained. Threshold: {0} Constant: {1} Error: {2} ...", Model.Threshold, parameters[0].Value, error);
         }
 

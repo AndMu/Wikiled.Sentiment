@@ -97,7 +97,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
             Assert.AreEqual(3, rating.StarsRating);
-            var words = result.Items.ToArray();
+            var words = result.ImportantWords.ToArray();
             Assert.IsTrue(words[0].IsSentiment);
             Assert.IsTrue(words[1].IsSentiment);
             Assert.AreEqual(-1, words[0].Relationship.Sentiment.DataValue.Value);
@@ -116,7 +116,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             log.LogInformation("FindAnomally");
             var data = new SentimentTestData("B00002EQCW");
-            TestRunner runner = new TestRunner(TestHelper.Instance, data);
+            var runner = new TestRunner(TestHelper.Instance, data);
             var sentences = await runner.Load()
                 .ObserveOn(TaskPoolScheduler.Default)
                 .Select(GetSentence)
@@ -127,14 +127,14 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
         private static async Task<ISentence[]> GetSentence(IParsedDocumentHolder parsedDocument)
         {
-            ConcurrentBag<ISentence> sentences = new ConcurrentBag<ISentence>();
+            var sentences = new ConcurrentBag<ISentence>();
             var doc = await parsedDocument.GetParsed().ConfigureAwait(false);
             var review = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(doc).Create();
             foreach (var sentence in review.Sentences)
             {
                 var sentiments = sentence.Occurrences.Where(item => item.IsSentiment).ToArray();
-                bool hasPositive = sentiments.Any(item => item.Relationship.Sentiment.DataValue.IsPositive);
-                bool hasNegative = sentiments.Any(item => !item.Relationship.Sentiment.DataValue.IsPositive);
+                var hasPositive = sentiments.Any(item => item.Relationship.Sentiment.DataValue.IsPositive);
+                var hasNegative = sentiments.Any(item => !item.Relationship.Sentiment.DataValue.IsPositive);
                 if (hasNegative && hasPositive)
                 {
                     sentences.Add(sentence);

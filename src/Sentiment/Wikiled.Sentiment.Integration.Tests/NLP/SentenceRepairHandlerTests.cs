@@ -18,7 +18,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void RepairNotOnly()
         {
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var result = handler.Repair("We not only brought this book but also liked it");
                 Assert.AreEqual("We brought this book and liked it", result);

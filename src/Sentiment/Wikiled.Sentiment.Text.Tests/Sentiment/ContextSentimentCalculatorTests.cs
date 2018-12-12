@@ -93,6 +93,8 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
 
             child.SetupSequence(item => item.Sentiment)
                  .Returns(SentimentValue.CreateBad(owner.Object))
+                 .Returns(SentimentValue.CreateBad(owner.Object))
+                 .Returns(SentimentValue.CreateGood(owner.Object))
                  .Returns(SentimentValue.CreateGood(owner.Object));
             child.Setup(item => item.PriorQuants)
                  .Returns(new List<IWordItem>());
@@ -101,7 +103,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void Process()
         {
-            ContextSentimentCalculator calculator = new ContextSentimentCalculator(parent.Object);
+            var calculator = new ContextSentimentCalculator(parent.Object);
             Assert.AreEqual(0, calculator.Sentiments.Count);
             calculator.Process();
             Assert.AreEqual(2, calculator.Sentiments.Count);
@@ -112,14 +114,14 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void ProcessInvertorNear()
         {
-            Mock<IWordItem> invertor = new Mock<IWordItem>();
+            var invertor = new Mock<IWordItem>();
             child.SetupSequence(item => item.Inverted)
                 .Returns((IWordItem)null)
                 .Returns(invertor.Object)
                 .Returns(invertor.Object);
             invertor.Setup(item => item.WordIndex).Returns(1);
 
-            ContextSentimentCalculator calculator = new ContextSentimentCalculator(parent.Object);
+            var calculator = new ContextSentimentCalculator(parent.Object);
             Assert.AreEqual(0, calculator.Sentiments.Count);
             calculator.Process();
             Assert.AreEqual(2, calculator.Sentiments.Count);

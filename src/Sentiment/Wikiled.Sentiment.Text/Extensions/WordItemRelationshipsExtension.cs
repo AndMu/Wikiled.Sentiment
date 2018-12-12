@@ -44,7 +44,7 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static IEnumerable<(IWordItem Word, double)> GetNeighbours(this IWordItemRelationships current, bool forward, int max = 3)
         {
-            int i = 0;
+            var i = 0;
             Func<IWordItemRelationships, IWordItemRelationships> next = forward ? (Func<IWordItemRelationships, IWordItemRelationships>)(item => item.Next?.Relationship) : item => item.Previous?.Relationship;
             while (next(current) != null)
             {

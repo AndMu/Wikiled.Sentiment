@@ -50,10 +50,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
         public async Task ProductTest(SentimentAspectData data)
         {
             log.LogInformation("ProductTest: {0}", data);
-            MainAspectHandler aspectHandler = new MainAspectHandler(new AspectContextFactory());
-            TestRunner runner = new TestRunner(TestHelper.Instance, data.Sentiment);
+            var aspectHandler = new MainAspectHandler(new AspectContextFactory());
+            var runner = new TestRunner(TestHelper.Instance, data.Sentiment);
 
-            SemaphoreSlim semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2, Environment.ProcessorCount / 2);
+            var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 2, Environment.ProcessorCount / 2);
             IObservable<IParsedDocumentHolder> result = runner.Load().ObserveOn(TaskPoolScheduler.Default).Select(review => ProcessItem(semaphore, aspectHandler, review)).Merge();
 
             await result;
@@ -63,12 +63,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Aspects
 
             Text.Words.IWordItem[] features = aspectHandler.GetFeatures(10).ToArray();
             Text.Words.IWordItem[] attributes = aspectHandler.GetAttributes(10).ToArray();
-            for (int i = 0; i < data.Features.Items.Length; i++)
+            for (var i = 0; i < data.Features.Items.Length; i++)
             {
                 Assert.IsTrue(features.Any(item => string.Compare(item.Text, data.Features.Items[i], StringComparison.OrdinalIgnoreCase) == 0));
             }
 
-            for (int i = 0; i < data.Attributes.Items.Length; i++)
+            for (var i = 0; i < data.Attributes.Items.Length; i++)
             {
                 Assert.IsTrue(attributes.Any(item => string.Compare(item.Text, data.Attributes.Items[i], StringComparison.OrdinalIgnoreCase) == 0));
             }

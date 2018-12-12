@@ -23,7 +23,7 @@ namespace Wikiled.Sentiment.Analysis.Arff
                 var review = DataSet.AddDocument();
                 review.Class.Value = positivity;
 
-                foreach (var word in current.Items)
+                foreach (var word in current.ImportantWords)
                 {
                     var item = review.AddRecord(word.Text);
                     if (item == null)

@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Text.Tests.Configuration
         [Test]
         public void ConstructUsingConfiguration()
         {
-            Mock<IConfigurationHandler> configuration = new Mock<IConfigurationHandler>();
+            var configuration = new Mock<IConfigurationHandler>();
             configuration.Setup(item => item.ResolvePath("Resources")).Returns(@"c:/data");
             configuration.Setup(item => item.SafeGetConfiguration("Lexicon", @"Library/Standard")).Returns(TestContext.CurrentContext.TestDirectory);
             var container = new LexiconConfiguration(configuration.Object);

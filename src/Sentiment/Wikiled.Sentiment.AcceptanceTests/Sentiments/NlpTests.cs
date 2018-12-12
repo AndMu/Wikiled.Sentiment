@@ -38,15 +38,15 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [TestCase(false)]
         public async Task TestReview(bool disableInvert)
         {
-            string txt = "#paulryan #killed #rnc2016 #america #died #wisconsin no more EMOTICON_kissing_heart since you gave up on #trump, you don't represent #us";
-            DictionaryStream stream = new DictionaryStream(Path.Combine(path, "Library", "Standard", "EmotionLookupTable.txt"), new FileStreamSource());
-            System.Collections.Generic.Dictionary<string, double> data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
-            foreach (string item in data.Keys.ToArray().Where(k => !k.StartsWith("EMOTICON")))
+            var txt = "#paulryan #killed #rnc2016 #america #died #wisconsin no more EMOTICON_kissing_heart since you gave up on #trump, you don't represent #us";
+            var stream = new DictionaryStream(Path.Combine(path, "Library", "Standard", "EmotionLookupTable.txt"), new FileStreamSource());
+            var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
+            foreach (var item in data.Keys.ToArray().Where(k => !k.StartsWith("EMOTICON")))
             {
                 data.Remove(item);
             }
 
-            SentimentDataHolder lexicon = SentimentDataHolder.PopulateEmotionsData(data);
+            var lexicon = SentimentDataHolder.PopulateEmotionsData(data);
             ActualWordsHandler.InstanceOpen.Container.Context.DisableInvertors = disableInvert;
 
             Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
@@ -62,7 +62,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         {
             Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
             Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
-            Assert.AreEqual(4, review.Items.Count());
+            Assert.AreEqual(4, review.ImportantWords.Count());
         }
     }
 }

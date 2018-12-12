@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
             log.LogInformation("Loading {0}...", path);
             IArffDataSet reviews = ArffDataSet.Load<PositivityType>(Path.Combine(path, "data.arff"));
-            Classifier classifier = new Classifier();
+            var classifier = new Classifier();
             classifier.Load(Path.Combine(path, "training.model"));
             return new MachineSentiment(reviews, classifier);
         }
@@ -59,14 +59,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         public static async Task<MachineSentiment> Train(IArffDataSet arff, CancellationToken token)
         {
             log.LogInformation("Training SVM...");
-            Classifier classifier = new Classifier();
+            var classifier = new Classifier();
             (int? Y, double[] X)[] data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
             if (data.Length < 40)
             {
                 throw new ArgumentOutOfRangeException("Not enough training records");
             }
 
-            Dictionary<int, int> classCount = new Dictionary<int, int>();
+            var classCount = new Dictionary<int, int>();
             foreach ((int? Y, double[] X) datRecord in data)
             {
                 if (classCount.ContainsKey(datRecord.Y.Value))
@@ -79,9 +79,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 }
 
                 // Make all sentiments positive - counts with weights
-                for (int i = 0; i < datRecord.X.Length; i++)
+                for (var i = 0; i < datRecord.X.Length; i++)
                 {
-                    double x = datRecord.X[i];
+                    var x = datRecord.X[i];
                     datRecord.X[i] = Math.Abs(x);
                 }
             }
@@ -101,8 +101,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 throw new ArgumentOutOfRangeException("Not enough positive classes");
             }
 
-            int[] yData = data.Select(item => item.Y.Value).ToArray();
-            double[][] xData = data.Select(item => item.X).ToArray();
+            var yData = data.Select(item => item.Y.Value).ToArray();
+            var xData = data.Select(item => item.X).ToArray();
             Array[] randomized = GlobalSettings.Random.Shuffle(yData, xData).ToArray();
             await Task.Run(() => classifier.Train(randomized[0].Cast<int>().ToArray(), randomized[1].Cast<double[]>().ToArray(), token), token).ConfigureAwait(false);
             return new MachineSentiment(arff, classifier);
@@ -116,14 +116,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             }
 
             log.LogDebug("GetVector");
-            List<VectorCell> vectorCells = new List<VectorCell>();
-            double[] vector = new double[featureTable.Count];
-            for (int i = 0; i < featureTable.Count; i++)
+            var vectorCells = new List<VectorCell>();
+            var vector = new double[featureTable.Count];
+            for (var i = 0; i < featureTable.Count; i++)
             {
                 vector[i] = 0;
             }
 
-            int unknownIndexes = vector.Length;
+            var unknownIndexes = vector.Length;
             foreach (TextVectorCell textCell in cells)
             {
                 VectorCell cell = GetCell(textCell);
@@ -138,7 +138,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                     cell = GetCell(new TextVectorCell(textCell.Name.GetOpposite(), Math.Abs(textCell.Value)));
                     if (cell != null)
                     {
-                        double theata = textCell.Name.IsInverted() ? cell.Theta / 2 : cell.Theta / 4;
+                        var theata = textCell.Name.IsInverted() ? cell.Theta / 2 : cell.Theta / 4;
                         cell = new VectorCell(unknownIndexes, textCell, -theata);
                         vectorCells.Add(cell);
                         unknownIndexes++;
@@ -148,7 +148,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
             INormalize normalized = vector.Normalize(NormalizationType.L2);
             vector = normalized.GetNormalized.ToArray();
-            double probability = Classifier.Probability(vector);
+            var probability = Classifier.Probability(vector);
 
             // do not normalize data - SVM operates with normalized already. Second time normalization is not required.
             return (probability, normalized.Coeficient, new VectorData(vectorCells.ToArray(), unknownIndexes, Classifier.Model.Threshold, NormalizationType.None));
@@ -158,7 +158,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             IHeader header = DataSet.Header[textCell.Name];
             if (header == null ||
-                !featureTable.TryGetValue(header, out int index))
+                !featureTable.TryGetValue(header, out var index))
             {
                 return null;
             }
@@ -167,7 +167,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 ? new TextVectorCell(textCell.Name, Math.Abs(textCell.Value))
                 : new TextVectorCell(textCell.Item, Math.Abs(textCell.Value));
 
-            VectorCell cellItem = new VectorCell(index, absoluteCell, weights[index]);
+            var cellItem = new VectorCell(index, absoluteCell, weights[index]);
             return cellItem;
         }
 
@@ -192,7 +192,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
                 return;
             }
 
-            using (StreamWriter stream = new StreamWriter(fileName, false))
+            using (var stream = new StreamWriter(fileName, false))
             {
                 foreach (KeyValuePair<IHeader, int> feature in featureTable)
                 {

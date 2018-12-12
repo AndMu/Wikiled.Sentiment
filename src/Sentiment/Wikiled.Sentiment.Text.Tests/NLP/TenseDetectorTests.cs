@@ -61,11 +61,11 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         public void ResolveTenseInSentence(string[] wordsTags, TenseType expected)
         {
             Assert.Throws<ArgumentNullException>(() => TenseDetector.ResolveTense(null));
-            Mock<ISentence> sentence = new Mock<ISentence>();
-            List<IWordItem> words = new List<IWordItem>();
+            var sentence = new Mock<ISentence>();
+            var words = new List<IWordItem>();
             foreach (var type in wordsTags)
             {
-                Mock<IWordItem> word = new Mock<IWordItem>();
+                var word = new Mock<IWordItem>();
                 word.Setup(item => item.POS).Returns(POSTags.Instance.FindType(type));
                 word.Setup(item => item.Text).Returns("will");
                 words.Add(word.Object);
@@ -83,7 +83,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [TestCase("NN", null)]
         public void GetTense(string type, TenseType? tense)
         {
-            Mock<IWordItem> word = new Mock<IWordItem>();
+            var word = new Mock<IWordItem>();
             word.Setup(item => item.POS).Returns(POSTags.Instance.FindType(type));
             Assert.Throws<ArgumentNullException>(() => TenseDetector.GetTense(null));
             var result = word.Object.GetTense();
@@ -98,7 +98,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [TestCase("xxx", TenseType.Present)]
         public void GetMDTense(string text, TenseType? tense)
         {
-            Mock<IWordItem> word = new Mock<IWordItem>();
+            var word = new Mock<IWordItem>();
             word.Setup(item => item.POS).Returns(POSTags.Instance.MD);
             word.Setup(item => item.Text).Returns(text);
             var result = word.Object.GetTense();

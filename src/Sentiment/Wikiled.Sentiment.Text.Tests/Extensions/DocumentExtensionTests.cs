@@ -16,11 +16,11 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
         public void Setup()
         {
             document = new Document("Test");
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var sentence = new SentenceItem(i.ToString());
                 document.Add(sentence);
-                for (int j = 0; j < 4; j++)
+                for (var j = 0; j < 4; j++)
                 {
                     sentence.Add(new WordEx(
                         new SimpleWord(j.ToString()))

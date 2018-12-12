@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using NUnit.Framework;
+using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
@@ -15,22 +15,22 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class Word2VecTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<Word2VecTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<Word2VecTests>();
 
         private static readonly SentimentTestData[] testData =
         {
-            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7184> Positive:<82.690%> Negative:<59.644%> F1:<0.883> RMSE:1.52"),
-            new SentimentTestData("B00002EQCW", 228, 0, "Total:<208> Positive:<83.420%> Negative:<86.667%> F1:<0.904> RMSE:1.41"),
-            new SentimentTestData("B000BAX50G", 288, 0, "Total:<263> Positive:<98.031%> Negative:<66.667%> F1:<0.984> RMSE:0.83"),
-            new SentimentTestData("B000ERAON2", 440, 0, "Total:<412> Positive:<85.475%> Negative:<70.370%> F1:<0.900> RMSE:1.37"),
+            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7206> Positive:<80.479%> Negative:<61.821%> F1:<0.871> RMSE:1.57"),
+            new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<81.726%> Negative:<86.667%> F1:<0.894> RMSE:1.47"),
+            new SentimentTestData("B000BAX50G", 288, 0, "Total:<265> Positive:<96.471%> Negative:<60.000%> F1:<0.974> RMSE:0.89"),
+            new SentimentTestData("B000ERAON2", 440, 0, "Total:<413> Positive:<84.401%> Negative:<72.222%> F1:<0.895> RMSE:1.40"),
 
-            new SentimentTestData("B0026127Y8", 928, 0, "Total:<848> Positive:<82.008%> Negative:<66.667%> F1:<0.884> RMSE:1.35") { Category = ProductCategory.Video },
-            new SentimentTestData("B009GN6F5Q", 472, 0, "Total:<387> Positive:<89.668%> Negative:<57.759%> F1:<0.863> RMSE:1.35") { Category = ProductCategory.Video },
-            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<344> Positive:<90.066%> Negative:<47.619%> F1:<0.913> RMSE:1.14") { Category = ProductCategory.Video },
+            new SentimentTestData("B0026127Y8", 928, 0, "Total:<849> Positive:<79.688%> Negative:<71.605%> F1:<0.872> RMSE:1.38") { Category = ProductCategory.Video },
+            new SentimentTestData("B009GN6F5Q", 472, 0, "Total:<388> Positive:<87.500%> Negative:<65.517%> F1:<0.865> RMSE:1.33") { Category = ProductCategory.Video },
+            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<345> Positive:<87.086%> Negative:<58.140%> F1:<0.902> RMSE:1.15") { Category = ProductCategory.Video },
 
-            new SentimentTestData("B00004SGFS", 381, 0, "Total:<361> Positive:<87.538%> Negative:<62.500%> F1:<0.916> RMSE:1.30") { Category = ProductCategory.Kitchen },
-            new SentimentTestData("B000PYF768", 507, 0, "Total:<473> Positive:<90.300%> Negative:<52.500%> F1:<0.928> RMSE:1.20") { Category = ProductCategory.Kitchen },
-            new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<279> Positive:<91.954%> Negative:<44.444%> F1:<0.939> RMSE:1.05") { Category = ProductCategory.Kitchen }
+            new SentimentTestData("B00004SGFS", 381, 0, "Total:<363> Positive:<83.082%> Negative:<81.250%> F1:<0.899> RMSE:1.40") { Category = ProductCategory.Kitchen },
+            new SentimentTestData("B000PYF768", 507, 0, "Total:<475> Positive:<82.989%> Negative:<62.500%> F1:<0.890> RMSE:1.34") { Category = ProductCategory.Kitchen },
+            new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<279> Positive:<89.272%> Negative:<55.556%> F1:<0.928> RMSE:1.17") { Category = ProductCategory.Kitchen }
         };
 
         [SetUp]
@@ -70,9 +70,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                     throw new ArgumentOutOfRangeException();
             }
 
-            var holder = SentimentDataHolder.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
-            TestRunner runner = new TestRunner(TestHelper.Instance, data);
-            var testing = runner.Active.GetTesting();
+            ISentimentDataHolder holder = SentimentDataHolder.Load(Path.Combine(TestContext.CurrentContext.TestDirectory, "Sentiments", file));
+            var runner = new TestRunner(TestHelper.Instance, data);
+            Analysis.Processing.ITestingClient testing = runner.Active.GetTesting();
             runner.Active.Context.Lexicon = holder;
             testing.DisableAspects = true;
             testing.DisableSvm = true;

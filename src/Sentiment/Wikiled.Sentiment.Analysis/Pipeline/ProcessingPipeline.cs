@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
                 Monitor.ManualyCount();
                 if (ProcessingSemaphore != null)
                 {
-                    bool isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(5)).ConfigureAwait(false);
+                    var isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(5)).ConfigureAwait(false);
                     if (!isSuccesful)
                     {
                         throw new TimeoutException();
@@ -75,7 +75,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             }
 
             Monitor.Increment();
-            ProcessingContext context = new ProcessingContext(reviewHolder.Original, document, review);
+            var context = new ProcessingContext(reviewHolder.Original, document, review);
             return context;
         }
     }

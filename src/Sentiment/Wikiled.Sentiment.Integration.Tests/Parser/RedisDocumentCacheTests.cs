@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
         [Test]
         public async Task LoadSave()
         {
-            Document document = new Document("Test");
+            var document = new Document("Test");
             document.Id = Guid.NewGuid().ToString();
             document.Author = "Author";
             document.DocumentTime = new DateTime(2012, 02, 23);

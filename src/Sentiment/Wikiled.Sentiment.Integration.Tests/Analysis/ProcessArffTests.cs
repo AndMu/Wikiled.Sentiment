@@ -73,7 +73,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [Test]
         public void ParseSentiment()
         {
-            review.Items.First().Relationship.Sentiment = new SentimentValue(review.Items.First(), 1);
+            review.ImportantWords.First().Relationship.Sentiment = new SentimentValue(review.ImportantWords.First(), 1);
             instance.PopulateArff(review, PositivityType.Positive);
             Assert.IsNotNull(instance.DataSet);
             Assert.AreEqual(1, instance.DataSet.Documents.Count());
@@ -83,8 +83,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [Test]
         public void ParseHashSentiment()
         {
-            review.Items.First().Relationship.Sentiment = new SentimentValue(review.Items.First(), 1);
-            var last = review.Items.Last();
+            review.ImportantWords.First().Relationship.Sentiment = new SentimentValue(review.ImportantWords.First(), 1);
+            var last = review.ImportantWords.Last();
             last.Entity = NamedEntities.Hashtag;
             instance.PopulateArff(review, PositivityType.Positive);
             Assert.IsNotNull(instance.DataSet);

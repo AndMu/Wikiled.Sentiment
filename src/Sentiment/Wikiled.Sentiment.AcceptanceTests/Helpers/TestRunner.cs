@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             this.helper = helper;
             this.definition = definition;
             Active = helper.ContainerHelper;
-            int maxParallel = Environment.ProcessorCount / 2;
+            var maxParallel = Environment.ProcessorCount / 2;
             semaphore = new SemaphoreSlim(maxParallel, maxParallel);
         }
 

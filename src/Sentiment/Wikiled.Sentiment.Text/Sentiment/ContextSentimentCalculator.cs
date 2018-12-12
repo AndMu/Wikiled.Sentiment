@@ -26,7 +26,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
                 sentiments.Add(parent.Sentiment);
             }
 
-            List<ISentence> sentences = new List<ISentence>();
+            var sentences = new List<ISentence>();
             if (parent.Part.Sentence.Previous != null)
             {
                 sentences.Add(parent.Part.Sentence.Previous);
@@ -54,7 +54,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
                         continue;
                     }
 
-                    int distance = GetDistance(wordItem);
+                    var distance = GetDistance(wordItem);
                     sentiment = sentiment.GetDistanced(distance);
                     sentiments.Add(sentiment);
                 }
@@ -63,11 +63,11 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         private int GetDistance(IWordItem sentiment)
         {
-            int parentIndex = parent.Owner.WordIndex;
-            int distance = Math.Abs(sentiment.WordIndex - parentIndex);
+            var parentIndex = parent.Owner.WordIndex;
+            var distance = Math.Abs(sentiment.WordIndex - parentIndex);
             foreach (var relatedQuant in sentiment.Relationship.PriorQuants)
             {
-                int currentDistance = Math.Abs(relatedQuant.WordIndex - parentIndex);
+                var currentDistance = Math.Abs(relatedQuant.WordIndex - parentIndex);
                 if (currentDistance < distance)
                 {
                     distance = currentDistance;
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
             if (sentiment.Relationship.Inverted != null)
             {
-                int currentDistance = Math.Abs(sentiment.Relationship.Inverted.WordIndex - parentIndex);
+                var currentDistance = Math.Abs(sentiment.Relationship.Inverted.WordIndex - parentIndex);
                 if (currentDistance < distance)
                 {
                     distance = currentDistance;

@@ -24,7 +24,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
             ElectronicBaseLine = new MainBaseLine("B0002L5R78", ProductCategory.Electronics);
             VideoBaseLine = new MainBaseLine("B0026127Y8", ProductCategory.Video);
             logger.LogInformation("Starting training...");
-            Stopwatch timer = new Stopwatch();
+            var timer = new Stopwatch();
             timer.Start();
             await ElectronicBaseLine.Train().ConfigureAwait(false);
             await VideoBaseLine.Train().ConfigureAwait(false);

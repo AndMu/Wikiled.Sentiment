@@ -52,7 +52,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 CreateSentence(sentence);
                 IPhrase phrase = null;
                 string phraseWord = null;
-                for (int i = 0; i < sentence.Words.Count; i++)
+                for (var i = 0; i < sentence.Words.Count; i++)
                 {
                     var documentWord = sentence.Words[i];
                     if (documentWord.Phrase != null)

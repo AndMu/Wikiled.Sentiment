@@ -23,7 +23,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         protected override void CalculateRatingLogic()
         {
-            foreach (var reviewItem in Review.Items)
+            foreach (var reviewItem in Review.ImportantWords)
             {
                 var sentiment = sentimentData.MeasureSentiment(reviewItem);
                 if (sentiment != null)

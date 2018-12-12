@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             var itemTable = new Dictionary<string, IItem>(StringComparer.OrdinalIgnoreCase);
             foreach (var wordEx in document.Words)
             {
-                table.TryGetValue(wordEx.Text, out int total);
+                table.TryGetValue(wordEx.Text, out var total);
                 total++;
                 table[wordEx.Text] = total;
                 itemTable[wordEx.Text] = wordEx.UnderlyingWord;
@@ -80,8 +80,8 @@ namespace Wikiled.Sentiment.Text.Extensions
             var list = new List<SentimentDataItem>();
             foreach (var sentence in document.Sentences)
             {
-                string text = sentence.Text;
-                string tense = string.Empty;
+                var text = sentence.Text;
+                var tense = string.Empty;
 
                 text += $" ({(tense.Length == 0 ? "Root" : tense)})";
                 var item = new SentimentDataItem(
@@ -103,7 +103,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             {
                 foreach (var wordEx in sentence.Words)
                 {
-                    string text = wordEx.Tag == null || wordEx.Tag == POSTags.Instance.UnknownWord
+                    var text = wordEx.Tag == null || wordEx.Tag == POSTags.Instance.UnknownWord
                                       ? wordEx.Text
                                       : $"{wordEx.Text} ({wordEx.Type})";
 

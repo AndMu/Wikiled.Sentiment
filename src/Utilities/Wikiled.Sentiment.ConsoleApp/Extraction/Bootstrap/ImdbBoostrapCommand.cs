@@ -45,7 +45,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
             foreach (var item in subscriptionMessage)
             {
-                string place = item.CalculatedPositivity == PositivityType.Positive ? positiveResult : negativeResult;
+                var place = item.CalculatedPositivity == PositivityType.Positive ? positiveResult : negativeResult;
                 var file = System.IO.Path.Combine(place, item.Id + ".txt");
                 SaveFile(file, item);
             }

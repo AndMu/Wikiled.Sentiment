@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Extensions
             items.Add(new TestWordItem { Text = "Two", Stemmed = "Two" });
             items.Add(new TestWordItem { Text = "#Three", Stemmed = "#Three" });
             items.Add(new TestWordItem { Text = "Four", Stemmed = "Four" });
-            for (int i = 1; i < items.Count; i++)
+            for (var i = 1; i < items.Count; i++)
             {
                 items[i - 1].Relationship.Next = items[i];
                 items[i].Relationship.Previous = items[i - 1];

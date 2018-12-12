@@ -95,7 +95,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)
         {
-            SentimentVector vector = new SentimentVector();
+            var vector = new SentimentVector();
             if (ExtractStyle)
             {
                 foreach (var word in context.Processed.Words)

@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.Text.Parser
             {
                 if (negatingRule.TryGetValue(WordItemType.Invertor, out WordRepairRule rule))
                 {
-                    bool? value = new WordRepairRuleEngine(word, rule).Evaluate();
+                    var value = new WordRepairRuleEngine(word, rule).Evaluate();
                     if (value.HasValue)
                     {
                         return value.Value;
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 return true;
             }
 
-            bool? evaluationValue = new WordRepairRuleEngine(word, FindRepairRule(word)).Evaluate();
+            var evaluationValue = new WordRepairRuleEngine(word, FindRepairRule(word)).Evaluate();
             if (evaluationValue.HasValue)
             {
                 return evaluationValue.Value;
@@ -130,7 +130,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public double? MeasureQuantifier(IWordItem word)
         {
-            if (booster.TryGetValue(word.Text, out double value))
+            if (booster.TryGetValue(word.Text, out var value))
             {
                 if (value == 0)
                 {
@@ -160,11 +160,11 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadRepairRules()
         {
-            string folder = Path.Combine(config.LexiconPath, @"Rules/Invertors");
+            var folder = Path.Combine(config.LexiconPath, @"Rules/Invertors");
             negatingLemmaBasedRepair = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRepairRule = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRule = new Dictionary<WordItemType, WordRepairRule>();
-            foreach (string file in Directory.GetFiles(folder))
+            foreach (var file in Directory.GetFiles(folder))
             {
                 WordRepairRule data = XDocument.Load(file).XmlDeserialize<WordRepairRule>();
                 if (!string.IsNullOrEmpty(data.Lemma))
@@ -186,7 +186,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> ReadTextData(string file)
         {
-            DictionaryStream stream = new DictionaryStream(Path.Combine(config.LexiconPath, file), new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(config.LexiconPath, file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
     }

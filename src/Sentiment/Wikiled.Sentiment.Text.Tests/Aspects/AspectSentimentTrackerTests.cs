@@ -49,11 +49,11 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
                                 Stemmed = "Aspect2"
                             }
                         };
-            review.Setup(item => item.Items).Returns(words);
+            review.Setup(item => item.ImportantWords).Returns(words);
             factory.Setup(item => item.Construct(words[1].Relationship)).Returns(sentiment.Object);
             factory.Setup(item => item.Construct(words[2].Relationship)).Returns(sentiment.Object);
             factory.Setup(item => item.Construct(words[3].Relationship)).Returns(sentiment.Object);
-            List<SentimentValue> sentiments = new List<SentimentValue>();
+            var sentiments = new List<SentimentValue>();
             sentiments.Add(new SentimentValue(words[0], 10));
             sentiment.Setup(item => item.Sentiments).Returns(sentiments);
         }

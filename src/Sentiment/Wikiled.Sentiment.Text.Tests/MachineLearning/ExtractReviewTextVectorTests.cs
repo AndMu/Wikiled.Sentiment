@@ -1,8 +1,8 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data;
@@ -19,6 +19,8 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
     [TestFixture]
     public class ExtractReviewTextVectorTests
     {
+        private AspectDectector detector;
+
         private ExtractReviewTextVector instance;
 
         private IParsedReview review;
@@ -26,8 +28,6 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         private Mock<IParsedReview> reviewMock;
 
         private ITextSplitter splitter;
-
-        private AspectDectector detector;
 
         [SetUp]
         public void Setup()
@@ -52,13 +52,13 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
         }
 
         [TestCase(true, true, 2, "my", "like")]
-        [TestCase(false, true, 4, "my", "like")]
+        [TestCase(false, true, 3, "my", "like")]
         [TestCase(true, false, 2, "my", "like")]
-        [TestCase(false, false, 5, "my", "teacher")]
+        [TestCase(false, false, 4, "my", "teacher")]
         [TestCase(true, true, 4, "not", "NOTxxxxxxFeature")]
-        [TestCase(false, true, 6, "not", "NOTxxxxxxFeature")]
+        [TestCase(false, true, 5, "not", "NOTxxxxxxFeature")]
         [TestCase(true, false, 2, "not", "NOTxxxlike")]
-        [TestCase(false, false, 5, "not", "teacher")]
+        [TestCase(false, false, 4, "not", "teacher")]
         public async Task GetCells(bool generate, bool addFeature, int total, string prefix, string lastWord)
         {
             if (addFeature)
@@ -66,13 +66,13 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
                 detector.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             }
 
-            Wikiled.Text.Analysis.Structure.Document data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
+            Document data = await splitter.Process(new ParseRequest($"I go to school. I like {prefix} teacher.")).ConfigureAwait(false);
             review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
             instance = new ExtractReviewTextVector(ActualWordsHandler.InstanceSimple.Container.Resolve<INRCDictionary>(), review)
-            {
-                GenerateUsingImportantOnly = generate
-            };
-            System.Collections.Generic.IList<TextVectorCell> cells = instance.GetCells();
+                       {
+                           GenerateUsingImportantOnly = generate
+                       };
+            IList<TextVectorCell> cells = instance.GetCells();
             Assert.AreEqual(total + 1, cells.Count);
 
             // feature is always 

@@ -91,12 +91,12 @@ namespace Wikiled.Sentiment.Text.Helpers
 
         public int TotalOccurences(TKey key)
         {
-            return !totalTable.TryGetValue(key, out int total) ? 0 : total;
+            return !totalTable.TryGetValue(key, out var total) ? 0 : total;
         }
 
         protected static void Increment(TKey key, Dictionary<TKey, int> table)
         {
-            if (!table.TryGetValue(key, out int total))
+            if (!table.TryGetValue(key, out var total))
             {
                 total = 0;
             }

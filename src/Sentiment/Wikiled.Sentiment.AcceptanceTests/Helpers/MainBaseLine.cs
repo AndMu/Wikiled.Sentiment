@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         public async Task<ITestingClient> Test(string testProduct, ProductCategory testCategory)
         {
             logger.LogInformation("Testing...");
-            TestRunner testing = new TestRunner(TestHelper.Instance, new SentimentTestData(testProduct) { Category = testCategory });
+            var testing = new TestRunner(TestHelper.Instance, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.LogInformation("Loading data...");
             var testingClient = testing.Active.GetTesting(trainingLocation);

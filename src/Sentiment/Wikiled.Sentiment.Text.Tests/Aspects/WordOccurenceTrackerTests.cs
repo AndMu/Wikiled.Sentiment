@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         public void AddWord()
         {
             Assert.Throws<ArgumentNullException>(() => instance.AddWord(null));
-            Mock<IWordItem> word = new Mock<IWordItem>();
+            var word = new Mock<IWordItem>();
             word.Setup(item => item.Text).Returns("Word");
             instance.AddWord(word.Object);
             Assert.AreEqual(1, instance.Total);
@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         public void AddPhrase()
         {
             Assert.Throws<ArgumentNullException>(() => instance.AddPhrase(null));
-            Mock<IPhrase> word = new Mock<IPhrase>();
+            var word = new Mock<IPhrase>();
             word.Setup(item => item.Text).Returns("Word");
             instance.AddPhrase(word.Object);
             Assert.AreEqual(0, instance.Total);

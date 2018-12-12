@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Text.Tests.Resources
             var configuration = new ConfigurationHandler();
             configuration.SetConfiguration("Path", @"..\..\Data");
             configuration.StartingLocation = @"C:\my\starting\location";
-            string result = configuration.ResolvePath("Path");
+            var result = configuration.ResolvePath("Path");
             Assert.AreEqual(@"C:\my\Data", result);
         }
 
@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Tests.Resources
             var configuration = new ConfigurationHandler();
             configuration.SetConfiguration("Path", @"c:\Data");
             configuration.StartingLocation = @"C:\my\starting\location";
-            string result = configuration.ResolvePath("Path");
+            var result = configuration.ResolvePath("Path");
             Assert.AreEqual(@"c:\Data", result);
         }
     }

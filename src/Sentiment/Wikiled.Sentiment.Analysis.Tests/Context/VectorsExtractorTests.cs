@@ -17,9 +17,9 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         public void Setup()
         {
             document = new Document("Test");
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                SentenceItem sentence = new SentenceItem("S1");
+                var sentence = new SentenceItem("S1");
                 sentence.Add("w1");
                 sentence.Add("w2");
                 sentence.Add("w3");
@@ -40,7 +40,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void Constructor()
         {
-            VectorsExtractor vectors = new VectorsExtractor(10);
+            var vectors = new VectorsExtractor(10);
             Assert.AreEqual(10, vectors.WindowSize);
             Assert.AreEqual(0, vectors.WordVectors.Count);
         }
@@ -48,15 +48,15 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void Process()
         {
-            VectorsExtractor vectors = new VectorsExtractor(3);
+            var vectors = new VectorsExtractor(3);
             vectors.Process(document);
             Assert.AreEqual(3, vectors.WordVectors.Count);
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var vectorsData = vectors.WordVectors.ToArray()[i];
-                for (int j = 0; j < vectorsData.Vectors.Count; j++)
+                for (var j = 0; j < vectorsData.Vectors.Count; j++)
                 {
-                    int total = 10;
+                    var total = 10;
                     if (j == 0 ||
                         j == 9)
                     {
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void Save()
         {
-            VectorsExtractor vectors = new VectorsExtractor(3);
+            var vectors = new VectorsExtractor(3);
             vectors.Process(document);
             vectors.Save(info.FullName);
             var files = info.GetFiles("*.arff");

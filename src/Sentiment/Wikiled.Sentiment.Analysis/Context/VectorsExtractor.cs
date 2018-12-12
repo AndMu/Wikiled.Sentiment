@@ -33,9 +33,9 @@ namespace Wikiled.Sentiment.Analysis.Context
                 throw new ArgumentNullException(nameof(document));
             }
 
-            AutoEvictingDictionary<WordEx, WordsContext> table =
+            var table =
                 new AutoEvictingDictionary<WordEx, WordsContext>(length: WindowSize);
-            AutoEvictingDictionary<SentenceItem, SentenceItem> sentences =
+            var sentences =
                 new AutoEvictingDictionary<SentenceItem, SentenceItem>(length: WindowSize);
             foreach (SentenceItem sentenceItem in document.Sentences)
             {

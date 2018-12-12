@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void Constructor()
         {
-            WordVectorsData vectorData = new WordVectorsData(word);
+            var vectorData = new WordVectorsData(word);
             Assert.AreEqual(word, vectorData.Word);
             Assert.AreEqual(0, vectorData.Vectors.Count);
         }
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
         [Test]
         public void CreateNewVector()
         {
-            WordVectorsData vectorData = new WordVectorsData(word);
+            var vectorData = new WordVectorsData(word);
             Assert.AreEqual(0, vectorData.Vectors.Count);
             Assert.IsNull(vectorData.CurrentVector);
             var vector1 = vectorData.CreateNewVector();

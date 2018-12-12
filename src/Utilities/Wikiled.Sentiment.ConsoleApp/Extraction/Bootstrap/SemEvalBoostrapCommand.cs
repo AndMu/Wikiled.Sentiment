@@ -41,7 +41,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         protected override void SaveResult(EvalData[] subscriptionMessage)
         {
-            using (StreamWriter streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
+            using (var streamWrite = new StreamWriter(Destination, false, Encoding.UTF8))
             {
                 foreach (EvalData item in subscriptionMessage)
                 {
@@ -53,27 +53,27 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
 
         private IEnumerable<EvalData> GetDataPacketEnum(string file)
         {
-            using (StreamReader streamRead = new StreamReader(file))
+            using (var streamRead = new StreamReader(file))
             {
                 string line;
                 while ((line = streamRead.ReadLine()) != null)
                 {
                     long? id = null;
                     PositivityType? positivity = null;
-                    string[] blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    var blocks = line.Split(new[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
                     if (blocks.Length < 3)
                     {
                         log.LogError($"Error: {line}");
                         yield break;
                     }
 
-                    if (long.TryParse(blocks[0], out long idValue))
+                    if (long.TryParse(blocks[0], out var idValue))
                     {
                         id = idValue;
                     }
 
-                    string textBlock = blocks[blocks.Length - 1];
-                    string sentiment = blocks[blocks.Length - 2];
+                    var textBlock = blocks[blocks.Length - 1];
+                    var sentiment = blocks[blocks.Length - 2];
                     if (sentiment == "positive")
                     {
                         positivity = PositivityType.Positive;
@@ -88,7 +88,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                     }
                     else
                     {
-                        if (int.TryParse(sentiment, out int value))
+                        if (int.TryParse(sentiment, out var value))
                         {
                             positivity = value > 0 ? PositivityType.Positive : value < 0 ? PositivityType.Negative : PositivityType.Neutral;
                         }
@@ -100,7 +100,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Extraction.Bootstrap
                         textBlock = textBlock.Substring(1, textBlock.Length - 2);
                     }
 
-                    string text = cleanup.Cleanup(textBlock);
+                    var text = cleanup.Cleanup(textBlock);
                     if (!exist.ContainsKey(text))
                     {
                         exist[text] = text;

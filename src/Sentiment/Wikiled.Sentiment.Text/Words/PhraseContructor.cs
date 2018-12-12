@@ -37,17 +37,17 @@ namespace Wikiled.Sentiment.Text.Words
                 yield break;
             }
 
-            string all = string.Join(" ", currentWords.Select(item => item.Text).ToArray());
-            int wordIndex = Array.IndexOf(currentWords, word);
+            var all = string.Join(" ", currentWords.Select(item => item.Text).ToArray());
+            var wordIndex = Array.IndexOf(currentWords, word);
             if (wordIndex < 0)
             {
                 log.LogDebug("{0} is not found in important list in <{1}>", word, all);
                 yield break;
             }
 
-            List<NGramBlock> nGramBlocks = new List<NGramBlock>();
-            Dictionary<WordEx, IWordItem> wordsTable = new Dictionary<WordEx, IWordItem>();
-            WordEx[] words = new WordEx[currentWords.Length];
+            var nGramBlocks = new List<NGramBlock>();
+            var wordsTable = new Dictionary<WordEx, IWordItem>();
+            var words = new WordEx[currentWords.Length];
             foreach (IWordItem item in currentWords)
             {
                 WordEx wordEx = WordExFactory.Construct(item);

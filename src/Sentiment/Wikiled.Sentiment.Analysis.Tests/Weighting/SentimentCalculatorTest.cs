@@ -44,9 +44,9 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
             relationships.Setup(item => item.PriorQuants)
                          .Returns(new List<IWordItem>());
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
+            var value = SentimentValue.CreateGood(wordItem.Object);
 
-            SentimentCalculator target = new SentimentCalculator(value);
+            var target = new SentimentCalculator(value);
 
             var result = target.Calculate();
             Assert.AreEqual(-1, result.DataValue.Value);
@@ -71,8 +71,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                           }
                       });
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
 
             var result = (double)target.InvokeMethod("CalculateQuant");
             Assert.AreEqual(10, result);
@@ -84,7 +84,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void CalculateQuantInvertor()
         {
-            TestWordItem invertor = new TestWordItem();
+            var invertor = new TestWordItem();
             relationships.Setup(item => item.Inverted)
                         .Returns(invertor);
             relationships.Setup(item => item.PriorQuants)
@@ -98,8 +98,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                           }
                       });
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
 
             var result = (double)target.InvokeMethod("CalculateQuant");
             Assert.AreEqual(10, result);
@@ -129,8 +129,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                           }
                       });
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
 
             var result = (double)target.InvokeMethod("CalculateQuant");
             Assert.AreEqual(6, result);
@@ -152,8 +152,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                           }
                       });
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
 
             var result = target.Calculate();
             Assert.AreEqual(2, result.DataValue.Value);
@@ -170,8 +170,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
             relationships.Setup(item => item.PriorQuants)
                   .Returns(new List<IWordItem>());
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
 
             var result = (double)target.InvokeMethod("CalculateQuant");
             Assert.AreEqual(1, result);
@@ -193,8 +193,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                           }
                       });
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
             var result = target.Calculate();
             Assert.AreEqual(0.5, result.DataValue.Value);
         }
@@ -217,8 +217,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
             relationships.Setup(item => item.PriorQuants)
                   .Returns(new List<IWordItem>());
 
-            SentimentValue value = SentimentValue.CreateGood(wordItem.Object);
-            SentimentCalculator target = new SentimentCalculator(value);
+            var value = SentimentValue.CreateGood(wordItem.Object);
+            var target = new SentimentCalculator(value);
             Assert.AreEqual(wordItem.Object, target.GetField<IWordItem>("wordItem"));
             Assert.AreEqual(value, target.GetField<SentimentValue>("sentimentValue"));
         }

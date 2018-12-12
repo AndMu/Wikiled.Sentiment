@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Context
                 return CurrentVector;
             }
 
-            WordsContext vector = new WordsContext(Word);
+            var vector = new WordsContext(Word);
             Vectors.Add(vector);
             return vector;
         }
@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.Analysis.Context
             }
 
             log.LogInformation("Saving {0}...", path);
-            string fileName = $"{Word.Text.CreatePureLetterText()}.arff";
+            var fileName = $"{Word.Text.CreatePureLetterText()}.arff";
             path = Path.Combine(path, fileName);
             IArffDataSet arff = ArffDataSet.Create<PositivityType>(Word.Text);
             arff.UseTotal = true;

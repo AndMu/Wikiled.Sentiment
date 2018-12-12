@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void Create()
         {
-            ItemCoefficient itemCoefficient = new ItemCoefficient("Test");
+            var itemCoefficient = new ItemCoefficient("Test");
             Assert.AreEqual("Test", itemCoefficient.Text);
             Assert.AreEqual(1, itemCoefficient.Value);
         }
@@ -24,7 +24,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void Readjust()
         {
-            ItemCoefficient itemCoefficient = new ItemCoefficient("Test");
+            var itemCoefficient = new ItemCoefficient("Test");
             Assert.AreEqual(1, itemCoefficient.Value);
             var newItem = itemCoefficient.Readjust(4);
             Assert.AreEqual(1, itemCoefficient.Value);
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void ReadjustTooBig()
         {
-            ItemCoefficient itemCoefficient = new ItemCoefficient("Test");
+            var itemCoefficient = new ItemCoefficient("Test");
             Assert.Throws<ArgumentOutOfRangeException>(() => itemCoefficient.Readjust(5));
         }
     }

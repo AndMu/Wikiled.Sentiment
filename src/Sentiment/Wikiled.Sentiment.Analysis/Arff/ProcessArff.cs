@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Analysis.Arff
                 review.AddRecord(Constants.DATE).Value = date ?? DateTime.Today;
                 foreach (var cell in cells)
                 {
-                    string name = cell.Name;
+                    var name = cell.Name;
                     if (string.Compare(cell.Name, Constants.DATE, StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         name = name + "_";

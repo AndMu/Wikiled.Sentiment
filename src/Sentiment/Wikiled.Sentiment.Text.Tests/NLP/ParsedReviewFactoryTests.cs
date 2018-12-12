@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Autofac;
 using NUnit.Framework;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
@@ -22,9 +20,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         {
             document = new Document("Test");
             document.Sentences.Add(new SentenceItem("Test"));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "One" }));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "Two" }));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "Three" }));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "Age" }));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "move" }));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "forest" }));
         }
 
         [Test]
@@ -97,14 +95,14 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
             var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(3, review.Sentences[0].Occurrences.Count());
-            var phrases = review.Items.GetPhrases().ToArray();
+            var phrases = review.AllWords.GetPhrases().ToArray();
 
-            Assert.AreEqual("one two", phrases[0].Text);
+            Assert.AreEqual("age move", phrases[0].Text);
             Assert.AreEqual(2, phrases[0].AllWords.Count());
-            var words = review.Items.ToArray();
+            var words = review.AllWords.ToArray();
             Assert.AreEqual(phrases[0], words[0].Parent);
             Assert.AreEqual(phrases[0], words[1].Parent);
-            Assert.IsNull(review.Items.ToArray()[2].Parent);
+            Assert.IsNull(review.AllWords.ToArray()[2].Parent);
         }
     }
 }
