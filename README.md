@@ -8,7 +8,7 @@ Nuget library
 Install-Package Wikiled.Sentiment
 ```
 
-## **pSenti** Concept-Level Domain Sentiment Analysis System
+## Concept-Level Domain Sentiment Analysis System
 
 
 To overcome the lexicon and bag-of-words learning limitations, we have developed a sentiment-analysis method which is less sensitive to crossing domain boundaries and has similar performance to pure learning-based methods.
@@ -46,6 +46,11 @@ Wikiled.Sentiment.ConsoleApp.exe train -Positive=[Folder/File] -Negative=[Folder
 ```
 Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Model=[Path to Trained Model]
 ```
+
+## Docker service
+
+An application is also available as a standalone docker based REST service, available in [GitHub](AndMu/Wikiled.Sentiment.Service).
+
 ## Linux support
 
 [Supported OS](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md)
