@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -31,7 +32,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         public string Model { get; set; } = @".\Svm";
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
+        protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             log.LogInformation("Training Operation...");
             ITrainingClient client = container.GetTraining(Model);
@@ -39,7 +40,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             client.OverrideAspects = Features;
             client.UseBagOfWords = UseBagOfWords;
             client.UseAll = UseAll;
-            client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).Wait();
+            await client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).ConfigureAwait(false);
         }
     }
 }

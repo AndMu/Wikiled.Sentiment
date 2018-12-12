@@ -5,6 +5,7 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Autofac;
 using CsvHelper;
 using Microsoft.Extensions.Logging;
@@ -51,7 +52,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         [Required]
         public string Out { get; set; }
 
-        protected override void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
+        protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             ITestingClient client;
             Out.EnsureDirectoryExistence();
@@ -72,7 +73,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                     client.TrackArff = TrackArff;
                     client.UseBagOfWords = UseBagOfWords;
                     client.Init();
-                    client.Process(reviews.ObserveOn(TaskPoolScheduler.Default))
+                    await client.Process(reviews.ObserveOn(TaskPoolScheduler.Default))
                           .Select(
                               item => 
                               {
@@ -80,8 +81,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                                   client.Pipeline.Monitor.Increment();
                                   return item;
                               })
-                          .LastOrDefaultAsync()
-                          .Wait();
+                          .LastOrDefaultAsync();
                 }
 
                 if (!TrackArff)

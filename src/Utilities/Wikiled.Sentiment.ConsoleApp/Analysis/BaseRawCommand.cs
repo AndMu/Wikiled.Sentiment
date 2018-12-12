@@ -49,8 +49,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 .Config()
                 .Splitter();
 
-            factory = Redis ? factory.SetupRedisCache("Twitter", "localhost", Port ?? 6370) : factory.SetupNullCache();
-
             container = factory.Create().StartSession();
             container.Context.DisableFeatureSentiment = InvertOff;
             log.LogInformation("Processing...");
@@ -76,11 +74,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
                              
-            Process(review.Select(SynchronizedReviews), container, sentimentAdjustment);
-            return Task.CompletedTask;
+            return Process(review.Select(SynchronizedReviews), container, sentimentAdjustment);
         }
 
-        protected abstract void Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment);
+        protected abstract Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment);
 
         private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
         {
