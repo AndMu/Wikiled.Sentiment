@@ -12,8 +12,8 @@ Install-Package Wikiled.Sentiment
 
 
 To overcome the lexicon and bag-of-words learning limitations, we have developed a sentiment-analysis method which is less sensitive to crossing domain boundaries and has similar performance to pure learning-based methods.
-It is based on [research paper](https://github.com/AndMu/Wikiled.Sentiment/docs/Original.pdf).
-Which was later improved in [extended version] (https://github.com/AndMu/Wikiled.Sentiment/docs/extended.pdf)
+It is based on [research paper](docs/Original.pdf).
+Which was later improved in [extended version](docs/extended.pdf)
 
 The main advantage of our *hybrid* approach using a lexicon/learning symbiosis is to get the best of both worlds - the stability and readability of a carefully hand-picked lexicon, and the high accuracy from a powerful supervised learning algorithm.
 Thanks to the built-in sentiment lexicon and numerous linguistic rules, **pSenti** can detect and measure sentiments at the concept level, providing structured and readable aspect-oriented outputs
