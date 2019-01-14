@@ -47,6 +47,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
             var factory = MainContainerFactory.Setup()
                 .Config()
+                .SetupLocalCache()
                 .Splitter();
 
             container = factory.Create().StartSession();

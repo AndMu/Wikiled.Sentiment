@@ -25,8 +25,7 @@ namespace Wikiled.Sentiment.ConsoleApp
 
         public static async Task Main(string[] args)
         {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
+            ApplicationLogging.LoggerFactory.AddNLog(new NLogProviderOptions { CaptureMessageTemplates = true, CaptureMessageProperties = true });
             log.LogInformation("Starting {0} version utility...", Assembly.GetExecutingAssembly().GetName().Version);
             var configuration = new ConfigurationHandler();
             var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
@@ -36,7 +35,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             }
             else
             {
-                var dataDownloader = new DataDownloader(loggerFactory);
+                var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
                 Task task = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
                 task.Wait();
             }
