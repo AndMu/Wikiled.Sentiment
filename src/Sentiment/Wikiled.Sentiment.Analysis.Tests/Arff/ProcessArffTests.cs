@@ -1,8 +1,8 @@
 using System;
 using Moq;
 using NUnit.Framework;
-using Wikiled.Arff.Persistence;
-using Wikiled.Arff.Persistence.Headers;
+using Wikiled.Arff.Logic;
+using Wikiled.Arff.Logic.Headers;
 using Wikiled.Sentiment.Analysis.Arff;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Arff

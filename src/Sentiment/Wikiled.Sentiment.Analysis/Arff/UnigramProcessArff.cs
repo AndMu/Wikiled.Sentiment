@@ -1,5 +1,5 @@
 ﻿using System;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Data;
 
 namespace Wikiled.Sentiment.Analysis.Arff

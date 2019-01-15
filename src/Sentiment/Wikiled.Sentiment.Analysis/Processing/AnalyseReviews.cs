@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.MachineLearning;
 

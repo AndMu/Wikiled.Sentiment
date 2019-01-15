@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Analysis.Arff;
-using Wikiled.Sentiment.Text.Data;
+using Constants = Wikiled.Sentiment.Text.Data.Constants;
 
 namespace Wikiled.Sentiment.Analysis.Tests.Arff
 {

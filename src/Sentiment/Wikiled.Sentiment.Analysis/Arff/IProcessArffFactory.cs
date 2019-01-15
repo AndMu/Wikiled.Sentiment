@@ -1,4 +1,4 @@
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Arff
 {
