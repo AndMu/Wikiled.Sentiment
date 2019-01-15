@@ -21,8 +21,8 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.Extras.AggregateService" Version="4.1.0" />
     <PackageReference Include="Knuppe.SharpNL" Version="1.3.0" />
-    <PackageReference Include="morelinq" Version="3.0.0" />
-    <PackageReference Include="CsvHelper" version="12.0.1" />
+    <PackageReference Include="morelinq" Version="3.1.0" />
+    <PackageReference Include="CsvHelper" version="12.1.1" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.1" />
     <PackageReference Include="Polly" version="6.1.2" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
@@ -32,7 +32,7 @@
     <PackageReference Include="System.Reactive.Interfaces" version="4.1.2" />
     <PackageReference Include="System.Reactive.Linq" version="4.1.2" />
     <PackageReference Include="System.Reactive.PlatformServices" version="4.1.2" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.2" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.12" />
     <PackageReference Include="Wikiled.Common" Version="1.1.6" />

@@ -153,15 +153,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 return null;
             }
 
-            if (context.Original.Stars > 3)
-            {
-                arffProcess.PopulateArff(context.Review, PositivityType.Positive);
-            }
-            else
-            {
-                arffProcess.PopulateArff(context.Review, PositivityType.Negative);
-            }
-
+            arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
             return context;
         }
 

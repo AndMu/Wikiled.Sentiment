@@ -21,26 +21,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         protected SemaphoreSlim Semaphore { get; set; }
 
-        public string Weights { get; set; }
-
-        public bool Redis { get; set; }
-
-        public int? Port { get; set; }
-
-        public string Articles { get; set; }
-
-        public string Positive { get; set; }
-
-        public string Negative { get; set; }
-
-        public string Input { get; set; }
-
-        public bool UseBagOfWords { get; set; }
-
-        public bool InvertOff { get; set; }
-
-        public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
-
         protected override Task Execute(CancellationToken token)
         {
             log.LogInformation("Initialize...");

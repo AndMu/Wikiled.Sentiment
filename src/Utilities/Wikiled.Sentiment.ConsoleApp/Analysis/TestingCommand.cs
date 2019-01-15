@@ -27,8 +27,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     [Description("pSenti testing")]
     public class TestingCommand : BaseRawCommand
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<TestingCommand>();
-
         private JsonStreamingWriter resultsWriter;
 
         private CsvWriter csvDataOut;

@@ -77,7 +77,7 @@ namespace Wikiled.Sentiment.ConsoleApp
                     return;
                 }
 
-                command.ParseArguments(args.Skip(1)); // or CommandLineParser.ParseArguments(c, args.Skip(1))
+                command.ParseArguments(args.Skip(1));
                 await command.StartExecution(CancellationToken.None).ConfigureAwait(false);
             }
             catch (Exception ex)

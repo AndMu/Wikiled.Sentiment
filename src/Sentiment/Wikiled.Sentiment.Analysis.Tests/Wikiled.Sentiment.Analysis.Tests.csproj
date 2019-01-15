@@ -27,7 +27,7 @@
     <PackageReference Include="Wikiled.Redis" version="3.3.0" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.0" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"></packagereference>
-    <packagereference Include="NUnit3TestAdapter" Version="3.11.2" />
+    <packagereference Include="NUnit3TestAdapter" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
