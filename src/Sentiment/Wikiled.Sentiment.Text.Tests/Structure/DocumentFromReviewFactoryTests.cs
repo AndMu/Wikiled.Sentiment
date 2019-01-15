@@ -6,6 +6,7 @@ using Wikiled.Arff.Logic;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Analysis.Arff;

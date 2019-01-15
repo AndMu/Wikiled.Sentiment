@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
 
@@ -16,30 +17,24 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     /// train -Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml" -Redis [-Features=c:\out\features_my.xml] [-Weights=c:\out\trumpWeights.csv] [-FullWeightReset]
     /// </summary>
     [Description("pSenti training command")]
-    internal class TrainCommand : BaseRawCommand
+    internal class TrainCommand : BaseRawCommand<TrainingConfig>
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<TrainCommand>();
+        private readonly ILogger log;
 
-        /// <summary>
-        /// Path to Feautres/Aspects
-        /// </summary>
-        public string Features { get; set; }
-
-        /// <summary>
-        /// Do you want to use all words of filter using threshold (min 3 reviews with words and words with 10 occurrences)
-        /// </summary>
-        public bool UseAll { get; set; }
-
-        public string Model { get; set; } = @".\Svm";
+        public TrainCommand(ILogger<TrainCommand> log, TrainingConfig config, ISessionContainer container)
+            : base(log, config, container)
+        {
+            this.log = log;
+        }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             log.LogInformation("Training Operation...");
-            ITrainingClient client = container.GetTraining(Model);
+            ITrainingClient client = container.GetTraining(Config.Model);
             container.Context.Lexicon = sentimentAdjustment;
-            client.OverrideAspects = Features;
-            client.UseBagOfWords = UseBagOfWords;
-            client.UseAll = UseAll;
+            client.OverrideAspects = Config.Features;
+            client.UseBagOfWords = Config.UseBagOfWords;
+            client.UseAll = Config.UseAll;
             await client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).ConfigureAwait(false);
         }
     }

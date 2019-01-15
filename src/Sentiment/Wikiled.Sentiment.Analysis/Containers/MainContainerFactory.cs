@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Autofac;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
-using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
@@ -20,14 +20,15 @@ namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class MainContainerFactory
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainContainerFactory>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<MainContainerFactory>();
 
-        private readonly ContainerBuilder builder = new ContainerBuilder();
+        private readonly ContainerBuilder builder;
 
         private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
 
-        private MainContainerFactory()
+        private MainContainerFactory(ContainerBuilder builder)
         {
+            this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
             builder.RegisterModule<CommonModule>();
             builder.RegisterModule(new LoggingModule(ApplicationLogging.LoggerFactory));
             builder.RegisterModule(new SentimentMainModule());
@@ -39,16 +40,16 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public static MainContainerFactory CreateStandard()
         {
             log.LogInformation("CreateStandard");
-            var instance = new MainContainerFactory();
+            var instance = new MainContainerFactory(new ContainerBuilder());
             return instance.SetupLocalCache()
                 .Config()
                 .Splitter();
         }
 
-        public static MainContainerFactory Setup()
+        public static MainContainerFactory Setup(ContainerBuilder builder)
         {
             log.LogInformation("Setup");
-            var instance = new MainContainerFactory();
+            var instance = new MainContainerFactory(builder);
             return instance;
         }
 
@@ -109,19 +110,24 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public IGlobalContainer Create()
         {
-            var notInitialized = initialized.Where(item => !item.Value).ToArray();
-            if (notInitialized.Length > 0)
-            {
-                var modules = notInitialized.Select(item => item.Key).AccumulateItems(" ");
-                throw new ApplicationException("Not all modules initialized: " + modules);
-            }
+            Validate();
 
-            var container = builder.Build();
+            IContainer container = builder.Build();
             var helper = new GlobalContainer(container);
             log.LogInformation("Initializing...");
             container.Resolve<IWordsHandler>();
             container.Resolve<ITextSplitter>();
             return helper;
+        }
+
+        public void Validate()
+        {
+            KeyValuePair<string, bool>[] notInitialized = initialized.Where(item => !item.Value).ToArray();
+            if (notInitialized.Length > 0)
+            {
+                var modules = notInitialized.Select(item => item.Key).AccumulateItems(" ");
+                throw new ApplicationException("Not all modules initialized: " + modules);
+            }
         }
     }
 }

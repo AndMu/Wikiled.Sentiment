@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using Autofac;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;
@@ -28,7 +29,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
             amazonRepository = new Lazy<AmazonRepository>(() => new AmazonRepository(Redis));
             container = MainContainerFactory
-                              .Setup()
+                              .Setup(new ContainerBuilder())
                               .SetupLocalCache()
                               .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
                               .Splitter()

@@ -1,11 +1,12 @@
 ﻿using System;
 using Autofac;
 using Wikiled.Console.Arguments;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
 {
-    public class BaseRawConfig : ICommandConfig
+    public abstract class BaseRawConfig : ICommandConfig
     {
         public string Weights { get; set; }
 
@@ -26,9 +27,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
         public bool InvertOff { get; set; }
 
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
+
         public void Build(ContainerBuilder builder)
-        {
-            throw new NotImplementedException();
+        { 
+            MainContainerFactory.Setup(builder)
+                .Config()
+                .SetupLocalCache()
+                .Splitter()
+                .Validate();
         }
     }
 }

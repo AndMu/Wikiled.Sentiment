@@ -6,14 +6,13 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
 using CsvHelper;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
@@ -22,69 +21,57 @@ using Wikiled.Text.Analysis.NLP.NRC;
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
 {
     /// <summary>
-    /// test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Model=.\Svm] -Out=.\results
+    ///     test [-Articles="C:\Cloud\OneDrive\Study\Medical\articles.xml"] [-Model=.\Svm] -Out=.\results
     /// </summary>
     [Description("pSenti testing")]
-    public class TestingCommand : BaseRawCommand
+    public class TestingCommand : BaseRawCommand<TestingConfig>
     {
-        private JsonStreamingWriter resultsWriter;
-
         private CsvWriter csvDataOut;
 
-        public override string Name { get; } = "test";
+        private readonly ILogger log;
 
-        /// <summary>
-        /// Path to pretrained data. If empty will use as basic lexicon
-        /// </summary>
-        public string Model { get; set; }
+        private JsonStreamingWriter resultsWriter;
 
-        public bool Debug { get; set; }
-
-        /// <summary>
-        /// Track Arff
-        /// </summary>
-        public bool TrackArff { get; set; }
-
-        public bool ExtractStyle { get; set; }
-
-        [Required]
-        public string Out { get; set; }
+        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, ISessionContainer container)
+            : base(log, config, container)
+        {
+            this.log = log;
+        }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
             ITestingClient client;
-            Out.EnsureDirectoryExistence();
-            using (var streamWriter = new StreamWriter(Path.Combine(Out, "results.csv"), false))
+            Config.Out.EnsureDirectoryExistence();
+            using (var streamWriter = new StreamWriter(Path.Combine(Config.Out, "results.csv"), false))
             using (csvDataOut = new CsvWriter(streamWriter))
-            using (resultsWriter = new JsonStreamingWriter(Path.Combine(Out, "result.json")))
+            using (resultsWriter = new JsonStreamingWriter(Path.Combine(Config.Out, "result.json")))
             {
                 SetupHeader();
-                //var pipeline = new ProcessingPipeline(TaskPoolScheduler.Default, container);
-                client = container.GetTesting(Model);
-                container.Context.Lexicon= sentimentAdjustment;
+                client = container.GetTesting(Config.Model);
+                container.Context.Lexicon = sentimentAdjustment;
                 var dictionary = container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
-                                 .Subscribe(item => log.LogInformation(client.Pipeline.Monitor.ToString())))
+                    .Subscribe(item => log.LogInformation(client.Pipeline.Monitor.ToString())))
                 {
                     Semaphore = new SemaphoreSlim(2000);
                     client.Pipeline.ProcessingSemaphore = Semaphore;
-                    client.TrackArff = TrackArff;
-                    client.UseBagOfWords = UseBagOfWords;
+                    client.TrackArff = Config.TrackArff;
+                    client.UseBagOfWords = Config.UseBagOfWords;
                     client.Init();
                     await client.Process(reviews.ObserveOn(TaskPoolScheduler.Default))
-                          .Select(
-                              item => 
-                              {
-                                  SaveDocument(dictionary, item);
-                                  client.Pipeline.Monitor.Increment();
-                                  return item;
-                              })
-                          .LastOrDefaultAsync();
+                        .Select(
+                            item =>
+                            {
+                                SaveDocument(dictionary, item);
+                                client.Pipeline.Monitor.Increment();
+                                return item;
+                            })
+                        .LastOrDefaultAsync();
                 }
 
-                if (!TrackArff)
+                if (!Config.TrackArff)
                 {
-                    client.Save(Out);
+                    client.Save(Config.Out);
                 }
             }
 
@@ -94,7 +81,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)
         {
             var vector = new SentimentVector();
-            if (ExtractStyle)
+            if (Config.ExtractStyle)
             {
                 foreach (var word in context.Processed.Words)
                 {
@@ -109,7 +96,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 csvDataOut.WriteField(context.Original.Stars);
                 csvDataOut.WriteField(context.Adjustment.Rating.StarsRating);
                 csvDataOut.WriteField(context.Review.GetAllSentiments().Length);
-                if (ExtractStyle)
+                if (Config.ExtractStyle)
                 {
                     csvDataOut.WriteField(vector.Anger);
                     csvDataOut.WriteField(vector.Anticipation);
@@ -126,7 +113,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 csvDataOut.Flush();
             }
 
-            if (Debug)
+            if (Config.Debug)
             {
                 resultsWriter.WriteObject(context.Processed);
             }
@@ -139,7 +126,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             csvDataOut.WriteField("Original");
             csvDataOut.WriteField("Calculated");
             csvDataOut.WriteField("TotalSentimentWords");
-            if (ExtractStyle)
+            if (Config.ExtractStyle)
             {
                 csvDataOut.WriteField("Anger");
                 csvDataOut.WriteField("Anticipation");

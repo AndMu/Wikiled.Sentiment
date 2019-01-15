@@ -21,6 +21,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterModule<DefaultNlpModule>();
+            builder.RegisterType<SessionContainer>().As<ISessionContainer>();
             builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
             builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<ParsedReviewManager>().As<IParsedReviewManager>();
