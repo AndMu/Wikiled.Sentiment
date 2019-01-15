@@ -15,14 +15,15 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 {
     public class ProcessingPipeline : IProcessingPipeline
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<ProcessingPipeline>();
+        private readonly ILogger<ProcessingPipeline> log;
 
         private readonly IScheduler scheduler;
 
         private readonly Func<Document, IParsedReviewManager> reviewManager;
 
-        public ProcessingPipeline(IScheduler scheduler, Func<Document, IParsedReviewManager> reviewManager)
+        public ProcessingPipeline(ILogger<ProcessingPipeline> log, IScheduler scheduler, Func<Document, IParsedReviewManager> reviewManager)
         {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
             this.reviewManager = reviewManager ?? throw new ArgumentNullException(nameof(reviewManager));
         }
@@ -30,6 +31,11 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
         public PerformanceMonitor Monitor { get; private set; }
 
         public SemaphoreSlim ProcessingSemaphore { get; set; }
+
+        public void ResetMonitor()
+        {
+            Monitor = new PerformanceMonitor(100);
+        }
 
         public IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews)
         {
@@ -39,7 +45,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             }
 
             log.LogInformation("ProcessStep");
-            Monitor = new PerformanceMonitor(100);
+            ResetMonitor();
             IObservable<ProcessingContext> selectedData = reviews
                 .Select(item => Observable.Start(() => StepProcessing(item), scheduler))
                 .Merge()
@@ -50,7 +56,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         private async Task<ProcessingContext> StepProcessing(IParsedDocumentHolder reviewHolder)
         {
-            Document document = null;
+            Document document;
             IParsedReview review = null;
             try
             {
@@ -70,12 +76,12 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             catch (Exception ex)
             {
                 log.LogError(ex, "Error");
-                document = reviewHolder.Original.CloneJson();
+                document = await reviewHolder.GetOriginal().ConfigureAwait(false).CloneJson();
                 document.Status = Status.Error;
             }
 
             Monitor.Increment();
-            var context = new ProcessingContext(reviewHolder.Original, document, review);
+            var context = new ProcessingContext(await reviewHolder.GetOriginal().ConfigureAwait(false), document, review);
             return context;
         }
     }

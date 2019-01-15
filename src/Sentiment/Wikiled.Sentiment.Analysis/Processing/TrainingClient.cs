@@ -74,24 +74,20 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             analyze.SvmPath = svmPath;
             analyze.InitEnvironment();
-            log.LogInformation("Starting Training");
+            log.LogInformation("Starting Training...");
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))
             {
                 await clientContext.Pipeline.ProcessStep(reviews)
-                              .Select(AdditionalProcessing)
-                              .Select(
-                                  item =>
-                                  {
-                                      clientContext.Pipeline.Monitor.Increment();
-                                      return item;
-                                  });
+                              .Select(AdditionalProcessing);
             }
 
+            log.LogInformation(clientContext.Pipeline.Monitor.ToString());
             if (!DisableAspects)
             {
                 SelectAdditional();
             }
 
+            clientContext.Pipeline.ResetMonitor();
             IArffDataSet arff = ArffDataSet.Create<PositivityType>("MAIN");
             arff.HasId = true;
             IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
@@ -105,12 +101,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
                                       () =>
                                       {
                                           ProcessingContext result = ProcessSingleItem(item);
-                                          clientContext.Pipeline.Monitor.Increment();
                                           return result;
                                       }))
                               .Merge();
             }
 
+            log.LogInformation(clientContext.Pipeline.Monitor.ToString());
             log.LogInformation("Cleaning up ARFF....");
             if (!UseAll)
             {

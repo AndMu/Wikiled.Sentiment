@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                     .Subscribe(item => log.LogInformation(client.Pipeline.Monitor.ToString())))
                 {
-                    Semaphore = new SemaphoreSlim(2000);
+                    Semaphore = new SemaphoreSlim(3000);
                     client.Pipeline.ProcessingSemaphore = Semaphore;
                     client.TrackArff = Config.TrackArff;
                     client.UseBagOfWords = Config.UseBagOfWords;

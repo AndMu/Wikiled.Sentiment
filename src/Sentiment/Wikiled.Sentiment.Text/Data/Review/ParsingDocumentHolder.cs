@@ -9,10 +9,12 @@ namespace Wikiled.Sentiment.Text.Data.Review
     {
         private readonly ITextSplitter splitter;
 
+        private Document original;
+
         public ParsingDocumentHolder(ITextSplitter splitter, Document doc)
         {
             this.splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
-            Original = doc ?? throw new ArgumentNullException(nameof(doc));
+            original = doc ?? throw new ArgumentNullException(nameof(doc));
         }
 
         public ParsingDocumentHolder(ITextSplitter splitter, SingleProcessingData doc)
@@ -23,18 +25,21 @@ namespace Wikiled.Sentiment.Text.Data.Review
             }
 
             this.splitter = splitter ?? throw new ArgumentNullException(nameof(splitter));
-            Original = new Document(doc.Text);
-            Original.DocumentTime = doc.Date;
-            Original.Stars = doc.Stars;
-            Original.Author = doc.Author;
-            Original.Id = doc.Id;
+            original = new Document(doc.Text);
+            original.DocumentTime = doc.Date;
+            original.Stars = doc.Stars;
+            original.Author = doc.Author;
+            original.Id = doc.Id;
         }
 
-        public Document Original { get; }
-        
+        public Task<Document> GetOriginal()
+        {
+            return Task.FromResult(original);
+        }
+
         public async Task<Document> GetParsed()
         {
-            var document = await splitter.Process(new ParseRequest(Original)).ConfigureAwait(false);
+            var document = await splitter.Process(new ParseRequest(await GetOriginal().ConfigureAwait(false))).ConfigureAwait(false);
             document.Status = Status.Parsed;
             return document;
         }

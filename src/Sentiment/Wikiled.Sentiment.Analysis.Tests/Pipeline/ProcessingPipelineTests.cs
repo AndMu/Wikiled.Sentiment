@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Reactive;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Reactive.Testing;
 using Moq;
 using NUnit.Framework;
@@ -20,6 +22,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private TestScheduler scheduler;
 
+        private ILogger<ProcessingPipeline> logger;
+
         private Mock<IParsedDocumentHolder> holder;
 
         private Mock<IParsedReviewManager> manager;
@@ -29,6 +33,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         [SetUp]
         public void SetUp()
         {
+            logger = NullLogger<ProcessingPipeline>.Instance;
             scheduler = new TestScheduler();
             manager = new Mock<IParsedReviewManager>();
             review = new Mock<IParsedReview>();
@@ -51,8 +56,9 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         [Test]
         public void Construct() 
         {
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, doc => manager.Object));
-            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(scheduler, null));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(logger, null, doc => manager.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(logger, scheduler, null));
+            Assert.Throws<ArgumentNullException>(() => new ProcessingPipeline(null, scheduler, doc => manager.Object));
         }
 
         [Test]
@@ -68,7 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
 
         private ProcessingPipeline CreateProcessingPipeline()
         {
-            return new ProcessingPipeline(scheduler, doc => manager.Object);
+            return new ProcessingPipeline(logger, scheduler, doc => manager.Object);
         }
     }
 }

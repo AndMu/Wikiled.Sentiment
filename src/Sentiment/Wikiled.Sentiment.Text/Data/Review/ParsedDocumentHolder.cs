@@ -8,13 +8,18 @@ namespace Wikiled.Sentiment.Text.Data.Review
     {
         private readonly Document parsed;
 
+        private readonly Document original;
+
         public ParsedDocumentHolder(Document original, Document parsed)
         {
             this.parsed = parsed ?? throw new ArgumentNullException(nameof(parsed));
-            Original = original ?? throw new ArgumentNullException(nameof(original));
+            this.original = original ?? throw new ArgumentNullException(nameof(original));
         }
 
-        public Document Original { get; }
+        public Task<Document> GetOriginal()
+        {
+            return Task.FromResult(original);
+        }
 
         public Task<Document> GetParsed()
         {

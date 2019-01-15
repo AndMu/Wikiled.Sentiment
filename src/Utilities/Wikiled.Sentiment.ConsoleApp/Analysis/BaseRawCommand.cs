@@ -17,7 +17,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private readonly ILogger log;
 
-        private ISessionContainer container;
+        private readonly ISessionContainer container;
 
         protected BaseRawCommand(ILogger log, T config, ISessionContainer container)
         {
@@ -57,14 +57,18 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 review = GetNegativeReviews().Concat(GetPositiveReviews());
             }
 
-            return Process(review.Select(SynchronizedReviews), container, sentimentAdjustment);
+            return Process(review.Select(SynchronizedReviews).Merge(), container, sentimentAdjustment);
         }
 
         protected abstract Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment);
 
-        private IParsedDocumentHolder SynchronizedReviews(IParsedDocumentHolder review)
+        private async Task<IParsedDocumentHolder> SynchronizedReviews(IParsedDocumentHolder review)
         {
-            Semaphore?.Wait();
+            if (Semaphore != null)
+            {
+                await Semaphore.WaitAsync().ConfigureAwait(false);
+            }
+
             return review;
         }
 

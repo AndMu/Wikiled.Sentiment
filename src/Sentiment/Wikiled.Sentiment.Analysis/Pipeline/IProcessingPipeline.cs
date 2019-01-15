@@ -9,6 +9,8 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
     {
         PerformanceMonitor Monitor { get; }
 
+        void ResetMonitor();
+
         IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews);
 
         SemaphoreSlim ProcessingSemaphore { get; set; }

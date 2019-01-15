@@ -7,6 +7,6 @@ namespace Wikiled.Sentiment.Text.Data.Review
     {
         Task<Document> GetParsed();
 
-        Document Original { get; }
+        Task<Document> GetOriginal();
     }
 }

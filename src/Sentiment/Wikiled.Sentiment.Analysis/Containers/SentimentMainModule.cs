@@ -33,7 +33,12 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>();
 
-            var parallel = Environment.ProcessorCount / 2;
+            var parallel = Environment.ProcessorCount;
+            if (parallel > 30)
+            {
+                parallel = 30;
+            }
+
             builder.RegisterType<WordsHandler>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
             builder.RegisterType<AspectSerializer>().As<IAspectSerializer>();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();

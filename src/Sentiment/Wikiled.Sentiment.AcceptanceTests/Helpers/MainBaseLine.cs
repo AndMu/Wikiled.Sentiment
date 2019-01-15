@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public async Task Train()
         {
-            logger.LogInformation("Trainning...");
+            logger.LogInformation("Initializing Training...");
             Training = new TestRunner(TestHelper.Instance, new SentimentTestData(product) { Category = category });
             logger.LogInformation("Loading data...");
             var trainingClient = Training.Active.GetTraining(trainingLocation);
@@ -61,7 +61,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
         private async Task<IObservable<IParsedDocumentHolder>> GetData(IObservable<IParsedDocumentHolder> source)
         {
             var data = await source.ToArray();
-            var sorted = data.OrderBy(item => item.Original.Id, OrderByDirection.Ascending);
+            var sorted = data.OrderBy(item => item.GetOriginal().Result.Id, OrderByDirection.Ascending);
             return sorted.ToObservable();
         }
     }

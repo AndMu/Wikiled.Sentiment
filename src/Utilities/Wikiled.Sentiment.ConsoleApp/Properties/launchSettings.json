@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "train -Positive=\"e:\\DataSets\\aclImdb\\All\\Train\\pos\\\" -Negative=\"e:\\DataSets\\aclImdb\\All\\Train\\neg\\\""
+      "commandLineArgs": "train -Positive=e:\\2\\pos -Negative=e:\\2\\neg"
     }
   }
 }

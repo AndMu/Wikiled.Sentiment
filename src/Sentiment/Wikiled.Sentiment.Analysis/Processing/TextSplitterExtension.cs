@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;
 using Wikiled.Sentiment.Text.Data.Review;
@@ -21,22 +22,20 @@ namespace Wikiled.Sentiment.Analysis.Processing
             if (string.IsNullOrEmpty(path))
             {
                 log.LogWarning("One of paths is empty");
-                yield break;
+                return new IParsedDocumentHolder[] { };
             }
 
-            foreach (Document document in GetReview(path))
+            double? stars = null;
+            if (positive == true)
             {
-                if (positive == true)
-                {
-                    document.Stars = 5;
-                }
-                else if (positive == false)
-                {
-                    document.Stars = 1;
-                }
-
-                yield return new ParsingDocumentHolder(splitter, document);
+                stars = 5;
             }
+            else if (positive == false)
+            {
+                stars = 1;
+            }
+
+            return GetReview(splitter, path, stars);
         }
 
         public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IProcessingData data)
@@ -67,24 +66,31 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
         }
 
-        private static IEnumerable<Document> GetReview(string path)
+        private static IEnumerable<IParsedDocumentHolder> GetReview(ITextSplitter splitter, string path, double? stars)
         {
             if (File.Exists(path))
             {
                 foreach (var line in File.ReadLines(path))
                 {
-                    yield return new Document(line.SanitizeXmlString());
+                    yield return new ParsingDocumentHolder(splitter,
+                                                           new Document(line.SanitizeXmlString()) { Stars = stars });
                 }
             }
             else
             {
                 foreach (var file in Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories))
                 {
-                    var fileInfo = new FileInfo(file);
-                    yield return new Document(File.ReadAllText(file).SanitizeXmlString())
+                    yield return new AsyncParsingDocumentHolder(Task.Run(() =>
                     {
-                        Id = $"{fileInfo.Directory.Name}_{Path.GetFileNameWithoutExtension(fileInfo.Name)}"
-                    };
+                        var fileInfo = new FileInfo(file);
+                        var document = new Document(File.ReadAllText(file).SanitizeXmlString())
+                        {
+                            Id = $"{fileInfo.Directory.Name}_{Path.GetFileNameWithoutExtension(fileInfo.Name)}",
+                            Stars = stars
+                        };
+
+                        return (IParsedDocumentHolder)new ParsingDocumentHolder(splitter, document);
+                    }));
                 }
             }
         }
