@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Text.Analysis.Structure;

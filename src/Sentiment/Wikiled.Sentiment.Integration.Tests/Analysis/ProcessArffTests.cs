@@ -1,8 +1,6 @@
 using System;
-using System.Linq;
-using Autofac;
 using NUnit.Framework;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Analysis.Arff;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;

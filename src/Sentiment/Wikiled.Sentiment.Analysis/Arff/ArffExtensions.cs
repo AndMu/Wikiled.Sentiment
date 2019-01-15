@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.MachineLearning.Mathematics;
-using Wikiled.Sentiment.Text.Data;
+using Constants = Wikiled.Sentiment.Text.Data.Constants;
 
 namespace Wikiled.Sentiment.Analysis.Arff
 {

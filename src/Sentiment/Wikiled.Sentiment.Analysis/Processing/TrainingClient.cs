@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Wikiled.Arff.Extensions;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;

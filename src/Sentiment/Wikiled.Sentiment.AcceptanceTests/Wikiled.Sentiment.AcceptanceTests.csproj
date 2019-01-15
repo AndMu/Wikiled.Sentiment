@@ -22,9 +22,9 @@
     <PackageReference Include="System.Reactive.PlatformServices" version="4.1.2" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Amazon" version="1.1.2" />
-    <PackageReference Include="Wikiled.Arff" version="2.2.12" />
+    <PackageReference Include="Wikiled.Arff" version="2.2.14" />
     <PackageReference Include="Wikiled.Common" Version="1.1.6" />
-    <PackageReference Include="Wikiled.MachineLearning" version="2.4.5" />
+    <PackageReference Include="Wikiled.MachineLearning" version="2.4.8" />
     <PackageReference Include="Wikiled.Redis" version="3.3.0" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.0" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="15.9.0"></packagereference>

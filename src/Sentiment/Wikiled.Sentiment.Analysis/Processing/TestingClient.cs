@@ -4,7 +4,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Xml.Linq;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;

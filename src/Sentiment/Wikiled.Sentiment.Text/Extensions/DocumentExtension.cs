@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.Structure.Sentiment;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
-using PositivityType = Wikiled.Arff.Persistence.PositivityType;
 
 namespace Wikiled.Sentiment.Text.Extensions
 {

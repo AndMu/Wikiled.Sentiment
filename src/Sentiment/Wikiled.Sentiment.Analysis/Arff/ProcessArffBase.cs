@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Wikiled.Arff.Extensions;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Async;
 using Wikiled.Sentiment.Text.Data;
 

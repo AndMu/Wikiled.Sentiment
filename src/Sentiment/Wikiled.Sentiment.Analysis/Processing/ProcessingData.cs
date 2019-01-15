@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Data.Review;
 
 namespace Wikiled.Sentiment.Analysis.Processing

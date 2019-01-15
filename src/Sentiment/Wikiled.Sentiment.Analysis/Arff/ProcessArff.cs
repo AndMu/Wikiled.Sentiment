@@ -1,13 +1,14 @@
 ﻿using System;
-using Wikiled.Arff.Persistence;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.MachineLearning;
+using Constants = Wikiled.Sentiment.Text.Data.Constants;
 
 namespace Wikiled.Sentiment.Analysis.Arff
 {
     public class ProcessArff : ProcessArffBase
     {
-        public ProcessArff(IArffDataSet dataSet) 
+        public ProcessArff(IArffDataSet dataSet)
             : base(dataSet)
         {
             if (dataSet == null)
@@ -27,16 +28,11 @@ namespace Wikiled.Sentiment.Analysis.Arff
 
             review.Reset();
             review.Vector.GenerateUsingImportantOnly = true;
-            var item = AddData(review.Date, review.Vector, positivity);
-            if (item != null)
-            {
-                item.Key = review.Document.Id;
-            }
-
+            var item = AddData(review.Document.Id, review.Date, review.Vector, positivity);
             review.Vector.GenerateUsingImportantOnly = false;
         }
 
-        private IArffDataRow AddData(DateTime? date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
+        private IArffDataRow AddData(string id, DateTime? date, ExtractTextVectorBase extractTextVector, PositivityType positivity)
         {
             var cells = extractTextVector.GetCells();
             if (cells.Count == 0)
@@ -46,8 +42,8 @@ namespace Wikiled.Sentiment.Analysis.Arff
 
             lock (DataSet)
             {
-                IArffDataRow review = DataSet.AddDocument();
-                review.Class.Value  = positivity;
+                IArffDataRow review = string.IsNullOrEmpty(id) ? DataSet.AddDocument() : DataSet.GetOrCreateDocument(id);
+                review.Class.Value = positivity;
                 review.AddRecord(Constants.DATE).Value = date ?? DateTime.Today;
                 foreach (var cell in cells)
                 {
