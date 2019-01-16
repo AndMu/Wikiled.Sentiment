@@ -66,7 +66,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             instance.PopulateArff(review, PositivityType.Positive);
             Assert.IsNotNull(instance.DataSet);
             Assert.AreEqual(0, instance.DataSet.Documents.Count());
-            Assert.AreEqual(2, instance.DataSet.Header.Total);
+            Assert.AreEqual(3, instance.DataSet.Header.Total);
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             instance.PopulateArff(review, PositivityType.Positive);
             Assert.IsNotNull(instance.DataSet);
             Assert.AreEqual(1, instance.DataSet.Documents.Count());
-            Assert.AreEqual(9, instance.DataSet.Header.Total);
+            Assert.AreEqual(10, instance.DataSet.Header.Total);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             instance.PopulateArff(review, PositivityType.Positive);
             Assert.IsNotNull(instance.DataSet);
             Assert.AreEqual(1, instance.DataSet.Documents.Count());
-            Assert.AreEqual(9, instance.DataSet.Header.Total);
+            Assert.AreEqual(10, instance.DataSet.Header.Total);
         }
 
         private ProcessArff CreateProcessArff()
