@@ -60,14 +60,14 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         {
             log.LogInformation("Training SVM...");
             var classifier = new Classifier();
-            (int? Y, double[] X)[] data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
+            var data = arff.GetDataNormalized(NormalizationType.L2).ToArray();
             if (data.Length < 40)
             {
                 throw new ArgumentOutOfRangeException("Not enough training records");
             }
 
             var classCount = new Dictionary<int, int>();
-            foreach ((int? Y, double[] X) datRecord in data)
+            foreach (var datRecord in data)
             {
                 if (classCount.ContainsKey(datRecord.Y.Value))
                 {

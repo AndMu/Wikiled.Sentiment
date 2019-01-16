@@ -76,6 +76,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             }
 
             log.LogInformation($"Testing performance {client.GetPerformanceDescription()}");
+            log.LogInformation("Completed!");
         }
 
         private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)

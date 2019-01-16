@@ -34,7 +34,13 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         public void ResetMonitor()
         {
-            Monitor = new PerformanceMonitor(100);
+            long defaultTotal = 100;
+            if (Monitor != null)
+            {
+                defaultTotal = Monitor.Total;
+            }
+
+            Monitor = new PerformanceMonitor(defaultTotal);
         }
 
         public IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews)

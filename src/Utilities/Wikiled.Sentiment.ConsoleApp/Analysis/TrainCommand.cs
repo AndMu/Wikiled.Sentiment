@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
@@ -36,6 +35,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             client.UseBagOfWords = Config.UseBagOfWords;
             client.UseAll = Config.UseAll;
             await client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).ConfigureAwait(false);
+            log.LogInformation("Completed!");
         }
     }
 }
