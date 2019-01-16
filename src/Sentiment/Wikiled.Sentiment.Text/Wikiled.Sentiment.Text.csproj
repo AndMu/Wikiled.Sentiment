@@ -30,7 +30,7 @@
     <PackageReference Include="System.Reactive.PlatformServices" Version="4.1.2" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.2" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Wikiled.Arff" Version="2.2.17" />
+    <PackageReference Include="Wikiled.Arff" Version="2.2.20" />
     <PackageReference Include="Wikiled.Common" Version="1.1.7" />
     <PackageReference Include="Wikiled.Common.Utilities" Version="1.1.11" />
     <PackageReference Include="Wikiled.MachineLearning" Version="2.4.12" />

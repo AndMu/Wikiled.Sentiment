@@ -15,15 +15,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     public abstract class BaseRawCommand<T> : Command
         where T : BaseRawConfig
     {
-        private readonly ILogger log;
-
         private readonly ISessionContainer container;
 
         protected BaseRawCommand(ILogger log, T config, ISessionContainer container)
+            : base(log)
         {
             Config = config ?? throw new ArgumentNullException(nameof(config));
             this.container = container ?? throw new ArgumentNullException(nameof(container));
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         protected SemaphoreSlim Semaphore { get; set; }
@@ -32,13 +30,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         protected override Task Execute(CancellationToken token)
         {
-            log.LogInformation("Initialize...");
+            Logger.LogInformation("Initialize...");
             container.Context.DisableFeatureSentiment = Config.InvertOff;
-            log.LogInformation("Processing...");
+            Logger.LogInformation("Processing...");
             ISentimentDataHolder sentimentAdjustment = default;
             if (!string.IsNullOrEmpty(Config.Weights))
             {
-                log.LogInformation("Adjusting Embeddings sentiments using [{0}] ...", Config.Weights);
+                Logger.LogInformation("Adjusting Embeddings sentiments using [{0}] ...", Config.Weights);
                 sentimentAdjustment = SentimentDataHolder.Load(Config.Weights);
             }
 
@@ -74,26 +72,26 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private IObservable<IParsedDocumentHolder> GetAllReviews()
         {
-            log.LogInformation("Loading {0}", Config.Articles);
+            Logger.LogInformation("Loading {0}", Config.Articles);
             IProcessingData data = new DataLoader().Load(Config.Articles);
             return container.GetTextSplitter().GetParsedReviewHolders(data);
         }
 
         private IObservable<IParsedDocumentHolder> GetPositiveReviews()
         {
-            log.LogInformation("Positive {0}", Config.Positive);
+            Logger.LogInformation("Positive {0}", Config.Positive);
             return container.GetTextSplitter().GetParsedReviewHolders(Config.Positive, true).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetNegativeReviews()
         {
-            log.LogInformation("Negative {0}", Config.Negative);
+            Logger.LogInformation("Negative {0}", Config.Negative);
             return container.GetTextSplitter().GetParsedReviewHolders(Config.Negative, false).ToObservable();
         }
 
         private IObservable<IParsedDocumentHolder> GetOtherReviews()
         {
-            log.LogInformation("Other {0}", Config.Input);
+            Logger.LogInformation("Other {0}", Config.Input);
             return container.GetTextSplitter().GetParsedReviewHolders(Config.Input, null).ToObservable();
         }
     }

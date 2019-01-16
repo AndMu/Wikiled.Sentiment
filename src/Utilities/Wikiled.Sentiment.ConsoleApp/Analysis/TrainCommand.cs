@@ -18,24 +18,20 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     [Description("pSenti training command")]
     internal class TrainCommand : BaseRawCommand<TrainingConfig>
     {
-        private readonly ILogger log;
-
         public TrainCommand(ILogger<TrainCommand> log, TrainingConfig config, ISessionContainer container)
             : base(log, config, container)
         {
-            this.log = log;
         }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
         {
-            log.LogInformation("Training Operation...");
+            Logger.LogInformation("Training Operation...");
             ITrainingClient client = container.GetTraining(Config.Model);
             container.Context.Lexicon = sentimentAdjustment;
             client.OverrideAspects = Config.Features;
             client.UseBagOfWords = Config.UseBagOfWords;
             client.UseAll = Config.UseAll;
             await client.Train(reviews.ObserveOn(TaskPoolScheduler.Default)).ConfigureAwait(false);
-            log.LogInformation("Completed!");
         }
     }
 }

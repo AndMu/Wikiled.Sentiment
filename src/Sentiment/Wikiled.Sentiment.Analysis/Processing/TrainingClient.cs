@@ -89,7 +89,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             clientContext.Pipeline.ResetMonitor();
             IArffDataSet arff = ArffDataSet.Create<PositivityType>("MAIN");
-            arff.HasId = true;
             IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
             arffProcess = factory.Create(arff);
 

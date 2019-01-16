@@ -28,14 +28,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private CsvWriter csvDataOut;
 
-        private readonly ILogger log;
-
         private JsonStreamingWriter resultsWriter;
 
         public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, ISessionContainer container)
             : base(log, config, container)
         {
-            this.log = log;
         }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
@@ -51,7 +48,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 container.Context.Lexicon = sentimentAdjustment;
                 var dictionary = container.Resolve<INRCDictionary>();
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
-                    .Subscribe(item => log.LogInformation(client.Pipeline.Monitor.ToString())))
+                    .Subscribe(item => Logger.LogInformation(client.Pipeline.Monitor.ToString())))
                 {
                     Semaphore = new SemaphoreSlim(3000);
                     client.Pipeline.ProcessingSemaphore = Semaphore;
@@ -75,8 +72,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 }
             }
 
-            log.LogInformation($"Testing performance {client.GetPerformanceDescription()}");
-            log.LogInformation("Completed!");
+            Logger.LogInformation($"Testing performance {client.GetPerformanceDescription()}");
         }
 
         private void SaveDocument(INRCDictionary dictionary, ProcessingContext context)
