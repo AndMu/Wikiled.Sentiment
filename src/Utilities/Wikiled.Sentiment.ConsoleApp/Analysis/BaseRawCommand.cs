@@ -41,7 +41,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             }
 
             IObservable<IParsedDocumentHolder> review;
-
             if (!string.IsNullOrEmpty(Config.Input))
             {
                 review = GetOtherReviews();

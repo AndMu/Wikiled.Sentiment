@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -33,6 +32,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, ISessionContainer container)
             : base(log, config, container)
         {
+            Semaphore = new SemaphoreSlim(3000);
         }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews, ISessionContainer container, ISentimentDataHolder sentimentAdjustment)
@@ -50,8 +50,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 using (Observable.Interval(TimeSpan.FromSeconds(30))
                     .Subscribe(item => Logger.LogInformation(client.Pipeline.Monitor.ToString())))
                 {
-                    Semaphore = new SemaphoreSlim(3000);
-                    client.Pipeline.ProcessingSemaphore = Semaphore;
                     client.TrackArff = Config.TrackArff;
                     client.UseBagOfWords = Config.UseBagOfWords;
                     client.Init();
@@ -60,7 +58,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                             item =>
                             {
                                 SaveDocument(dictionary, item);
-                                client.Pipeline.Monitor.Increment();
+                                Semaphore.Release();
                                 return item;
                             })
                         .LastOrDefaultAsync();

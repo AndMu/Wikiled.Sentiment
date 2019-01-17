@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
@@ -101,9 +102,14 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public void Init()
         {
             MachineSentiment = DisableSvm ? new NullMachineSentiment() : Text.MachineLearning.MachineSentiment.Load(SvmPath);
-            arff = ArffDataSet.Create<PositivityType>("MAIN");
-            IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
-            arffProcess = TrackArff ? factory.Create(arff) : null;
+            if (TrackArff)
+            {
+                arff = ArffDataSet.Create<PositivityType>("MAIN");
+                arff.HasDate = true;
+                arff.HasId = true;
+                IProcessArffFactory factory = UseBagOfWords ? new UnigramProcessArffFactory() : (IProcessArffFactory)new ProcessArffFactory();
+                arffProcess = factory.Create(arff);
+            }
 
             log.LogInformation("Track ARFF: {0}", TrackArff);
             if (!DisableAspects &&
@@ -129,7 +135,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
         public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
             IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
-            return documentSelector.Where(item => item != null);
+            return documentSelector;
         }
 
         public void Save(string path)
@@ -140,7 +146,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             MachineLearning.Mathematics.Vectors.VectorData vector = SentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(path, "sentiment_vector.json")).Serialize(new[] { vector });
-            arff.Save(Path.Combine(path, "data.arff"));
+            arff?.Save(Path.Combine(path, "data.arff"));
         }
 
         private ProcessingContext RetrieveData(ProcessingContext context)
@@ -164,26 +170,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 Interlocked.Increment(ref error);
                 throw;
             }
-            finally
-            {
-                clientContext.Pipeline.ProcessingSemaphore?.Release();
-            }
-
+           
             return context;
         }
 
         private void StandaloneProcess(ProcessingContext context, IRatingAdjustment adjustment)
         {
-            if (arffProcess == null)
-            {
-                log.LogDebug("Arff is disabled, statistics wil not be tracked");
-                return;
-            }
-
             if (adjustment.Rating.StarsRating == null)
             {
                 statistics.AddUnknown();
-                arffProcess.PopulateArff(context.Review, PositivityType.Negative);
+                arffProcess?.PopulateArff(context.Review, PositivityType.Negative);
             }
             else
             {
@@ -196,7 +192,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     }
                 }
 
-                arffProcess.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
+                arffProcess?.PopulateArff(context.Review, context.Original.Stars > 3 ? PositivityType.Positive : PositivityType.Negative);
             }
         }
     }

@@ -2,7 +2,6 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Helpers;
@@ -29,8 +28,6 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
         }
 
         public PerformanceMonitor Monitor { get; private set; }
-
-        public SemaphoreSlim ProcessingSemaphore { get; set; }
 
         public void ResetMonitor()
         {
@@ -67,15 +64,6 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             try
             {
                 Monitor.ManualyCount();
-                if (ProcessingSemaphore != null)
-                {
-                    var isSuccesful = await ProcessingSemaphore.WaitAsync(TimeSpan.FromMinutes(5)).ConfigureAwait(false);
-                    if (!isSuccesful)
-                    {
-                        throw new TimeoutException();
-                    }
-                }
-
                 document = await reviewHolder.GetParsed().ConfigureAwait(false);
                 review = reviewManager(document).Create();
             }

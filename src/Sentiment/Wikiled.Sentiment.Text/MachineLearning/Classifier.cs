@@ -65,7 +65,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public double[] Probability(double[][] x)
         {
-            log.LogInformation("Probability...");
+            log.LogDebug("Probability");
             if (Model == null)
             {
                 throw new InvalidOperationException("Model is not trained");
@@ -76,7 +76,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public double Probability(double[] x)
         {
-            log.LogInformation("Probability...");
+            log.LogDebug("Probability");
             if (Model == null)
             {
                 throw new InvalidOperationException("Model is not trained");
@@ -87,7 +87,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public bool[] Classify(double[][] x)
         {
-            log.LogInformation("Classify...");
+            log.LogDebug("Classify");
             if (Model == null)
             {
                 throw new InvalidOperationException("Model is not trained");
