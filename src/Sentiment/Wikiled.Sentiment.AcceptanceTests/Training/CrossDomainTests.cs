@@ -10,7 +10,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     [TestFixture]
     public class CrossDomainTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<CrossDomainTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<CrossDomainTests>();
 
         [TestCase("B0026127Y8", ProductCategory.Video, 8)]
         [TestCase("9562910334", ProductCategory.Book, 7)]

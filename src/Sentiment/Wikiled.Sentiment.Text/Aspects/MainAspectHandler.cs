@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Text.Aspects
 {
     public class MainAspectHandler : IMainAspectHandler
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainAspectHandler>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<MainAspectHandler>();
 
         private readonly IAspectContextFactory aspectContextFactory;
 

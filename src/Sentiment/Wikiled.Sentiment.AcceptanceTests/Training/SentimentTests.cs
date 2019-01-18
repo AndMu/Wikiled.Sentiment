@@ -9,7 +9,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     [TestFixture]
     public class SentimentTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
 
         [TestCase("B00002EQCW", "Total:<215> Positive:<91.000%> Negative:<80.000%> F1:<0.945> RMSE:1.12")]
         [TestCase("B0026127Y8", "Total:<854> Positive:<80.724%> Negative:<56.790%> F1:<0.872> RMSE:1.37")]

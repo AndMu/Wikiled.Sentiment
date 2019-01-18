@@ -22,7 +22,7 @@
     <PackageReference Include="System.Reactive.Linq" version="4.1.2" />
     <PackageReference Include="System.Reactive.PlatformServices" version="4.1.2" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
-    <PackageReference Include="Wikiled.Arff" version="2.2.20" />
+    <PackageReference Include="Wikiled.Arff" version="2.2.23" />
     <PackageReference Include="Wikiled.Redis" version="3.3.0" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.0" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />

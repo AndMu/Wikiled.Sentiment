@@ -21,13 +21,13 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         private readonly string product;
 
-        private readonly string trainingLocation;
+        private readonly string resultPath;
 
         public MainBaseLine(string product, ProductCategory category)
         {
             this.category = category;
             this.product = product;
-            trainingLocation = Path.Combine(TestContext.CurrentContext.TestDirectory, @"SVM", product);
+            resultPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Results", product);
         }
 
         public TestRunner Training { get; private set; }
@@ -38,12 +38,12 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             var testing = new TestRunner(TestHelper.Instance, new SentimentTestData(testProduct) { Category = testCategory });
 
             logger.LogInformation("Loading data...");
-            var testingClient = testing.Active.GetTesting(trainingLocation);
+            var testingClient = testing.Active.GetTesting(Path.Combine(resultPath, "Training"));
             testingClient.TrackArff = true;
             testingClient.DisableAspects = true;
             testingClient.Init();
             await testingClient.Process(await GetData(testing.Load()).ConfigureAwait(false)).LastOrDefaultAsync();
-            testingClient.Save(Path.Combine(trainingLocation, @"Result", testProduct));
+            testingClient.Save(Path.Combine(resultPath, @"Tests", testProduct));
             return testingClient;
         }
 
@@ -52,7 +52,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             logger.LogInformation("Initializing Training...");
             Training = new TestRunner(TestHelper.Instance, new SentimentTestData(product) { Category = category });
             logger.LogInformation("Loading data...");
-            var trainingClient = Training.Active.GetTraining(trainingLocation);
+            var trainingClient = Training.Active.GetTraining(Path.Combine(resultPath, "Training"));
             trainingClient.DisableAspects = true;
             logger.LogInformation("Training...");
             await trainingClient.Train(await GetData(Training.Load()).ConfigureAwait(false)).ConfigureAwait(false);

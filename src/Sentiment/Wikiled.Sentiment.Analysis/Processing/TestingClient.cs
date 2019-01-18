@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
@@ -146,7 +147,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             aspectSentiments.XmlSerialize().Save(Path.Combine(path, "aspect_sentiment.xml"));
             MachineLearning.Mathematics.Vectors.VectorData vector = SentimentVector.GetVector(NormalizationType.None);
             new JsonVectorSerialization(Path.Combine(path, "sentiment_vector.json")).Serialize(new[] { vector });
-            arff?.Save(Path.Combine(path, "data.arff"));
+            arff?.Sort()?.Save(Path.Combine(path, "data.arff"));
         }
 
         private ProcessingContext RetrieveData(ProcessingContext context)

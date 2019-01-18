@@ -11,7 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 {
     public class WordRepairRuleEngine
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<WordRepairRuleEngine>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<WordRepairRuleEngine>();
 
         private readonly WordRepairRule repairRule;
 

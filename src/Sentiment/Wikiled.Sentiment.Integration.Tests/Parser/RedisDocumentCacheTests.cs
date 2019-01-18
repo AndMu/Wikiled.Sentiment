@@ -17,7 +17,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
     [TestFixture]
     public class RedisDocumentCacheTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<RedisDocumentCacheTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<RedisDocumentCacheTests>();
 
         private IRedisLink link;
 

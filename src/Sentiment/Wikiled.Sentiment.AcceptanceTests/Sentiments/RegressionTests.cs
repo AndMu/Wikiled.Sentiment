@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class RegressionTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<RegressionTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<RegressionTests>();
 
         private static readonly SentimentTestData[] testData =
         {

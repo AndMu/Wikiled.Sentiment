@@ -24,7 +24,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     [TestFixture]
     public class SentimentTests
     {
-         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
+        private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
 
         [SetUp]
         public void Setup()
