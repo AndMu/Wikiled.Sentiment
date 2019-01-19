@@ -11,8 +11,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
 
-        [TestCase("B00002EQCW", "Total:<215> Positive:<91.000%> Negative:<80.000%> F1:<0.945> RMSE:1.12")]
-        [TestCase("B0026127Y8", "Total:<854> Positive:<80.724%> Negative:<56.790%> F1:<0.872> RMSE:1.37")]
+        [TestCase("B00002EQCW", "Total:<215> Positive:<90.000%> Negative:<80.000%> F1:<0.940> RMSE:1.14")]
+        [TestCase("B0026127Y8", "Total:<854> Positive:<80.207%> Negative:<58.025%> F1:<0.869> RMSE:1.36")]
         public async Task TestElectronics(string product, string performance)
         {
             log.LogInformation("TestElectronics: {0} {1}", product, performance);
@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         }
 
 
-        [TestCase("B0002L5R78", "Total:<7268> Positive:<80.656%> Negative:<41.272%> F1:<0.861> RMSE:1.58")]
+        [TestCase("B0002L5R78", "Total:<7268> Positive:<80.594%> Negative:<41.949%> F1:<0.861> RMSE:1.59")]
         public async Task TestVideo(string product, string performance)
         {
             log.LogInformation("TestVideo: {0} {1}", product, performance);
