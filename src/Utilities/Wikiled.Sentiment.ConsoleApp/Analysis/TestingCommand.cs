@@ -11,6 +11,7 @@ using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
@@ -29,8 +30,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private JsonStreamingWriter resultsWriter;
 
-        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, ISessionContainer container)
-            : base(log, config, container)
+        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, IDataLoader loader, ISessionContainer container)
+            : base(log, config, loader, container)
         {
             Semaphore = new SemaphoreSlim(3000);
         }

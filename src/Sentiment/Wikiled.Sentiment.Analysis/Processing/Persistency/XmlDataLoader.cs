@@ -2,15 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Data.Review;
 
-namespace Wikiled.Sentiment.Analysis.Processing
+namespace Wikiled.Sentiment.Analysis.Processing.Persistency
 {
-    public class XmlProcessingDataLoader
+    public class XmlDataLoader
     {
-        public IProcessingData LoadOldXml(string path)
+        private readonly ILogger<XmlDataLoader> logger;
+
+        public XmlDataLoader(ILogger<XmlDataLoader> logger)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public IDataSource LoadOldXml(string path)
+        {
+            logger.LogInformation("Loading {0}", path);
             var doc = XDocument.Load(path);
             var data = new ProcessingData();
             foreach (var item in GetRecords(doc.Descendants("Positive")))
@@ -28,7 +37,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 data.Add(PositivityType.Neutral, item);
             }
 
-            return new StaticProcessingData(data);
+            return new StaticDataSource(data);
         }
 
         private IEnumerable<SingleProcessingData> GetRecords(IEnumerable<XElement> elements)

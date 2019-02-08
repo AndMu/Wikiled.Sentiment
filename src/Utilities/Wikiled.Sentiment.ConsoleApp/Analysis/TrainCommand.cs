@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
@@ -18,8 +19,8 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     [Description("pSenti training command")]
     internal class TrainCommand : BaseRawCommand<TrainingConfig>
     {
-        public TrainCommand(ILogger<TrainCommand> log, TrainingConfig config, ISessionContainer container)
-            : base(log, config, container)
+        public TrainCommand(ILogger<TrainCommand> log, TrainingConfig config, IDataLoader loader, ISessionContainer container)
+            : base(log, config, loader, container)
         {
         }
 

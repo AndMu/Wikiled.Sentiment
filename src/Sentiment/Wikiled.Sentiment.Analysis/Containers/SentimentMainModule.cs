@@ -5,6 +5,7 @@ using Autofac.Extras.AggregateService;
 using Microsoft.Extensions.Caching.Memory;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP;
@@ -21,6 +22,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterModule<DefaultNlpModule>();
+            
+            builder.RegisterType<DataLoader>().As<IDataLoader>();
             builder.RegisterType<SessionContainer>().As<ISessionContainer>();
             builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
             builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivating(item => item.Instance.Load());

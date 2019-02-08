@@ -2,16 +2,20 @@
 using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Wikiled.Sentiment.Text.Data.Review;
 
-namespace Wikiled.Sentiment.Analysis.Processing
+namespace Wikiled.Sentiment.Analysis.Processing.Persistency
 {
-    public class JsonProcessingDataLoader : IProcessingData
+    public class JsonDataSource : IDataSource
     {
+        private readonly ILogger<JsonDataSource> logger;
+
         private readonly string path;
 
-        public JsonProcessingDataLoader(string path)
+        public JsonDataSource(ILogger<JsonDataSource> logger, string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -19,14 +23,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
 
             this.path = path;
-            All = Observable.Empty<DataPair>();
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IObservable<DataPair> All { get; private set; }
-
-        public void Load()
+        public IObservable<DataPair> Load()
         {
-            All = Observable.Create<DataPair>(o =>
+            return Observable.Create<DataPair>(o =>
             {
                 using (var streamReader = new StreamReader(path))
                 using (var reader = new JsonTextReader(streamReader))
@@ -63,7 +65,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                         while (reader.TokenType != JsonToken.EndArray)
                         {
                             var instance = serializer.Deserialize<SingleProcessingData>(reader);
-                            o.OnNext(new DataPair(value, instance));
+                            o.OnNext(new DataPair(value, Task.FromResult(instance)));
                             reader.Read();
                         }
 

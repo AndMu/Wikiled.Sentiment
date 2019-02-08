@@ -6,12 +6,14 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using Wikiled.Arff.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.MachineLearning;
@@ -41,30 +43,30 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task SimpleTest()
         {
-            var data = new XmlProcessingDataLoader().LoadOldXml(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
-            var negative = data.All
+            var data = new XmlDataLoader(new NullLogger<XmlDataLoader>()).LoadOldXml(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
+            var negative = data.Load()
                                .Where(item => item.Sentiment == SentimentClass.Negative)
                                .Select(item => item.Data)
                                .Repeat(15)
                                .Select(
                 item =>
                     {
-                        item.Stars = 1;
-                        item.Text = item.Text;
-                        item.Id = Guid.NewGuid().ToString();
-                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
+                        item.Result.Stars = 1;
+                        item.Result.Text = item.Result.Text;
+                        item.Result.Id = Guid.NewGuid().ToString();
+                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item.Result);
                     });
 
-            var positive = data.All.Where(item => item.Sentiment == SentimentClass.Positive)
+            var positive = data.Load().Where(item => item.Sentiment == SentimentClass.Positive)
                                .Select(item => item.Data)
                                .Repeat(15)
                                .Select(
                                    item =>
                                    {
-                                       item.Stars = 5;
-                                       item.Text = item.Text;
-                                       item.Id = Guid.NewGuid().ToString();
-                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item);
+                                       item.Result.Stars = 5;
+                                       item.Result.Text = item.Result.Text;
+                                       item.Result.Id = Guid.NewGuid().ToString();
+                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item.Result);
                                    });
 
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");

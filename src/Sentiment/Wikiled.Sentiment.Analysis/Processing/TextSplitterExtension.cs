@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
@@ -38,24 +39,25 @@ namespace Wikiled.Sentiment.Analysis.Processing
             return GetReview(splitter, path, stars);
         }
 
-        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IProcessingData data)
+        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IDataSource data)
         {
-            IObservable<ParsingDocumentHolder> all = data.All.Select(
-                processingData =>
-                {
-                    if (processingData.Sentiment == SentimentClass.Positive)
-                    {
-                        SetStars(processingData.Data, 5);
-                    }
-                    else if (processingData.Sentiment == SentimentClass.Negative)
-                    {
-                        SetStars(processingData.Data, 1);
-                    }
-
-                    return new ParsingDocumentHolder(splitter, processingData.Data);
-                });
-
+            var all = data.Load().Select(processingData => (IParsedDocumentHolder)new AsyncParsingDocumentHolder(ConstructHolder(splitter, processingData)));
             return all;
+        }
+
+        private static async Task<IParsedDocumentHolder> ConstructHolder(ITextSplitter splitter, DataPair processingData)
+        {
+            var result = await processingData.Data.ConfigureAwait(false);
+            if (processingData.Sentiment == SentimentClass.Positive)
+            {
+                SetStars(result, 5);
+            }
+            else if (processingData.Sentiment == SentimentClass.Negative)
+            {
+                SetStars(result, 1);
+            }
+
+            return new ParsingDocumentHolder(splitter, result);
         }
 
         private static void SetStars(SingleProcessingData processingData, double defaultStars)
@@ -72,8 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 foreach (var line in File.ReadLines(path))
                 {
-                    yield return new ParsingDocumentHolder(splitter,
-                                                           new Document(line.SanitizeXmlString()) { Stars = stars });
+                    yield return new ParsingDocumentHolder(splitter, new Document(line.SanitizeXmlString()) { Stars = stars });
                 }
             }
             else

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
@@ -17,11 +18,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private readonly ISessionContainer container;
 
-        protected BaseRawCommand(ILogger log, T config, ISessionContainer container)
+        private readonly IDataLoader loader;
+
+        protected BaseRawCommand(ILogger log, T config, IDataLoader loader, ISessionContainer container)
             : base(log)
         {
             Config = config ?? throw new ArgumentNullException(nameof(config));
             this.container = container ?? throw new ArgumentNullException(nameof(container));
+            this.loader = loader;
         }
 
         protected SemaphoreSlim Semaphore { get; set; }
@@ -40,20 +44,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 sentimentAdjustment = SentimentDataHolder.Load(Config.Weights);
             }
 
-            IObservable<IParsedDocumentHolder> review;
-            if (!string.IsNullOrEmpty(Config.Input))
-            {
-                review = GetOtherReviews();
-            }
-            else if (string.IsNullOrEmpty(Config.Positive))
-            {
-                review = GetAllReviews();
-            }
-            else
-            {
-                review = GetNegativeReviews().Concat(GetPositiveReviews());
-            }
-
+            IObservable<IParsedDocumentHolder> review = GetAllDocuments();
             return Process(review.Select(SynchronizedReviews).Merge(), container, sentimentAdjustment);
         }
 
@@ -69,29 +60,11 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             return review;
         }
 
-        private IObservable<IParsedDocumentHolder> GetAllReviews()
+        private IObservable<IParsedDocumentHolder> GetAllDocuments()
         {
-            Logger.LogInformation("Loading {0}", Config.Articles);
-            IProcessingData data = new DataLoader().Load(Config.Articles);
-            return container.GetTextSplitter().GetParsedReviewHolders(data);
-        }
-
-        private IObservable<IParsedDocumentHolder> GetPositiveReviews()
-        {
-            Logger.LogInformation("Positive {0}", Config.Positive);
-            return container.GetTextSplitter().GetParsedReviewHolders(Config.Positive, true).ToObservable();
-        }
-
-        private IObservable<IParsedDocumentHolder> GetNegativeReviews()
-        {
-            Logger.LogInformation("Negative {0}", Config.Negative);
-            return container.GetTextSplitter().GetParsedReviewHolders(Config.Negative, false).ToObservable();
-        }
-
-        private IObservable<IParsedDocumentHolder> GetOtherReviews()
-        {
-            Logger.LogInformation("Other {0}", Config.Input);
-            return container.GetTextSplitter().GetParsedReviewHolders(Config.Input, null).ToObservable();
+            Logger.LogInformation("Loading {0}", Config);
+            var dataSource = loader.Load(Config);
+            return container.GetTextSplitter().GetParsedReviewHolders(dataSource);
         }
     }
 }

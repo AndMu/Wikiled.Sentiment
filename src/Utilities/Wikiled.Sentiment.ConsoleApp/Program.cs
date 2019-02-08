@@ -34,7 +34,8 @@ namespace Wikiled.Sentiment.ConsoleApp
             starter.LoggerFactory.AddNLog();
             starter.RegisterCommand<TestingCommand, TestingConfig>("test");
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
-
+            starter.RegisterCommand<BoostrapCommand, BootsrapConfig>("boot");
+            
             var configuration = new ConfigurationHandler();
             var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
             if (Directory.Exists(resourcesPath))

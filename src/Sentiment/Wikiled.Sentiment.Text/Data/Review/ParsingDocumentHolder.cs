@@ -9,7 +9,7 @@ namespace Wikiled.Sentiment.Text.Data.Review
     {
         private readonly ITextSplitter splitter;
 
-        private Document original;
+        private readonly Document original;
 
         public ParsingDocumentHolder(ITextSplitter splitter, Document doc)
         {
