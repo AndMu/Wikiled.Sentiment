@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Wikiled.Sentiment.Analysis.Processing.Persistency
 {
@@ -18,22 +19,28 @@ namespace Wikiled.Sentiment.Analysis.Processing.Persistency
 
         public IDataSource Load(IDataSourceConfig source)
         {
-            if (source == null)
+            if (source == null ||
+                (source.All == null && source.Negative == null && source.Positive == null))
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
             if (source.All != null)
             {
-                logger.LogInformation("Loading {0}", source.All);
-                if (source.All.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                if (File.Exists(source.All))
                 {
-                    return new XmlDataLoader(loggerFactory.CreateLogger<XmlDataLoader>()).LoadOldXml(source.All);
+                    logger.LogInformation("Loading {0}", source.All);
+                    if (source.All.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new XmlDataLoader(loggerFactory.CreateLogger<XmlDataLoader>()).LoadOldXml(source.All);
+                    }
+
+                    logger.LogInformation("Loading {0} as JSON", source.All);
+                    var data = new JsonDataSource(loggerFactory.CreateLogger<JsonDataSource>(), source.All);
+                    return data;
                 }
 
-                logger.LogInformation("Loading {0} as JSON", source.All);
-                var data = new JsonDataSource(loggerFactory.CreateLogger< JsonDataSource>(), source.All);
-                return data;
+                return new SimpleDataSource(loggerFactory.CreateLogger<SimpleDataSource>(), source.All, null);
             }
 
             var loaders = new List<IDataSource>();

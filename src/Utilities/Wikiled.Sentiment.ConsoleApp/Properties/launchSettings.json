@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "test -Model=.\\svm -Positive=e:\\DataSets\\aclImdb\\All\\Train\\pos -Negative=e:\\DataSets\\aclImdb\\All\\Train\\neg -out=IMDB_SMALL"
+      "commandLineArgs": "boot -Destination=c:\\imdbdOut -Weights=e:\\Source\\Research.Unsupervised.Sentiment\\src\\Latest\\words_imdb.csv -All=c:\\2"
     }
   }
 }

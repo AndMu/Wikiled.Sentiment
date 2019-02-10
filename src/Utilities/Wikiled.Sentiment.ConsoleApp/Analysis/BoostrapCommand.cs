@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wikiled.Arff.Logic;
@@ -23,24 +24,10 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private string positiveResult;
 
-        public BoostrapCommand(ILogger log, BootsrapConfig config, IDataLoader loader, ISessionContainer container)
+        public BoostrapCommand(ILogger<BoostrapCommand> log, BootsrapConfig config, IDataLoader loader, ISessionContainer container)
             : base(log, config, loader, container)
         {
-        }
-
-        private bool ProcessReview(ProcessingContext context)
-        {
-            var bootSentimentValue = context.Review.CalculateRawRating();
-            var bootAllSentiments = context.Review.GetAllSentiments()
-                .Where(item => !item.Owner.IsInvertor && item.Owner.IsSentiment)
-                .ToArray();
-
-            if (bootSentimentValue.StarsRating.HasValue)
-            {
-                return true;
-            }
-
-            return false;
+            Semaphore = new SemaphoreSlim(3000);
         }
 
         protected override async Task Process(IObservable<IParsedDocumentHolder> reviews,
@@ -65,8 +52,6 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                     .ToArray();
                 SaveDocuments(result);
             }
-
-            Logger.LogInformation($"Testing performance {client.GetPerformanceDescription()}");
         }
 
         private EvalData Resolve(ProcessingContext context)
@@ -88,6 +73,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
 
         private void SaveDocuments(EvalData[] context)
         {
+            Logger.LogInformation("SaveDocuments");
             InitOutput();
             var types = context.Where(item => item.Stars.HasValue && item.TotalSentiments >= Config.Minimum).ToArray();
             var positive = types.Count(item => item.CalculatedPositivity == PositivityType.Positive);

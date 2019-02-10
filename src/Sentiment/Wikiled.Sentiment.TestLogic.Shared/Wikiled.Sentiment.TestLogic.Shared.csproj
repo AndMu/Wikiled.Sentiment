@@ -13,7 +13,7 @@
     <PackageReference Include="Newtonsoft.Json" version="12.0.1" />
     <PackageReference Include="NLog" version="4.5.11" />
     <PackageReference Include="NUnit" version="3.11.0" />
-    <PackageReference Include="Polly" version="6.1.2" />
+    <PackageReference Include="Polly" version="7.0.1" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.519" />
     <PackageReference Include="System.Reactive" version="4.1.2" />

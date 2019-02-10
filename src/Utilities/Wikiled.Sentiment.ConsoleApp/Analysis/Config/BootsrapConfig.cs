@@ -14,11 +14,5 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
         public double? BalancedTop { get; set; }
 
         public string Model { get; set; }
-
-        [Required]
-        public string Path { get; set; }
-
-        [Required]
-        public string Words { get; set; }
     }
 }

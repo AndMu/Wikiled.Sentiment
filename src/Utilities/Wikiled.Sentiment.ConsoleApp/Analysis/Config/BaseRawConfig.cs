@@ -28,7 +28,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
 
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
-        public void Build(ContainerBuilder builder)
+        public virtual void Build(ContainerBuilder builder)
         { 
             MainContainerFactory.Setup(builder)
                 .Config()
