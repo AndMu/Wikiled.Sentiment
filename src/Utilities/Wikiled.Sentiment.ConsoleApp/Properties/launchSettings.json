@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "boot -Destination=c:\\imdbdOut -Weights=e:\\Source\\Research.Unsupervised.Sentiment\\src\\Latest\\words_imdb.csv -All=c:\\2"
+      "commandLineArgs": "test -All=\"e:\\DataSets\\Experiments\\Table4\\Kitchen_exp.xml\" -Out=.\\kitchen_baseline"
     }
   }
 }

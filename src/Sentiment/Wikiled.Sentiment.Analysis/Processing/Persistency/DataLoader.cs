@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Persistency
             if (source == null ||
                 (source.All == null && source.Negative == null && source.Positive == null))
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException("Data source was not specified");
             }
 
             if (source.All != null)

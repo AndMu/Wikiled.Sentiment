@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -86,9 +87,9 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
                 var cutoff = positive > negative ? negative : positive;
 
                 cutoff = (int)(Config.BalancedTop.Value * cutoff);
-                var negativeItems = types.OrderBy(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
-                var positiveItems = types.OrderByDescending(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
-                var select = negativeItems.Union(positiveItems);
+                IEnumerable<EvalData> negativeItems = types.OrderBy(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
+                IEnumerable<EvalData> positiveItems = types.OrderByDescending(item => item.Stars).ThenByDescending(item => item.TotalSentiments).Take(cutoff);
+                IEnumerable<EvalData> select = negativeItems.Union(positiveItems);
                 
                 types = select.OrderBy(item => Guid.NewGuid()).ToArray();
                 Logger.LogInformation($"After balancing took: {cutoff}");
