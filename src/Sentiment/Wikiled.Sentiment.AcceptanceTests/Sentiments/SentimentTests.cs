@@ -76,8 +76,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testingClient.TrackArff = true;
             testingClient.Init();
             var result = await testingClient.Process(negative.Take(1).Concat(positive.Take(1))).ToArray();
-            Assert.AreEqual(5, result[0].Adjustment.Rating.StarsRating);
-            Assert.AreEqual(1, result[1].Adjustment.Rating.StarsRating);
+            result = result.OrderBy(item => item.Adjustment.Rating.StarsRating).ToArray();
+            Assert.AreEqual(5, result[1].Adjustment.Rating.StarsRating);
+            Assert.AreEqual(1, result[0].Adjustment.Rating.StarsRating);
             var classifier = ((MachineSentiment)testingClient.MachineSentiment).Classifier;
             var dataSet = ((MachineSentiment)testingClient.MachineSentiment).DataSet;
             var table = dataSet.GetFeatureTable();
