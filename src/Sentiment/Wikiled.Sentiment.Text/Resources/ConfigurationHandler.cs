@@ -46,7 +46,7 @@ namespace Wikiled.Sentiment.Text.Resources
 
         public bool TryGetConfiguration<T>(string name, out T outValue)
         {
-            outValue = default(T);
+            outValue = default;
             if (!overrides.TryGetValue(name, out var value))
             {
                 value = ConfigurationManager.AppSettings[name];

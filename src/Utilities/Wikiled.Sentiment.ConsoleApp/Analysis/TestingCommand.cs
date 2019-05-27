@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
+using Wikiled.Common.Utilities.Serialization;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -42,7 +43,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             Config.Out.EnsureDirectoryExistence();
             using (var streamWriter = new StreamWriter(Path.Combine(Config.Out, "results.csv"), false))
             using (csvDataOut = new CsvWriter(streamWriter))
-            using (resultsWriter = new JsonStreamingWriter(Path.Combine(Config.Out, "result.json")))
+            using (resultsWriter = JsonStreamingWriter.CreateJson(Path.Combine(Config.Out, "result.json")))
             {
                 SetupHeader();
                 client = container.GetTesting(Config.Model);
