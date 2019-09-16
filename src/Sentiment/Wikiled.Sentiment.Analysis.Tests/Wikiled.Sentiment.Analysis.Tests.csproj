@@ -6,28 +6,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac.Extras.Moq" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Reactive.Testing" version="4.1.5" />
-    <PackageReference Include="Moq" Version="4.12.0" />
+    <PackageReference Include="Microsoft.Reactive.Testing" version="4.1.6" />
+    <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.2" />
-    <PackageReference Include="NLog" version="4.6.5" />
+    <PackageReference Include="NLog" version="4.6.7" />
     <PackageReference Include="NUnit" version="3.12.0" />
-    <PackageReference Include="Polly" version="7.1.0" />
+    <PackageReference Include="Polly" version="7.1.1" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
-    <PackageReference Include="System.Reactive" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Core" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Linq" version="4.1.5" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.1.5" />
+    <PackageReference Include="System.Reactive" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Core" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Interfaces" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Linq" version="4.1.6" />
+    <PackageReference Include="System.Reactive.PlatformServices" version="4.1.6" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.9" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.22" />
-    <PackageReference Include="Wikiled.Redis" version="3.3.0" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.19" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.13" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.20" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.2.0"></packagereference>
-    <packagereference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <packagereference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
 
   <ItemGroup>
