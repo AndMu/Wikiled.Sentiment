@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;

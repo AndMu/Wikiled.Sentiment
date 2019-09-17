@@ -1,8 +1,7 @@
-﻿using System;
-using System.Reactive.Concurrency;
-using Autofac;
-using Autofac.Extras.AggregateService;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
@@ -17,24 +16,24 @@ using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class SentimentMainModule : Module
+    public class SentimentMainModule : IModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public IServiceCollection ConfigureServices(IServiceCollection services)
         {
-            builder.RegisterModule<DefaultNlpModule>();
-            
-            builder.RegisterType<DataLoader>().As<IDataLoader>();
-            builder.RegisterType<SessionContainer>().As<ISessionContainer>();
-            builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
-            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivating(item => item.Instance.Load());
-            builder.RegisterType<ParsedReviewManager>().As<IParsedReviewManager>();
+            services.RegisterModule<DefaultNlpModule>();
 
-            builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
-            builder.RegisterType<ExtendedWords>().As<IExtendedWords>().SingleInstance();
+            services.AddTransient<IDataLoader, DataLoader>();
+            services.AddTransient<ISessionContainer, SessionContainer>();
+            services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
+            services.AddSingleton<InquirerManager>().As<InquirerManager, IInquirerManager>(item => item.Load());
+            services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
-            builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
+            services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
+            services.AddSingleton<IExtendedWords, ExtendedWords>();
 
-            builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>();
+            services.AddSingleton<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
+
+            services.AddSingleton<IWordFactory, WordOccurenceFactory>();
 
             var parallel = Environment.ProcessorCount;
             if (parallel > 30)
@@ -43,18 +42,19 @@ namespace Wikiled.Sentiment.Analysis.Containers
             }
 
             builder.RegisterType<WordsHandler>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
-            builder.RegisterType<AspectSerializer>().As<IAspectSerializer>();
+            services.AddTransient<IAspectSerializer, AspectSerializer>();
             builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
-            
-            builder.RegisterType<ProcessingPipeline>().As<IProcessingPipeline>();
-            builder.RegisterType<TestingClient>().As<ITestingClient>();
-            builder.RegisterType<TrainingClient>().As<ITrainingClient>();
-            builder.RegisterInstance(TaskPoolScheduler.Default).As<IScheduler>();
+
+            services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
+            services.AddTransient<ITestingClient, TestingClient>();
+            services.AddTransient<ITrainingClient, TrainingClient>();
 
             builder.RegisterType<SessionContext>().As<ISessionContext>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<ContextWordsDataLoader>().As<IContextWordsHandler>().InstancePerLifetimeScope();
             builder.RegisterType<ContextSentenceRepairHandler>().As<IContextSentenceRepairHandler>().InstancePerLifetimeScope();
             builder.RegisterAggregateService<IClientContext>();
+
+            return services;
         }
     }
 }

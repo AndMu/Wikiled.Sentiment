@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using Autofac;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
 using Wikiled.Redis.Config;

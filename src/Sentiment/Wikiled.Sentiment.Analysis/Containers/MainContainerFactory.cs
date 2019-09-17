@@ -1,8 +1,8 @@
-﻿using Autofac;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
@@ -22,11 +22,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainContainerFactory>();
 
-        private readonly ContainerBuilder builder;
+        private readonly IServiceCollection builder;
 
         private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
 
-        private MainContainerFactory(ContainerBuilder builder)
+        private MainContainerFactory(IServiceCollection builder)
         {
             this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
             builder.RegisterModule<CommonModule>();

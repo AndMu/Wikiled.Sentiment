@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
