@@ -1,12 +1,12 @@
-﻿using System;
+﻿using CsvHelper;
+using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CsvHelper;
-using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Utilities.Serialization;
 using Wikiled.Sentiment.Analysis.Containers;
@@ -16,7 +16,6 @@ using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis

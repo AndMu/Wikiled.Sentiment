@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
@@ -7,39 +8,39 @@ namespace Wikiled.Sentiment.Analysis.Containers
 {
     public class SessionContainer : ISessionContainer
     {
-        private readonly ILifetimeScope container;
+        private readonly IServiceScope scope;
 
-        public SessionContainer(ILifetimeScope container)
+        public SessionContainer(IServiceProvider provider)
         {
-            this.container = container ?? throw new ArgumentNullException(nameof(container));
-            Context = (SessionContext)container.Resolve<ISessionContext>();
+            scope = provider?.CreateScope() ?? throw new ArgumentNullException(nameof(scope));
+            Context = (SessionContext)scope.ServiceProvider.GetService<ISessionContext>();
         }
 
         public SessionContext Context { get; }
 
         public ITextSplitter GetTextSplitter()
         {
-            return container.Resolve<ITextSplitter>();
+            return scope.ServiceProvider.GetService<ITextSplitter>();
         }
 
         public ITestingClient GetTesting(string path = null)
         {
-            return container.Resolve<ITestingClient>(new NamedParameter("svmPath", path));
+            return scope.ServiceProvider.GetService<Func<string, ITestingClient>>()(path);
         }
 
         public ITrainingClient GetTraining(string path)
         {
-            return container.Resolve<ITrainingClient>(new NamedParameter("svmPath", path));
+            return scope.ServiceProvider.GetService<Func<string, ITrainingClient>>()(path);
         }
 
         public T Resolve<T>()
         {
-            return container.Resolve<T>();
+            return scope.ServiceProvider.GetService<T>();
         }
 
         public void Dispose()
         {
-            container?.Dispose();
+            scope?.Dispose();
         }
     }
 }

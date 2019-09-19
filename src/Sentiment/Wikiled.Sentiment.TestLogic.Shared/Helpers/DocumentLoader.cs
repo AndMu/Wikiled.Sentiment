@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.NLP;

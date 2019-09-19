@@ -21,7 +21,7 @@
     <PackageReference Include="System.Reactive.PlatformServices" version="4.1.6" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.5.13" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.27" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.34" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.2.0"></packagereference>

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System;
 using System.Configuration;
 using System.IO;

@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.IO;
-using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Resources;
@@ -15,7 +15,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public ActualWordsHandler(POSTaggerType type)
         {
-            var factory = MainContainerFactory.Setup(new ContainerBuilder())
+            var factory = MainContainerFactory.Setup(new ServiceCollection())
                 .Config(configuration =>
                 {
                     var resources = configuration.GetConfiguration("Resources");

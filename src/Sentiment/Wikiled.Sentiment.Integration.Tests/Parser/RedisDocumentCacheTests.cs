@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Common.Logging;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -35,8 +37,8 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
             cache = new Mock<IMemoryCache>();
             local = new LocalDocumentsCache(ApplicationLogging.LoggerFactory.CreateLogger<LocalDocumentsCache>(), new MemoryCache(new MemoryCacheOptions()));
             redis = new RedisInside.Redis(i => i.Port(6666).LogTo(item => log.LogDebug(item)));
-            link = new RedisLink("Test", new RedisMultiplexer(new RedisConfiguration("localhost", 6666)));
-            link.Open();
+            var serverInstance = new RedisServer(new RedisConfiguration("localhost", 6666) { ServiceName = "Test" });
+            link = serverInstance.Provider.GetService<IRedisLink>();
             instance = new RedisDocumentCache(POSTaggerType.Simple, link, local);
         }
 

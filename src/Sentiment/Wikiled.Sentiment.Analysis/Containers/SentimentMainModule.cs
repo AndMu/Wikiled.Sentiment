@@ -12,6 +12,8 @@ using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Containers;
+using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Containers
@@ -22,18 +24,25 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             services.RegisterModule<DefaultNlpModule>();
 
-            services.AddTransient<IDataLoader, DataLoader>();
+            services.AddSingleton<IDataLoader, DataLoader>();
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
-            services.AddSingleton<InquirerManager>().As<InquirerManager, IInquirerManager>(item => item.Load());
+            services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
+
+            services.AddSingleton<Func<Document, IParsedReviewManager>>(ctx =>
+                                                                            document => new ParsedReviewManager(
+                                                                                ctx.GetService<IContextWordsHandler>(),
+                                                                                ctx.GetService<IWordFactory>(),
+                                                                                ctx.GetService<INRCDictionary>(),
+                                                                                document));
 
             services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
             services.AddSingleton<IExtendedWords, ExtendedWords>();
 
-            services.AddSingleton<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
+            services.AddScoped<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
 
-            services.AddSingleton<IWordFactory, WordOccurenceFactory>();
+            services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
             var parallel = Environment.ProcessorCount;
             if (parallel > 30)
@@ -41,18 +50,18 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 parallel = 30;
             }
 
-            builder.RegisterType<WordsHandler>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
+            services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
-            builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
+            services.AddSingleton<ITextSplitter>(item => new QueueTextSplitter(parallel, item.GetService<Func<ITextSplitter>>()));
 
             services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
-            services.AddTransient<ITestingClient, TestingClient>();
-            services.AddTransient<ITrainingClient, TrainingClient>();
+            services.AddTransient<Func<string, ITestingClient>>(ctx => path => new TestingClient(ctx.GetService<IClientContext>(), path));
+            services.AddTransient<Func<string, ITrainingClient>>(ctx => path => new TrainingClient(ctx.GetService<IClientContext>(), path));
 
-            builder.RegisterType<SessionContext>().As<ISessionContext>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<ContextWordsDataLoader>().As<IContextWordsHandler>().InstancePerLifetimeScope();
-            builder.RegisterType<ContextSentenceRepairHandler>().As<IContextSentenceRepairHandler>().InstancePerLifetimeScope();
-            builder.RegisterAggregateService<IClientContext>();
+            services.AddScoped<SessionContext>().AsScoped<ISessionContext, SessionContext>();
+            services.AddScoped<IContextWordsHandler, ContextWordsDataLoader>();
+            services.AddScoped<IContextSentenceRepairHandler, ContextSentenceRepairHandler>();
+            services.AddScoped<IClientContext, ClientContext>();
 
             return services;
         }

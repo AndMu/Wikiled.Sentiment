@@ -1,7 +1,8 @@
-﻿using Autofac;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
+using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
 {
@@ -19,13 +20,13 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
 
         public bool InvertOff { get; set; }
 
-        public virtual void Build(ContainerBuilder builder)
-        { 
-            MainContainerFactory.Setup(builder)
-                .Config()
-                .SetupLocalCache()
-                .Splitter()
-                .Validate();
+        public void Build(IServiceCollection services)
+        {
+            MainContainerFactory.Setup(services)
+                                .Config()
+                                .SetupLocalCache()
+                                .Splitter()
+                                .Validate();
         }
     }
 }

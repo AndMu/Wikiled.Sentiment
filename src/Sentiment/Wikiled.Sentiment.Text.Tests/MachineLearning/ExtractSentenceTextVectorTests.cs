@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Autofac;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
