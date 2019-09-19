@@ -21,7 +21,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 {
     public class OpenNLPTextSplitter : BaseTextSplitter
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<OpenNLPTextSplitter>();
+        private readonly ILogger<OpenNLPTextSplitter> log;
 
         private readonly IWordFactory handler;
 
@@ -35,27 +35,25 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private POSTaggerME posTagger;
 
-        public OpenNLPTextSplitter(IWordFactory handler,
-                                   ILexiconConfiguration configuration,
-                                   ICachedDocumentsSource cache,
-                                   ISentenceTokenizerFactory tokenizerFactory,
-                                   IContextSentenceRepairHandler repairHandler)
+        public OpenNLPTextSplitter(
+            ILogger<OpenNLPTextSplitter> log,
+            IWordFactory handler,
+            ILexiconConfiguration configuration,
+            ICachedDocumentsSource cache,
+            ISentenceTokenizerFactory tokenizerFactory,
+            IContextSentenceRepairHandler repairHandler)
             : base(cache)
         {
-            if (handler is null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
-
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             log.LogDebug("Creating with resource path: {0}", configuration.ResourcePath);
-            this.handler = handler;
+            this.handler = handler ?? throw new ArgumentNullException(nameof(handler));
             this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
+            
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
             LoadModels(configuration.ResourcePath);

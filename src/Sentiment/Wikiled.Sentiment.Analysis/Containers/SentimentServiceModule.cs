@@ -49,7 +49,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
                         OpenOnConstruction = true
                     });
 
-
                 builder.AddScoped<LocalDocumentsCache>();
                 builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
             }
@@ -61,10 +60,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
             }
 
             builder.AddSingleton<IConfigurationHandler>(configuration);
-            builder.AddTransient<ITextSplitter, RecyclableTextSplitter>(
-                    c => new RecyclableTextSplitter(c.GetService<Func<ITextSplitter>>(), 5000));
-            builder.AddTransient<OpenNLPTextSplitter>()
-                   .AddFactory<ITextSplitter, OpenNLPTextSplitter>();
+            builder.AddSingleton(new RecyclableConfig());
+            builder.AddTransient<OpenNLPTextSplitter>();
+            builder.AddTransient<Func<ITextSplitter>>(
+                ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
+                "underlying");
 
             return builder;
         }

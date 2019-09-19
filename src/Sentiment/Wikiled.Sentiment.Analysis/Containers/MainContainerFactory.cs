@@ -78,7 +78,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
                     OpenOnConstruction = true
                 });
             builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
-            builder.AddScoped<LocalDocumentsCache>().AsScoped<ICachedDocumentsSource, LocalDocumentsCache>();
+            builder.AddScoped<LocalDocumentsCache>().As<ICachedDocumentsSource, LocalDocumentsCache>();
             return this;
         }
 
@@ -100,10 +100,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
                     builder.AddTransient<ITextSplitter, SimpleTextSplitter>();
                     break;
                 case POSTaggerType.SharpNLP:
-                    builder.AddTransient<OpenNLPTextSplitter>()
-                           .AddFactory<ITextSplitter, OpenNLPTextSplitter>();
-                    builder.AddTransient<ITextSplitter, RecyclableTextSplitter>(
-                               c => new RecyclableTextSplitter(c.GetService<Func<ITextSplitter>>(), 5000));
+                    builder.AddTransient<OpenNLPTextSplitter>();
+                    builder.AddTransient<Func<ITextSplitter>>(
+                        ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
+                        "underlying");
                     break;
                 default:
                     throw new NotSupportedException(value.ToString());

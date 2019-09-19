@@ -54,15 +54,18 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
 
-            services.AddSingleton<ITextSplitter>(item => new QueueTextSplitter(item.GetService<ILogger<QueueTextSplitter>>(),
-                                                                            parallel,
-                                                                            item.GetService<Func<ITextSplitter>>()));
+            services.AddSingleton<ITextSplitter>(
+                item => new QueueTextSplitter(
+                    item.GetService<ILogger<QueueTextSplitter>>(),
+                    parallel,
+                    item.GetService<Func<ITextSplitter>>("underlying")))
+                    .AddFactory<ITextSplitter, ITextSplitter>();
 
             services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
             services.AddTransient<Func<string, ITestingClient>>(ctx => path => new TestingClient(ctx.GetService<IClientContext>(), path));
             services.AddTransient<Func<string, ITrainingClient>>(ctx => path => new TrainingClient(ctx.GetService<IClientContext>(), path));
 
-            services.AddScoped<SessionContext>().AsScoped<ISessionContext, SessionContext>();
+            services.AddScoped<SessionContext>().As<ISessionContext, SessionContext>();
             services.AddScoped<IContextWordsHandler, ContextWordsDataLoader>();
             services.AddScoped<IContextSentenceRepairHandler, ContextSentenceRepairHandler>();
             services.AddScoped<IClientContext, ClientContext>();

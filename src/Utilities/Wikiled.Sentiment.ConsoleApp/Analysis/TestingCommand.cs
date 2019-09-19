@@ -28,11 +28,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private CsvWriter csvDataOut;
 
-        private JsonStreamingWriter resultsWriter;
+        private readonly IJsonStreamingWriterFactory resultsWriterFactory;
 
-        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, IDataLoader loader, ISessionContainer container)
+        private IJsonStreamingWriter resultsWriter;
+
+        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, IDataLoader loader, ISessionContainer container, IJsonStreamingWriterFactory resultsWriterFactory)
             : base(log, config, loader, container)
         {
+            this.resultsWriterFactory = resultsWriterFactory ?? throw new ArgumentNullException(nameof(resultsWriterFactory));
             Semaphore = new SemaphoreSlim(3000);
         }
 
@@ -42,7 +45,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             Config.Out.EnsureDirectoryExistence();
             using (var streamWriter = new StreamWriter(Path.Combine(Config.Out, "results.csv"), false))
             using (csvDataOut = new CsvWriter(streamWriter))
-            using (resultsWriter = JsonStreamingWriter.CreateJson(Path.Combine(Config.Out, "result.json")))
+            using (resultsWriter = resultsWriterFactory.CreateJson(Path.Combine(Config.Out, "result.json")))
             {
                 SetupHeader();
                 client = container.GetTesting(Config.Model);

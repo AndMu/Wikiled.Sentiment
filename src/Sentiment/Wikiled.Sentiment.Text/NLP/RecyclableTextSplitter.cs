@@ -2,7 +2,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -10,7 +9,7 @@ namespace Wikiled.Sentiment.Text.NLP
 {
     public class RecyclableTextSplitter : ITextSplitter
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<RecyclableTextSplitter>();
+        private readonly ILogger<RecyclableTextSplitter> log;
 
         private readonly int maxProcessing;
 
@@ -24,12 +23,14 @@ namespace Wikiled.Sentiment.Text.NLP
 
         private readonly Func<ITextSplitter> factory;
 
-        public RecyclableTextSplitter(Func<ITextSplitter> factory, int maxProcessing = 5000)
+        public RecyclableTextSplitter(ILogger<RecyclableTextSplitter> log, Func<ITextSplitter> factory, RecyclableConfig config)
         {
             id = Interlocked.Increment(ref total);
             id = total;
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            this.maxProcessing = maxProcessing + new Random().Next(1000);
+            this.log = log;
+            maxProcessing = config.MaxProcessing + new Random().Next(1000);
+            log.LogDebug("Creating with maxProcessing:{0}", maxProcessing);
         }
 
         public void Dispose()
