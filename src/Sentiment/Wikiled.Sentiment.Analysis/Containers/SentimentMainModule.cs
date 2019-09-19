@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.Extensions.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -30,7 +31,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
-            services.AddSingleton<Func<Document, IParsedReviewManager>>(ctx =>
+            services.AddScoped<Func<Document, IParsedReviewManager>>(ctx =>
                                                                             document => new ParsedReviewManager(
                                                                                 ctx.GetService<IContextWordsHandler>(),
                                                                                 ctx.GetService<IWordFactory>(),
@@ -52,7 +53,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
-            services.AddSingleton<ITextSplitter>(item => new QueueTextSplitter(parallel, item.GetService<Func<ITextSplitter>>()));
+
+            services.AddScoped<ITextSplitter>(item => new QueueTextSplitter(item.GetService<ILogger<QueueTextSplitter>>(),
+                                                                            parallel,
+                                                                            item.GetService<Func<ITextSplitter>>()));
 
             services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
             services.AddTransient<Func<string, ITestingClient>>(ctx => path => new TestingClient(ctx.GetService<IClientContext>(), path));
