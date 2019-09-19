@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
-            services.AddScoped<Func<Document, IParsedReviewManager>>(ctx =>
+            services.AddTransient<Func<Document, IParsedReviewManager>>(ctx =>
                                                                             document => new ParsedReviewManager(
                                                                                 ctx.GetService<IContextWordsHandler>(),
                                                                                 ctx.GetService<IWordFactory>(),
@@ -54,7 +54,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
 
-            services.AddScoped<ITextSplitter>(item => new QueueTextSplitter(item.GetService<ILogger<QueueTextSplitter>>(),
+            services.AddSingleton<ITextSplitter>(item => new QueueTextSplitter(item.GetService<ILogger<QueueTextSplitter>>(),
                                                                             parallel,
                                                                             item.GetService<Func<ITextSplitter>>()));
 

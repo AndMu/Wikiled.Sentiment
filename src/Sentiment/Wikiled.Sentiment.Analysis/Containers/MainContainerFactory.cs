@@ -97,12 +97,12 @@ namespace Wikiled.Sentiment.Analysis.Containers
             switch (value)
             {
                 case POSTaggerType.Simple:
-                    builder.AddScoped<ITextSplitter, SimpleTextSplitter>();
+                    builder.AddTransient<ITextSplitter, SimpleTextSplitter>();
                     break;
                 case POSTaggerType.SharpNLP:
-                    builder.AddScoped<OpenNLPTextSplitter>()
+                    builder.AddTransient<OpenNLPTextSplitter>()
                            .AddFactory<ITextSplitter, OpenNLPTextSplitter>();
-                    builder.AddScoped<ITextSplitter, RecyclableTextSplitter>(
+                    builder.AddTransient<ITextSplitter, RecyclableTextSplitter>(
                                c => new RecyclableTextSplitter(c.GetService<Func<ITextSplitter>>(), 5000));
                     break;
                 default:

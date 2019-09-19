@@ -63,7 +63,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.AddSingleton<IConfigurationHandler>(configuration);
             builder.AddTransient<ITextSplitter, RecyclableTextSplitter>(
                     c => new RecyclableTextSplitter(c.GetService<Func<ITextSplitter>>(), 5000));
-            builder.AddFactory<ITextSplitter, OpenNLPTextSplitter>();
+            builder.AddTransient<OpenNLPTextSplitter>()
+                   .AddFactory<ITextSplitter, OpenNLPTextSplitter>();
 
             return builder;
         }
