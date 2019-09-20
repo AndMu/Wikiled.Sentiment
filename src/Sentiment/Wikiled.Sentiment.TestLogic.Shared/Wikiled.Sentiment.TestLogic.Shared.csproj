@@ -9,29 +9,36 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Moq" Version="4.12.0" />
+    <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.2" />
-    <PackageReference Include="NLog" version="4.6.5" />
+    <PackageReference Include="NLog" version="4.6.7" />
     <PackageReference Include="NUnit" version="3.12.0" />
-    <PackageReference Include="Polly" version="7.1.0" />
+    <PackageReference Include="Polly" version="7.1.1" />
     <PackageReference Include="protobuf-net" version="2.4.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
-    <PackageReference Include="System.Reactive" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Core" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.1.5" />
-    <PackageReference Include="System.Reactive.Linq" version="4.1.5" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.1.5" />
+    <PackageReference Include="System.Reactive" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Core" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Interfaces" version="4.1.6" />
+    <PackageReference Include="System.Reactive.Linq" version="4.1.6" />
+    <PackageReference Include="System.Reactive.PlatformServices" version="4.1.6" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.3.0" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.19" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.28" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
-
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Wikiled.Sentiment.Analysis\Wikiled.Sentiment.Analysis.csproj" />
     <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Debug">
+      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.debug\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Debug.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

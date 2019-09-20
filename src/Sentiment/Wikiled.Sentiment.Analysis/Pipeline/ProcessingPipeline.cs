@@ -59,6 +59,11 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         private async Task<ProcessingContext> StepProcessing(IParsedDocumentHolder reviewHolder)
         {
+            if (reviewHolder == null)
+            {
+                throw new ArgumentNullException(nameof(reviewHolder));
+            }
+
             Document document;
             IParsedReview review = null;
             try

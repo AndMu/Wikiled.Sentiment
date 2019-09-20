@@ -1,7 +1,8 @@
-﻿using Autofac;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Common.Logging;
+using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
@@ -13,7 +14,7 @@ using Wikiled.Text.Analysis.Cache;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class SentimentServiceModule : Module
+    public class SentimentServiceModule : IModule
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentServiceModule>();
 
@@ -30,32 +31,42 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public string Lexicons { get; set; }
 
-        protected override void Load(ContainerBuilder builder)
+        public IServiceCollection ConfigureServices(IServiceCollection builder)
         {
             if (RedisConfiguration == null)
             {
                 log.LogDebug("Using local cache");
-                builder.RegisterType<LocalDocumentsCache>().As<ICachedDocumentsSource>();
+                builder.AddScoped<ICachedDocumentsSource, LocalDocumentsCache>();
             }
             else
             {
                 log.LogDebug("Using Redis cache");
-                builder.RegisterModule(new RedisModule(Name, RedisConfiguration));
-                builder.RegisterType<LocalDocumentsCache>();
-                builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
+                RedisConfiguration.ServiceName = Name;
+                builder.RegisterModule(
+                    new RedisModule(log, RedisConfiguration)
+                    {
+                        IsSingleInstance = false,
+                        OpenOnConstruction = true
+                    });
+
+                builder.AddScoped<LocalDocumentsCache>();
+                builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
             }
 
             if (!string.IsNullOrEmpty(Lexicons))
             {
                 log.LogDebug("Adding lexicons");
-                builder.RegisterType<LexiconLoader>().As<ILexiconLoader>().OnActivating(item => item.Instance.Load(Lexicons));
+                builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load(Lexicons));
             }
 
-            builder.RegisterInstance(configuration).As<IConfigurationHandler>();
-            builder.Register(
-                    c => new RecyclableTextSplitter(c.ResolveNamed<Func<ITextSplitter>>("UnderlyingNested"), 5000))
-                .Named<ITextSplitter>("Underlying");
-            builder.RegisterType<OpenNLPTextSplitter>().Named<ITextSplitter>("UnderlyingNested");
+            builder.AddSingleton<IConfigurationHandler>(configuration);
+            builder.AddSingleton(new RecyclableConfig());
+            builder.AddTransient<OpenNLPTextSplitter>();
+            builder.AddTransient<Func<ITextSplitter>>(
+                ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
+                "underlying");
+
+            return builder;
         }
     }
 }

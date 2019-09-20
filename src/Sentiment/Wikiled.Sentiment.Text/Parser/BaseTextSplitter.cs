@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Parser
         {
             if (request?.Document == null)
             {
-                throw new System.ArgumentNullException(nameof(request));
+                throw new ArgumentNullException(nameof(request));
             }
 
             using (new PerformanceTrace(item => log.LogDebug(item), "Process"))

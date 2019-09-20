@@ -1,5 +1,7 @@
 ﻿using System;
+using NLog.Extensions.Logging;
 using NUnit.Framework;
+using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics;
 
 namespace Wikiled.Sentiment.AcceptanceTests
@@ -12,6 +14,7 @@ namespace Wikiled.Sentiment.AcceptanceTests
         {
             GlobalSettings.Random = new Random(48);
             Accord.Math.Random.Generator.Seed = 0;
+            ApplicationLogging.LoggerFactory.AddNLog();
         }
 
         [OneTimeTearDown]

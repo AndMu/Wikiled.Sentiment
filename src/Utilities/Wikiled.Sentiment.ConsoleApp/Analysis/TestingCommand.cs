@@ -1,12 +1,12 @@
-﻿using System;
+﻿using CsvHelper;
+using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CsvHelper;
-using Microsoft.Extensions.Logging;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Utilities.Serialization;
 using Wikiled.Sentiment.Analysis.Containers;
@@ -16,7 +16,6 @@ using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis
@@ -29,11 +28,14 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
     {
         private CsvWriter csvDataOut;
 
-        private JsonStreamingWriter resultsWriter;
+        private readonly IJsonStreamingWriterFactory resultsWriterFactory;
 
-        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, IDataLoader loader, ISessionContainer container)
+        private IJsonStreamingWriter resultsWriter;
+
+        public TestingCommand(ILogger<TestingCommand> log, TestingConfig config, IDataLoader loader, ISessionContainer container, IJsonStreamingWriterFactory resultsWriterFactory)
             : base(log, config, loader, container)
         {
+            this.resultsWriterFactory = resultsWriterFactory ?? throw new ArgumentNullException(nameof(resultsWriterFactory));
             Semaphore = new SemaphoreSlim(3000);
         }
 
@@ -43,7 +45,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
             Config.Out.EnsureDirectoryExistence();
             using (var streamWriter = new StreamWriter(Path.Combine(Config.Out, "results.csv"), false))
             using (csvDataOut = new CsvWriter(streamWriter))
-            using (resultsWriter = JsonStreamingWriter.CreateJson(Path.Combine(Config.Out, "result.json")))
+            using (resultsWriter = resultsWriterFactory.CreateJson(Path.Combine(Config.Out, "result.json")))
             {
                 SetupHeader();
                 client = container.GetTesting(Config.Model);

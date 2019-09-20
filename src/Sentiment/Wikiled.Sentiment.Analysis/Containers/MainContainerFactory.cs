@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
-using Wikiled.Redis.Logic;
+using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
@@ -22,11 +22,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<MainContainerFactory>();
 
-        private readonly ContainerBuilder builder;
+        private readonly IServiceCollection builder;
 
         private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
 
-        private MainContainerFactory(ContainerBuilder builder)
+        private MainContainerFactory(IServiceCollection builder)
         {
             this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
             builder.RegisterModule<CommonModule>();
@@ -40,13 +40,13 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public static MainContainerFactory CreateStandard()
         {
             log.LogInformation("CreateStandard");
-            var instance = new MainContainerFactory(new ContainerBuilder());
+            var instance = new MainContainerFactory(new ServiceCollection());
             return instance.SetupLocalCache()
                 .Config()
                 .Splitter();
         }
 
-        public static MainContainerFactory Setup(ContainerBuilder builder)
+        public static MainContainerFactory Setup(IServiceCollection builder)
         {
             log.LogInformation("Setup");
             var instance = new MainContainerFactory(builder);
@@ -56,14 +56,14 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public MainContainerFactory SetupLocalCache()
         {
             initialized["Cache"] = true;
-            builder.RegisterType<LocalDocumentsCache>().As<ICachedDocumentsSource>();
+            builder.AddScoped<ICachedDocumentsSource, LocalDocumentsCache>();
             return this;
         }
 
         public MainContainerFactory SetupNullCache()
         {
             initialized["Cache"] = true;
-            builder.RegisterType<NullCachedDocumentsSource>().As<ICachedDocumentsSource>();
+            builder.AddScoped<ICachedDocumentsSource, NullCachedDocumentsSource>();
             return this;
         }
 
@@ -71,9 +71,14 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             initialized["Cache"] = true;
             log.LogInformation("Using REDIS...");
-            builder.Register(c => new RedisLink(name, new RedisMultiplexer(new RedisConfiguration(host, port)))).OnActivating(item => item.Instance.Open());
-            builder.RegisterType<LocalDocumentsCache>();
-            builder.RegisterType<RedisDocumentCacheFactory>().As<ICachedDocumentsSource>();
+            builder.RegisterModule(
+                new RedisModule(log, new RedisConfiguration(host, port))
+                {
+                    IsSingleInstance = false,
+                    OpenOnConstruction = true
+                });
+            builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
+            builder.AddScoped<LocalDocumentsCache>().As<ICachedDocumentsSource, LocalDocumentsCache>();
             return this;
         }
 
@@ -82,7 +87,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             initialized["Config"] = true;
             var configuration = new ConfigurationHandler();
             action?.Invoke(configuration);
-            builder.RegisterInstance(configuration).As<IConfigurationHandler>();
+            builder.AddSingleton<IConfigurationHandler>(configuration);
             return this;
         }
 
@@ -92,19 +97,18 @@ namespace Wikiled.Sentiment.Analysis.Containers
             switch (value)
             {
                 case POSTaggerType.Simple:
-                    builder.RegisterType<SimpleTextSplitter>().Named<ITextSplitter>("Underlying");
+                    builder.AddTransient<ITextSplitter, SimpleTextSplitter>();
                     break;
                 case POSTaggerType.SharpNLP:
-                    builder.Register(
-                            c => new RecyclableTextSplitter(c.ResolveNamed<Func<ITextSplitter>>("UnderlyingNested"), 5000))
-                        .Named<ITextSplitter>("Underlying");
-                    builder.RegisterType<OpenNLPTextSplitter>().Named<ITextSplitter>("UnderlyingNested");
+                    builder.AddTransient<OpenNLPTextSplitter>();
+                    builder.AddTransient<Func<ITextSplitter>>(
+                        ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
+                        "underlying");
                     break;
                 default:
                     throw new NotSupportedException(value.ToString());
             }
 
-            builder.Register(c => value);
             return this;
         }
 
@@ -112,11 +116,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
         {
             Validate();
 
-            IContainer container = builder.Build();
+            var container = builder.BuildServiceProvider();
             var helper = new GlobalContainer(container);
             log.LogInformation("Initializing...");
-            container.Resolve<IWordsHandler>();
-            container.Resolve<ITextSplitter>();
+            container.GetService<IWordsHandler>();
+            container.GetService<ITextSplitter>();
             return helper;
         }
 

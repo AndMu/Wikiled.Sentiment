@@ -3,14 +3,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using Wikiled.Common.Logging;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public class QueueTextSplitter : ITextSplitter
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<QueueTextSplitter>();
+        private readonly ILogger<QueueTextSplitter> log;
 
         private readonly ConcurrentBag<Lazy<ITextSplitter>> splitters = new ConcurrentBag<Lazy<ITextSplitter>>();
 
@@ -18,7 +17,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly SemaphoreSlim semaphore;
 
-        public QueueTextSplitter(int maxSplitters, Func<ITextSplitter> factory)
+        public QueueTextSplitter(ILogger<QueueTextSplitter> log, int maxSplitters, Func<ITextSplitter> factory)
         {
             if (factory == null)
             {
@@ -30,6 +29,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 throw new ArgumentOutOfRangeException(nameof(maxSplitters));
             }
 
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             semaphore = new SemaphoreSlim(maxSplitters, maxSplitters);
             for (var i = 0; i < maxSplitters; i++)
             {

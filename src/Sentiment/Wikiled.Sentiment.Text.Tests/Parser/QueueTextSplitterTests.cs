@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.Text.NLP;
@@ -19,14 +20,16 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void Setup()
         {
             splitter = new Mock<ITextSplitter>();
-            instance = new QueueTextSplitter(3, () => splitter.Object);
+            instance = new QueueTextSplitter(new NullLogger<QueueTextSplitter>(), 3, () => splitter.Object);
         }
 
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new QueueTextSplitter(5, null));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new QueueTextSplitter(0, () => splitter.Object));
+            Assert.Throws<ArgumentNullException>(() => new QueueTextSplitter(new NullLogger<QueueTextSplitter>(), 5, null));
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => new QueueTextSplitter(new NullLogger<QueueTextSplitter>(), 0, () => splitter.Object));
         }
 
         [TestCase(1, 1)]

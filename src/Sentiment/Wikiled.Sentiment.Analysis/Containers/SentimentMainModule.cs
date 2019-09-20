@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reactive.Concurrency;
-using Autofac;
-using Autofac.Extras.AggregateService;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
@@ -13,28 +13,37 @@ using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Containers;
+using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Logic;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class SentimentMainModule : Module
+    public class SentimentMainModule : IModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public IServiceCollection ConfigureServices(IServiceCollection services)
         {
-            builder.RegisterModule<DefaultNlpModule>();
-            
-            builder.RegisterType<DataLoader>().As<IDataLoader>();
-            builder.RegisterType<SessionContainer>().As<ISessionContainer>();
-            builder.RegisterType<LexiconConfiguration>().As<ILexiconConfiguration>().SingleInstance();
-            builder.RegisterType<InquirerManager>().As<IInquirerManager>().SingleInstance().OnActivating(item => item.Instance.Load());
-            builder.RegisterType<ParsedReviewManager>().As<IParsedReviewManager>();
+            services.RegisterModule<DefaultNlpModule>();
 
-            builder.RegisterType<SentenceRepairHandler>().As<ISentenceRepairHandler>().SingleInstance();
-            builder.RegisterType<ExtendedWords>().As<IExtendedWords>().SingleInstance();
+            services.AddSingleton<IDataLoader, DataLoader>();
+            services.AddTransient<ISessionContainer, SessionContainer>();
+            services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
+            services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
+            services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
-            builder.Register(c => new MemoryCache(new MemoryCacheOptions())).As<IMemoryCache>().SingleInstance();
+            services.AddTransient<Func<Document, IParsedReviewManager>>(ctx =>
+                                                                            document => new ParsedReviewManager(
+                                                                                ctx.GetService<IContextWordsHandler>(),
+                                                                                ctx.GetService<IWordFactory>(),
+                                                                                ctx.GetService<INRCDictionary>(),
+                                                                                document));
 
-            builder.RegisterType<WordOccurenceFactory>().As<IWordFactory>();
+            services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
+            services.AddSingleton<IExtendedWords, ExtendedWords>();
+
+            services.AddScoped<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
+
+            services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
             var parallel = Environment.ProcessorCount;
             if (parallel > 30)
@@ -42,19 +51,26 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 parallel = 30;
             }
 
-            builder.RegisterType<WordsHandler>().As<IWordsHandler>().SingleInstance().OnActivating(item => item.Instance.Load());
-            builder.RegisterType<AspectSerializer>().As<IAspectSerializer>();
-            builder.Register(item => new QueueTextSplitter(parallel, item.ResolveNamed<Func<ITextSplitter>>("Underlying"))).As<ITextSplitter>().SingleInstance();
-            
-            builder.RegisterType<ProcessingPipeline>().As<IProcessingPipeline>();
-            builder.RegisterType<TestingClient>().As<ITestingClient>();
-            builder.RegisterType<TrainingClient>().As<ITrainingClient>();
-            builder.RegisterInstance(TaskPoolScheduler.Default).As<IScheduler>();
+            services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
+            services.AddTransient<IAspectSerializer, AspectSerializer>();
 
-            builder.RegisterType<SessionContext>().As<ISessionContext>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<ContextWordsDataLoader>().As<IContextWordsHandler>().InstancePerLifetimeScope();
-            builder.RegisterType<ContextSentenceRepairHandler>().As<IContextSentenceRepairHandler>().InstancePerLifetimeScope();
-            builder.RegisterAggregateService<IClientContext>();
+            services.AddSingleton<ITextSplitter>(
+                item => new QueueTextSplitter(
+                    item.GetService<ILogger<QueueTextSplitter>>(),
+                    parallel,
+                    item.GetService<Func<ITextSplitter>>("underlying")))
+                    .AddFactory<ITextSplitter, ITextSplitter>();
+
+            services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
+            services.AddTransient<Func<string, ITestingClient>>(ctx => path => new TestingClient(ctx.GetService<IClientContext>(), path));
+            services.AddTransient<Func<string, ITrainingClient>>(ctx => path => new TrainingClient(ctx.GetService<IClientContext>(), path));
+
+            services.AddScoped<SessionContext>().As<ISessionContext, SessionContext>();
+            services.AddScoped<IContextWordsHandler, ContextWordsDataLoader>();
+            services.AddScoped<IContextSentenceRepairHandler, ContextSentenceRepairHandler>();
+            services.AddScoped<IClientContext, ClientContext>();
+
+            return services;
         }
     }
 }
