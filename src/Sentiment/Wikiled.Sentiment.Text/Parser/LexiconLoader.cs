@@ -1,17 +1,21 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Extensions.Logging;
-using Wikiled.Common.Logging;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public class LexiconLoader : ILexiconLoader
     {
-        private static readonly ILogger logger = ApplicationLogging.CreateLogger<ContextWordsDataLoader>();
+        private readonly ILogger<ContextWordsDataLoader> logger;
 
         private Dictionary<string, ISentimentDataHolder> table;
+
+        public LexiconLoader(ILogger<ContextWordsDataLoader> logger)
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         public IEnumerable<string> Supported => table.Select(item => item.Key);
 

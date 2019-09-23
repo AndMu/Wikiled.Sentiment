@@ -129,7 +129,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     log.LogWarning("{0} aspects file not found", path);
                 }
             }
-
+            
             log.LogInformation("Processing...");
         }
 
