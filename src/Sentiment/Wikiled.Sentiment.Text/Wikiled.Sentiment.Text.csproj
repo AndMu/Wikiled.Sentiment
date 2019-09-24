@@ -10,6 +10,7 @@
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,10 +38,6 @@
     <PackageReference Include="Wikiled.Redis" Version="3.5.32" />
     <PackageReference Include="Wikiled.Text.Analysis" Version="1.7.23" />
     <PackageReference Include="Wikiled.Text.Inquirer" Version="1.2.25" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

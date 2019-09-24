@@ -12,7 +12,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     [SetUpFixture]
     public class Global
     {
-        private readonly ILogger logger = ApplicationLogging.CreateLogger< Global>();
+        private readonly ILogger logger = ApplicationLogging.CreateLogger<Global>();
 
         public static MainBaseLine ElectronicBaseLine { get; private set; }
 
