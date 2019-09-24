@@ -8,11 +8,11 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public class LexiconLoader : ILexiconLoader
     {
-        private readonly ILogger<ContextWordsDataLoader> logger;
+        private readonly ILogger<LexiconLoader> logger;
 
         private Dictionary<string, ISentimentDataHolder> table;
 
-        public LexiconLoader(ILogger<ContextWordsDataLoader> logger)
+        public LexiconLoader(ILogger<LexiconLoader> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

@@ -14,5 +14,7 @@ namespace Wikiled.Sentiment.Text.Configuration
         bool DisableInvertors { get; }
 
         ISentimentDataHolder Lexicon { get; }
+
+        string SvmPath { get; }
     }
 }

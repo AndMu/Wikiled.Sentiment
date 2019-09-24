@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Logic;
-using Wikiled.Common.Logging;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
 using Wikiled.Sentiment.Analysis.Arff;
@@ -23,7 +22,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TrainingClient : ITrainingClient
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<TrainingClient>();
+        private readonly ILogger<TrainingClient> log;
 
         private readonly AnalyseReviews analyze;
 
@@ -31,21 +30,19 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private readonly SentimentVector sentimentVector;
 
-        private readonly string svmPath;
-
         private IProcessArff arffProcess;
 
         private readonly IClientContext clientContext;
 
-        public TrainingClient(IClientContext clientContext, string svmPath)
+        public TrainingClient(ILogger<TrainingClient> log, IClientContext clientContext)
         {
-            if (string.IsNullOrEmpty(svmPath))
-            {
-                throw new ArgumentException("Value cannot be null or empty.", nameof(svmPath));
-            }
-
-            this.svmPath = svmPath;
             this.clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+            if (string.IsNullOrEmpty(clientContext.Context.SvmPath))
+            {
+                throw new ArgumentException("Value cannot be null or empty.", nameof(clientContext.Context.SvmPath));
+            }
+            
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             SentimentVector = new SentimentVector();
             analyze = new AnalyseReviews();
             featureExtractor = new MainAspectHandler(new AspectContextFactory());
@@ -72,7 +69,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public async Task Train(IObservable<IParsedDocumentHolder> reviews)
         {
-            analyze.SvmPath = svmPath;
+            analyze.SvmPath = clientContext.Context.SvmPath;
             analyze.InitEnvironment();
             log.LogInformation("Starting Training...");
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))

@@ -33,8 +33,6 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         SentimentVector SentimentVector { get; }
 
-        string SvmPath { get; }
-
         bool TrackArff { get; set; }
 
         bool UseBagOfWords { get; set; }

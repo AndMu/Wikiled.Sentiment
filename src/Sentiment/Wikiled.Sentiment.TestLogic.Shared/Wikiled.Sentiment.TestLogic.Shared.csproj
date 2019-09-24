@@ -35,10 +35,5 @@
     <ProjectReference Include="..\Wikiled.Sentiment.Text\Wikiled.Sentiment.Text.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Debug">
-      <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.extensions.logging.debug\2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Debug.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>

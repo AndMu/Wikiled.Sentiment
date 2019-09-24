@@ -24,6 +24,8 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         public IAspectDectector Aspect => aspect ?? nullDetector;
 
+        public string SvmPath { get; set; }
+
         public bool DisableFeatureSentiment
         {
             get => disableFeatureSentiment;

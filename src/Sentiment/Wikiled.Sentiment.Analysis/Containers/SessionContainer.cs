@@ -25,12 +25,14 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public ITestingClient GetTesting(string path = null)
         {
-            return scope.ServiceProvider.GetService<Func<string, ITestingClient>>()(path);
+            Context.SvmPath = path;
+            return scope.ServiceProvider.GetService<ITestingClient>();
         }
 
         public ITrainingClient GetTraining(string path)
         {
-            return scope.ServiceProvider.GetService<Func<string, ITrainingClient>>()(path);
+            Context.SvmPath = path;
+            return scope.ServiceProvider.GetService<ITrainingClient>();
         }
 
         public T Resolve<T>()

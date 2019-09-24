@@ -58,7 +58,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
 
         private LexiconLoader CreateInstance()
         {
-            return new LexiconLoader(new NullLogger<ContextWordsDataLoader>());
+            return new LexiconLoader(new NullLogger<LexiconLoader>());
         }
     }
 }

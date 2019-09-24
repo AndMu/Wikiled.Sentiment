@@ -62,8 +62,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
                     .AddFactory<ITextSplitter, ITextSplitter>();
 
             services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
-            services.AddTransient<Func<string, ITestingClient>>(ctx => path => new TestingClient(ctx.GetService<IClientContext>(), path));
-            services.AddTransient<Func<string, ITrainingClient>>(ctx => path => new TrainingClient(ctx.GetService<IClientContext>(), path));
+            services.AddTransient<ITestingClient, TestingClient>();
+            services.AddTransient<ITrainingClient, TrainingClient>();
 
             services.AddScoped<SessionContext>().As<ISessionContext, SessionContext>();
             services.AddScoped<IContextWordsHandler, ContextWordsDataLoader>();
