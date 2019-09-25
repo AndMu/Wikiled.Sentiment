@@ -41,7 +41,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
             services.AddSingleton<IExtendedWords, ExtendedWords>();
 
-            services.AddScoped<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
+            services.AddSingleton<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
@@ -62,8 +62,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
                     .AddFactory<ITextSplitter, ITextSplitter>();
 
             services.AddTransient<IProcessingPipeline, ProcessingPipeline>();
-            services.AddTransient<ITestingClient, TestingClient>();
-            services.AddTransient<ITrainingClient, TrainingClient>();
+            services.AddTransient<ITestingClient, TestingClient>().AddFactory<ITestingClient, TestingClient>();
+            services.AddTransient<ITrainingClient, TrainingClient>().AddFactory<ITestingClient, TestingClient>();
 
             services.AddScoped<SessionContext>().As<ISessionContext, SessionContext>();
             services.AddScoped<IContextWordsHandler, ContextWordsDataLoader>();
