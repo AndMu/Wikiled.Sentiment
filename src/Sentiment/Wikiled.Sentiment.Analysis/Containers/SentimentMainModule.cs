@@ -41,7 +41,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
             services.AddSingleton<IExtendedWords, ExtendedWords>();
 
-            services.AddScoped<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
+            services.AddSingleton<IMemoryCache>(c => new MemoryCache(new MemoryCacheOptions()));
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
