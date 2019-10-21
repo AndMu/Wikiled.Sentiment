@@ -20,23 +20,22 @@
     <PackageReference Include="CsvHelper" version="12.1.2" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.2" />
     <PackageReference Include="NLog" version="4.6.7" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.5.4" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.1" />
     <PackageReference Include="Polly" version="7.1.1" />
-    <PackageReference Include="protobuf-net" version="2.4.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
-    <PackageReference Include="System.Reactive" version="4.1.6" />
-    <PackageReference Include="System.Reactive.Core" version="4.1.6" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.1.6" />
-    <PackageReference Include="System.Reactive.Linq" version="4.1.6" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.1.6" />
+    <PackageReference Include="System.Reactive" version="4.2.0" />
+    <PackageReference Include="System.Reactive.Core" version="4.2.0" />
+    <PackageReference Include="System.Reactive.Interfaces" version="4.2.0" />
+    <PackageReference Include="System.Reactive.Linq" version="4.2.0" />
+    <PackageReference Include="System.Reactive.PlatformServices" version="4.2.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.9" />
-    <PackageReference Include="Wikiled.Common.Utilities" Version="1.2.18" />
+    <PackageReference Include="Wikiled.Common.Utilities" Version="1.2.22" />
     <PackageReference Include="Wikiled.Console" Version="1.4.5" />
-    <PackageReference Include="Wikiled.MachineLearning" version="2.4.22" />
-    <PackageReference Include="Wikiled.Redis" version="3.5.32" />
+    <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.60" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
 
