@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
@@ -42,6 +43,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         void Init();
 
         IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews);
+
+        Task<ProcessingContext> Process(IParsedDocumentHolder review);
 
         void Save(string path);
     }
