@@ -1,4 +1,5 @@
-﻿using Wikiled.Sentiment.Text.Parser;
+﻿using Microsoft.Extensions.Logging;
+using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Tokenizer;
@@ -10,8 +11,8 @@ namespace Wikiled.Sentiment.Text.NLP
     {
         private readonly ISentenceTokenizerFactory sentenceTokenizer;
 
-        public SimpleTextSplitter(ISentenceTokenizerFactory sentenceTokenizer, ICachedDocumentsSource cache)
-            : base(cache)
+        public SimpleTextSplitter(ILogger<SimpleTextSplitter> logger, ISentenceTokenizerFactory sentenceTokenizer, ICachedDocumentsSource cache)
+            : base(logger, cache)
         {
             this.sentenceTokenizer = sentenceTokenizer;
         }

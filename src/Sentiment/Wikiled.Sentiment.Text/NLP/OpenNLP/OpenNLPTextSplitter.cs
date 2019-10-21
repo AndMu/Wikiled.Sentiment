@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             ICachedDocumentsSource cache,
             ISentenceTokenizerFactory tokenizerFactory,
             IContextSentenceRepairHandler repairHandler)
-            : base(cache)
+            : base(log, cache)
         {
             if (configuration == null)
             {

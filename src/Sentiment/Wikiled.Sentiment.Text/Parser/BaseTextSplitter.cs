@@ -10,13 +10,14 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public abstract class BaseTextSplitter : ITextSplitter
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<BaseTextSplitter>();
+        private readonly ILogger log;
 
         private readonly ICachedDocumentsSource cache;
 
-        protected BaseTextSplitter(ICachedDocumentsSource cache)
+        protected BaseTextSplitter(ILogger log, ICachedDocumentsSource cache)
         {
             this.cache = cache ?? throw new System.ArgumentNullException(nameof(cache));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public virtual void Dispose()
