@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
@@ -52,7 +53,7 @@ namespace Wikiled.Sentiment.Text.Parser
             }
         }
 
-        public async Task<Document> Process(ParseRequest request)
+        public async Task<LightDocument> Process(ParseRequest request)
         {
             await semaphore.WaitAsync().ConfigureAwait(false);
             if (!workStack.TryDequeue(out Lazy<ITextSplitter> splitter))

@@ -5,6 +5,7 @@ using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
@@ -24,7 +25,7 @@ namespace Wikiled.Sentiment.Text.Parser
         {
         }
 
-        public async Task<Document> Process(ParseRequest request)
+        public async Task<LightDocument> Process(ParseRequest request)
         {
             if (request?.Document == null)
             {
@@ -41,7 +42,7 @@ namespace Wikiled.Sentiment.Text.Parser
                     log.LogDebug("Key not found on document. generating: {0}...", tag);
                 }
 
-                Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
+                LightDocument document = await cache.GetCached(request.Document).ConfigureAwait(false);
                 if (document != null)
                 {
                     log.LogDebug("Cache HIT");
@@ -56,7 +57,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 }
                 else
                 {
-                    document = new Document();
+                    document = new LightDocument();
                     log.LogInformation("Empty document detected");
                 }
 
@@ -73,8 +74,6 @@ namespace Wikiled.Sentiment.Text.Parser
             }
         }
 
-        protected abstract Document ActualProcess(ParseRequest request);
-
-
+        protected abstract LightDocument ActualProcess(ParseRequest request);
     }
 }

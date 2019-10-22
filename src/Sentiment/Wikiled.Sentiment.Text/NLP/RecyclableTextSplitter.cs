@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.NLP
 {
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Text.NLP
             splitter?.Dispose();
         }
 
-        public async Task<Document> Process(ParseRequest request)
+        public async Task<LightDocument> Process(ParseRequest request)
         {
             if (splitter == null)
             {
@@ -47,7 +47,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 splitter = factory();
             }
 
-            Document result = await splitter.Process(request).ConfigureAwait(false);
+            LightDocument result = await splitter.Process(request).ConfigureAwait(false);
             if (Interlocked.Increment(ref current) >= maxProcessing)
             {
                 splitter.Dispose();
