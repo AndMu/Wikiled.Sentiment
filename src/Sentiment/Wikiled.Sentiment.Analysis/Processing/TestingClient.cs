@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Logic;
@@ -138,6 +139,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
         {
             IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
             return documentSelector;
+        }
+
+        public async Task<ProcessingContext> Process(IParsedDocumentHolder review)
+        {
+            if (review == null)
+            {
+                throw new ArgumentNullException(nameof(review));
+            }
+
+            var result = await Process(Observable.Never<IParsedDocumentHolder>().StartWith(review));
+            return result;
         }
 
         public void Save(string path)
