@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>NET472</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>8</LangVersion>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,13 +18,9 @@
     <PackageReference Include="Polly" version="7.1.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="System.Reactive" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Core" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Linq" version="4.2.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.2.0" />
-    <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.9" />
+    <PackageReference Include="Wikiled.Common.Testing.Utilities" Version="1.2.23" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
     <PackageReference Include="Wikiled.Redis" version="3.5.60" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />

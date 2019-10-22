@@ -6,7 +6,7 @@ using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class SessionContainer : ISessionContainer
+    public sealed class SessionContainer : ISessionContainer
     {
         private readonly IServiceScope scope;
 

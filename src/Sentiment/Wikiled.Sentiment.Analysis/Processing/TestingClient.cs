@@ -41,6 +41,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         private int error;
 
+        private bool initialized;
+
         private readonly IClientContext clientContext;
 
         public TestingClient(ILogger<TestingClient> log, IClientContext clientContext)
@@ -133,10 +135,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             
             log.LogInformation("Processing...");
+            initialized = true;
         }
 
         public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
+            if (!initialized)
+            {
+                throw new InvalidOperationException("Not initialized");
+            }
+
             IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
             return documentSelector;
         }
@@ -148,7 +156,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 throw new ArgumentNullException(nameof(review));
             }
 
-            var result = await Process(Observable.Never<IParsedDocumentHolder>().StartWith(review));
+            var result = await Process(Observable.Never<IParsedDocumentHolder>().StartWith(review)).FirstAsync();
             return result;
         }
 

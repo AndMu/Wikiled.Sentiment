@@ -7,7 +7,7 @@ using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.NLP
 {
-    public class RecyclableTextSplitter : ITextSplitter
+    public sealed class RecyclableTextSplitter : ITextSplitter
     {
         private readonly ILogger<RecyclableTextSplitter> log;
 

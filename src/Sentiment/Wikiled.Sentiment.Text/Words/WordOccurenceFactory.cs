@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.POS;
@@ -17,13 +16,14 @@ namespace Wikiled.Sentiment.Text.Words
 
         private readonly IInquirerManager inquirerManager;
 
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<WordOccurenceFactory>();
+        private readonly ILogger<WordOccurenceFactory> log;
 
-        public WordOccurenceFactory(IContextWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager)
+        public WordOccurenceFactory(ILogger<WordOccurenceFactory> log, IContextWordsHandler wordsHandlers, IRawTextExtractor extractor, IInquirerManager inquirerManager)
         {
             this.wordsHandlers = wordsHandlers ?? throw new ArgumentNullException(nameof(wordsHandlers));
             this.extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
             this.inquirerManager = inquirerManager ?? throw new ArgumentNullException(nameof(inquirerManager));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public IPhrase CreatePhrase(string posPhrase)

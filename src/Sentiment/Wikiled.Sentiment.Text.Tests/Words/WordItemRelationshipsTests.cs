@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
@@ -22,7 +23,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             handler = new Mock<IContextWordsHandler>();
-            handler.Setup(item => item.Context).Returns(new SessionContext());
+            handler.Setup(item => item.Context).Returns(new SessionContext(new NullLogger<SessionContext>()));
             parent = new TestWordItem();
             parent.WordIndex = 1;
             instance = new WordItemRelationships(handler.Object, parent);

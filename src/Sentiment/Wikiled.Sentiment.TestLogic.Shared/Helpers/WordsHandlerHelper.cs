@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
@@ -19,7 +20,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             
             InquirerManager = new Mock<IInquirerManager>();
             Dictionary = new Mock<INRCDictionary>();
-            Handler.Setup(item => item.Context).Returns(new SessionContext());
+            Handler.Setup(item => item.Context).Returns(new SessionContext(new NullLogger<SessionContext>()));
         }
 
         public Mock<IInquirerManager> InquirerManager { get; }

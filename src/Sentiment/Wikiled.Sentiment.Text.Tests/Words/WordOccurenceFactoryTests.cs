@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
+using Wikiled.Common.Testing.Utilities.Reflection;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.Text.Tests.Words
 {
@@ -17,15 +18,17 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public void Setup()
         {
             helper = new WordsHandlerHelper();
-            instance = new WordOccurenceFactory(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object);
+
+            instance = new WordOccurenceFactory(new NullLogger<WordOccurenceFactory>(),
+                                                helper.Handler.Object,
+                                                helper.RawTextExractor.Object,
+                                                helper.InquirerManager.Object);
         }
 
         [Test]
         public void Create()
         {
-            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(null, helper.RawTextExractor.Object, helper.InquirerManager.Object));
-            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(helper.Handler.Object, null, helper.InquirerManager.Object));
-            Assert.Throws<ArgumentNullException>(() => new WordOccurenceFactory(helper.Handler.Object, helper.RawTextExractor.Object, null));
+            ConstructorHelper.ConstructorMustThrowArgumentNullException<WordOccurenceFactory>();
             Assert.IsNotNull(instance);
         }
 

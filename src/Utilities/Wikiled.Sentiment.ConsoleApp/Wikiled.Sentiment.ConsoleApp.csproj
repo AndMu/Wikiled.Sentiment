@@ -12,7 +12,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <StartupObject>Wikiled.Sentiment.ConsoleApp.Program</StartupObject>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8</LangVersion>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,12 +26,6 @@
     <PackageReference Include="Polly" version="7.1.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="System.Reactive" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Core" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Linq" version="4.2.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.2.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
-    <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.9" />
     <PackageReference Include="Wikiled.Common.Utilities" Version="1.2.22" />
@@ -39,10 +35,6 @@
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
 
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
