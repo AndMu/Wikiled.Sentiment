@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Parser.Light;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.Extensions;
 using Wikiled.Text.Analysis.Structure.Light;
 using Wikiled.Text.Analysis.Tokenizer;
 using Wikiled.Text.Analysis.Tokenizer.Pipelined;
@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.NLP
         {
             var tokenizer = sentenceTokenizer.Create(true, false);
             var wordsExtraction = new SimpleWordsExtraction(tokenizer);
-            LightDocument document = wordsExtraction.GetDocument(request.Document.Text);
+            LightDocument document = wordsExtraction.GetDocument(request.Document.Text).GetLight();
             return document;
         }
     }

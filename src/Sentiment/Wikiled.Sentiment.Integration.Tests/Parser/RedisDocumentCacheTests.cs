@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Common.Logging;
@@ -11,6 +12,7 @@ using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Text.Analysis.Cache;
+using Wikiled.Text.Analysis.Extensions;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
@@ -39,7 +41,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
             redis = new RedisInside.Redis(i => i.Port(6666).LogTo(item => log.LogDebug(item)));
             var serverInstance = new RedisServer(new RedisConfiguration("localhost", 6666) { ServiceName = "Test" });
             link = serverInstance.Provider.GetService<IRedisLink>();
-            instance = new RedisDocumentCache(POSTaggerType.Simple, link, local);
+            instance = new RedisDocumentCache(new NullLogger<RedisDocumentCache>(), POSTaggerType.Simple, link, local);
         }
 
         [TearDown]
@@ -59,7 +61,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
 
             var result = await instance.GetCached(document).ConfigureAwait(false);
             Assert.IsNull(result);
-            await instance.Save(document).ConfigureAwait(false);
+            await instance.Save(document.GetLight()).ConfigureAwait(false);
             result = await instance.GetCached(document).ConfigureAwait(false);
 
             Assert.AreNotSame(document, result);

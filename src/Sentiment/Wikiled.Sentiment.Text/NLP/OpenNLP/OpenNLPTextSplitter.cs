@@ -9,7 +9,6 @@ using System.Linq;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Parser.Light;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Structure.Light;
 using Wikiled.Text.Analysis.Tokenizer;

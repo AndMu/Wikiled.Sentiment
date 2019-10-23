@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> stopWords;
 
-        private IExtendedWords extended;
+        private readonly IExtendedWords extended;
 
         public WordsHandler(ILexiconConfiguration config, IExtendedWords extended)
         {

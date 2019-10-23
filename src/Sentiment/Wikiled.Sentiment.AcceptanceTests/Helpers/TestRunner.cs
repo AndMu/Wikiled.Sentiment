@@ -53,7 +53,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.Resolve<ITextSplitter>(), doc);
+                return new ParsingDocumentHolder(Active.Resolve<ITextSplitter>(), Active.GetWordFactory(), doc);
             }
             catch (Exception ex)
             {

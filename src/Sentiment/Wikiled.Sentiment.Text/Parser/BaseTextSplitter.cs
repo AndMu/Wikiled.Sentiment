@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
