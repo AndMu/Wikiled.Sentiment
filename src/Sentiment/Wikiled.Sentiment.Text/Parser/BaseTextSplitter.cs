@@ -57,6 +57,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 else
                 {
                     document = new LightDocument();
+                    document.Sentences = Array.Empty<LightSentence>();
                     log.LogInformation("Empty document detected");
                 }
 

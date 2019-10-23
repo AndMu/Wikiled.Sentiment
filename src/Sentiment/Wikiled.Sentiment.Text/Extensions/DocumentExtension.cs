@@ -20,14 +20,16 @@ namespace Wikiled.Sentiment.Text.Extensions
             {
                 var resultSentence = new SentenceItem(sentence.Text);
                 result.Add(resultSentence);
-
-                for (var i = 0; i < sentence.Words.Count; i++)
+                if (sentence.Words != null)
                 {
-                    var word = sentence.Words[i];
-                    var wordItem = factory.CreateWord(word.Text, word.Tag);
-                    wordItem.WordIndex = i;
-                    WordEx wordData = WordExFactory.Construct(wordItem);
-                    resultSentence.Add(wordData);
+                    for (var i = 0; i < sentence.Words.Length; i++)
+                    {
+                        var word = sentence.Words[i];
+                        var wordItem = factory.CreateWord(word.Text, word.Tag);
+                        wordItem.WordIndex = i;
+                        WordEx wordData = WordExFactory.Construct(wordItem);
+                        resultSentence.Add(wordData);
+                    }
                 }
             }
 

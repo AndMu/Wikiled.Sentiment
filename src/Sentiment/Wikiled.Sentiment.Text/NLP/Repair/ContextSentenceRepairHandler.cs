@@ -11,19 +11,14 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
     {
         private readonly ILogger<ContextSentenceRepairHandler> log;
 
-        private readonly ISentenceRepairHandler repairHandler;
-
         private readonly (string Word, string Replacement)[] replacements;
 
         public ContextSentenceRepairHandler(
             ILogger<ContextSentenceRepairHandler> log,
-            ISentenceRepairHandler repairHandler,
             IContextWordsHandler wordsHandler,
             IWordFactory wordFactory,
             IExtendedWords extendedWords)
         {
-            log.LogDebug("Construct");
-
             if (wordsHandler == null)
             {
                 throw new ArgumentNullException(nameof(wordsHandler));
@@ -34,9 +29,9 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 throw new ArgumentNullException(nameof(wordFactory));
             }
 
-            this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
-            this.log = log;
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
 
+            log.LogDebug("Construct");
             replacements = extendedWords.GetReplacements()
                                         .Where(item =>
                                                    !wordsHandler.IsKnown(wordFactory.CreateWord(item.Word, "NN")) ||
@@ -44,13 +39,18 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                                         .ToArray();
         }
 
-        public string Repair(string sentence)
+        public string Repair(string original)
         {
-            sentence = repairHandler.Repair(sentence);
+            var sentence = original;
             ReplacementOption option = ReplacementOption.IgnoreCase | ReplacementOption.WholeWord;
             foreach ((string Word, string Replacement) replacement in replacements)
             {
                 sentence = sentence.ReplaceString(replacement.Word, replacement.Replacement, option);
+            }
+
+            if (sentence != original)
+            {
+                log.LogDebug("Sentence repaired!");
             }
 
             return sentence;

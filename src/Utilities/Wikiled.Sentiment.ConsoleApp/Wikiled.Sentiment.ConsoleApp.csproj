@@ -32,7 +32,7 @@
     <PackageReference Include="Wikiled.Console" Version="1.4.5" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
     <PackageReference Include="Wikiled.Redis" version="3.5.60" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.34-CI" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.39-CI" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
 
   </ItemGroup>

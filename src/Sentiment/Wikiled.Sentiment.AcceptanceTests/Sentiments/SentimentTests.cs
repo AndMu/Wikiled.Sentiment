@@ -124,7 +124,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task TestNull()
         {
             var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(new Document())).ConfigureAwait(false);
-            Assert.AreEqual(0, doc.Sentences.Count);
+            Assert.AreEqual(0, doc.Sentences.Length);
         }
 
         [Test]
