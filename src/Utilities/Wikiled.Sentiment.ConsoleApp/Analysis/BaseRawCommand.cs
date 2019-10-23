@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.ConsoleApp.Analysis
         private IObservable<IParsedDocumentHolder> GetAllDocuments()
         {
             var dataSource = loader.Load(Config);
-            return container.GetTextSplitter().GetParsedReviewHolders(container.GetWordFactory(), dataSource);
+            return container.GetParsedReviewHolders(dataSource);
         }
     }
 }

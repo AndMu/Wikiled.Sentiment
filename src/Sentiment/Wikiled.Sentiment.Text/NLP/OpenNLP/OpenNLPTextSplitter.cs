@@ -24,18 +24,14 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private readonly ITreebankWordTokenizer tokenizer;
 
-        private readonly IContextSentenceRepairHandler repairHandler;
-
         private ChunkerME chunker;
 
         private POSTaggerME posTagger;
 
-        public OpenNLPTextSplitter(
-            ILogger<OpenNLPTextSplitter> log,
-            ILexiconConfiguration configuration,
-            ICachedDocumentsSource cache,
-            ISentenceTokenizerFactory tokenizerFactory,
-            IContextSentenceRepairHandler repairHandler)
+        public OpenNLPTextSplitter(ILogger<OpenNLPTextSplitter> log,
+                                   ILexiconConfiguration configuration,
+                                   ICachedDocumentsSource cache,
+                                   ISentenceTokenizerFactory tokenizerFactory)
             : base(log, cache)
         {
             if (configuration == null)
@@ -45,8 +41,6 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             log.LogDebug("Creating with resource path: {0}", configuration.ResourcePath);
-            this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
-            
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
             LoadModels(configuration.ResourcePath);
@@ -58,8 +52,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             var sentenceDataList = new List<SentenceData>(sentences.Length);
             foreach (var sentence in sentences)
             {
-                var text = repairHandler.Repair(sentence);
-                var sentenceData = new SentenceData { Text = text };
+                var sentenceData = new SentenceData { Text = sentence };
                 sentenceData.Tokens = tokenizer.Tokenize(sentenceData.Text);
                 if (sentenceData.Tokens.Length <= 0)
                 {

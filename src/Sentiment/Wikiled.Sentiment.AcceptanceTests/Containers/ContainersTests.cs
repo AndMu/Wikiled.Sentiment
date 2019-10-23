@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Resources;
-using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Containers
@@ -37,6 +37,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
                 var result = await client
                                    .Process(new ParsingDocumentHolder(session.GetTextSplitter(),
                                                                       session.GetWordFactory(),
+                                                                      session.Resolve<IContextSentenceRepairHandler>(),
                                                                       new Document("I like beer")))
                                    .ConfigureAwait(false);
                 Assert.AreEqual(5, result.Adjustment.Rating.StarsRating);

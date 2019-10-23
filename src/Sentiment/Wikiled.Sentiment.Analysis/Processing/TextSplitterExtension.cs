@@ -6,10 +6,10 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Serialization;
+using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Data.Review;
-using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Words;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
@@ -18,16 +18,19 @@ namespace Wikiled.Sentiment.Analysis.Processing
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger("TextSplitterExtension");
 
-        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IWordFactory wordFactory, string path, bool? positive)
+        public static IEnumerable<IParsedDocumentHolder> GetParsedReviewHolders(this ISessionContainer container, string path, bool? positive)
         {
             log.LogInformation("Reading: {0}", path);
+
             if (string.IsNullOrEmpty(path))
             {
                 log.LogWarning("One of paths is empty");
+
                 return new IParsedDocumentHolder[] { };
             }
 
             double? stars = null;
+
             if (positive == true)
             {
                 stars = 5;
@@ -37,18 +40,23 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 stars = 1;
             }
 
-            return GetReview(splitter, wordFactory, path, stars);
+            return GetReview(container, path, stars);
         }
 
-        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ITextSplitter splitter, IWordFactory wordFactory, IDataSource data)
+        public static IObservable<IParsedDocumentHolder> GetParsedReviewHolders(this ISessionContainer container, IDataSource data)
         {
-            var all = data.Load().Select(processingData => (IParsedDocumentHolder)new AsyncParsingDocumentHolder(ConstructHolder(splitter, wordFactory, processingData)));
+            var all = data.Load()
+                          .Select(processingData
+                                      => (IParsedDocumentHolder)new AsyncParsingDocumentHolder(
+                                          ConstructHolder(container, processingData)));
+
             return all;
         }
 
-        private static async Task<IParsedDocumentHolder> ConstructHolder(ITextSplitter splitter, IWordFactory wordFactory, DataPair processingData)
+        private static async Task<IParsedDocumentHolder> ConstructHolder(ISessionContainer container, DataPair processingData)
         {
             var result = await processingData.Data.ConfigureAwait(false);
+
             if (processingData.Sentiment == SentimentClass.Positive)
             {
                 SetStars(result, 5);
@@ -58,7 +66,10 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 SetStars(result, 1);
             }
 
-            return new ParsingDocumentHolder(splitter, wordFactory, result);
+            return new ParsingDocumentHolder(container.GetTextSplitter(),
+                                             container.GetWordFactory(),
+                                             container.Resolve<IContextSentenceRepairHandler>(),
+                                             result);
         }
 
         private static void SetStars(SingleProcessingData processingData, double defaultStars)
@@ -69,13 +80,16 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
         }
 
-        private static IEnumerable<IParsedDocumentHolder> GetReview(ITextSplitter splitter, IWordFactory wordFactory, string path, double? stars)
+        private static IEnumerable<IParsedDocumentHolder> GetReview(ISessionContainer container, string path, double? stars)
         {
             if (File.Exists(path))
             {
                 foreach (var line in File.ReadLines(path))
                 {
-                    yield return new ParsingDocumentHolder(splitter, wordFactory, new Document(line.SanitizeXmlString()) { Stars = stars });
+                    yield return new ParsingDocumentHolder(container.GetTextSplitter(),
+                                                           container.GetWordFactory(),
+                                                           container.Resolve<IContextSentenceRepairHandler>(),
+                                                           new Document(line.SanitizeXmlString()) { Stars = stars });
                 }
             }
             else
@@ -85,13 +99,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     yield return new AsyncParsingDocumentHolder(Task.Run(() =>
                     {
                         var fileInfo = new FileInfo(file);
+
                         var document = new Document(File.ReadAllText(file).SanitizeXmlString())
                         {
                             Id = $"{fileInfo.Directory.Name}_{Path.GetFileNameWithoutExtension(fileInfo.Name)}",
                             Stars = stars
                         };
 
-                        return (IParsedDocumentHolder)new ParsingDocumentHolder(splitter, wordFactory, document);
+                        return (IParsedDocumentHolder)new ParsingDocumentHolder(container.GetTextSplitter(),
+                                                                                 container.GetWordFactory(),
+                                                                                 container.Resolve<IContextSentenceRepairHandler>(),
+                                                                                 document);
                     }));
                 }
             }

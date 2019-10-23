@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using Wikiled.Common.Extensions;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 
@@ -10,15 +9,21 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 {
     public class ContextSentenceRepairHandler : IContextSentenceRepairHandler
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<ContextSentenceRepairHandler>();
+        private readonly ILogger<ContextSentenceRepairHandler> log;
 
         private readonly ISentenceRepairHandler repairHandler;
 
         private readonly (string Word, string Replacement)[] replacements;
 
-        public ContextSentenceRepairHandler(ISentenceRepairHandler repairHandler, IContextWordsHandler wordsHandler, IWordFactory wordFactory, IExtendedWords extendedWords)
+        public ContextSentenceRepairHandler(
+            ILogger<ContextSentenceRepairHandler> log,
+            ISentenceRepairHandler repairHandler,
+            IContextWordsHandler wordsHandler,
+            IWordFactory wordFactory,
+            IExtendedWords extendedWords)
         {
             log.LogDebug("Construct");
+
             if (wordsHandler == null)
             {
                 throw new ArgumentNullException(nameof(wordsHandler));
@@ -30,11 +35,13 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
             }
 
             this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
+            this.log = log;
+
             replacements = extendedWords.GetReplacements()
-                .Where(item =>
-                           !wordsHandler.IsKnown(wordFactory.CreateWord(item.Word, "NN")) ||
-                           wordsHandler.IsKnown(wordFactory.CreateWord(item.Replacement, "NN")))
-                .ToArray();
+                                        .Where(item =>
+                                                   !wordsHandler.IsKnown(wordFactory.CreateWord(item.Word, "NN")) ||
+                                                   wordsHandler.IsKnown(wordFactory.CreateWord(item.Replacement, "NN")))
+                                        .ToArray();
         }
 
         public string Repair(string sentence)

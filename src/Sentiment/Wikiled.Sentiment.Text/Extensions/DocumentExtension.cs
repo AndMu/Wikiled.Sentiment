@@ -1,4 +1,5 @@
 ﻿using Wikiled.Arff.Logic;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Structure.Light;
@@ -20,10 +21,13 @@ namespace Wikiled.Sentiment.Text.Extensions
                 var resultSentence = new SentenceItem(sentence.Text);
                 result.Add(resultSentence);
 
-                foreach (var word in sentence.Words)
+                for (var i = 0; i < sentence.Words.Count; i++)
                 {
-                    var item = factory.CreateWord(word.Text, word.Tag);
-                    resultSentence.Add(new WordEx(item));
+                    var word = sentence.Words[i];
+                    var wordItem = factory.CreateWord(word.Text, word.Tag);
+                    wordItem.WordIndex = i;
+                    WordEx wordData = WordExFactory.Construct(wordItem);
+                    resultSentence.Add(wordData);
                 }
             }
 

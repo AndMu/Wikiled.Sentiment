@@ -8,6 +8,7 @@ using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Helpers
@@ -53,7 +54,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
                     return null;
                 }
 
-                return new ParsingDocumentHolder(Active.Resolve<ITextSplitter>(), Active.GetWordFactory(), doc);
+                return new ParsingDocumentHolder(Active.Resolve<ITextSplitter>(),
+                                                 Active.GetWordFactory(),
+                                                 Active.Resolve<IContextSentenceRepairHandler>(),
+                                                 doc);
             }
             catch (Exception ex)
             {

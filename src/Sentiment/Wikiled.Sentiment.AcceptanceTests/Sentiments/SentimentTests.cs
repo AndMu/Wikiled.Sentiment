@@ -20,6 +20,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -60,6 +61,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
                                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(),
                                                                         TestHelper.Instance.ContainerHelper.GetWordFactory(),
+                                                                        TestHelper.Instance.ContainerHelper.Resolve<IContextSentenceRepairHandler>(),
                                                                         item.Result);
                                    });
 
@@ -76,6 +78,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
                                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(),
                                                                         TestHelper.Instance.ContainerHelper.GetWordFactory(),
+                                                                        TestHelper.Instance.ContainerHelper.Resolve<IContextSentenceRepairHandler>(),
                                                                         item.Result);
                                    });
 
