@@ -54,6 +54,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         {
             var sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
             var sentenceDataList = new List<SentenceData>(sentences.Length);
+
             foreach (var sentence in sentences)
             {
                 var text = repairHandler.Repair(sentence);

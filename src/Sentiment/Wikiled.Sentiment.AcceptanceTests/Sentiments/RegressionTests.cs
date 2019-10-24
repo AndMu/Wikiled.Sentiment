@@ -1,4 +1,6 @@
-﻿using System.Reactive.Linq;
+﻿using System.IO;
+using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -6,6 +8,7 @@ using Wikiled.Amazon.Logic;
 using Wikiled.Common.Logging;
 using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
+using Wikiled.Sentiment.Analysis.Pipeline.Persistency;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -44,7 +47,14 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             testing.DisableSvm = true;
             testing.TrackArff = true;
             testing.Init();
-            await testing.Process(runner.Load()).LastOrDefaultAsync();
+            var persistency = runner.Active.Resolve<IPipelinePersistency>();
+            persistency.Start(Path.Combine(TestContext.CurrentContext.TestDirectory, "Results", data.Product));
+            persistency.Debug = true;
+            await testing.Process(runner.Load()).ForEachAsync(
+                item =>
+                {
+                    //persistency.Save(item);
+                });
             Assert.AreEqual(data.Errors, testing.Errors);
             Assert.AreEqual(data.Performance, testing.GetPerformanceDescription());
         }

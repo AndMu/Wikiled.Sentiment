@@ -4,6 +4,7 @@ using System;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Pipeline;
+using Wikiled.Sentiment.Analysis.Pipeline.Persistency;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Aspects;
@@ -26,6 +27,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.RegisterModule<DefaultNlpModule>();
 
             services.AddSingleton<IDataLoader, DataLoader>();
+            services.AddTransient<IPipelinePersistency, SimplePipelinePersistency>();
+            
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());

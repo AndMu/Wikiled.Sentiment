@@ -32,11 +32,60 @@ namespace Wikiled.Sentiment.Text.Words
 
         public static IEnumerable<IWordItem> GetImportant(this IEnumerable<IWordItem> words)
         {
+            return GetImportantInternal(words).Distinct();
+        }
+
+
+        public static RatingData CalculateRating(this ISentence sentence)
+        {
+            var data = new RatingData();
+            var important = sentence.Occurrences.GetImportant();
+            IWordItem firstWord = null;
+            foreach (var wordItem in important)
+            {
+                if (firstWord == null)
+                {
+                    firstWord = wordItem;
+                }
+
+                if (wordItem.Relationship.Sentiment == null)
+                {
+                    continue;
+                }
+
+                data.AddSentiment(wordItem.Relationship.Sentiment.DataValue);
+            }
+
+            if (firstWord == null)
+            {
+                return data;
+            }
+
+            if (!WordTypeResolver.Instance.IsInvertingConjunction(firstWord.Text))
+            {
+                return data;
+            }
+
+            if (!data.HasValue)
+            {
+                // make opposite to previous part and twice lower
+                var previous = sentence.Previous?.CalculateRating().RawRating;
+                if (previous != null)
+                {
+                    data.AddSentiment(new SentimentValueData(-previous.Value / 2));
+                }
+            }
+
+            return data;
+        }
+
+        private static IEnumerable<IWordItem> GetImportantInternal(this IEnumerable<IWordItem> words)
+        {
             IPhrase parent = null;
             foreach (var wordItem in words)
             {
                 if (wordItem.CanNotBeAttribute() &&
-                    wordItem.CanNotBeFeature()  &&
+                    wordItem.CanNotBeFeature() &&
                     !wordItem.IsFeature &&
                     !wordItem.IsSentiment &&
                     wordItem.Relationship.Sentiment == null &&
@@ -82,48 +131,6 @@ namespace Wikiled.Sentiment.Text.Words
                     }
                 }
             }
-        }
-
-        public static RatingData CalculateRating(this ISentence sentence)
-        {
-            var value = RatingData.Accumulate(sentence.Parts.Select(item => item.CalculateRating()));
-            return value;
-        }
-
-        public static RatingData CalculateRating(this ISentencePart sentence)
-        {
-            var data = new RatingData();
-            if (sentence.Occurrences.Count == 0)
-            {
-                return data;
-            }
-
-            foreach (var wordItem in sentence.Occurrences.GetImportant())
-            {
-                if (wordItem.Relationship.Sentiment == null)
-                {
-                    continue;
-                }
-
-                data.AddSentiment(wordItem.Relationship.Sentiment.DataValue);
-            }
-
-            if (!WordTypeResolver.Instance.IsInvertingConjunction(sentence.Occurrences[0].Text))
-            {
-                return data;
-            }
-
-            if (!data.HasValue)
-            {
-                // make oposite to previous part and twice lower
-                var previous = sentence.Previous?.CalculateRating().RawRating;
-                if (previous != null)
-                {
-                    data.AddSentiment(new SentimentValueData(-previous.Value / 2));
-                }
-            }
-
-            return data;
         }
     }
 }

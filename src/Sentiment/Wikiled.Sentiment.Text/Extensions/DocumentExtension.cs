@@ -28,6 +28,7 @@ namespace Wikiled.Sentiment.Text.Extensions
                         var wordItem = factory.CreateWord(word.Text, word.Tag);
                         wordItem.WordIndex = i;
                         WordEx wordData = WordExFactory.Construct(wordItem);
+                        wordData.Phrase = word.Phrase;
                         resultSentence.Add(wordData);
                     }
                 }
