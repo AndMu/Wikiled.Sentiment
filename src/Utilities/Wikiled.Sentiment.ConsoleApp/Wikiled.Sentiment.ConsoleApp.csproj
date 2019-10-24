@@ -28,11 +28,11 @@
     <PackageReference Include="System.Reactive" version="4.2.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.9" />
-    <PackageReference Include="Wikiled.Common.Utilities" Version="1.2.23" />
+    <PackageReference Include="Wikiled.Common.Utilities" Version="1.2.24" />
     <PackageReference Include="Wikiled.Console" Version="1.4.5" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
-    <PackageReference Include="Wikiled.Redis" version="3.5.60" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.39-CI" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.61" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.40-CI" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
 
   </ItemGroup>

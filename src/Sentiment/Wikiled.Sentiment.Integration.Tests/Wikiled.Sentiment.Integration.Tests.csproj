@@ -18,9 +18,9 @@
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="System.Reactive" version="4.2.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.5.60" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.61" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.34" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.39-CI" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.40-CI" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.3.0"></packagereference>
     <packagereference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>

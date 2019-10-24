@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Text.Analysis.Dictionary;
-using Wikiled.Text.Analysis.Twitter;
+using Wikiled.Text.Analysis.Emojis;
 
 namespace Wikiled.Sentiment.Text.NLP.Repair
 {
@@ -18,6 +18,8 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly IWordsDictionary dictionary;
 
+        private readonly EmojyCleanup cleanup;
+
         public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary)
         {
             if (path == null)
@@ -25,6 +27,8 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 throw new ArgumentNullException(nameof(path));
             }
 
+            cleanup = new EmojyCleanup();
+            cleanup.NormalizeText = false;
             resourcesPath = Path.Combine(path.LexiconPath, "Repair");
             this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             Load();
@@ -40,6 +44,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 return string.Empty;
             }
 
+            sentence = cleanup.Extract(sentence).Cleaned;
             foreach (var sentenceRepair in repairs)
             {
                 sentence = sentenceRepair.Repair(sentence);
