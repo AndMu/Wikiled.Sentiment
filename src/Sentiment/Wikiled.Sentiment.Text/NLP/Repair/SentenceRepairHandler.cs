@@ -18,9 +18,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly IWordsDictionary dictionary;
 
-        private readonly IMessageCleanup cleanup;
-
-        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary, IMessageCleanup cleanup)
+        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary)
         {
             if (path == null)
             {
@@ -29,14 +27,13 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             resourcesPath = Path.Combine(path.LexiconPath, "Repair");
             this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-            this.cleanup = cleanup ?? throw new ArgumentNullException(nameof(cleanup));
             Load();
         }
 
         public string Repair(string sentence)
         {
             // first do not remove sentiment words
-            // second it clashes with anther emoticon imlementations
+            // second it clashes with anther emoticon implementations
             // third maybe we should replace with masks, but not so generic.
             if (string.IsNullOrEmpty(sentence))
             {
@@ -48,7 +45,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 sentence = sentenceRepair.Repair(sentence);
             }
 
-            return cleanup.Cleanup(sentence); 
+            return sentence; 
         }
 
         private void Load()

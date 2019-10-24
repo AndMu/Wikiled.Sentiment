@@ -56,6 +56,7 @@ namespace Wikiled.Sentiment.Text.Data.Review
 
         public async Task<Document> GetParsed()
         {
+
             original.Text = repairHandler.Repair(original.Text);
             var document = await splitter.Process(new ParseRequest(original)).ConfigureAwait(false);
             var result = document.Construct(factory);
