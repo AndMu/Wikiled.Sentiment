@@ -2,7 +2,6 @@
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
@@ -32,9 +31,9 @@ namespace Wikiled.Sentiment.Text.Cache
             this.local = local ?? throw new ArgumentNullException(nameof(local));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
 
-            if (!manager.HasDefinition<Document>())
+            if (!manager.HasDefinition<LightDocument>())
             {
-                manager.RegisterNormalized<Document>(new XmlDataSerializer()).IsSingleInstance = true;
+                manager.RegisterNormalized<LightDocument>(new XmlDataSerializer()).IsSingleInstance = true;
             }
         }
 
@@ -78,7 +77,7 @@ namespace Wikiled.Sentiment.Text.Cache
                 return result;
             }
 
-            return await GetById(original.GetTextId(), original);
+            return await GetById(original.GetTextId(), original).ConfigureAwait(false);
         }
 
         public async Task<bool> Save(LightDocument document)
@@ -98,7 +97,7 @@ namespace Wikiled.Sentiment.Text.Cache
             key.AddIndex(new IndexKey(this, "Index:All", false));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetId()}", true));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetTextId()}", true));
-            await manager.Client.AddRecord(key, document.CloneJson()).ConfigureAwait(false);
+            await manager.Client.AddRecord(key, document).ConfigureAwait(false);
             return true;
         }
 

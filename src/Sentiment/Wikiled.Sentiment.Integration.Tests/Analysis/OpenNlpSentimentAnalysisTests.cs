@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't go to like this kik", 5, 1, true)]
         [TestCase("I don't go to like this kik", 3, 2, false)]
         [TestCase("Tom :) go for it", 5, 1, false)]
-        [TestCase("Tom wat up", 5, 1, false)]
+        [TestCase("Tom :) up", 5, 1, false)]
         public async Task TestBasic(string text, int rating, int totalSentiments, bool disableInvertor)
         {
             ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = disableInvertor;
