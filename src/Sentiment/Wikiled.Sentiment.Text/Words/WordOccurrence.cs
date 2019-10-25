@@ -106,7 +106,7 @@ namespace Wikiled.Sentiment.Text.Words
             var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
             rawWord = rawWord?.ToLower();
 
-            if ((pos.WordType == WordType.Symbol || pos.WordType == WordType.SeparationSymbol) &&
+            if ((pos?.WordType == WordType.Symbol || pos?.WordType == WordType.SeparationSymbol) &&
                 text?.Length > 1 &&
                 text.Any(char.IsLetter))
             {
