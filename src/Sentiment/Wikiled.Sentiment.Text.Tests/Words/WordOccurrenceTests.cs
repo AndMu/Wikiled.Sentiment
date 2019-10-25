@@ -52,7 +52,6 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             Assert.IsFalse(instance.IsFixed);
             Assert.IsTrue(instance.IsStopWord);
             Assert.IsTrue(instance.IsSimple);
-            Assert.AreEqual(1, instance.AllWords.Count());
 
             helper.Handler.Verify(item => item.IsFeature(instance), Times.Once);
             helper.Handler.Verify(item => item.IsQuestion(instance), Times.Once);
