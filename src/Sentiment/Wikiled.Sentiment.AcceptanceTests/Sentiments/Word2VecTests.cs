@@ -19,18 +19,18 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 
         private static readonly SentimentTestData[] testData =
         {
-            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7206> Positive:<80.479%> Negative:<61.821%> F1:<0.871> RMSE:1.57"),
-            new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<81.726%> Negative:<86.667%> F1:<0.894> RMSE:1.47"),
-            new SentimentTestData("B000BAX50G", 288, 0, "Total:<265> Positive:<96.471%> Negative:<60.000%> F1:<0.974> RMSE:0.89"),
-            new SentimentTestData("B000ERAON2", 440, 0, "Total:<413> Positive:<84.401%> Negative:<72.222%> F1:<0.895> RMSE:1.40"),
+            new SentimentTestData("B0002L5R78", 7581, 0, "Total:<7207> Positive:<80.590%> Negative:<61.549%> F1:<0.871> RMSE:1.57"),
+            new SentimentTestData("B00002EQCW", 228, 0, "Total:<212> Positive:<81.726%> Negative:<86.667%> F1:<0.894> RMSE:1.48"),
+            new SentimentTestData("B000BAX50G", 288, 0, "Total:<265> Positive:<96.078%> Negative:<60.000%> F1:<0.972> RMSE:0.92"),
+            new SentimentTestData("B000ERAON2", 440, 0, "Total:<413> Positive:<84.401%> Negative:<70.370%> F1:<0.894> RMSE:1.41"),
 
-            new SentimentTestData("B0026127Y8", 928, 0, "Total:<849> Positive:<79.688%> Negative:<71.605%> F1:<0.872> RMSE:1.38") { Category = ProductCategory.Video },
-            new SentimentTestData("B009GN6F5Q", 472, 0, "Total:<388> Positive:<87.500%> Negative:<65.517%> F1:<0.865> RMSE:1.33") { Category = ProductCategory.Video },
-            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<345> Positive:<87.086%> Negative:<58.140%> F1:<0.902> RMSE:1.15") { Category = ProductCategory.Video },
+            new SentimentTestData("B0026127Y8", 928, 0, "Total:<849> Positive:<78.776%> Negative:<71.605%> F1:<0.867> RMSE:1.39") { Category = ProductCategory.Video },
+            new SentimentTestData("B009GN6F5Q", 472, 0, "Total:<388> Positive:<87.132%> Negative:<66.379%> F1:<0.865> RMSE:1.33") { Category = ProductCategory.Video },
+            new SentimentTestData("B009CG8YJW", 418, 0, "Total:<345> Positive:<87.748%> Negative:<58.140%> F1:<0.906> RMSE:1.15") { Category = ProductCategory.Video },
 
-            new SentimentTestData("B00004SGFS", 381, 0, "Total:<363> Positive:<83.082%> Negative:<81.250%> F1:<0.899> RMSE:1.40") { Category = ProductCategory.Kitchen },
-            new SentimentTestData("B000PYF768", 507, 0, "Total:<475> Positive:<82.989%> Negative:<62.500%> F1:<0.890> RMSE:1.34") { Category = ProductCategory.Kitchen },
-            new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<279> Positive:<89.272%> Negative:<55.556%> F1:<0.928> RMSE:1.17") { Category = ProductCategory.Kitchen }
+            new SentimentTestData("B00004SGFS", 381, 0, "Total:<363> Positive:<82.779%> Negative:<81.250%> F1:<0.897> RMSE:1.41") { Category = ProductCategory.Kitchen },
+            new SentimentTestData("B000PYF768", 507, 0, "Total:<475> Positive:<83.678%> Negative:<70.000%> F1:<0.898> RMSE:1.35") { Category = ProductCategory.Kitchen },
+            new SentimentTestData("B0000Z6JIW", 297, 0, "Total:<279> Positive:<87.739%> Negative:<55.556%> F1:<0.920> RMSE:1.19") { Category = ProductCategory.Kitchen }
         };
 
         [SetUp]

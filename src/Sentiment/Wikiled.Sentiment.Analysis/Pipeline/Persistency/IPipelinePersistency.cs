@@ -11,7 +11,5 @@ namespace Wikiled.Sentiment.Analysis.Pipeline.Persistency
         void Start(string path);
 
         void Save(ProcessingContext context);
-
-        void Dispose();
     }
 }
