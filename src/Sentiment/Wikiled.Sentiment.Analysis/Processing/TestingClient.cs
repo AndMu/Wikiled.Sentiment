@@ -9,6 +9,7 @@ using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
+using Wikiled.Common.Utilities.Helpers;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
@@ -24,6 +25,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
@@ -187,10 +189,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
                 StandaloneProcess(context, adjustment);
             }
-            catch
+            catch (Exception ex)
             {
+                log.LogError(ex, "Failed");
                 Interlocked.Increment(ref error);
-                throw;
+                context.Processed = context.Original.CloneJson();
+                context.Processed.Status = Status.Error;
             }
            
             return context;
