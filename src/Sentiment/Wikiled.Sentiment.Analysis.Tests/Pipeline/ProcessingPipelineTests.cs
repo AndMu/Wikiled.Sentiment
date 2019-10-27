@@ -65,7 +65,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Pipeline
         public void ProcessStep()
         {
             var subscriber = scheduler.CreateObserver<ProcessingContext>();
-            instance.ProcessStep(documentSource)
+            instance.Processing(documentSource)
                     .Subscribe(subscriber);
             scheduler.AdvanceBy(TimeSpan.FromSeconds(4).Ticks);
             Assert.AreEqual(3, subscriber.Messages.Count);
