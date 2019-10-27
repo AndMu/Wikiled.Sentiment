@@ -10,6 +10,6 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
 
         void ResetMonitor();
 
-        IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews);
+        IObservable<ProcessingContext> Processing(IObservable<IParsedDocumentHolder> reviews);
     }
 }

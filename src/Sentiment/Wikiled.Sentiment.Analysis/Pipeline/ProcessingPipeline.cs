@@ -40,14 +40,14 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             Monitor = new PerformanceMonitor(defaultTotal);
         }
 
-        public IObservable<ProcessingContext> ProcessStep(IObservable<IParsedDocumentHolder> reviews)
+        public IObservable<ProcessingContext> Processing(IObservable<IParsedDocumentHolder> reviews)
         {
             if (reviews is null)
             {
                 throw new ArgumentNullException(nameof(reviews));
             }
 
-            log.LogInformation("ProcessStep");
+            log.LogInformation("Processing");
             ResetMonitor();
             IObservable<ProcessingContext> selectedData = reviews
                 .Select(item => Observable.Start(() => StepProcessing(item), scheduler))
@@ -65,22 +65,24 @@ namespace Wikiled.Sentiment.Analysis.Pipeline
             }
 
             Document document;
+            Document originalDocument = null;
             IParsedReview review = null;
             try
             {
                 Monitor.ManualyCount();
+                originalDocument = await reviewHolder.GetOriginal().ConfigureAwait(false);
                 document = await reviewHolder.GetParsed().ConfigureAwait(false);
                 review = reviewManager(document).Create();
             }
             catch (Exception ex)
             {
                 log.LogError(ex, "Error");
-                document = await reviewHolder.GetOriginal().ConfigureAwait(false).CloneJson();
+                document = originalDocument.CloneJson();
                 document.Status = Status.Error;
             }
 
             Monitor.Increment();
-            var context = new ProcessingContext(await reviewHolder.GetOriginal().ConfigureAwait(false), document, review);
+            var context = new ProcessingContext(originalDocument, document, review);
             return context;
         }
     }

@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             log.LogInformation("Starting Training...");
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))
             {
-                await clientContext.Pipeline.ProcessStep(reviews)
+                await clientContext.Pipeline.Processing(reviews)
                               .Select(AdditionalProcessing);
             }
 
@@ -91,7 +91,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
             using (Observable.Interval(TimeSpan.FromSeconds(30)).Subscribe(item => log.LogInformation(clientContext.Pipeline.Monitor.ToString())))
             {
-                await clientContext.Pipeline.ProcessStep(reviews)
+                await clientContext.Pipeline.Processing(reviews)
                               .Select(
                                   item => Observable.Start(
                                       () =>

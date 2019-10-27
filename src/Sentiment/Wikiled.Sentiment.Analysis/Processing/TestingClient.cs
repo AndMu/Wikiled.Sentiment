@@ -145,7 +145,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 throw new InvalidOperationException("Not initialized");
             }
 
-            IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
+            IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.Processing(reviews).Select(RetrieveData);
             return documentSelector;
         }
 
