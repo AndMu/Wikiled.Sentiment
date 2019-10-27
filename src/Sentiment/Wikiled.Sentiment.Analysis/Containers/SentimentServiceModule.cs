@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             if (RedisConfiguration == null)
             {
                 log.LogDebug("Using local cache");
-                builder.AddScoped<ICachedDocumentsSource, LocalDocumentsCache>();
+                builder.AddSingleton<ICachedDocumentsSource, LocalDocumentsCache>();
             }
             else
             {
@@ -49,8 +49,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
                         OpenOnConstruction = true
                     });
 
-                builder.AddScoped<LocalDocumentsCache>();
-                builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
+                builder.AddSingleton<LocalDocumentsCache>();
+                builder.AddSingleton<ICacheFactory, RedisDocumentCacheFactory>();
             }
 
             if (!string.IsNullOrEmpty(Lexicons))
