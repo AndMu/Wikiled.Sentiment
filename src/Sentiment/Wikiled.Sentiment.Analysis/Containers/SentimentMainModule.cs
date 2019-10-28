@@ -34,7 +34,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
-            services.AddScoped<Func<Document, IParsedReviewManager>>(ctx =>
+            services.AddTransient<Func<Document, IParsedReviewManager>>(ctx =>
                                                                             document => new ParsedReviewManager(
                                                                                 ctx.GetService<IContextWordsHandler>(),
                                                                                 ctx.GetService<IWordFactory>(),
