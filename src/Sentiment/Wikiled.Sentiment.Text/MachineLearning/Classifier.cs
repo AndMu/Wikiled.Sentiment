@@ -8,6 +8,7 @@ using Accord.Statistics.Kernels;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
@@ -17,6 +18,8 @@ namespace Wikiled.Sentiment.Text.MachineLearning
         private static readonly ILogger log = ApplicationLogging.CreateLogger<Classifier>();
 
         public SupportVectorMachine Model { get; private set; }
+
+        public ParallelOptions Options { get; set; }
 
         public void Train(int[] y, double[][] x, CancellationToken token)
         {
@@ -39,6 +42,11 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             };
 
             gridsearch.Token = token;
+            if (Options != null)
+            {
+                gridsearch.ParallelOptions = Options;
+            }
+
             GridSearchResult<SupportVectorMachine, double[], int> result = gridsearch.Learn(x, y);
             Model = result.BestModel;
             GridSearchParameterCollection parameters = result.BestParameters;
