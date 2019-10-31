@@ -51,6 +51,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
                 IArffDataSet dataSet = currentSet;
                 MachineSentiment machine = await MachineSentiment.Train(dataSet, CancellationToken.None).ConfigureAwait(false);
+                machine.
                 machine.Save(SvmPath);
                 LoadSvm();
                 log.LogInformation("SVM Training Completed...");
