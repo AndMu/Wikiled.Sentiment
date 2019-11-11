@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public SupportVectorMachine Model { get; private set; }
 
-        public ParallelOptions Options { get; set; }
+        public static ParallelOptions Options { get; set; }
 
         public void Train(int[] y, double[][] x, CancellationToken token)
         {
