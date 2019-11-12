@@ -118,6 +118,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             catch (Exception ex)
             {
                 log.LogError(ex, "Error");
+                throw;
             }
         }
 
