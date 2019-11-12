@@ -9,6 +9,7 @@ using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
@@ -48,11 +49,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
-            var parallel = Environment.ProcessorCount;
-            if (parallel > 30)
-            {
-                parallel = 30;
-            }
+          
 
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
@@ -60,7 +57,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<ITextSplitter>(
                 item => new QueueTextSplitter(
                     item.GetService<ILogger<QueueTextSplitter>>(),
-                    parallel,
+                    ParallelHelper.MaxParallel,
                     item.GetService<Func<ITextSplitter>>("underlying")))
                     .AddFactory<ITextSplitter, ITextSplitter>();
 

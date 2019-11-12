@@ -3,7 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
