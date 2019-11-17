@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
@@ -30,7 +31,8 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         public async Task Process(string sentence, int word, int total, string lastPhrase)
         {
             var result = await splitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
+            var document = result.Construct(ActualWordsHandler.InstanceSimple.WordFactory);
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             var words = review.ImportantWords.ToArray();
             var phrases = phraseContructor.GetPhrases(words[word]).ToArray();
             Assert.AreEqual(total, phrases.Length);

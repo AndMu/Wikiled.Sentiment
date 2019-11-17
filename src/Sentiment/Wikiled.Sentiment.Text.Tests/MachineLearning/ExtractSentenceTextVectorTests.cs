@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Text.Analysis.POS;
@@ -27,7 +28,8 @@ namespace Wikiled.Sentiment.Text.Tests.MachineLearning
             ActualWordsHandler.InstanceSimple.Container.Context.ChangeAspect(aspect);
             aspect.AddFeature(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("teacher", POSTags.Instance.NN));
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest("I like my school teacher.")).ConfigureAwait(false);
-            review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
+            var document = data.Construct(ActualWordsHandler.InstanceSimple.WordFactory);
+            review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             var sentence = review.Sentences[0];
             instance = new ExtractSentenceTextVector(sentence);
         }

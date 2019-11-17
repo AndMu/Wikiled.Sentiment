@@ -42,38 +42,38 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
                 return originalSentence;
             }
 
-            if (VerifyDictionary != null)
+            if (VerifyDictionary == null)
             {
-                
-                var matches = Regex.Matches(originalSentence, mask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                foreach (Match match in matches)
+                return Regex.Replace(originalSentence, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            }
+
+            var matches = Regex.Matches(originalSentence, mask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            foreach (Match match in matches)
+            {
+                var found = false;
+                foreach (var item in VerifyDictionary)
                 {
-                    var found = false;
-                    foreach (var item in VerifyDictionary)
+                    if (match.Length >= item + 1)
                     {
-                        if (match.Length >= item + 1)
+                        if (!dictionary.IsKnown(match.Groups[item].Value))
                         {
-                            if (!dictionary.IsKnown(match.Groups[item].Value))
-                            {
-                                found = false;
-                                break;
-                            }
-
-                            found = true;
+                            found = false;
+                            break;
                         }
-                    }
 
-                    if (found)
-                    {
-                        var replaced = Regex.Replace(match.Value, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                        originalSentence = originalSentence.Replace(match.Value, replaced);
+                        found = true;
                     }
                 }
 
-                return originalSentence;
+                if (found)
+                {
+                    var replaced = Regex.Replace(match.Value, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    originalSentence = originalSentence.Replace(match.Value, replaced);
+                }
             }
 
-            return Regex.Replace(originalSentence, mask, replaceMask, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            return originalSentence;
+
         }
     }
 }

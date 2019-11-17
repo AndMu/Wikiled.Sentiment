@@ -2,7 +2,6 @@
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
-using Wikiled.Sentiment.Text.Resources;
 
 namespace Wikiled.Sentiment.ConsoleApp.Analysis.Config
 {

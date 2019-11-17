@@ -3,10 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Analysis.Containers
 {
-    public class SessionContainer : ISessionContainer
+    public sealed class SessionContainer : ISessionContainer
     {
         private readonly IServiceScope scope;
 
@@ -21,6 +22,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public ITextSplitter GetTextSplitter()
         {
             return scope.ServiceProvider.GetService<ITextSplitter>();
+        }
+
+        public IWordFactory GetWordFactory()
+        {
+            return scope.ServiceProvider.GetService<IWordFactory>();
         }
 
         public ITestingClient GetTesting(string path = null)

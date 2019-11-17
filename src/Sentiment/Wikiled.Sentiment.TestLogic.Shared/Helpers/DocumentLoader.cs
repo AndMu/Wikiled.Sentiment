@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
@@ -28,7 +30,9 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public async Task<Document> InitDocument(string name = "cv000_29416.txt")
         {
             var result = await helper.GetTextSplitter().Process(new ParseRequest(File.ReadAllText(Path.Combine(path, name)))).ConfigureAwait(false);
-            var review = helper.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
+            var factory = helper.Resolve<IWordFactory>();
+            var document = result.Construct(factory);
+            var review = helper.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             var documentFromReview = new DocumentFromReviewFactory();
             return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Structure;
@@ -48,9 +49,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var lexicon = SentimentDataHolder.PopulateEmotionsData(data);
             ActualWordsHandler.InstanceOpen.Container.Context.DisableInvertors = disableInvert;
 
-            Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(txt)).ConfigureAwait(false);
+            var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
             ActualWordsHandler.InstanceOpen.Container.Context.Lexicon = lexicon;
-            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             MachineLearning.Mathematics.RatingData ratings = review.CalculateRawRating();
             Assert.AreEqual(1, review.Sentences.Count);
             Assert.AreEqual(disableInvert, ratings.IsPositive);
@@ -59,8 +61,9 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [Test]
         public async Task TestPhrase()
         {
-            Document result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
-            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(result).Create();
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
+            var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.AreEqual(4, review.ImportantWords.Count());
         }
     }

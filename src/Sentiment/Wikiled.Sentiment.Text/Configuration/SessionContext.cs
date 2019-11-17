@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
-using Wikiled.Common.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Configuration
 {
-    public class SessionContext : ISessionContext
+    public class SessionContext : ISessionContext, IDisposable
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<SessionContext>();
+        private readonly ILogger<SessionContext> log;
 
         private readonly NullAspectDectector nullDetector = new NullAspectDectector();
 
@@ -17,8 +17,9 @@ namespace Wikiled.Sentiment.Text.Configuration
 
         private bool disableFeatureSentiment;
 
-        public SessionContext()
+        public SessionContext(ILogger<SessionContext> log)
         {
+            this.log = log;
             log.LogDebug("Creating");
         }
 
@@ -62,6 +63,10 @@ namespace Wikiled.Sentiment.Text.Configuration
             ChangeAspect(null);
             DisableInvertors = false;
             DisableFeatureSentiment = false;
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

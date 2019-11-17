@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -10,12 +9,13 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public class ContextWordsDataLoader : IContextWordsHandler
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<ContextWordsDataLoader>();
+        private readonly ILogger<ContextWordsDataLoader> log;
 
         private readonly IWordsHandler inner;
 
-        public ContextWordsDataLoader(IWordsHandler inner, ISessionContext context)
+        public ContextWordsDataLoader(ILogger<ContextWordsDataLoader> log, IWordsHandler inner, ISessionContext context)
         {
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
             log.LogDebug("Construct");
             this.inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = context ?? throw new ArgumentNullException(nameof(context));

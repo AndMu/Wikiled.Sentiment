@@ -36,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             if (RedisConfiguration == null)
             {
                 log.LogDebug("Using local cache");
-                builder.AddScoped<ICachedDocumentsSource, LocalDocumentsCache>();
+                builder.AddSingleton<ICachedDocumentsSource, LocalDocumentsCache>();
             }
             else
             {
@@ -49,8 +49,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
                         OpenOnConstruction = true
                     });
 
-                builder.AddScoped<LocalDocumentsCache>();
-                builder.AddScoped<ICacheFactory, RedisDocumentCacheFactory>();
+                builder.AddSingleton<LocalDocumentsCache>();
+                builder.AddSingleton<ICacheFactory, RedisDocumentCacheFactory>();
             }
 
             if (!string.IsNullOrEmpty(Lexicons))
@@ -62,8 +62,12 @@ namespace Wikiled.Sentiment.Analysis.Containers
             builder.AddSingleton<IConfigurationHandler>(configuration);
             builder.AddSingleton(new RecyclableConfig());
             builder.AddTransient<OpenNLPTextSplitter>();
+
             builder.AddTransient<Func<ITextSplitter>>(
-                ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
+                ctx => () => new RecyclableTextSplitter(
+                    ctx.GetService<ILogger<RecyclableTextSplitter>>(),
+                    ctx.GetService<OpenNLPTextSplitter>,
+                    new RecyclableConfig()),
                 "underlying");
 
             return builder;

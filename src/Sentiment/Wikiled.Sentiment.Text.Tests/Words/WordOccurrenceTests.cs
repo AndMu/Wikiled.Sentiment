@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
+using System;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Sentiment;
-using Wikiled.Text.Analysis.POS;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.Words
@@ -30,7 +28,7 @@ namespace Wikiled.Sentiment.Text.Tests.Words
         }
 
         [Test]
-        public void Create()
+        public void CreateArguments()
         {
             Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(null, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
             Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, null, helper.InquirerManager.Object, "Test", null, POSTags.Instance.NN));
@@ -38,7 +36,11 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, null, null, POSTags.Instance.NN));
             Assert.Throws<ArgumentNullException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, null));
             Assert.Throws<ArgumentException>(() => WordOccurrence.Create(helper.Handler.Object, helper.RawTextExractor.Object, helper.InquirerManager.Object, "Test", null, POSTags.Instance.SBAR));
+        }
 
+        [Test]
+        public void Create()
+        {
             Assert.AreEqual("test", instance.Text);
             Assert.AreEqual("t", instance.Stemmed);
             Assert.AreEqual("NN", instance.POS.Tag);
@@ -52,7 +54,6 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             Assert.IsFalse(instance.IsFixed);
             Assert.IsTrue(instance.IsStopWord);
             Assert.IsTrue(instance.IsSimple);
-            Assert.AreEqual(1, instance.AllWords.Count());
 
             helper.Handler.Verify(item => item.IsFeature(instance), Times.Once);
             helper.Handler.Verify(item => item.IsQuestion(instance), Times.Once);

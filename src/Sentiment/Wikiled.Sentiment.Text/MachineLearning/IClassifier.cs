@@ -1,6 +1,5 @@
-﻿using System.Threading;
-using Accord.MachineLearning.VectorMachines;
-using Accord.Statistics.Kernels;
+﻿using Accord.MachineLearning.VectorMachines;
+using System.Threading;
 
 namespace Wikiled.Sentiment.Text.MachineLearning
 {

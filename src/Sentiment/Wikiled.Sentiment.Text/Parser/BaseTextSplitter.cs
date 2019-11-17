@@ -4,26 +4,27 @@ using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Text.Analysis.Cache;
-using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public abstract class BaseTextSplitter : ITextSplitter
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<BaseTextSplitter>();
+        private readonly ILogger log;
 
         private readonly ICachedDocumentsSource cache;
 
-        protected BaseTextSplitter(ICachedDocumentsSource cache)
+        protected BaseTextSplitter(ILogger log, ICachedDocumentsSource cache)
         {
             this.cache = cache ?? throw new System.ArgumentNullException(nameof(cache));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         public virtual void Dispose()
         {
         }
 
-        public async Task<Document> Process(ParseRequest request)
+        public async Task<LightDocument> Process(ParseRequest request)
         {
             if (request?.Document == null)
             {
@@ -40,7 +41,7 @@ namespace Wikiled.Sentiment.Text.Parser
                     log.LogDebug("Key not found on document. generating: {0}...", tag);
                 }
 
-                Document document = await cache.GetCached(request.Document).ConfigureAwait(false);
+                LightDocument document = await cache.GetCached(request.Document).ConfigureAwait(false);
                 if (document != null)
                 {
                     log.LogDebug("Cache HIT");
@@ -55,7 +56,8 @@ namespace Wikiled.Sentiment.Text.Parser
                 }
                 else
                 {
-                    document = new Document();
+                    document = new LightDocument();
+                    document.Sentences = Array.Empty<LightSentence>();
                     log.LogInformation("Empty document detected");
                 }
 
@@ -72,8 +74,6 @@ namespace Wikiled.Sentiment.Text.Parser
             }
         }
 
-        protected abstract Document ActualProcess(ParseRequest request);
-
-
+        protected abstract LightDocument ActualProcess(ParseRequest request);
     }
 }

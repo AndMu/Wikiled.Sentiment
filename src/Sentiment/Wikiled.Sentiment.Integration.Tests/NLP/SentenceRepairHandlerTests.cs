@@ -9,10 +9,13 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
     {
         private IContextSentenceRepairHandler handler;
 
+        private ISentenceRepairHandler repairHandler;
+
         [OneTimeSetUp]
         public void Setup()
         {
             handler = ActualWordsHandler.InstanceSimple.Container.Resolve<IContextSentenceRepairHandler>();
+            repairHandler = ActualWordsHandler.InstanceSimple.Container.Resolve<ISentenceRepairHandler>();
         }
 
         [Test]
@@ -20,7 +23,7 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         {
             for (var i = 0; i < 1000; i++)
             {
-                var result = handler.Repair("We not only brought this book but also liked it");
+                var result = repairHandler.Repair(handler.Repair("We not only brought this book but also liked it"));
                 Assert.AreEqual("We brought this book and liked it", result);
             }
         }
@@ -28,42 +31,42 @@ namespace Wikiled.Sentiment.Integration.Tests.NLP
         [Test]
         public void Alot()
         {
-            var result = handler.Repair("bottom line camera give a lot of bang for buck");
+            var result = repairHandler.Repair(handler.Repair("bottom line camera give a lot of bang for buck"));
             Assert.AreEqual("bottom line camera give alot bang for buck", result);
         }
 
         [Test]
         public void RepairEmoticons()
         {
-            var result = handler.Repair("It was :) but I :(");
+            var result = repairHandler.Repair(handler.Repair("It was :) but I :("));
             Assert.AreEqual("It was EMOTICON_slightly_smiling_face but I EMOTICON_disappointed", result);
         }
 
         [Test]
         public void RepairSlang()
         {
-            var result = handler.Repair("It was afaik");
+            var result = repairHandler.Repair(handler.Repair("It was afaik"));
             Assert.AreEqual("It was as far as I know", result);
         }
 
         [Test]
         public void Enough()
         {
-            var result = handler.Repair("It is heavy enough to make it stable, but not too heavy to preclude hand use.");
+            var result = repairHandler.Repair(handler.Repair("It is heavy enough to make it stable, but not too heavy to preclude hand use."));
             Assert.AreEqual("It is heavy enough to make it stable, but not too heavy to preclude hand use.", result);
         }
 
         [Test]
         public void Unison()
         {
-            var result = handler.Repair("i think this girl unison is nice");
+            var result = repairHandler.Repair(handler.Repair("i think this girl unison is nice"));
             Assert.AreEqual("i think this girl unison is nice", result);
         }
 
         [Test]
         public void Non()
         {
-            var result = handler.Repair("i think non-worthy this girl nonworthy is nice");
+            var result = repairHandler.Repair(handler.Repair("i think non-worthy this girl nonworthy is nice"));
             Assert.AreEqual("i think not worthy this girl not worthy is nice", result);
         }
     }

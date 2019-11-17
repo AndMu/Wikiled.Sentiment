@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Wikiled.Amazon.Logic;
@@ -11,22 +12,22 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentTests>();
 
-        [TestCase("B00002EQCW", "Total:<215> Positive:<90.000%> Negative:<80.000%> F1:<0.940> RMSE:1.14")]
-        [TestCase("B0026127Y8", "Total:<854> Positive:<80.207%> Negative:<58.025%> F1:<0.869> RMSE:1.36")]
-        public async Task TestElectronics(string product, string performance)
+        [TestCase("B00002EQCW", 0.91)]
+        [TestCase("B0026127Y8", 0.8)]
+        public async Task TestElectronics(string product, double accuracy)
         {
-            log.LogInformation("TestElectronics: {0} {1}", product, performance);
+            log.LogInformation("TestElectronics: {0}", product);
             var testingClient = await Global.ElectronicBaseLine.Test(product, ProductCategory.Electronics).ConfigureAwait(false);
-            Assert.AreEqual(performance, testingClient.GetPerformanceDescription());
+            Assert.GreaterOrEqual(Math.Round(testingClient.Performance.GetSingleAccuracy(true), 2), accuracy);
         }
 
 
-        [TestCase("B0002L5R78", "Total:<7268> Positive:<80.594%> Negative:<41.949%> F1:<0.861> RMSE:1.59")]
-        public async Task TestVideo(string product, string performance)
+        [TestCase("B0002L5R78", 0.8)]
+        public async Task TestVideo(string product, double accuracy)
         {
-            log.LogInformation("TestVideo: {0} {1}", product, performance);
+            log.LogInformation("TestVideo: {0}", product);
             var testingClient = await Global.VideoBaseLine.Test(product, ProductCategory.Video).ConfigureAwait(false);
-            Assert.AreEqual(performance, testingClient.GetPerformanceDescription());
+            Assert.GreaterOrEqual(Math.Round(testingClient.Performance.GetSingleAccuracy(true), 2), accuracy);
         }
     }
 }

@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -35,12 +36,13 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("I don't go to like this kik", 5, 1, true)]
         [TestCase("I don't go to like this kik", 3, 2, false)]
         [TestCase("Tom :) go for it", 5, 1, false)]
-        [TestCase("Tom wat up", 5, 1, false)]
+        [TestCase("Tom :) up", 5, 1, false)]
         public async Task TestBasic(string text, int rating, int totalSentiments, bool disableInvertor)
         {
             ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = disableInvertor;
-            Document request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
-            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(request).Create();
+            var request = await textSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var document = request.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.AreEqual(rating, (int)review.CalculateRawRating().StarsRating);
             SentimentValue[] sentiments = review.GetAllSentiments();
             Assert.AreEqual(totalSentiments, sentiments.Length);

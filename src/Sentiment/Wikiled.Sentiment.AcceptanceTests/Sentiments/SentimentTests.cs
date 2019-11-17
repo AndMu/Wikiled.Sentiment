@@ -14,10 +14,13 @@ using Wikiled.Sentiment.AcceptanceTests.Helpers;
 using Wikiled.Sentiment.AcceptanceTests.Helpers.Data;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
+using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Data.Review;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
 
@@ -44,20 +47,26 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task SimpleTest()
         {
             var data = new XmlDataLoader(new NullLogger<XmlDataLoader>()).LoadOldXml(Path.Combine(TestContext.CurrentContext.TestDirectory, "data", "articles.xml"));
+
             var negative = data.Load()
                                .Where(item => item.Sentiment == SentimentClass.Negative)
                                .Select(item => item.Data)
                                .Repeat(15)
                                .Select(
-                item =>
-                    {
-                        item.Result.Stars = 1;
-                        item.Result.Text = item.Result.Text;
-                        item.Result.Id = Guid.NewGuid().ToString();
-                        return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item.Result);
-                    });
+                                   item =>
+                                   {
+                                       item.Result.Stars = 1;
+                                       item.Result.Text = item.Result.Text;
+                                       item.Result.Id = Guid.NewGuid().ToString();
 
-            var positive = data.Load().Where(item => item.Sentiment == SentimentClass.Positive)
+                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(),
+                                                                        TestHelper.Instance.ContainerHelper.GetWordFactory(),
+                                                                        TestHelper.Instance.ContainerHelper.Resolve<IContextSentenceRepairHandler>(),
+                                                                        item.Result);
+                                   });
+
+            var positive = data.Load()
+                               .Where(item => item.Sentiment == SentimentClass.Positive)
                                .Select(item => item.Data)
                                .Repeat(15)
                                .Select(
@@ -66,7 +75,11 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
                                        item.Result.Stars = 5;
                                        item.Result.Text = item.Result.Text;
                                        item.Result.Id = Guid.NewGuid().ToString();
-                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(), item.Result);
+
+                                       return new ParsingDocumentHolder(TestHelper.Instance.ContainerHelper.GetTextSplitter(),
+                                                                        TestHelper.Instance.ContainerHelper.GetWordFactory(),
+                                                                        TestHelper.Instance.ContainerHelper.Resolve<IContextSentenceRepairHandler>(),
+                                                                        item.Result);
                                    });
 
             var trainingPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "training");
@@ -95,7 +108,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var reviews = TestHelper.Instance.AmazonRepository.LoadProductReviews("B00005A0QX").ToEnumerable().ToArray();
             var review = reviews.First(item => item.User.Id == "AOJRUSTYHKT1T");
             var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(review.CreateDocument())).ConfigureAwait(false);
-            var result = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(doc).Create();
+            var document = doc.Construct(TestHelper.Instance.ContainerHelper.GetWordFactory());
+            var result = TestHelper.Instance.ContainerHelper.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Sentences.Count);
             var rating = result.CalculateRawRating();
@@ -110,7 +124,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         public async Task TestNull()
         {
             var doc = await TestHelper.Instance.ContainerHelper.GetTextSplitter().Process(new ParseRequest(new Document())).ConfigureAwait(false);
-            Assert.AreEqual(0, doc.Sentences.Count);
+            Assert.AreEqual(0, doc.Sentences.Length);
         }
 
         [Test]

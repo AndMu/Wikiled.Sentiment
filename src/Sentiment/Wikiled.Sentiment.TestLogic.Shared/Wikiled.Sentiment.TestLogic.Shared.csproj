@@ -2,31 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>NET472</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>8</LangVersion>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Moq" Version="4.13.1" />
-    <PackageReference Include="Newtonsoft.Json" version="12.0.2" />
-    <PackageReference Include="NLog" version="4.6.7" />
+    <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
+    <PackageReference Include="NLog" version="4.6.8" />
     <PackageReference Include="NUnit" version="3.12.0" />
     <PackageReference Include="Polly" version="7.1.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="System.Reactive" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Core" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Interfaces" version="4.2.0" />
-    <PackageReference Include="System.Reactive.Linq" version="4.2.0" />
-    <PackageReference Include="System.Reactive.PlatformServices" version="4.2.0" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.5.60" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.23" />
+    <PackageReference Include="Wikiled.Redis" version="3.5.61" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.42" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0" />
+    <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.4.0"></packagereference>
+    <packagereference Include="NUnit3TestAdapter" Version="3.15.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Aspects;
+using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Structure;
@@ -29,13 +30,19 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             Assert.AreEqual(0, instance.GetAttributes(10).ToArray().Length);
         }
 
+        [Test]
+        public void Arguments()
+        {
+            Assert.Throws<ArgumentNullException>(() => instance.Process(null));
+        }
+
         [TestCase("I like my school teacher and teachers.", 0, 2, "teacher")]
         [TestCase("If ever enjoy professional basketball, with nike shoes, that will be a miracle", 1, 3, "shoes")]
         public async Task Process(string sentence, int totalAttributes, int totalFeatures, string topAttribute)
         {
-            Assert.Throws<ArgumentNullException>(() => instance.Process(null));
             var data = await ActualWordsHandler.InstanceSimple.TextSplitter.Process(new ParseRequest(sentence)).ConfigureAwait(false);
-            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(data).Create();
+            var document = data.Construct(ActualWordsHandler.InstanceSimple.WordFactory);
+            var review = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             instance.Process(review);
             var attributes = instance.GetAttributes(10).ToArray();
             var features = instance.GetFeatures(10).ToArray();

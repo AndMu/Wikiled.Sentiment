@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Wikiled.Common.Utilities.Modules;
@@ -7,18 +8,22 @@ using Wikiled.Redis.Modules;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
-    public class RedisServer
+    public class RedisServerModule : IModule
     {
-        public RedisServer(RedisConfiguration config)
+        private readonly RedisConfiguration config;
+
+        public RedisServerModule(RedisConfiguration config)
         {
-            var service = new ServiceCollection();
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
+        }
+
+        public IServiceCollection ConfigureServices(IServiceCollection service)
+        {
             service.AddLogging(builder => builder.AddDebug());
             service.AddLogging(builder => builder.AddConsole());
             service.RegisterModule(new RedisModule(new NullLogger<RedisModule>(), config));
             service.RegisterModule<CommonModule>();
-            Provider = service.BuildServiceProvider();
+            return service;
         }
-
-        public ServiceProvider Provider { get; }
     }
 }

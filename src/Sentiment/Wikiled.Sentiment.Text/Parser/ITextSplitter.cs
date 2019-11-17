@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Parser
 {
     public interface ITextSplitter : IDisposable
     {
-        Task<Document> Process(ParseRequest request);
+        Task<LightDocument> Process(ParseRequest request);
     }
 }

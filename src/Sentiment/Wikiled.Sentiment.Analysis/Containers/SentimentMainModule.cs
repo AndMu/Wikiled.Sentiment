@@ -4,10 +4,12 @@ using System;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Pipeline;
+using Wikiled.Sentiment.Analysis.Pipeline.Persistency;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
@@ -26,6 +28,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.RegisterModule<DefaultNlpModule>();
 
             services.AddSingleton<IDataLoader, DataLoader>();
+            services.AddTransient<IPipelinePersistency, SimplePipelinePersistency>();
+            
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
@@ -45,11 +49,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
-            var parallel = Environment.ProcessorCount;
-            if (parallel > 30)
-            {
-                parallel = 30;
-            }
+          
 
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddSingleton<ITextSplitter>(
                 item => new QueueTextSplitter(
                     item.GetService<ILogger<QueueTextSplitter>>(),
-                    parallel,
+                    ParallelHelper.MaxParallel,
                     item.GetService<Func<ITextSplitter>>("underlying")))
                     .AddFactory<ITextSplitter, ITextSplitter>();
 

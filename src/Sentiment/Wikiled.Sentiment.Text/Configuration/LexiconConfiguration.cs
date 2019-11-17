@@ -8,14 +8,16 @@ namespace Wikiled.Sentiment.Text.Configuration
 {
     public class LexiconConfiguration : ILexiconConfiguration
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<LexiconConfiguration>();
+        private readonly ILogger<LexiconConfiguration> log;
 
-        public LexiconConfiguration(IConfigurationHandler configuration)
+        public LexiconConfiguration(ILogger<LexiconConfiguration> log, IConfigurationHandler configuration)
         {
             if (configuration == null)
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
+
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
 
             ResourcePath = configuration.ResolvePath("Resources");
             LexiconPath = Path.Combine(ResourcePath, configuration.SafeGetConfiguration("Lexicon", @"Library/Standard"));

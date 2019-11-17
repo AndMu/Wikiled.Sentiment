@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
+using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Data;
@@ -29,14 +31,6 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             Stemmed = raw;
-        }
-
-        public IEnumerable<IWordItem> AllWords
-        {
-            get
-            {
-                yield return this;
-            }
         }
 
         public NamedEntities Entity
@@ -111,6 +105,14 @@ namespace Wikiled.Sentiment.Text.Words
             text = text?.ToLower();
             var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
             rawWord = rawWord?.ToLower();
+
+            if ((pos?.WordType == WordType.Symbol || pos?.WordType == WordType.SeparationSymbol) &&
+                text?.Length > 1 &&
+                text.Any(char.IsLetter))
+            {
+                pos = POSTags.Instance.UnknownWord;
+            }
+
             var item = new WordOccurrence(text, rawWord, pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
             item.IsSentiment = wordsHandlers.IsSentiment(item);

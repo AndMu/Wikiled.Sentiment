@@ -9,6 +9,7 @@ using Wikiled.Arff.Extensions;
 using Wikiled.Arff.Logic;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Serialization;
+using Wikiled.Common.Utilities.Helpers;
 using Wikiled.MachineLearning.Mathematics;
 using Wikiled.MachineLearning.Mathematics.Vectors.Serialization;
 using Wikiled.MachineLearning.Normalization;
@@ -24,6 +25,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.NLP.NRC;
+using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Analysis.Processing
 {
@@ -40,6 +42,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
         private IProcessArff arffProcess;
 
         private int error;
+
+        private bool initialized;
 
         private readonly IClientContext clientContext;
 
@@ -133,11 +137,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
             }
             
             log.LogInformation("Processing...");
+            initialized = true;
         }
 
         public IObservable<ProcessingContext> Process(IObservable<IParsedDocumentHolder> reviews)
         {
-            IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.ProcessStep(reviews).Select(RetrieveData);
+            if (!initialized)
+            {
+                throw new InvalidOperationException("Not initialized");
+            }
+
+            IObservable<ProcessingContext> documentSelector = clientContext.Pipeline.Processing(reviews).Select(RetrieveData);
             return documentSelector;
         }
 
@@ -148,7 +158,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 throw new ArgumentNullException(nameof(review));
             }
 
-            var result = await Process(Observable.Never<IParsedDocumentHolder>().StartWith(review));
+            var result = await Process(Observable.Never<IParsedDocumentHolder>().StartWith(review)).FirstAsync();
             return result;
         }
 
@@ -179,10 +189,12 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
                 StandaloneProcess(context, adjustment);
             }
-            catch
+            catch (Exception ex)
             {
+                log.LogError(ex, "Failed");
                 Interlocked.Increment(ref error);
-                throw;
+                context.Processed = context.Original.CloneJson();
+                context.Processed.Status = Status.Error;
             }
            
             return context;

@@ -2,8 +2,6 @@
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Wikiled.Common.Logging;
-using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
@@ -12,12 +10,13 @@ using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.Extensions;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.Structure.Light;
 
 namespace Wikiled.Sentiment.Text.Cache
 {
     public class RedisDocumentCache : ICachedDocumentsSource, IRepository
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<RedisDocumentCache>();
+        private readonly ILogger<RedisDocumentCache> log;
 
         private readonly IRedisLink manager;
 
@@ -25,20 +24,22 @@ namespace Wikiled.Sentiment.Text.Cache
 
         private readonly LocalDocumentsCache local;
 
-        public RedisDocumentCache(POSTaggerType tagger, IRedisLink manager, LocalDocumentsCache local)
+        public RedisDocumentCache(ILogger<RedisDocumentCache> log, POSTaggerType tagger, IRedisLink manager, LocalDocumentsCache local)
         {
             this.tagger = tagger;
             this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
             this.local = local ?? throw new ArgumentNullException(nameof(local));
-            if (!manager.HasDefinition<Document>())
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
+
+            if (!manager.HasDefinition<LightDocument>())
             {
-                manager.RegisterNormalized<Document>(new XmlDataSerializer()).IsSingleInstance = true;
+                manager.RegisterNormalized<LightDocument>(new XmlDataSerializer()).IsSingleInstance = true;
             }
         }
 
         public string Name => $"Cache:{tagger}";
 
-        public async Task<Document> GetCached(Document original)
+        public async Task<LightDocument> GetCached(IDocument original)
         {
             if (original is null)
             {
@@ -50,7 +51,7 @@ namespace Wikiled.Sentiment.Text.Cache
                 throw new ArgumentException("Value cannot be null or empty id.", nameof(original.Id));
             }
 
-            Document result = await local.GetCached(original).ConfigureAwait(false);
+            var result = await local.GetCached(original).ConfigureAwait(false);
             if (result != null)
             {
                 log.LogDebug("Found in local cache");
@@ -58,7 +59,7 @@ namespace Wikiled.Sentiment.Text.Cache
             }
 
             var key = new RepositoryKey(this, new ObjectKey(original.Id));
-            result = await manager.Client.GetRecords<Document>(key).LastOrDefaultAsync();
+            result = await manager.Client.GetRecords<LightDocument>(key).LastOrDefaultAsync();
             if (result != null)
             {
                 if (result.Text == original.Text)
@@ -76,10 +77,10 @@ namespace Wikiled.Sentiment.Text.Cache
                 return result;
             }
 
-            return await GetById(original.GetTextId(), original);
+            return await GetById(original.GetTextId(), original).ConfigureAwait(false);
         }
 
-        public async Task<bool> Save(Document document)
+        public async Task<bool> Save(LightDocument document)
         {
             if (document is null)
             {
@@ -96,14 +97,14 @@ namespace Wikiled.Sentiment.Text.Cache
             key.AddIndex(new IndexKey(this, "Index:All", false));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetId()}", true));
             key.AddIndex(new IndexKey(this, $"Index:{document.GetTextId()}", true));
-            await manager.Client.AddRecord(key, document.CloneJson()).ConfigureAwait(false);
+            await manager.Client.AddRecord(key, document).ConfigureAwait(false);
             return true;
         }
 
-        private async Task<Document> GetById(string id, Document original)
+        private async Task<LightDocument> GetById(string id, IDocument original)
         {
             var index = new IndexKey(this, id, true);
-            Document result = await manager.Client.GetRecords<Document>(index).LastOrDefaultAsync();
+            var result = await manager.Client.GetRecords<LightDocument>(index).LastOrDefaultAsync();
             if (result?.Text == original.Text)
             {
                 await local.Save(result).ConfigureAwait(false);
