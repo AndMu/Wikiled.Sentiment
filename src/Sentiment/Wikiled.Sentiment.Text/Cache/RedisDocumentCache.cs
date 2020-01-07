@@ -2,6 +2,7 @@
 using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Wikiled.Common.Utilities.Serialization;
 using Wikiled.Redis.Data;
 using Wikiled.Redis.Keys;
 using Wikiled.Redis.Logic;
@@ -24,18 +25,14 @@ namespace Wikiled.Sentiment.Text.Cache
 
         private readonly LocalDocumentsCache local;
 
-        public RedisDocumentCache(ILogger<RedisDocumentCache> log, POSTaggerType tagger, IRedisLink manager, LocalDocumentsCache local)
+        public RedisDocumentCache(ILogger<RedisDocumentCache> log, POSTaggerType tagger, IRedisLink manager, LocalDocumentsCache local, IJsonSerializer serializer)
         {
             this.tagger = tagger;
             this.manager = manager ?? throw new ArgumentNullException(nameof(manager));
             this.local = local ?? throw new ArgumentNullException(nameof(local));
             this.log = log ?? throw new ArgumentNullException(nameof(log));
 
-            if (!manager.HasDefinition<LightDocument>())
-            {
-                manager.RegisterNormalized<LightDocument>(new XmlDataSerializer()).IsSingleInstance = true;
-            }
-        }
+            manager.PersistencyRegistration.RegisterObjectHashSingle<LightDocument>(new JsonDataSerializer(serializer)); }
 
         public string Name => $"Cache:{tagger}";
 
