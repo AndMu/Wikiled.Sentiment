@@ -19,8 +19,6 @@ namespace Wikiled.Sentiment.Text.MachineLearning
 
         public SupportVectorMachine Model { get; private set; }
 
-        public static ParallelOptions Options { get; set; }
-
         public void Train(int[] y, double[][] x, CancellationToken token)
         {
             log.LogInformation("Training SVM...");
@@ -42,9 +40,9 @@ namespace Wikiled.Sentiment.Text.MachineLearning
             };
 
             gridsearch.Token = token;
-            if (Options != null)
+            if (ParallelHelper.Options != null)
             {
-                gridsearch.ParallelOptions = Options;
+                gridsearch.ParallelOptions = ParallelHelper.Options;
             }
 
             GridSearchResult<SupportVectorMachine, double[], int> result = gridsearch.Learn(x, y);
