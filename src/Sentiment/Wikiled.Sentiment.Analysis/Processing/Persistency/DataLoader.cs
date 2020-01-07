@@ -35,6 +35,11 @@ namespace Wikiled.Sentiment.Analysis.Processing.Persistency
                         return new XmlDataLoader(loggerFactory.CreateLogger<XmlDataLoader>()).LoadOldXml(source.All);
                     }
 
+                    if (source.All.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new CsvDataSource(loggerFactory.CreateLogger<CsvDataSource>(), source.All);
+                    }
+                        
                     logger.LogInformation("Loading {0} as JSON", source.All);
                     var data = new JsonDataSource(loggerFactory.CreateLogger<JsonDataSource>(), source.All);
                     return data;
