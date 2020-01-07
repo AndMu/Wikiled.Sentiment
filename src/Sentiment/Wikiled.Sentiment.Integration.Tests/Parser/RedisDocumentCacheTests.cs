@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
+using Wikiled.Common.Utilities.Serialization;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Logic;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
@@ -39,8 +40,9 @@ namespace Wikiled.Sentiment.Integration.Tests.Parser
             redis = new RedisInside.Redis(i => i.Port(6666).LogTo(item => log.LogDebug(item)));
             IServiceCollection service = new ServiceCollection();
             service.RegisterModule(new RedisServerModule(new RedisConfiguration("localhost", 6666) { ServiceName = "Test" }));
-            link = service.BuildServiceProvider().GetService<IRedisLink>();
-            instance = new RedisDocumentCache(new NullLogger<RedisDocumentCache>(), POSTaggerType.Simple, link, local);
+            var provider = service.BuildServiceProvider();
+            link = provider.GetService<IRedisLink>();
+            instance = new RedisDocumentCache(new NullLogger<RedisDocumentCache>(), POSTaggerType.Simple, link, local, provider.GetService<IJsonSerializer>());
         }
 
         [TearDown]

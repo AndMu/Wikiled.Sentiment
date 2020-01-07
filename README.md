@@ -28,13 +28,13 @@ Due to normalisation and standardisation, feature weights discovered in the trai
 
 ### To test using lexicon based model 
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File]
-Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Positive=[Folder/File] -Negative=[Folder/File]
+Wikiled.Sentiment.ConsoleApp.exe test -All=[Folder/File] -Out=[OutPut] 
+Wikiled.Sentiment.ConsoleApp.exe test -Positive=[Folder/File] -Negative=[Folder/File] -Out=[OutPut]
 ```
 
 ### To override lexicon
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Weights[WeightsFile] -FullWeightReset
+Wikiled.Sentiment.ConsoleApp.exe test -All=[Folder/File] -Out=[OutPut] -Weights[WeightsFile] -FullWeightReset
 ```
 
 ### To train with non default lexicon
@@ -44,7 +44,7 @@ Wikiled.Sentiment.ConsoleApp.exe train -Positive=[Folder/File] -Negative=[Folder
 
 ### To Test with trained model
 ```
-Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -Input=[Folder/File] -Model=[Path to Trained Model]
+Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -All=[Folder/File] -Model=[Path to Trained Model]
 ```
 
 ## Docker service
@@ -53,12 +53,12 @@ An application is also available as a standalone docker based REST service, avai
 
 ## Linux support
 
-[Supported OS](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md)
+[Supported OS](https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1-supported-os.md)
 
 * Install [dotnet core](https://www.microsoft.com/net/download/)
 * Retrieve GIT repository source
 * dotnet build src/Utilities/Wikiled.Sentiment.ConsoleApp --configuration Release
-* dotnet src/Utilities/Wikiled.Sentiment.ConsoleApp/bit/Release/netcoreapp2.0/Wikiled.Sentiment.ConsoleApp.dll test -Input=[path to files] -out=Result -ExtractStyle]
+* dotnet src/Utilities/Wikiled.Sentiment.ConsoleApp/bit/Release/netcoreapp3.1/Wikiled.Sentiment.ConsoleApp.dll test -All=[path to files] -out=Result -ExtractStyle]
 
 ## C# Library 
 
@@ -66,11 +66,12 @@ An application is also available as a standalone docker based REST service, avai
 ### Training model
 
 ```
-var factory = MainContainerFactory.Setup()
-                .Config()
-                .Splitter();
-
-container = factory.Create().StartSession();
+container = MainContainerFactory
+					.Setup(service)
+					.SetupLocalCache()
+					.Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
+					.Splitter()
+					.Create();
 ITrainingClient client = container.GetTraining(Model);
 await client.Train(reviews).ConfigureAwait(false);
 
