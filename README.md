@@ -51,6 +51,28 @@ Wikiled.Sentiment.ConsoleApp.exe test -Out=[OutPut] -All=[Folder/File] -Model=[P
 
 An application is also available as a standalone docker based REST service, available in [GitHub](https://github.com/AndMu/Wikiled.Sentiment.Service)
 
+It is also possible to use free hosted sentiment analysis service using python or REST Api.
+Code sample:
+
+```
+
+reviews = ['I love this hello kitty decal! I like that the bow is pink instead of red. Only bad thing is that after putting it on the window there a few air bubbles, but that most likely my fault. Shipped fast too.',
+                  'I bought this for my 3 yr old daughter when I took it out the pack it had a bad odour, cute but very cheap material easy to ripe.  When I tried it on her it was too big, but of course she liked it so I kept it. I dressed her up in it and she looked cute.']
+
+user_name = socket.gethostname()
+host = 'sentiment2.wikiled.com'
+port=80
+with SentimentConnection(host=host, port=port, client_id=user_name) as connection:
+    analysis = SentimentAnalysis(connection, domain='market')
+    for result in analysis.detect_sentiment_text(amazon_reviews):
+        if result['Stars'] is None:
+            print('No Sentinent')
+        else:
+            print(f'Sentinment Stars: {result["Stars"]:1.2f}')
+```
+
+
+
 ## Linux support
 
 [Supported OS](https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1-supported-os.md)
@@ -83,3 +105,5 @@ await client.Train(reviews).ConfigureAwait(false);
 client = container.GetTesting(Model);
 client.Process(reviews);
 ```
+
+
