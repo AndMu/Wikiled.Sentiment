@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -13,6 +14,13 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
+        private readonly Lazy<double> averageStrength;
+
+        public SentimentDataHolder()
+        {
+            averageStrength = new Lazy<double>(() => EmotionsLookup.All.Select(item => item.Value).Concat(EmotionsTable.Values.Select(item => item.Value)).Average(item => Math.Abs(item)));
+        }
+
         public SentimentValue MeasureSentiment(IWordItem word)
         {
             if (!EmotionsTable.TryGetWordValue(word, out var value))
@@ -23,6 +31,8 @@ namespace Wikiled.Sentiment.Text.Parser
             var sentiment = new SentimentValue(word, new SentimentValueData(value.Value));
             return sentiment;
         }
+
+        public double AverageStrength => averageStrength.Value;
 
         public static ISentimentDataHolder Load(string file)
         {

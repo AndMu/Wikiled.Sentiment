@@ -15,6 +15,8 @@ namespace Wikiled.Sentiment.Text.Helpers
 
         public int Count => innerTable.Count;
 
+        public IEnumerable<T> All => innerTable.Values;
+
         public T this[string key]
         {
             get
