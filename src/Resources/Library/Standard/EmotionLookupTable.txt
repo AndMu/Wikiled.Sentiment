@@ -2497,7 +2497,6 @@ fought	-3
 foul	-1
 foully	-1
 foulness	-1
-founder	-2
 fractious	-1
 fractiously	-1
 fracture	-2
