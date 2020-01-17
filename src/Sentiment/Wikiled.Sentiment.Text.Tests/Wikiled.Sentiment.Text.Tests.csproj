@@ -22,7 +22,7 @@
     <PackageReference Include="Wikiled.Common" Version="1.1.10" />
     <PackageReference Include="Wikiled.Common.Testing.Utilities" Version="1.2.39" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
-    <PackageReference Include="Wikiled.Redis" version="3.6.8" />
+    <PackageReference Include="Wikiled.Redis" version="3.6.10" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.42" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.25" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.4.0"></packagereference>

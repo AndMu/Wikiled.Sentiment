@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -46,7 +47,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Persistency
             logger.LogInformation("Loading {0}", path);
             var counter = 0;
             using (var streamRead = new StreamReader(path))
-            using (var csvData = new CsvReader(streamRead))
+            using (var csvData = new CsvReader(streamRead, CultureInfo.InvariantCulture))
             {
                 csvData.Read();
                 csvData.ReadHeader();

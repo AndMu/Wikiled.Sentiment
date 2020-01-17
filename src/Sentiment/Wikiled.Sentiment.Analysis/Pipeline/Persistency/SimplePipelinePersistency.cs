@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using CsvHelper;
 using Wikiled.Common.Extensions;
@@ -38,7 +39,7 @@ namespace Wikiled.Sentiment.Analysis.Pipeline.Persistency
 
             path.EnsureDirectoryExistence();
             streamWriter = new StreamWriter(Path.Combine(path, "results.csv"), false);
-            csvDataOut = new CsvWriter(streamWriter);
+            csvDataOut = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
             resultsWriter = resultsWriterFactory.CreateJson(Path.Combine(path, "result.json"));
             SetupHeader();
             csvDataOut.NextRecord();
