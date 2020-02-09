@@ -31,7 +31,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             this.builder = builder ?? throw new ArgumentNullException(nameof(builder));
             builder.RegisterModule<CommonModule>();
             builder.RegisterModule(new LoggingModule(ApplicationLogging.LoggerFactory));
-            builder.RegisterModule(new SentimentMainModule());
             initialized["Splitter"] = false;
             initialized["Cache"] = false;
             initialized["Config"] = false;
@@ -94,21 +93,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
         public MainContainerFactory Splitter(POSTaggerType value = POSTaggerType.SharpNLP)
         {
             initialized["Splitter"] = true;
-            switch (value)
-            {
-                case POSTaggerType.Simple:
-                    builder.AddTransient<ITextSplitter, SimpleTextSplitter>();
-                    break;
-                case POSTaggerType.SharpNLP:
-                    builder.AddTransient<OpenNLPTextSplitter>();
-                    builder.AddTransient<Func<ITextSplitter>>(
-                        ctx => () => new RecyclableTextSplitter(ctx.GetService<ILogger<RecyclableTextSplitter>>(), ctx.GetService<OpenNLPTextSplitter>, new RecyclableConfig()),
-                        "underlying");
-                    break;
-                default:
-                    throw new NotSupportedException(value.ToString());
-            }
-
+            builder.RegisterModule(new SentimentMainModule {Tagger = value});
             return this;
         }
 
