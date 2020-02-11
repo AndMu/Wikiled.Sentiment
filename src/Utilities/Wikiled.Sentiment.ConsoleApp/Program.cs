@@ -3,16 +3,14 @@ using NLog.Extensions.Logging;
 using System;
 using System.IO;
 using System.Reactive.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Resources;
 using Wikiled.Console.Arguments;
-using Wikiled.Console.HelperMethods;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
-using Wikiled.Sentiment.Text.Resources;
+using Wikiled.Sentiment.Text.Config;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Wikiled.Sentiment.ConsoleApp
@@ -35,29 +33,19 @@ namespace Wikiled.Sentiment.ConsoleApp
             starter.RegisterCommand<TestingCommand, TestingConfig>("test");
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
             starter.RegisterCommand<BoostrapCommand, BootsrapConfig>("boot");
-            
-            var configuration = new ConfigurationHandler();
-            var resourcesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), configuration.GetConfiguration("Resources"));
-            if (Directory.Exists(resourcesPath))
+
+            var config = LexiconConfigExtension.Load();
+            if (Directory.Exists(config.Resources))
             {
-                log.LogInformation("Resources folder {0} found.", resourcesPath);
+                log.LogInformation("Resources folder {0} found.", config.Resources);
             }
             else
             {
                 var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
-                Task download = dataDownloader.DownloadFile(new Uri(configuration.GetConfiguration("dataset")), resourcesPath);
+                Task download = dataDownloader.DownloadFile(new Uri(config.Remote), config.Lexicon);
                 await download.ConfigureAwait(false);
             }
 
-
-#if NET472
-            var fPreviousExecutionState = NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS | NativeMethods.ES_SYSTEM_REQUIRED);
-            if (fPreviousExecutionState == 0)
-            {
-                log.LogError("SetThreadExecutionState failed.");
-                return;
-            }
-#endif
             try
             {
                 source = new CancellationTokenSource();

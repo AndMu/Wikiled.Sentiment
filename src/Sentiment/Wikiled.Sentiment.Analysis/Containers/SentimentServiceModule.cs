@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Cache;
 
 namespace Wikiled.Sentiment.Analysis.Containers
@@ -18,11 +18,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentServiceModule>();
 
-        private readonly ConfigurationHandler configuration;
+        private readonly ILexiconConfig config;
 
-        public SentimentServiceModule(ConfigurationHandler configuration)
+        public SentimentServiceModule(ILexiconConfig config)
         {
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         public RedisConfiguration RedisConfiguration { get; set; }
@@ -59,7 +59,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load(Lexicons));
             }
 
-            builder.AddSingleton<IConfigurationHandler>(configuration);
+            builder.AddSingleton(config);
             builder.AddSingleton(new RecyclableConfig());
             builder.AddTransient<OpenNLPTextSplitter>();
 

@@ -1,4 +1,4 @@
-﻿using Wikiled.Sentiment.Text.Configuration;
+﻿using Wikiled.Sentiment.Text.Sentiment;
 
 namespace Wikiled.Sentiment.Text.Parser
 {

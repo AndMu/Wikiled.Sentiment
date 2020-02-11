@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Wikiled.Sentiment.Analysis.Config;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -22,8 +22,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [SetUp]
         public void Setup()
         {
-            var json = File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, "resources.json"));
-            path = Path.Combine(TestContext.CurrentContext.TestDirectory, JsonSerializer.Deserialize<AppConfig>(json).Resources);
+            path = LexiconConfigExtension.Load().Resources;
         }
 
         [TearDown]

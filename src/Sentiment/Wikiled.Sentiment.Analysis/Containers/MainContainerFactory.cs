@@ -2,13 +2,16 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Wikiled.Common.Extensions;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
 using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.Parser;
@@ -81,12 +84,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return this;
         }
 
-        public MainContainerFactory Config(Action<ConfigurationHandler> action = null)
+        public MainContainerFactory Config()
         {
             initialized["Config"] = true;
-            var configuration = new ConfigurationHandler();
-            action?.Invoke(configuration);
-            builder.AddSingleton<IConfigurationHandler>(configuration);
+            var config = LexiconConfigExtension.Load();
+            builder.AddSingleton<ILexiconConfig>(config);
             return this;
         }
 

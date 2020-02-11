@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
@@ -31,7 +31,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
         private POSTaggerME posTagger;
 
         public OpenNLPTextSplitter(ILogger<OpenNLPTextSplitter> log,
-                                   ILexiconConfiguration configuration,
+                                   ILexiconConfig configuration,
                                    ICachedDocumentsSource cache,
                                    ISentenceTokenizerFactory tokenizerFactory,
                                    ISentenceRepairHandler repairHandler)
@@ -44,10 +44,10 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
-            log.LogDebug("Creating with resource path: {0}", configuration.ResourcePath);
+            log.LogDebug("Creating with resource path: {0}", configuration.Resources);
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
-            LoadModels(configuration.ResourcePath);
+            LoadModels(configuration.Resources);
         }
 
         protected override LightDocument ActualProcess(ParseRequest request)

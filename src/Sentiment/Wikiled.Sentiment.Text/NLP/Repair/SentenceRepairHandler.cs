@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Emojis;
 
@@ -20,7 +20,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
         private readonly EmojyCleanup cleanup;
 
-        public SentenceRepairHandler(ILexiconConfiguration path, IWordsDictionary dictionary)
+        public SentenceRepairHandler(ILexiconConfig path, IWordsDictionary dictionary)
         {
             if (path == null)
             {
@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             cleanup = new EmojyCleanup();
             cleanup.NormalizeText = false;
-            resourcesPath = Path.Combine(path.LexiconPath, "Repair");
+            resourcesPath = Path.Combine(path.FullLexiconPath, "Repair");
             this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             Load();
         }

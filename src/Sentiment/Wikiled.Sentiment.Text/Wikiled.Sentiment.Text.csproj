@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <LangVersion>8</LangVersion>
+    <LangVersion>latest</LangVersion>
     <NullableReferenceTypes>true</NullableReferenceTypes>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

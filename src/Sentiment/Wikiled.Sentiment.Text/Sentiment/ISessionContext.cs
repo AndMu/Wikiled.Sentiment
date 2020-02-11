@@ -1,7 +1,7 @@
 ﻿using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 
-namespace Wikiled.Sentiment.Text.Configuration
+namespace Wikiled.Sentiment.Text.Sentiment
 {
     public interface ISessionContext
     {

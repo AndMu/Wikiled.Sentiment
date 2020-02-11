@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Sentiment.Analysis.Processing;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Analysis.Containers

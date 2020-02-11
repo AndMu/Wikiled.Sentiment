@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Parser;
 
-namespace Wikiled.Sentiment.Text.Configuration
+namespace Wikiled.Sentiment.Text.Sentiment
 {
     public class SessionContext : ISessionContext, IDisposable
     {

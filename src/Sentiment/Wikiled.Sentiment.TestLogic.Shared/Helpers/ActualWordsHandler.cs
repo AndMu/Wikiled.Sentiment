@@ -1,9 +1,6 @@
-﻿using NUnit.Framework;
-using System.IO;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 
@@ -16,12 +13,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public ActualWordsHandler(POSTaggerType type)
         {
             var factory = MainContainerFactory.Setup(new ServiceCollection())
-                .Config(configuration =>
-                {
-                    var resources = configuration.GetConfiguration("Resources");
-                    var resourcesPath = Path.Combine(TestContext.CurrentContext.TestDirectory, resources);
-                    configuration.SetConfiguration("Resources", resourcesPath);
-                })
+                .Config()
                 .Splitter(type)
                 .SetupNullCache();
 
@@ -41,8 +33,6 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public static ActualWordsHandler InstanceOpen { get; } = new ActualWordsHandler(POSTaggerType.SharpNLP);
 
         public ISessionContainer Container { get; private set; }
-
-        public IConfigurationHandler Configuration => Container.Resolve<IConfigurationHandler>();
 
         public IContextWordsHandler WordsHandler => Container.Resolve<IContextWordsHandler>();
 

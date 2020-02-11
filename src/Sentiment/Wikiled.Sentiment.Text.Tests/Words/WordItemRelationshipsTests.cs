@@ -4,8 +4,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Tests.Words

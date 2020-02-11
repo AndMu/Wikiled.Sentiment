@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;

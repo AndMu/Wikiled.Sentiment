@@ -8,12 +8,13 @@ using Wikiled.Sentiment.Analysis.Pipeline.Persistency;
 using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.Analysis.Processing.Persistency;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Containers;
 using Wikiled.Text.Analysis.NLP.NRC;
@@ -35,7 +36,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddTransient<IPipelinePersistency, SimplePipelinePersistency>();
             
             services.AddTransient<ISessionContainer, SessionContainer>();
-            services.AddSingleton<ILexiconConfiguration, LexiconConfiguration>();
+            services.AddSingleton<ILexiconConfig>(LexiconConfigExtension.Load());
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 

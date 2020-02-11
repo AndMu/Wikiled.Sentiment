@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 
 namespace Wikiled.Sentiment.Text.Parser
@@ -15,14 +15,14 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly string resourcesPath;
 
-        public ExtendedWords(ILexiconConfiguration path)
+        public ExtendedWords(ILexiconConfig config)
         {
-            if (path == null)
+            if (config == null)
             {
-                throw new ArgumentNullException(nameof(path));
+                throw new ArgumentNullException(nameof(config));
             }
 
-            resourcesPath = Path.Combine(path.LexiconPath, "Repair");
+            resourcesPath = Path.Combine(config.FullLexiconPath, "Repair");
             ReadIdioms();
             ReadSlang();
         }
