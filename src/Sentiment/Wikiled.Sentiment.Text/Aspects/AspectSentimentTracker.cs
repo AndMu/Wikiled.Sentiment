@@ -60,6 +60,7 @@ namespace Wikiled.Sentiment.Text.Aspects
             {
                 TotalReviews = totalReviews
             };
+
             lock (syncRoot)
             {
                 data.Records = table

@@ -23,7 +23,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             container = MainContainerFactory
                         .Setup(service)
                         .SetupLocalCache()
-                        .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
+                        .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, "../../../../../Resources")))
                         .Splitter()
                         .Create();
 
@@ -34,6 +34,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public void Reset()
         {
+            ContainerHelper?.Dispose();
             ContainerHelper = container.StartSession();
         }
 

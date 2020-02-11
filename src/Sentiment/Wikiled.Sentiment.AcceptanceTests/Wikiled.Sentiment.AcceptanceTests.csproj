@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>NET472</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <LangVersion>8</LangVersion>
     <NullableReferenceTypes>true</NullableReferenceTypes>
@@ -19,7 +19,6 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.1" />
     <PackageReference Include="NUnit" version="3.12.0" />
     <PackageReference Include="Polly" version="7.2.0" />
-    <PackageReference Include="Snappy.NET" version="1.1.1.8" />
     <PackageReference Include="StackExchange.Redis" Version="2.0.601" />
     <PackageReference Include="System.Reactive" version="4.3.2" />
     <PackageReference Include="Wikiled.Amazon" version="1.1.7" />

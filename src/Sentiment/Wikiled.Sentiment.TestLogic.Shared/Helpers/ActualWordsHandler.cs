@@ -32,6 +32,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public void Reset()
         {
+            Container?.Dispose();
             Container = container.StartSession();
         }
 
