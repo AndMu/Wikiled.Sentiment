@@ -5,6 +5,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Resources;
 using Wikiled.Console.Arguments;
@@ -29,7 +30,7 @@ namespace Wikiled.Sentiment.ConsoleApp
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
             starter = new AutoStarter(ApplicationLogging.LoggerFactory, "Sentiment analysis", args);
-            starter.LoggerFactory.AddNLog();
+            starter.Collection.AddLogging(item => item.AddNLog());
             starter.RegisterCommand<TestingCommand, TestingConfig>("test");
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
             starter.RegisterCommand<BoostrapCommand, BootsrapConfig>("boot");
