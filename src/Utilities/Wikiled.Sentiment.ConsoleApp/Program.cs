@@ -18,8 +18,6 @@ namespace Wikiled.Sentiment.ConsoleApp
 {
     public class Program
     {
-        private static readonly ILogger log = ApplicationLogging.CreateLogger<Program>();
-
         private static Task task;
 
         private static CancellationTokenSource source;
@@ -35,17 +33,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
             starter.RegisterCommand<BoostrapCommand, BootsrapConfig>("boot");
 
-            var config = LexiconConfigExtension.Load();
-            if (Directory.Exists(config.Resources))
-            {
-                log.LogInformation("Resources folder {0} found.", config.Resources);
-            }
-            else
-            {
-                var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
-                Task download = dataDownloader.DownloadFile(new Uri(config.Remote), config.Lexicon);
-                await download.ConfigureAwait(false);
-            }
+            var config = await LexiconConfigExtension.Download();
 
             try
             {
