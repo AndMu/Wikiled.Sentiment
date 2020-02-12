@@ -16,8 +16,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
         [Test]
         public async Task Construct()
         {
-            var configuration = new LexiconConfig();
-            configuration.Lexicon = "lexicons";
+            var configuration = LexiconConfigExtension.Load();
 
             var builder = new ServiceCollection();
             builder.RegisterModule<LoggingModule>();
