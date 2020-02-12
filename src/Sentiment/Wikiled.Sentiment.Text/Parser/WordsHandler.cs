@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Wikiled.Common.Serialization;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
@@ -14,7 +14,7 @@ namespace Wikiled.Sentiment.Text.Parser
 {
     public class WordsHandler : IWordsHandler
     {
-        private readonly ILexiconConfiguration config;
+        private readonly ILexiconConfig config;
 
         private Dictionary<string, double> booster;
 
@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private readonly IExtendedWords extended;
 
-        public WordsHandler(ILexiconConfiguration config, IExtendedWords extended)
+        public WordsHandler(ILexiconConfig config, IExtendedWords extended)
         {
             this.config = config ?? throw new ArgumentNullException(nameof(config));
             this.extended = extended ?? throw new ArgumentNullException(nameof(extended));
@@ -160,7 +160,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadRepairRules()
         {
-            var folder = Path.Combine(config.LexiconPath, @"Rules/Invertors");
+            var folder = Path.Combine(config.FullLexiconPath, @"Rules/Invertors");
             negatingLemmaBasedRepair = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRepairRule = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRule = new Dictionary<WordItemType, WordRepairRule>();
@@ -186,7 +186,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> ReadTextData(string file)
         {
-            var stream = new DictionaryStream(Path.Combine(config.LexiconPath, file), new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(config.FullLexiconPath, file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
     }

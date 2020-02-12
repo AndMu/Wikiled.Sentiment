@@ -1,6 +1,6 @@
 ﻿using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Configuration;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.Analysis.Containers

@@ -3,9 +3,9 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP.Repair;
-using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Containers
@@ -16,9 +16,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
         [Test]
         public async Task Construct()
         {
-            var configuration = new ConfigurationHandler();
-            configuration.SetConfiguration("lexicons", "lexicons");
-            configuration.StartingLocation = TestContext.CurrentContext.TestDirectory;
+            var configuration = LexiconConfigExtension.Load();
 
             var builder = new ServiceCollection();
             builder.RegisterModule<LoggingModule>();

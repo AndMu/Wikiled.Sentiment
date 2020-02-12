@@ -35,6 +35,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Training
         [OneTimeTearDown]
         public void Clean()
         {
+            TestHelper.Instance.ContainerHelper?.Dispose();
         }
     }
 }

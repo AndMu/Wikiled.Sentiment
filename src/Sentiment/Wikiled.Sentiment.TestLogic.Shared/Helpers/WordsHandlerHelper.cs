@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Wikiled.Sentiment.Text.Aspects;
-using Wikiled.Sentiment.Text.Configuration;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Inquirer.Logic;

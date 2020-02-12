@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using System.Configuration;
-using System.IO;
 using Wikiled.Amazon.Logic;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Redis.Config;
@@ -23,7 +20,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
             container = MainContainerFactory
                         .Setup(service)
                         .SetupLocalCache()
-                        .Config(item => item.SetConfiguration("resources", Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"])))
+                        .Config()
                         .Splitter()
                         .Create();
 
@@ -34,6 +31,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Helpers
 
         public void Reset()
         {
+            ContainerHelper?.Dispose();
             ContainerHelper = container.StartSession();
         }
 

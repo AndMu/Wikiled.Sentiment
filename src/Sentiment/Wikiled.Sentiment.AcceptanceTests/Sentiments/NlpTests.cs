@@ -1,14 +1,14 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
-using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Structure;
 
@@ -19,13 +19,10 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
     {
         private string path;
 
-        private IDocumentFromReviewFactory parsedFactory;
-
         [SetUp]
         public void Setup()
         {
-            parsedFactory = new DocumentFromReviewFactory();
-            path = Path.Combine(TestContext.CurrentContext.TestDirectory, ConfigurationManager.AppSettings["resources"]);
+            path = LexiconConfigExtension.Load().Resources;
         }
 
         [TearDown]
