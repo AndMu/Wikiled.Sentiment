@@ -1,5 +1,5 @@
 {
-  "Resources": "../../../../../Resources",
+  "Resources": "Resources",
   "Lexicon": "Library/Standard",
   "Remote": "http://datasets.azurewebsites.net/Resources/resources.1.5.zip"
 }

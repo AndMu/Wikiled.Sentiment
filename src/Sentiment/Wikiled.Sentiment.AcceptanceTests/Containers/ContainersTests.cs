@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Modules;
 using Wikiled.Sentiment.Analysis.Containers;
 using Wikiled.Sentiment.Text.Config;
@@ -16,7 +17,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
         [Test]
         public async Task Construct()
         {
-            var configuration = LexiconConfigExtension.Load();
+            var loader = new LexiconConfigLoader(ApplicationLogging.CreateLogger<LexiconConfigLoader>());
+            var configuration = loader.Load();
 
             var builder = new ServiceCollection();
             builder.RegisterModule<LoggingModule>();

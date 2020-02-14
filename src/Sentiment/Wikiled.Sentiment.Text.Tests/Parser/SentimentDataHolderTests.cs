@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Parser;
@@ -19,7 +20,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [SetUp]
         public void Setup()
         {
-            var path = LexiconConfigExtension.Load(TestContext.CurrentContext.TestDirectory).FullLexiconPath;
+            var loader = new LexiconConfigLoader(ApplicationLogging.CreateLogger<LexiconConfigLoader>());
+            var path = loader.Load(TestContext.CurrentContext.TestDirectory).FullLexiconPath;
             var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
             var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             sentimentData = SentimentDataHolder.PopulateEmotionsData(data);
