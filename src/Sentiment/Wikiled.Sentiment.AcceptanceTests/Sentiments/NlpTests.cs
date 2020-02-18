@@ -11,6 +11,7 @@ using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Structure;
+using Microsoft.Extensions.Logging;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -22,7 +23,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [SetUp]
         public void Setup()
         {
-            var loader = new LexiconConfigLoader(ApplicationLogging.CreateLogger<LexiconConfigLoader>());
+            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
             path = loader.Load().Resources;
         }
 

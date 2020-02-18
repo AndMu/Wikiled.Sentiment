@@ -24,14 +24,18 @@ namespace Wikiled.Sentiment.ConsoleApp
         public static async Task Main(string[] args)
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
+            var tstLogger = ApplicationLogging.LoggerFactory.CreateLogger("Test");
+            //ApplicationLogging.LoggerFactory.AddNLog();
+            //tstLogger.Log(LogLevel.Error, "Test");
             starter = new AutoStarter(ApplicationLogging.LoggerFactory, "Sentiment analysis", args);
-            starter.Collection.AddLogging(loggingBuilder =>
+            starter.LogBuilder = loggingBuilder =>
             {
                 // configure Logging with NLog
                 loggingBuilder.ClearProviders();
                 loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 loggingBuilder.AddNLog();
-            });
+                loggingBuilder.AddConsole();
+            };
 
             starter.RegisterCommand<TestingCommand, TestingConfig>("test");
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
