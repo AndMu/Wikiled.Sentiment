@@ -5,6 +5,8 @@ using System;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using NLog.Config;
 using Wikiled.Common.Logging;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
@@ -24,16 +26,21 @@ namespace Wikiled.Sentiment.ConsoleApp
         public static async Task Main(string[] args)
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
-            var tstLogger = ApplicationLogging.LoggerFactory.CreateLogger("Test");
+            //var tstLogger = ApplicationLogging.LoggerFactory.CreateLogger("Test");
             //ApplicationLogging.LoggerFactory.AddNLog();
             //tstLogger.Log(LogLevel.Error, "Test");
+            var config = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory()) //From NuGet Package Microsoft.Extensions.Configuration.Json
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
             starter = new AutoStarter(ApplicationLogging.LoggerFactory, "Sentiment analysis", args);
             starter.LogBuilder = loggingBuilder =>
             {
                 // configure Logging with NLog
-                loggingBuilder.ClearProviders();
+                //loggingBuilder.ClearProviders();
                 loggingBuilder.SetMinimumLevel(LogLevel.Trace);
-                loggingBuilder.AddNLog();
+                //loggingBuilder.AddNLog(new LoggingConfiguration(NLog.LogManager.LogFactory));
                 loggingBuilder.AddConsole();
             };
 
