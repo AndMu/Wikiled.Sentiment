@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Config
             else
             {
                 var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
-                await dataDownloader.DownloadFile(new Uri(config.Remote), config.FullLexiconPath);
+                await dataDownloader.DownloadFile(new Uri(config.Remote), config.Resources);
             }
 
             return config;
