@@ -8,17 +8,24 @@ using Wikiled.Common.Utilities.Resources;
 
 namespace Wikiled.Sentiment.Text.Config
 {
-    public static class LexiconConfigExtension
+    public class LexiconConfigLoader
     {
-        private static ILogger log = ApplicationLogging.CreateLogger("LexiconConfigExtension");
+        private ILogger<LexiconConfigLoader> log;
 
-        public static LexiconConfig Load(string location = null)
+        public LexiconConfigLoader(ILogger<LexiconConfigLoader> log)
         {
-            location ??= string.Empty;
-            return JsonSerializer.Deserialize<LexiconConfig>(File.ReadAllBytes(Path.Combine(location, "lexicon.json")));
+            this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public static async Task<LexiconConfig> Download(string location = null)
+        public LexiconConfig Load(string location = null)
+        {
+            location ??= string.Empty;
+            location = Path.Combine(location, "lexicon.json");
+            log.LogInformation("Load configuration {0}...", location);
+            return JsonSerializer.Deserialize<LexiconConfig>(File.ReadAllBytes(location));
+        }
+
+        public async Task<LexiconConfig> Download(string location = null)
         {
             var config = Load(location);
             if (Directory.Exists(config.Resources))
@@ -28,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Config
             else
             {
                 var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
-                await dataDownloader.DownloadFile(new Uri(config.Remote), config.Lexicon);
+                await dataDownloader.DownloadFile(new Uri(config.Remote), config.Resources);
             }
 
             return config;

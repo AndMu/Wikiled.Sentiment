@@ -2,8 +2,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Extensions;
@@ -11,6 +11,7 @@ using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Structure;
+using Microsoft.Extensions.Logging;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -22,7 +23,8 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [SetUp]
         public void Setup()
         {
-            path = LexiconConfigExtension.Load().Resources;
+            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
+            path = loader.Load().Resources;
         }
 
         [TearDown]

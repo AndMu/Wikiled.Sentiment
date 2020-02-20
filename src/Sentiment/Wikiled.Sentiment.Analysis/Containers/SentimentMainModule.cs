@@ -36,7 +36,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
             services.AddTransient<IPipelinePersistency, SimplePipelinePersistency>();
             
             services.AddTransient<ISessionContainer, SessionContainer>();
-            services.AddSingleton<ILexiconConfig>(LexiconConfigExtension.Load());
+            services.AddSingleton<LexiconConfigLoader>();
+            services.AddSingleton<ILexiconConfig>(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load());
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 

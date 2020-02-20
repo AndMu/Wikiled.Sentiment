@@ -1,18 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using NLog.Extensions.Logging;
 using Wikiled.Common.Logging;
-using Wikiled.Common.Utilities.Resources;
+using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
 using Wikiled.Sentiment.Text.Config;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Wikiled.Sentiment.ConsoleApp
 {
@@ -27,13 +26,22 @@ namespace Wikiled.Sentiment.ConsoleApp
         public static async Task Main(string[] args)
         {
             NLog.LogManager.LoadConfiguration("nlog.config");
+            ApplicationLogging.LoggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder.SetMinimumLevel(LogLevel.Trace);
+                    builder.AddNLog();
+                });
+
             starter = new AutoStarter(ApplicationLogging.LoggerFactory, "Sentiment analysis", args);
-            starter.Collection.AddLogging(item => item.AddNLog());
             starter.RegisterCommand<TestingCommand, TestingConfig>("test");
             starter.RegisterCommand<TrainCommand, TrainingConfig>("train");
             starter.RegisterCommand<BoostrapCommand, BootsrapConfig>("boot");
 
-            var config = await LexiconConfigExtension.Download();
+            starter.Init = async provider =>
+            {
+                var loader = provider.GetRequiredService<LexiconConfigLoader>();
+                await loader.Download().ConfigureAwait(false);
+            };
 
             try
             {
