@@ -7,6 +7,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
     {
         IAspectDectector Aspect { get; }
 
+        bool UseOriginalCase { get; }
+
         bool DisableFeatureSentiment { get; }
 
         bool UseBuiltInSentiment { get; }

@@ -102,9 +102,8 @@ namespace Wikiled.Sentiment.Text.Words
                 throw new ArgumentNullException(nameof(inquirerManager));
             }
 
-            text = text?.ToLower();
-            var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
-            rawWord = rawWord?.ToLower();
+            text = wordsHandlers.Context.UseOriginalCase ? text : text?.ToLower();
+            var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : wordsHandlers.Context.UseOriginalCase ? raw : raw.ToLower();
 
             if ((pos?.WordType == WordType.Symbol || pos?.WordType == WordType.SeparationSymbol) &&
                 text?.Length > 1 &&

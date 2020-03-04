@@ -27,6 +27,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public string SvmPath { get; set; }
 
+        public bool UseOriginalCase { get; set; }
+
         public bool DisableFeatureSentiment
         {
             get => disableFeatureSentiment;
