@@ -103,7 +103,8 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             text = wordsHandlers.Context.UseOriginalCase ? text : text?.ToLower();
-            var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : wordsHandlers.Context.UseOriginalCase ? raw : raw.ToLower();
+            var rawWord = string.IsNullOrEmpty(raw) ? extractor.GetWord(text) : raw;
+            rawWord = wordsHandlers.Context.UseOriginalCase ? rawWord : rawWord?.ToLower();
 
             if ((pos?.WordType == WordType.Symbol || pos?.WordType == WordType.SeparationSymbol) &&
                 text?.Length > 1 &&
