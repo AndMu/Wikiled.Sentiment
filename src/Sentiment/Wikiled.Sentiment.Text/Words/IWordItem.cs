@@ -9,6 +9,8 @@ namespace Wikiled.Sentiment.Text.Words
     {
         NamedEntities Entity { get; set; }
 
+        string CustomEntity{ get; set; }
+
         bool IsFeature { get; }
 
         bool IsFixed { get; }

@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using SharpNL.Chunker;
 using SharpNL.POSTag;
-using SharpNL.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Wikiled.Sentiment.Text.Config;
+using Wikiled.Sentiment.Text.NLP.NER;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
@@ -20,6 +20,8 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
     {
         private readonly ILogger<OpenNLPTextSplitter> log;
 
+        private readonly ILexiconConfig configuration;
+
         private readonly ISentenceTokenizer sentenceSplitter;
 
         private readonly ITreebankWordTokenizer tokenizer;
@@ -30,30 +32,36 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
 
         private POSTaggerME posTagger;
 
+        private readonly IEnumerable<INamedEntityRecognition> neResolver;
+
         public OpenNLPTextSplitter(ILogger<OpenNLPTextSplitter> log,
                                    ILexiconConfig configuration,
                                    ICachedDocumentsSource cache,
                                    ISentenceTokenizerFactory tokenizerFactory,
-                                   ISentenceRepairHandler repairHandler)
+                                   ISentenceRepairHandler repairHandler,
+                                   IEnumerable<INamedEntityRecognition> neResolver)
             : base(log, cache)
         {
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
-
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.repairHandler = repairHandler ?? throw new ArgumentNullException(nameof(repairHandler));
+            this.neResolver = neResolver;
             log.LogDebug("Creating with resource path: {0}", configuration.Resources);
             tokenizer = TreebankWordTokenizer.Tokenizer;
             sentenceSplitter = tokenizerFactory.Create(true, false);
-            LoadModels(configuration.Resources);
+            LoadModels();
         }
 
         protected override LightDocument ActualProcess(ParseRequest request)
         {
+            // NOT Thread Safe
             var sentences = sentenceSplitter.Split(request.Document.Text).ToArray();
-            var sentenceDataList = new List<SentenceData>(sentences.Length);
+
+            var document = new LightDocument();
+            document.Text = request.Document.Text;
+            document.Sentences = new LightSentence[sentences.Length];
+
+            int added = 0;
 
             foreach (var sentence in sentences)
             {
@@ -63,58 +71,71 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                     log.LogDebug("Sentence repaired!");
                 }
 
-                var sentenceData = new SentenceData { Text = text };
-                sentenceData.Tokens = tokenizer.Tokenize(sentenceData.Text);
-                if (sentenceData.Tokens.Length <= 0)
+                var result = ProcessSentence(text);
+                if (result != null)
                 {
-                    continue;
-                }
-
-                sentenceData.Tags = posTagger.Tag(sentenceData.Tokens);
-                sentenceData.Chunks = chunker.ChunkAsSpans(sentenceData.Tokens, sentenceData.Tags).ToArray();
-                sentenceDataList.Add(sentenceData);
+                    document.Sentences[added] = result;
+                    added++;
+                } 
             }
 
-            var document = new LightDocument();
-            document.Text = request.Document.Text;
-            document.Sentences = new LightSentence[sentenceDataList.Count];
-            for (var index = 0; index < sentenceDataList.Count; index++)
+            if (added < document.Sentences.Length)
             {
-                SentenceData sentenceData = sentenceDataList[index];
-                if (string.IsNullOrWhiteSpace(sentenceData.Text))
-                {
-                    continue;
-                }
-
-                var currentSentence = new LightSentence();
-                currentSentence.Text = sentenceData.Text;
-
-                document.Sentences[index] = currentSentence;
-                var chunks = new Dictionary<int, Span>();
-                foreach (Span chunk in sentenceData.Chunks)
-                {
-                    for (var i = chunk.Start; i < chunk.End; i++)
-                    {
-                        chunks[i] = chunk;
-                    }
-                }
-
-                currentSentence.Words = new LightWord[sentenceData.Tokens.Length];
-                for (var i = 0; i < sentenceData.Tokens.Length; i++)
-                {
-                    var wordData = new LightWord();
-                    wordData.Tag = sentenceData.Tags[i];
-                    wordData.Text = sentenceData.Tokens[i];
-                    currentSentence.Words[i] = wordData;
-
-                    if (chunks.TryGetValue(i, out Span chunk))
-                    {
-                        wordData.Phrase = chunk.Type;
-                    }
-                }
+                var sentencesData = document.Sentences;
+                Array.Resize(ref sentencesData, added);
+                document.Sentences = sentencesData;
             }
 
             return document;
+        }
+
+        private LightSentence ProcessSentence(string text)
+        {
+            var tokens = tokenizer.Tokenize(text);
+            if (tokens.Length <= 0)
+            {
+                return null;
+            }
+
+            var tags = posTagger.Tag(tokens);
+            var currentSentence = new LightSentence();
+            currentSentence.Text = text;
+            currentSentence.Words = new LightWord[tokens.Length];
+
+            for (var i = 0; i < tokens.Length; i++)
+            {
+                var wordData = new LightWord();
+                wordData.Tag = tags[i];
+                wordData.Text = tokens[i];
+                currentSentence.Words[i] = wordData;
+            }
+
+            NERExtraction(currentSentence, tokens);
+            PhraseExtraction(currentSentence, tokens, tags);
+            return currentSentence;
+        }
+
+        private void NERExtraction(LightSentence currentSentence, string[] tokens)
+        {
+            foreach (var ner in neResolver.SelectMany(item => item.Tag(tokens)))
+            {
+                for (var i = ner.Start; i < ner.End; i++)
+                {
+                    currentSentence.Words[i].Entity = ner.Type;
+                }
+            }
+        }
+
+        private void PhraseExtraction(LightSentence currentSentence, string[] tokens, string[] tags)
+        {
+            var chunks = chunker.ChunkAsSpans(tokens, tags);
+            foreach (var chunk in chunks)
+            {
+                for (var i = chunk.Start; i < chunk.End; i++)
+                {
+                    currentSentence.Words[i].Phrase = chunk.Type;
+                }
+            }
         }
 
         public override void Dispose()
@@ -124,16 +145,16 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
             base.Dispose();
         }
 
-        private void LoadModels(string resourcesFolder)
+        private void LoadModels()
         {
             POSModel posModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-pos-maxent.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var modelFile = new FileStream(Path.Combine(configuration.Resources, configuration.NlpModels, "en-pos-maxent.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 posModel = new POSModel(modelFile);
             }
 
             ChunkerModel chunkerModel;
-            using (var modelFile = new FileStream(Path.Combine(resourcesFolder, @"1.5/en-chunker.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var modelFile = new FileStream(Path.Combine(configuration.Resources, configuration.NlpModels, "en-chunker.bin"), FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 chunkerModel = new ChunkerModel(modelFile);
             }

@@ -1,5 +1,6 @@
 {
   "Resources": "Resources",
   "Lexicon": "Library/Standard",
+  "NlpModels": "1.5",
   "Remote": "http://datasets.azurewebsites.net/Resources/resources.1.5.zip"
 }
