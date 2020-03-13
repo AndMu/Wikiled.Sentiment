@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
                     new DictionaryNERResolver(
                         new Dictionary<string, string>
                         {
-                            {"XXX", "XXX"}
+                            { "XXX", "XXX" }
                         }))
                 .SetupNullCache();
 
