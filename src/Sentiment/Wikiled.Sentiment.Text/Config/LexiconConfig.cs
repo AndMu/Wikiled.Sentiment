@@ -8,6 +8,8 @@ namespace Wikiled.Sentiment.Text.Config
 
         public string Resources { get; set; }
 
+        public string NlpModels { get; set; }
+
         public string Remote { get; set; }
 
         public string FullLexiconPath => Path.Combine(Resources, Lexicon);

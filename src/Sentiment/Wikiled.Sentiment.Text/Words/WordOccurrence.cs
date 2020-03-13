@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.NLP;
@@ -15,6 +15,7 @@ namespace Wikiled.Sentiment.Text.Words
     public class WordOccurrence : IWordItem
     {
         private NamedEntities entity;
+        private string customEntity;
 
         private WordOccurrence(string text, string raw, BasePOSType pos)
         {
@@ -47,6 +48,16 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             set => entity = value;
+        }
+
+        public string CustomEntity
+        {
+            get => customEntity;
+            set
+            {
+                Entity = string.IsNullOrEmpty(value) ? NamedEntities.None : NamedEntities.Misc;
+                customEntity = value;
+            }
         }
 
         public bool IsFeature { get; private set; }

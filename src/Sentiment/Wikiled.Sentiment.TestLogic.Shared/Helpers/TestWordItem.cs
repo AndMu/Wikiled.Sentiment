@@ -30,6 +30,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public bool IsTopAttribute { get; set; }
 
+        public string CustomEntity { get; set; }
+
         public bool IsFeature { get; set; }
 
         public bool IsInvertor { get; set; }

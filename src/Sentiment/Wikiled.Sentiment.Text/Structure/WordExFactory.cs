@@ -15,6 +15,7 @@ namespace Wikiled.Sentiment.Text.Structure
             var word = new WordEx(item);
             word.NormalizedEntity = item.NormalizedEntity;
             word.EntityType = item.Entity;
+            word.CustomEntity = item.CustomEntity;
             word.Type = item.POS.Tag;
             word.IsAspect = item.IsFeature;
             word.IsStop = item.IsStopWord;

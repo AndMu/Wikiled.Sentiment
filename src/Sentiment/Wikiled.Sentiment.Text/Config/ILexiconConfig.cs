@@ -6,6 +6,8 @@ namespace Wikiled.Sentiment.Text.Config
 
         string Resources { get; }
 
+        string NlpModels { get; }
+
         string Remote { get; }
 
         string FullLexiconPath { get; }

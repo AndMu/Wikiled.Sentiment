@@ -75,6 +75,7 @@ namespace Wikiled.Sentiment.Text.NLP
                     IWordItem word = wordsFactory.CreateWord(documentWord.Text, documentWord.Type);
                     word.NormalizedEntity = documentWord.NormalizedEntity;
                     word.Entity = documentWord.EntityType;
+                    word.CustomEntity = documentWord.CustomEntity;
                     word.WordIndex = i;
                     AddWord(word, i == sentence.Words.Count - 1);
                     phrase?.Add(word);

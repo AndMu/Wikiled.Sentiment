@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 using Wikiled.Sentiment.Analysis.Containers;
+using Wikiled.Sentiment.Text.NLP.NER;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
@@ -13,8 +16,14 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public ActualWordsHandler(POSTaggerType type)
         {
             var factory = MainContainerFactory.Setup(new ServiceCollection())
-                .Config()
-                .Splitter(type)
+                .Config(TestContext.CurrentContext.TestDirectory)
+                .Splitter(type, true)
+                .AddNER(
+                    new DictionaryNERResolver(
+                        new Dictionary<string, string>
+                        {
+                            {"XXX", "XXX"}
+                        }))
                 .SetupNullCache();
 
             container = factory.Create();

@@ -27,6 +27,8 @@ namespace Wikiled.Sentiment.Text.Words
 
         public NamedEntities Entity { get; set; }
 
+        public string CustomEntity { get; set; }
+
         public bool IsFeature { get; set; }
 
         public bool IsFixed

@@ -1,4 +1,7 @@
-﻿using Wikiled.Arff.Logic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Wikiled.Arff.Logic;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.Structure;
@@ -8,6 +11,14 @@ namespace Wikiled.Sentiment.Text.Extensions
 {
     public static class DocumentExtension
     {
+        private static readonly Dictionary<string, NamedEntities> entityCache;
+
+        static DocumentExtension()
+        {
+            entityCache = Enum.GetValues(typeof(NamedEntities)).Cast<NamedEntities>()
+                .ToDictionary(item => item.ToString(), item => item, StringComparer.OrdinalIgnoreCase);
+        }
+
         public static Document Construct(this LightDocument document, IWordFactory factory)
         {
             var result = new Document(document.Text);
@@ -29,6 +40,22 @@ namespace Wikiled.Sentiment.Text.Extensions
                         wordItem.WordIndex = i;
                         WordEx wordData = WordExFactory.Construct(wordItem);
                         wordData.Phrase = word.Phrase;
+                        if (!string.IsNullOrEmpty(word.Entity))
+                        {
+                            if (entityCache.TryGetValue(word.Entity, out var entity))
+                            {
+                                wordData.EntityType = entity;
+                            }
+                            else
+                            {
+                                wordData.CustomEntity = word.Entity;
+                            }
+                        }
+                        else
+                        {
+                            wordData.EntityType = NamedEntities.None;
+                        }
+
                         resultSentence.Add(wordData);
                     }
                 }

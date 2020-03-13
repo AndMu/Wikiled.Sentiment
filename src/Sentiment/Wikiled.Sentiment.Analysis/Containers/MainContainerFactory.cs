@@ -10,6 +10,7 @@ using Wikiled.Redis.Config;
 using Wikiled.Redis.Modules;
 using Wikiled.Sentiment.Text.Cache;
 using Wikiled.Sentiment.Text.Config;
+using Wikiled.Sentiment.Text.NLP.NER;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Cache;
 using Wikiled.Text.Analysis.POS;
@@ -23,6 +24,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
         private readonly IServiceCollection builder;
 
         private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
+
+        private string libraryPath;
 
         private MainContainerFactory(IServiceCollection builder)
         {
@@ -79,18 +82,30 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return this;
         }
 
-        public MainContainerFactory Config()
+        public MainContainerFactory Config(string path = null)
         {
             initialized["Config"] = true;
-            builder.AddSingleton<LexiconConfigLoader>();
-            builder.AddSingleton<ILexiconConfig>(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load());
+            libraryPath = path;
             return this;
         }
 
-        public MainContainerFactory Splitter(POSTaggerType value = POSTaggerType.SharpNLP)
+        public MainContainerFactory AddNER(INamedEntityRecognition nerRecognition)
+        {
+            builder.AddSingleton(nerRecognition);
+            return this;
+        }
+
+        public MainContainerFactory Splitter(POSTaggerType value = POSTaggerType.SharpNLP, bool useNER = false)
         {
             initialized["Splitter"] = true;
-            builder.RegisterModule(new SentimentMainModule {Tagger = value});
+            builder.RegisterModule(
+                new SentimentMainModule
+                {
+                    Tagger = value,
+                    LibraryPath = libraryPath,
+                    UseNER = useNER
+                });
+
             return this;
         }
 

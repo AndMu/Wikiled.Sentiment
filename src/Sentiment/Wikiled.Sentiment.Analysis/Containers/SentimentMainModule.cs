@@ -11,6 +11,7 @@ using Wikiled.Sentiment.Text.Aspects;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.MachineLearning;
 using Wikiled.Sentiment.Text.NLP;
+using Wikiled.Sentiment.Text.NLP.NER;
 using Wikiled.Sentiment.Text.NLP.OpenNLP;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Parser;
@@ -28,16 +29,20 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
+        public string LibraryPath { get; set; }
+
+        public bool UseNER { get; set; }
+
         public IServiceCollection ConfigureServices(IServiceCollection services)
         {
             services.RegisterModule<DefaultNlpModule>();
 
             services.AddSingleton<IDataLoader, DataLoader>();
             services.AddTransient<IPipelinePersistency, SimplePipelinePersistency>();
-            
+
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<LexiconConfigLoader>();
-            services.AddSingleton<ILexiconConfig>(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load());
+            services.AddSingleton<ILexiconConfig>(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(LibraryPath));
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
@@ -48,6 +53,15 @@ namespace Wikiled.Sentiment.Analysis.Containers
                                                                                 ctx.GetService<INRCDictionary>(),
                                                                                 document));
 
+            if (UseNER)
+            {
+                services.AddSingleton<INamedEntityRecognition, OpenNlpNamedEntityRecognition>();
+            }
+            else
+            {
+                services.AddSingleton<INamedEntityRecognition, NullNamedEntityRecognition>();
+            }
+
             services.AddSingleton<ISentenceRepairHandler, SentenceRepairHandler>();
             services.AddSingleton<IExtendedWords, ExtendedWords>();
 
@@ -55,7 +69,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
-          
+
 
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
