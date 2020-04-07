@@ -56,7 +56,7 @@ namespace Wikiled.Sentiment.Analysis.Processing.Persistency
 
             if (!string.IsNullOrEmpty(source.Positive))
             {
-                loaders.Add(new SimpleDataSource(loggerFactory.CreateLogger<SimpleDataSource>(), source.Negative, SentimentClass.Positive));
+                loaders.Add(new SimpleDataSource(loggerFactory.CreateLogger<SimpleDataSource>(), source.Positive, SentimentClass.Positive));
             }
 
             return new CombinedDataSource(loaders.ToArray());
