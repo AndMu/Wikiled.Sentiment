@@ -14,20 +14,20 @@ namespace Wikiled.Sentiment.Analysis.Tests.Processing.Persistency
     {
         private DataLoader instance;
 
-        private SimpleDataSource source;
+        private SimpleDataConfig config;
 
         [SetUp]
         public void SetUp()
         {
-            source = new SimpleDataSource();
+            config = new SimpleDataConfig();
             instance = CreateDataLoader();
         }
 
         [Test]
         public async Task LoadJson()
         {
-            source.All = Path.Combine(TestContext.CurrentContext.TestDirectory, @"data\data.json");
-            var all = await instance.Load(source).Load().ToArray();
+            config.All = Path.Combine(TestContext.CurrentContext.TestDirectory, @"data\data.json");
+            var all = await instance.Load(config).Load().ToArray();
             Assert.AreEqual(3, all.Length);
             Assert.AreEqual(1, all.Count(item => item.Sentiment == SentimentClass.Negative));
             Assert.AreEqual(2, all.Count(item => item.Sentiment == SentimentClass.Positive));
