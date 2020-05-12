@@ -32,24 +32,21 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
             document.Sentences.Add(new SentenceItem("Test"));
             document.Sentences[0].Words.Add(
                 WordExFactory.Construct(
-                    new TestWordItem
+                    new TestWordItem("Good")
                     {
-                        Text = "Good",
                         Stemmed = "Good",
                         IsSentiment = true
                     }));
             document.Sentences[0].Words.Add(
                 WordExFactory.Construct(
-                    new TestWordItem
+                    new TestWordItem("Two")
                     {
-                        Text = "Two",
                         Stemmed = "Two"
                     }));
             document.Sentences[0].Words.Add(
                 WordExFactory.Construct(
-                    new TestWordItem
+                    new TestWordItem("#Three")
                     {
-                        Text = "#Three",
                         Stemmed = "#Three"
                     }));
             var factory = ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);

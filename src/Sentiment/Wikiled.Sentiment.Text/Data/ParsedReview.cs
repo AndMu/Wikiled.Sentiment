@@ -17,12 +17,14 @@ namespace Wikiled.Sentiment.Text.Data
 
         private readonly string text;
 
-        internal ParsedReview(INRCDictionary dictionary, Document document)
+        internal ParsedReview(INRCDictionary dictionary, Document document, ISessionContext context)
         {
             if (document is null)
             {
                 throw new ArgumentNullException(nameof(document));
             }
+
+            if (context == null) throw new ArgumentNullException(nameof(context));
 
             if (document.DocumentTime.HasValue &&
                 document.DocumentTime.Value.Ticks > 0)
@@ -31,6 +33,7 @@ namespace Wikiled.Sentiment.Text.Data
             }
 
             Document = document;
+            Context = context;
             text = document.Text;
             Vector = new ExtractReviewTextVector(dictionary, this);
         }
@@ -38,6 +41,8 @@ namespace Wikiled.Sentiment.Text.Data
         public Document Document { get; }
 
         public ISentence CurrentSentence { get; private set; }
+
+        public ISessionContext Context { get; }
 
         public DateTime? Date { get; }
 

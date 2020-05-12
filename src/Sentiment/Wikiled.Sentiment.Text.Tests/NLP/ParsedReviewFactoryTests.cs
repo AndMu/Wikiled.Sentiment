@@ -20,9 +20,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         {
             document = new Document("Test");
             document.Sentences.Add(new SentenceItem("Test"));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "Age" }));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "move" }));
-            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem { Text = "forest" }));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem("Age")));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem("move")));
+            document.Sentences[0].Words.Add(WordExFactory.Construct(new TestWordItem("forest")));
         }
 
         [Test]

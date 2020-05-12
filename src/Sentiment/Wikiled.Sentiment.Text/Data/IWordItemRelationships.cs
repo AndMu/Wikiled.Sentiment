@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
@@ -7,7 +6,9 @@ namespace Wikiled.Sentiment.Text.Data
 {
     public interface IWordItemRelationships
     {
-        IEnumerable<IWordItem> AfterRelated { get; }
+        IEnumerable<IWordItem> Related { get; }
+
+        string[] Views { get; }
 
         IWordItem Inverted { get; }
 
@@ -20,8 +21,6 @@ namespace Wikiled.Sentiment.Text.Data
         IWordItem Previous { get; set; }
 
         IEnumerable<IWordItem> PriorQuants { get; }
-
-        IEnumerable<IWordItem> PriorRelated { get; }
 
         SentimentValue Sentiment { get; set; }
 

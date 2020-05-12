@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using System;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using NLog.Extensions.Logging;
 using Wikiled.Common.Logging;
-using Wikiled.Common.Utilities.Helpers;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;

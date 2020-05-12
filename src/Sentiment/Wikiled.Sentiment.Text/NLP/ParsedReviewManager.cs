@@ -46,7 +46,7 @@ namespace Wikiled.Sentiment.Text.NLP
                 return review;
             }
 
-            review = new ParsedReview(nrcDictionary, document);
+            review = new ParsedReview(nrcDictionary, document, manager.Context);
             foreach (var sentence in document.Sentences)
             {
                 CreateSentence(sentence);

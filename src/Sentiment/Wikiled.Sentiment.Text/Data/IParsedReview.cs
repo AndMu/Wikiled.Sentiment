@@ -10,6 +10,8 @@ namespace Wikiled.Sentiment.Text.Data
 {
     public interface IParsedReview
     {
+        ISessionContext Context { get; }
+
         DateTime? Date { get; }
 
         Document Document { get; }

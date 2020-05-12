@@ -33,11 +33,9 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 
         public IWordItem Owner { get; set; }
 
-        public IEnumerable<IWordItem> PriorRelated { get; }
-
-        public IEnumerable<IWordItem> AfterRelated { get; }
-
         public IList<IWordItem> Related { get; set; }
+
+        public string[] Views { get; set; }
 
         public IList<SentimentValue> ContextSentiments { get; }
 
@@ -52,5 +50,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public IWordItem Previous { get; set; }
 
         public IWordItem Next { get; set; }
+
+        IEnumerable<IWordItem> IWordItemRelationships.Related => throw new NotImplementedException();
     }
 }

@@ -4,6 +4,7 @@ using Wikiled.Common.Extensions;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Data;
@@ -24,6 +25,8 @@ namespace Wikiled.Sentiment.Text.Words
         }
 
         public IEnumerable<IWordItem> AllWords => occurrences;
+
+        public ISessionContext Session { get; private set; }
 
         public NamedEntities Entity { get; set; }
 
@@ -104,6 +107,7 @@ namespace Wikiled.Sentiment.Text.Words
 
             var item = new Phrase(pos);
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
+            item.Session = wordsHandlers.Context;
             return item;
         }
 

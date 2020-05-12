@@ -38,8 +38,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
                 var currentWords = new List<TestWordItem>();
                 for (var i = 0; i < 2; i++)
                 {
-                    var wordItem = new TestWordItem();
-                    wordItem.Text = "Word";
+                    var wordItem = new TestWordItem("Word");
                     wordItem.Relationship = new TestWordItemRelationship();
                     wordItem.Relationship.Sentiment = new SentimentValue(wordItem, i + 1);
                     currentWords.Add(wordItem);

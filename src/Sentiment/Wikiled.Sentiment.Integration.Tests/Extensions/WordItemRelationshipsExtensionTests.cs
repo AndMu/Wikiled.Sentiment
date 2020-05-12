@@ -15,10 +15,10 @@ namespace Wikiled.Sentiment.Integration.Tests.Extensions
         public void Setup()
         {
             items = new List<TestWordItem>();
-            items.Add(new TestWordItem { Text = "Good", Stemmed = "Good", IsSentiment = true });
-            items.Add(new TestWordItem { Text = "Two", Stemmed = "Two" });
-            items.Add(new TestWordItem { Text = "#Three", Stemmed = "#Three" });
-            items.Add(new TestWordItem { Text = "Four", Stemmed = "Four" });
+            items.Add(new TestWordItem("Good", "Good") { IsSentiment = true });
+            items.Add(new TestWordItem("Two", "Two"));
+            items.Add(new TestWordItem("#Three", "#Three"));
+            items.Add(new TestWordItem("Four", "Four"));
             for (var i = 1; i < items.Count; i++)
             {
                 items[i - 1].Relationship.Next = items[i];

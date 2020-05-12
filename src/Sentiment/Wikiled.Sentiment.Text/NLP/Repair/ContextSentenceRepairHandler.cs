@@ -50,7 +50,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             if (sentence != original)
             {
-                log.LogDebug("Sentence repaired!");
+                log.LogTrace("Sentence repaired!");
             }
 
             return sentence;

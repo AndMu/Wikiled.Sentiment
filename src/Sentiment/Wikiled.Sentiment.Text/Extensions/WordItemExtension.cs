@@ -73,27 +73,6 @@ namespace Wikiled.Sentiment.Text.Extensions
                    word.IsNoise();
         }
 
-        public static IEnumerable<string> GetPossibleText(this IWordItem word)
-        {
-            yield return word.Text;
-
-            if (word is IPhrase)
-            {
-                yield break;
-            }
-
-            if (!string.IsNullOrEmpty(word.Stemmed) &&
-                word.Stemmed != word.Text)
-            {
-                yield return word.Stemmed;
-            }
-
-            if (word.Entity == NamedEntities.Hashtag &&
-                word.Text.Length > 1)
-            {
-                yield return word.Text.Substring(1);
-            }
-        }
 
         public static string GenerateMask(this IWordItem wordItem, bool pure)
         {
@@ -133,12 +112,7 @@ namespace Wikiled.Sentiment.Text.Extensions
 
         public static string GetOpposite(this string word)
         {
-            if (IsInverted(word))
-            {
-                return word.Substring(InvertTag.Length);
-            }
-
-            return word.GetInvertedMask();
+            return IsInverted(word) ? word.Substring(InvertTag.Length) : word.GetInvertedMask();
         }
 
         public static string GetInvertedMask(this string word)
@@ -171,7 +145,7 @@ namespace Wikiled.Sentiment.Text.Extensions
 
             return next ?? previous;
         }
-     
+
         public static bool IsAttached(this IWordItem word)
         {
             return word.IsInvertor && word.GetInverted() != null;

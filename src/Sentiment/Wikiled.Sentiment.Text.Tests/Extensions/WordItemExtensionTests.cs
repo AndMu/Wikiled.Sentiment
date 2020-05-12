@@ -90,26 +90,5 @@ namespace Wikiled.Sentiment.Text.Tests.Extensions
             var result = word.GetOpposite();
             Assert.AreEqual(expected, result);
         }
-
-        [Test]
-        public void GetPossibleText()
-        {
-            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("running", "NN");
-            var result = wordItem.GetPossibleText().ToArray();
-            Assert.AreEqual(2, result.Length);
-            Assert.AreEqual("running", result[0]);
-            Assert.AreEqual("run", result[1]);
-        }
-
-        [Test]
-        public void PhraseGetPossibleText()
-        {
-            var wordItem = ActualWordsHandler.InstanceSimple.WordFactory.CreatePhrase("NNS");
-            wordItem.Add(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("so", "JJ"));
-            wordItem.Add(ActualWordsHandler.InstanceSimple.WordFactory.CreateWord("good", "JJ"));
-            var result = wordItem.GetPossibleText().ToArray();
-            Assert.AreEqual(1, result.Length);
-            Assert.AreEqual("so good", result[0]);
-        }
     }
 }

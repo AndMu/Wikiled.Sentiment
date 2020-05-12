@@ -34,10 +34,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void CalculateInvertTest()
         {
-            IWordItem invertor = new TestWordItem
-            {
-                Text = "Invert"
-            };
+            IWordItem invertor = new TestWordItem("Invert");
 
             relationships.Setup(item => item.Inverted)
                          .Returns(invertor);
@@ -64,10 +61,9 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                   .Returns(
                       new List<IWordItem>
                       {
-                          new TestWordItem
+                          new TestWordItem("Word")
                           {
                               QuantValue = 10,
-                              Text = "Word"
                           }
                       });
 
@@ -84,17 +80,16 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void CalculateQuantInvertor()
         {
-            var invertor = new TestWordItem();
+            var invertor = new TestWordItem(String.Empty);
             relationships.Setup(item => item.Inverted)
                         .Returns(invertor);
             relationships.Setup(item => item.PriorQuants)
                   .Returns(
                       new List<IWordItem>
                       {
-                          new TestWordItem
+                          new TestWordItem("Word")
                           {
                               QuantValue = 10,
-                              Text = "Word"
                           }
                       });
 
@@ -117,15 +112,13 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                   .Returns(
                       new List<IWordItem>
                       {
-                          new TestWordItem
+                          new TestWordItem("Word")
                           {
                               QuantValue = 10,
-                              Text = "Word"
                           },
-                          new TestWordItem
+                          new TestWordItem("Word")
                           {
                               QuantValue = 2,
-                              Text = "Word"
                           }
                       });
 
@@ -145,9 +138,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                   .Returns(
                       new List<IWordItem>
                       {
-                          new TestWordItem
+                          new TestWordItem("Quant")
                           {
-                              Text = "Quant",
                               QuantValue = 2
                           }
                       });
@@ -186,9 +178,8 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
                   .Returns(
                       new List<IWordItem>
                       {
-                          new TestWordItem
+                          new TestWordItem("Quant")
                           {
-                              Text = "Quant",
                               QuantValue = 0.5
                           }
                       });
@@ -211,7 +202,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Weighting
         [Test]
         public void SentimentCalculatorConstructorTest()
         {
-            IWordItem invertor = new TestWordItem();
+            IWordItem invertor = new TestWordItem(String.Empty);
             relationships.Setup(item => item.Inverted)
                          .Returns(invertor);
             relationships.Setup(item => item.PriorQuants)
