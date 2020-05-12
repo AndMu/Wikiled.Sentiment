@@ -1,11 +1,13 @@
 ﻿using System;
 using NUnit.Framework;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
@@ -41,6 +43,54 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
             var review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
+        }
+
+        [Test]
+        public async Task Merge()
+        {
+            ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = true;
+            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
+            ISentimentDataHolder lexicon = SentimentDataHolder.Load(words);
+
+            var loader = SentimentDataHolder.Load(new[] { "veto" }.Select(item =>
+                  new WordSentimentValueData(
+                      item,
+                      new SentimentValueData(2))));
+
+            lexicon.Merge(loader);
+
+            var text = "I Veto it";
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
+            ActualWordsHandler.InstanceOpen.Container.Context.Lexicon = lexicon;
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
+            Assert.AreEqual(5, review.CalculateRawRating().StarsRating);
+        }
+
+        [Test]
+        public async Task NgramSentiment()
+        {
+            ActualWordsHandler.InstanceOpen.Container.Context.DisableFeatureSentiment = true;
+            var words = Path.Combine(TestContext.CurrentContext.TestDirectory, @"Adjustment/words.csv");
+            ISentimentDataHolder lexicon = SentimentDataHolder.Load(words);
+
+            var loader = SentimentDataHolder.Load(new[] { "veto it really" }.Select(item =>
+                new WordSentimentValueData(
+                    item,
+                    new SentimentValueData(2))));
+
+            lexicon.Merge(loader);
+
+            var text = "I Veto it really";
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest(text)).ConfigureAwait(false);
+            var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
+            ActualWordsHandler.InstanceOpen.Container.Context.Lexicon = lexicon;
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
+            Assert.AreEqual(1, review.CalculateRawRating().StarsRating);
+
+            ActualWordsHandler.InstanceOpen.Container.Context.NGram = 3;
+            review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
+            Assert.AreEqual(5, review.CalculateRawRating().StarsRating);
         }
     }
 }

@@ -9,10 +9,11 @@ namespace Wikiled.Sentiment.Text.Data
     {
         private readonly List<IWordItem> items = new List<IWordItem>();
 
-        private readonly AutoEvictingDictionary<IWordItem, IWordItem> windowItems = new AutoEvictingDictionary<IWordItem, IWordItem>(length: 3);
+        private readonly AutoEvictingDictionary<IWordItem, IWordItem> windowItems;
 
         public SentencePart(ISentence sentence, ISentencePart previous)
         {
+            windowItems = new AutoEvictingDictionary<IWordItem, IWordItem>(length: sentence.Review.Context.NGram);
             Sentence = sentence;
             Previous = previous;
         }

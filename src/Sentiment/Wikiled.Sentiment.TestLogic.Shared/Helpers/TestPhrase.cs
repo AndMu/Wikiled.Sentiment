@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Wikiled.Sentiment.Text.Words;
-using Wikiled.Text.Analysis.POS;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
@@ -8,12 +7,9 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
     {
         private readonly List<IWordItem> words = new List<IWordItem>();
 
-        public TestPhrase()
+        public TestPhrase(string text)
+            : base(text)
         {
-            var relationship = new TestWordItemRelationship();
-            Relationship = relationship;
-            relationship.Owner = this;
-            POS = POSTags.Instance.NN;
             IsSimple = false;
         }
 

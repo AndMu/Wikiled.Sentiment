@@ -121,14 +121,13 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.Repair
 
         private TestWordItem SetupItem()
         {
-            wordItem = new TestWordItem();
+            wordItem = new TestWordItem(string.Empty);
             repairRule = new WordRepairRule();
             repairRule.SuccesfulResult = true;
             wordItem.Relationship = new WordItemRelationships(helper.Handler.Object, wordItem);
-            var next = new TestWordItem();
+            var next = new TestWordItem("working");
             wordItem.Relationship.Next = next;
             next.POS = POSTags.Instance.VB;
-            next.Text = "working";
             return wordItem;
         }
     }

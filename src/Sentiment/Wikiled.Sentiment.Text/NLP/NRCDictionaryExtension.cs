@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
@@ -12,7 +11,7 @@ namespace Wikiled.Sentiment.Text.NLP
         public static NRCRecord FindRecord(this INRCDictionary dictionary, IWordItem word)
         {
             NRCRecord nrcRecord = null;
-            foreach (var text in word.GetPossibleText())
+            foreach (var text in word.Relationship.Views)
             {
                 nrcRecord = dictionary.FindRecord(text);
                 if (nrcRecord != null)

@@ -1,4 +1,5 @@
 ﻿using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
@@ -9,9 +10,19 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
 {
     public class TestWordItem : IWordItem
     {
-        public TestWordItem()
+        public TestWordItem(string text, string stemmed = null)
         {
             var relationship = new TestWordItemRelationship();
+            Text = text;
+            if (string.IsNullOrEmpty(stemmed))
+            {
+                relationship.Views = new[] { text };
+            }
+            else
+            {
+                relationship.Views = new[] { text, stemmed };
+            }
+
             Relationship = relationship;
             relationship.Owner = this;
             POS = POSTags.Instance.NN;
@@ -49,6 +60,8 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
         public IWordItemRelationships Relationship { get; set; }
 
         public int WordIndex { get; set; }
+
+        public ISessionContext Session { get; }
 
         public void Reset()
         {

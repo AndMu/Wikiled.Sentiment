@@ -36,8 +36,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
             var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
             instance.Load(path);
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.GetLexicon("Unknown"));
-            var word = new TestWordItem();
-            word.Text = "one";
+            var word = new TestWordItem("one");
             var result = instance.GetLexicon("base").MeasureSentiment(word).DataValue.Value;
             Assert.AreEqual(1, result);
 

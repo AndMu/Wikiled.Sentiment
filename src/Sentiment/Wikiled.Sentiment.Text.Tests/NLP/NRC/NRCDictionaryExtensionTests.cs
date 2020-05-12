@@ -38,13 +38,13 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         public void TestInverted()
         {
             var record = dictionary.Object.FindRecord(
-                new TestWordItem
+                new TestWordItem("kill")
                 {
-                    Text = "kill",
                     Relationship = new TestWordItemRelationship
-                                   {
-                                       Inverted = new TestWordItem()
-                                   }
+                    {
+                        Inverted = new TestWordItem(string.Empty),
+                        Views = new[] { "kill" }
+                    }
                 });
 
             Assert.IsTrue(record.IsAnger);
@@ -62,7 +62,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         [Test]
         public void Extract()
         {
-            var vector = dictionary.Object.Extract(new[] { new TestWordItem { Text = "kill" } });
+            var vector = dictionary.Object.Extract(new[] { new TestWordItem("kill") });
             Assert.AreEqual(0, vector.Anger);
             Assert.AreEqual(0, vector.Anticipation);
             Assert.AreEqual(0, vector.Disgust);
@@ -74,7 +74,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
             Assert.AreEqual(1, vector.Total);
             Assert.AreEqual(2, vector.TotalSum);
 
-            vector = dictionary.Object.Extract(new[] { new TestWordItem { Text = "love" }});
+            vector = dictionary.Object.Extract(new[] { new TestWordItem("love") });
             Assert.AreEqual(0, vector.Anger);
             Assert.AreEqual(0, vector.Anticipation);
             Assert.AreEqual(0, vector.Disgust);
@@ -91,9 +91,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         public void GetOccurences()
         {
             var vector = new SentimentVector();
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "love" } });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("kill") });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("kill") });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("love") });
             var data = vector.GetOccurences().ToArray();
             Assert.AreEqual(8, data.Length);
             Assert.AreEqual("Anger", data[0].Data);
@@ -110,9 +110,9 @@ namespace Wikiled.Sentiment.Text.Tests.NLP.NRC
         public void GetProbabilities()
         {
             var vector = new SentimentVector();
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "kill" } });
-            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem { Text = "love" } });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("kill") });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("kill") });
+            dictionary.Object.ExtractToVector(vector, new[] { new TestWordItem("love") });
             var data = vector.GetProbabilities().ToArray();
             Assert.AreEqual(8, data.Length);
             Assert.AreEqual("Anger", data[0].Data);

@@ -25,6 +25,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public IAspectDectector Aspect => aspect ?? nullDetector;
 
+        public int NGram { get; set; } = 1;
+
         public string SvmPath { get; set; }
 
         public bool UseOriginalCase { get; set; }

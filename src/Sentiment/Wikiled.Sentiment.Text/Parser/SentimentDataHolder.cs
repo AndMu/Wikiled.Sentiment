@@ -12,14 +12,16 @@ namespace Wikiled.Sentiment.Text.Parser
     {
         private MaskDictionary<SentimentValueData> EmotionsLookup { get; } = new MaskDictionary<SentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
-        private Dictionary<string, SentimentValueData> EmotionsTable { get; } = new Dictionary<string, SentimentValueData>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, WordSentimentValueData> EmotionsTable { get; } = new Dictionary<string, WordSentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
         private readonly Lazy<double> averageStrength;
 
         public SentimentDataHolder()
         {
-            averageStrength = new Lazy<double>(() => EmotionsLookup.All.Select(item => item.Value).Concat(EmotionsTable.Values.Select(item => item.Value)).Average(item => Math.Abs(item)));
+            averageStrength = new Lazy<double>(() => EmotionsLookup.All.Select(item => item.Value).Concat(EmotionsTable.Values.Select(item => item.Data.Value)).Average(Math.Abs));
         }
+
+        public IEnumerable<WordSentimentValueData> Values => EmotionsTable.Values;
 
         public SentimentValue MeasureSentiment(IWordItem word)
         {
@@ -28,11 +30,19 @@ namespace Wikiled.Sentiment.Text.Parser
                 return MeasureLookupSentiment(word);
             }
 
-            var sentiment = new SentimentValue(word, new SentimentValueData(value.Value));
+            var sentiment = new SentimentValue(word, new SentimentValueData(value.Data.Value));
             return sentiment;
         }
 
         public double AverageStrength => averageStrength.Value;
+
+        public void Merge(ISentimentDataHolder holder)
+        {
+            foreach (var value in holder.Values)
+            {
+                SetValue(value);
+            }
+        }
 
         public static ISentimentDataHolder Load(string file)
         {
@@ -50,7 +60,7 @@ namespace Wikiled.Sentiment.Text.Parser
             var holder = new SentimentDataHolder();
             foreach (var valueData in reader)
             {
-                holder.SetValue(valueData.Word, valueData.Data);
+                holder.SetValue(valueData);
             }
 
             return holder;
@@ -70,7 +80,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 if (item.Key[item.Key.Length - 1] == '*')
                 {
                     var word = item.Key.Substring(0, item.Key.Length - 1);
-                    instance.SetValue(word, value);
+                    instance.SetValue(new WordSentimentValueData(word, value));
                     if (word.Length > 4)
                     {
                         instance.EmotionsLookup.Add(string.Intern(word), value);
@@ -78,27 +88,16 @@ namespace Wikiled.Sentiment.Text.Parser
                 }
                 else
                 {
-                    instance.SetValue(item.Key, value);
+                    instance.SetValue(new WordSentimentValueData(item.Key, value));
                 }
             }
 
             return instance;
         }
 
-        private void SetValue(string word, SentimentValueData value)
+        private void SetValue(WordSentimentValueData data)
         {
-            EmotionsTable.Remove(word);
-            AddSentimentValue(word, value);
-        }
-
-        private void AddSentimentValue(string word, SentimentValueData value)
-        {
-            if (EmotionsTable.ContainsKey(word))
-            {
-                return;
-            }
-
-            EmotionsTable[string.Intern(word)] = value;
+            EmotionsTable[string.Intern(data.Word)] = data;
         }
 
         private SentimentValue MeasureLookupSentiment(IWordItem word)

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Sentiment.Text.Helpers;
+using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Words;
 
 namespace Wikiled.Sentiment.Text.Tests.Words
@@ -32,6 +35,11 @@ namespace Wikiled.Sentiment.Text.Tests.Words
             var wordItem = new Mock<IWordItem>();
             wordItem.Setup(item => item.Text).Returns(word);
             wordItem.Setup(item => item.Stemmed).Returns(raw);
+            var session = new Mock<ISessionContext>();
+            wordItem.Setup(item => item.Session).Returns(session.Object);
+            session.Setup(item => item.NGram).Returns(1);
+            var relationships = new WordItemRelationships(new Mock<IContextWordsHandler>().Object, wordItem.Object);
+            wordItem.Setup(item => item.Relationship).Returns(relationships);
 
             int result;
             Assert.Throws<ArgumentNullException>(() => table.TryGetValue(null, out result));

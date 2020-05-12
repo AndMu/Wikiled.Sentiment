@@ -31,8 +31,8 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         [Test]
         public void Construct()
         {
-            Assert.Throws<ArgumentNullException>(() => new AspectDectector(null, new IWordItem[] {}));
-            Assert.Throws<ArgumentNullException>(() => new AspectDectector(new IWordItem[] {}, null));
+            Assert.Throws<ArgumentNullException>(() => new AspectDectector(null, new IWordItem[] { }));
+            Assert.Throws<ArgumentNullException>(() => new AspectDectector(new IWordItem[] { }, null));
             Assert.AreEqual(100, instance.AllFeatures.Count());
         }
 
@@ -40,9 +40,9 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         [TestCase("x", false)]
         public void IsAspect(string word, bool expected)
         {
-            var result = instance.IsAspect(new TestWordItem { Text = word });
+            var result = instance.IsAspect(new TestWordItem(word));
             Assert.AreEqual(expected, result);
-            result = instance.IsAspect(new TestWordItem { Text = "Unknown", Stemmed = word});
+            result = instance.IsAspect(new TestWordItem("Unknown", word));
             Assert.AreEqual(expected, result);
         }
 
@@ -50,16 +50,16 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
         [TestCase("x", false)]
         public void IsAttribute(string word, bool expected)
         {
-            var result = instance.IsAttribute(new TestWordItem { Text = word });
+            var result = instance.IsAttribute(new TestWordItem(word));
             Assert.AreEqual(expected, result);
-            result = instance.IsAttribute(new TestWordItem { Text = "Unknown", Stemmed = word});
+            result = instance.IsAttribute(new TestWordItem("Unknown", word));
             Assert.AreEqual(expected, result);
         }
 
         [Test]
         public void AddRemove()
         {
-            var word = new TestWordItem {Text = "xxx"};
+            var word = new TestWordItem("xxx");
             var result = instance.IsAspect(word);
             Assert.IsFalse(result);
             instance.AddFeature(word);

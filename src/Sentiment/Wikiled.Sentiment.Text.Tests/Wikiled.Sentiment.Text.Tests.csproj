@@ -13,11 +13,11 @@
     <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.3" />
-    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NLog" version="4.7.0" />
     <PackageReference Include="NUnit" version="3.12.0" />
-    <PackageReference Include="Polly" version="7.2.0" />
+    <PackageReference Include="Polly" version="7.2.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.30" />
     <PackageReference Include="System.Reactive" version="4.4.1" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
@@ -25,9 +25,9 @@
     <PackageReference Include="Wikiled.Common.Testing.Utilities" Version="1.3.8" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
     <PackageReference Include="Wikiled.Redis" version="3.6.13" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.51" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.52" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.30" />
-    <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.5.0"></packagereference>
+    <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>
     <packagereference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

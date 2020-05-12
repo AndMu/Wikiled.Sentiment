@@ -29,23 +29,20 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             sentiment = new Mock<IContextSentiment>();
             var words = new[]
                         {
-                            new TestWordItem(),
-                            new TestWordItem
+                            new TestWordItem(string.Empty),
+                            new TestWordItem("Aspect1")
                             {
                                 IsFeature = true,
-                                Text = "Aspect1",
                                 Stemmed = "Aspect1"
                             },
-                            new TestWordItem
+                            new TestWordItem("Aspect1")
                             {
                                 IsFeature = true, 
-                                Text = "Aspect1",
                                 Stemmed = "Aspect1"
                             },
-                            new TestWordItem
+                            new TestWordItem("Aspect2")
                             {
                                 IsFeature = true,
-                                Text = "Aspect2",
                                 Stemmed = "Aspect2"
                             }
                         };

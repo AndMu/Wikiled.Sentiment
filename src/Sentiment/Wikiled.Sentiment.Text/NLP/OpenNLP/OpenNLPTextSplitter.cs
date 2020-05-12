@@ -68,7 +68,7 @@ namespace Wikiled.Sentiment.Text.NLP.OpenNLP
                 var text = repairHandler.Repair(sentence);
                 if (sentence != text)
                 {
-                    log.LogDebug("Sentence repaired!");
+                    log.LogTrace("Sentence repaired!");
                 }
 
                 var result = ProcessSentence(text);

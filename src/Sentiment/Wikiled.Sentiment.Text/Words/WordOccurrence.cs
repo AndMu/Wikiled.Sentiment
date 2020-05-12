@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Cryptography;
 using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Parser;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.NLP;
 using Wikiled.Text.Analysis.POS;
 using Wikiled.Text.Analysis.POS.Tags;
@@ -14,6 +14,7 @@ namespace Wikiled.Sentiment.Text.Words
 {
     public class WordOccurrence : IWordItem
     {
+        private IContextWordsHandler handler;
         private NamedEntities entity;
         private string customEntity;
 
@@ -33,6 +34,8 @@ namespace Wikiled.Sentiment.Text.Words
 
             Stemmed = raw;
         }
+
+        public ISessionContext Session { get; private set; }
 
         public NamedEntities Entity
         {
@@ -60,23 +63,23 @@ namespace Wikiled.Sentiment.Text.Words
             }
         }
 
-        public bool IsFeature { get; private set; }
+        public bool IsFeature => handler.IsFeature(this);
 
         public bool IsFixed => !string.IsNullOrEmpty(Text) &&
                                Text.IndexOf("xxxbad", StringComparison.CurrentCultureIgnoreCase) == 0 ||
                                Text.IndexOf("xxxgood", StringComparison.CurrentCultureIgnoreCase) == 0;
 
-        public bool IsInvertor { get; private set; }
+        public bool IsInvertor => handler.IsInvertAdverb(this);
 
-        public bool IsQuestion { get; private set; }
+        public bool IsQuestion => handler.IsQuestion(this);
 
-        public bool IsSentiment { get; private set; }
+        public bool IsSentiment => handler.IsSentiment(this);
 
         public bool IsSimple => true;
 
-        public bool IsStopWord { get; private set; }
+        public bool IsStopWord => handler.IsStop(this);
 
-        public bool IsTopAttribute { get; private set; }
+        public bool IsTopAttribute => handler.IsAttribute(this);
 
         public string NormalizedEntity { get; set; }
 
@@ -84,7 +87,7 @@ namespace Wikiled.Sentiment.Text.Words
 
         public BasePOSType POS { get; }
 
-        public double? QuantValue { get; private set; }
+        public double? QuantValue => handler.MeasureQuantifier(this);
 
         public IWordItemRelationships Relationship { get; private set; }
 
@@ -125,14 +128,9 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             var item = new WordOccurrence(text, rawWord, pos);
+            item.handler = wordsHandlers;
+            item.Session = wordsHandlers.Context;
             item.Relationship = new WordItemRelationships(wordsHandlers, item);
-            item.IsSentiment = wordsHandlers.IsSentiment(item);
-            item.IsFeature = wordsHandlers.IsFeature(item);
-            item.IsTopAttribute = wordsHandlers.IsAttribute(item);
-            item.QuantValue = wordsHandlers.MeasureQuantifier(item);
-            item.IsInvertor = wordsHandlers.IsInvertAdverb(item);
-            item.IsQuestion = wordsHandlers.IsQuestion(item);
-            item.IsStopWord = wordsHandlers.IsStop(item);
             item.Inquirer = inquirerManager.GetDefinitions(text);
             return item;
         }

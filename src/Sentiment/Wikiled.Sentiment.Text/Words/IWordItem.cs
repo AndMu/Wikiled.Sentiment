@@ -1,4 +1,5 @@
 using Wikiled.Sentiment.Text.Data;
+using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.POS.Tags;
 using Wikiled.Text.Analysis.Structure;
 using Wikiled.Text.Inquirer.Data;
@@ -9,7 +10,7 @@ namespace Wikiled.Sentiment.Text.Words
     {
         NamedEntities Entity { get; set; }
 
-        string CustomEntity{ get; set; }
+        string CustomEntity { get; set; }
 
         bool IsFeature { get; }
 
@@ -40,6 +41,8 @@ namespace Wikiled.Sentiment.Text.Words
         IWordItemRelationships Relationship { get; }
 
         int WordIndex { get; set; }
+
+        ISessionContext Session { get; }
 
         void Reset();
     }

@@ -19,7 +19,12 @@ namespace Wikiled.Sentiment.Text.Words
             }
 
             value = default;
-            foreach (var text in word.GetPossibleText())
+            if (table.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (var text in word.Relationship.Views)
             {
                 if (table.TryGetValue(text, out value))
                 {
