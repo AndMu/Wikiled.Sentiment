@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
             builder.RegisterModule<LoggingModule>();
             builder.RegisterModule<CommonModule>();
             builder.RegisterModule(new SentimentMainModule());
-            builder.RegisterModule(new SentimentServiceModule(configuration) { Lexicons = "." });
+            builder.RegisterModule(new SentimentServiceModule { LibraryPath = "." });
             var container = builder.BuildServiceProvider();
 
             for (int i = 0; i < 2; i++)
