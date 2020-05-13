@@ -10,14 +10,14 @@ namespace Wikiled.Sentiment.Text.Config
 {
     public class LexiconConfigLoader
     {
-        private ILogger<LexiconConfigLoader> log;
+        private readonly ILogger<LexiconConfigLoader> log;
 
         public LexiconConfigLoader(ILogger<LexiconConfigLoader> log)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        public LexiconConfig Load(string location = null)
+        public ILexiconConfig Load(string location = null)
         {
             location ??= string.Empty;
             location = Path.Combine(location, "lexicon.json");
@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.Text.Config
             return JsonSerializer.Deserialize<LexiconConfig>(File.ReadAllBytes(location));
         }
 
-        public async Task<LexiconConfig> Download(string location = null)
+        public async Task<ILexiconConfig> Download(string location = null)
         {
             var config = Load(location);
             if (Directory.Exists(config.Resources))
