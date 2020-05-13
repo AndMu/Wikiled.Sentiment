@@ -25,14 +25,14 @@ namespace Wikiled.Sentiment.Text.Parser
 
         public void Load()
         {
-            if (string.IsNullOrEmpty(config.DomainLexicon))
+            if (string.IsNullOrEmpty(config.DomainLexicons))
             {
-                throw new ArgumentException("Value cannot be null or empty.", nameof(config.DomainLexicon));
+                throw new ArgumentException("Value cannot be null or empty.", nameof(config.DomainLexicons));
             }
 
-            logger.LogInformation("Loading lexicons: {0}", config.DomainLexicon);
+            logger.LogInformation("Loading lexicons: {0}", config.DomainLexicons);
             table = new Dictionary<string, ISentimentDataHolder>(StringComparer.OrdinalIgnoreCase);
-            foreach (var file in Directory.GetFiles(config.DomainLexicon))
+            foreach (var file in Directory.GetFiles(config.DomainLexicons))
             {
                 var name = Path.GetFileNameWithoutExtension(file);
                 var holder = SentimentDataHolder.Load(file);

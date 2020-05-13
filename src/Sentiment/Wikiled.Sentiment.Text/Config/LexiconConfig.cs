@@ -4,6 +4,8 @@ namespace Wikiled.Sentiment.Text.Config
 {
     public class LexiconConfig : ILexiconConfig
     {
+        public string DomainLexicons { get; set; }
+
         public string Lexicon { get; set; }
 
         public string Resources { get; set; }

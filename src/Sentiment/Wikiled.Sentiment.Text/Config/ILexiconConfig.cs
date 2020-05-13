@@ -2,7 +2,7 @@ namespace Wikiled.Sentiment.Text.Config
 {
     public interface ILexiconConfig
     {
-        string DomainLexicon { get; }
+        string DomainLexicons { get; }
 
         string Lexicon { get; }
 
