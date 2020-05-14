@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
+using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Parser;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
@@ -13,17 +14,20 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
     {
         private LexiconLoader instance;
 
+        private LexiconConfig config;
+
         [SetUp]
         public void SetUp()
         {
+            config = new LexiconConfig();
             instance = CreateInstance();
         }
 
         [Test]
         public void Load()
         {
-            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
-            instance.Load(path);
+            config.DomainLexicons = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
+            instance.Load();
             Assert.AreEqual(2, instance.Supported.Count());
             var lexicons = instance.Supported.OrderBy(item => item).ToArray();
             Assert.AreEqual("base", lexicons[0]);
@@ -33,8 +37,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetLexicon()
         {
-            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
-            instance.Load(path);
+            config.DomainLexicons = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
+            instance.Load();
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.GetLexicon("Unknown"));
             var word = new TestWordItem("one");
             var result = instance.GetLexicon("base").MeasureSentiment(word).DataValue.Value;
@@ -48,7 +52,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void CheckArguments()
         {
             Assert.Throws<ArgumentException>(() => instance.GetLexicon(null));
-            Assert.Throws<ArgumentException>(() => instance.Load(null));
+            Assert.Throws<ArgumentException>(() => instance.Load());
             Assert.Throws<ArgumentNullException>(() =>
             {
                 var data = instance.Supported;
@@ -57,7 +61,7 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
 
         private LexiconLoader CreateInstance()
         {
-            return new LexiconLoader(new NullLogger<LexiconLoader>());
+            return new LexiconLoader(new NullLogger<LexiconLoader>(), config);
         }
     }
 }

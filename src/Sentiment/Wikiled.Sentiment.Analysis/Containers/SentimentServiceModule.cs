@@ -18,18 +18,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         private static readonly ILogger log = ApplicationLogging.CreateLogger<SentimentServiceModule>();
 
-        private readonly ILexiconConfig config;
-
-        public SentimentServiceModule(ILexiconConfig config)
-        {
-            this.config = config ?? throw new ArgumentNullException(nameof(config));
-        }
-
         public RedisConfiguration RedisConfiguration { get; set; }
 
         public string Name { get; set; }
 
-        public string Lexicons { get; set; }
+        public string LibraryPath { get; set; }
 
         public IServiceCollection ConfigureServices(IServiceCollection builder)
         {
@@ -53,13 +46,8 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 builder.AddSingleton<ICacheFactory, RedisDocumentCacheFactory>();
             }
 
-            if (!string.IsNullOrEmpty(Lexicons))
-            {
-                log.LogDebug("Adding lexicons");
-                builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load(Lexicons));
-            }
-
-            builder.AddSingleton(config);
+            builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load());
+            builder.AddAsyncFactory(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Download(LibraryPath));
             builder.AddSingleton(new RecyclableConfig());
             builder.AddTransient<OpenNLPTextSplitter>();
 
