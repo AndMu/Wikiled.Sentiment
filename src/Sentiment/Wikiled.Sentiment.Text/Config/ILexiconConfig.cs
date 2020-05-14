@@ -1,17 +1,17 @@
+using System;
+
 namespace Wikiled.Sentiment.Text.Config
 {
     public interface ILexiconConfig
     {
-        string DomainLexicons { get; }
-
-        string Lexicon { get; }
-
         string Resources { get; }
 
         string NlpModels { get; }
 
-        string Remote { get; }
+        LocationConfig Model { get; }
 
-        string FullLexiconPath { get; }
+        LocationConfig Lexicons { get; }
+
+        string GetFullPath(Func<ILexiconConfig, LocationConfig> config);
     }
 }

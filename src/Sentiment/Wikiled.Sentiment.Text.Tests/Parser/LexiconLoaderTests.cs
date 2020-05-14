@@ -20,13 +20,16 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void SetUp()
         {
             config = new LexiconConfig();
+            config.Lexicons = new LocationConfig();
+            config.Resources = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data");
+            config.Lexicons.Local = "Lexicons";
             instance = CreateInstance();
         }
 
         [Test]
         public void Load()
         {
-            config.DomainLexicons = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
+            
             instance.Load();
             Assert.AreEqual(2, instance.Supported.Count());
             var lexicons = instance.Supported.OrderBy(item => item).ToArray();
@@ -37,7 +40,6 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [Test]
         public void GetLexicon()
         {
-            config.DomainLexicons = Path.Combine(TestContext.CurrentContext.TestDirectory, "Data", "Lexicons");
             instance.Load();
             Assert.Throws<ArgumentOutOfRangeException>(() => instance.GetLexicon("Unknown"));
             var word = new TestWordItem("one");
@@ -52,7 +54,6 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void CheckArguments()
         {
             Assert.Throws<ArgumentException>(() => instance.GetLexicon(null));
-            Assert.Throws<ArgumentException>(() => instance.Load());
             Assert.Throws<ArgumentNullException>(() =>
             {
                 var data = instance.Supported;

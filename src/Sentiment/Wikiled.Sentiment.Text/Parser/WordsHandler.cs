@@ -160,7 +160,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private void ReadRepairRules()
         {
-            var folder = Path.Combine(config.FullLexiconPath, @"Rules/Invertors");
+            var folder = Path.Combine(config.GetFullPath(item => item.Model), @"Rules/Invertors");
             negatingLemmaBasedRepair = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRepairRule = new Dictionary<string, WordRepairRule>(StringComparer.OrdinalIgnoreCase);
             negatingRule = new Dictionary<WordItemType, WordRepairRule>();
@@ -186,7 +186,7 @@ namespace Wikiled.Sentiment.Text.Parser
 
         private Dictionary<string, double> ReadTextData(string file)
         {
-            var stream = new DictionaryStream(Path.Combine(config.FullLexiconPath, file), new FileStreamSource());
+            var stream = new DictionaryStream(Path.Combine(config.GetFullPath(item => item.Model), file), new FileStreamSource());
             return stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
         }
     }

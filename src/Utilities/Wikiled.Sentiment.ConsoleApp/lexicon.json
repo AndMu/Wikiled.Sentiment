@@ -1,6 +1,12 @@
 {
   "Resources": "Resources",
-  "Lexicon": "Library/Standard",
-  "NlpModels": "1.5",
-  "Remote": "http://datasets.azurewebsites.net/Resources/resources.1.5.zip"
+  "Model": {
+    "Remote": "http://datasets.azurewebsites.net/Resources/resources.1.5.zip",
+    "Local": "Library/Standard"
+  },
+  "Lexicons": {
+    "Remote": "http://datasets.azurewebsites.net/Resources/lexiconsEx.zip",
+    "Local": "Lexicons"
+  },
+  "NlpModels": "1.5"
 }

@@ -25,7 +25,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         private readonly Dictionary<string, bool> initialized = new Dictionary<string, bool>();
 
-        private string libraryPath;
+        private string rootPath;
 
         private MainContainerFactory(IServiceCollection builder)
         {
@@ -82,10 +82,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
             return this;
         }
 
-        public MainContainerFactory Config(string path = null)
+        public MainContainerFactory Config(string root = null)
         {
             initialized["Config"] = true;
-            libraryPath = path;
+            rootPath = root;
             return this;
         }
 
@@ -102,7 +102,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 new SentimentMainModule
                 {
                     Tagger = value,
-                    LibraryPath = libraryPath,
+                    LibraryPath = rootPath,
                     UseNER = useNER
                 });
 

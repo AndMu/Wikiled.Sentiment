@@ -1,5 +1,11 @@
 {
   "Resources": "../../../../../Resources",
-  "Lexicon": "Library/Standard",
-  "NlpModels": "1.5"
+  "NlpModels": "1.5",
+  "Model": {
+    "Local": "Library/Standard"
+  },
+  "Lexicons": {
+    "Local": "Lexicons"
+  }
+
 }

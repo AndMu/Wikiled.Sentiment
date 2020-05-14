@@ -29,7 +29,7 @@ namespace Wikiled.Sentiment.Text.NLP.Repair
 
             cleanup = new EmojyCleanup();
             cleanup.NormalizeText = false;
-            resourcesPath = Path.Combine(path.FullLexiconPath, "Repair");
+            resourcesPath = Path.Combine(path.GetFullPath(item => item.Model), "Repair");
             this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
             Load();
         }

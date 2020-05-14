@@ -22,7 +22,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 throw new ArgumentNullException(nameof(config));
             }
 
-            resourcesPath = Path.Combine(config.FullLexiconPath, "Repair");
+            resourcesPath = Path.Combine(config.GetFullPath(item => item.Model), "Repair");
             ReadIdioms();
             ReadSlang();
         }

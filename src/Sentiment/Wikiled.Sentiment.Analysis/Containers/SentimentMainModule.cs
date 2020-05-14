@@ -42,7 +42,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<LexiconConfigLoader>();
-            services.AddSingleton<ILexiconConfig>(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(LibraryPath));
+            services.AddSingleton(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(LibraryPath));
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 

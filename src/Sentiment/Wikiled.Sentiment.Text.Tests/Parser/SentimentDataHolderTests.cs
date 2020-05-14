@@ -22,7 +22,8 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         public void Setup()
         {
             var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
-            var path = loader.Load(TestContext.CurrentContext.TestDirectory).FullLexiconPath;
+            var config = loader.Load(TestContext.CurrentContext.TestDirectory);
+            var path = config.GetFullPath(item => item.Model);
             var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());
             var data = stream.ReadDataFromStream(double.Parse).ToDictionary(item => item.Word, item => item.Value, StringComparer.OrdinalIgnoreCase);
             sentimentData = SentimentDataHolder.PopulateEmotionsData(data);
