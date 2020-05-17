@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
     <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
-    <PackageReference Include="NLog" version="4.7.0" />
+    <PackageReference Include="NLog" version="4.7.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.3" />
     <PackageReference Include="NUnit" version="3.12.0" />
     <PackageReference Include="Polly" version="7.2.1" />

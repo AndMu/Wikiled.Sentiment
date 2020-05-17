@@ -69,8 +69,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<IWordFactory, WordOccurenceFactory>();
 
-
-
             services.AddSingleton<WordsHandler>().AsSingleton<IWordsHandler, WordsHandler>(item => item.Load());
             services.AddTransient<IAspectSerializer, AspectSerializer>();
 

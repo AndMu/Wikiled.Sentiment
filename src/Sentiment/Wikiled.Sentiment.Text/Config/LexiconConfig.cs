@@ -13,6 +13,11 @@ namespace Wikiled.Sentiment.Text.Config
 
         public LocationConfig Lexicons { get; set; }
 
+        public LexiconConfig()
+        {
+
+        }
+
         public string GetFullPath(Func<ILexiconConfig, LocationConfig> config)
         {
             return Path.Combine(Resources ?? string.Empty, config(this).Local);

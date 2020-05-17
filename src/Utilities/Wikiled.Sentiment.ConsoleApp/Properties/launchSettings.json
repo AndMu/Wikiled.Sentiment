@@ -2,7 +2,7 @@
   "profiles": {
     "Wikiled.Sentiment.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "test -All=C:\\2\\data.csv -Out=C:\\2\\twitter_clean_text_out.csv "
+      "commandLineArgs": "test -All=C:\\out\\imdb.csv -Out=C:\\2\\twitter_clean_text_out.csv "
     }
   }
-} 
+}
