@@ -35,7 +35,7 @@ namespace Wikiled.Sentiment.Text.Config
         {
             var config = Load(location);
             var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
-            if (Directory.Exists(config.Resources))
+            if (Directory.Exists(config.GetFullPath(item => item.Model)))
             {
                 log.LogInformation("Resources folder {0} found.", config.Resources);
             }
@@ -49,7 +49,7 @@ namespace Wikiled.Sentiment.Text.Config
                 await dataDownloader.DownloadFile(new Uri(config.Model.Remote), config.Resources).ConfigureAwait(false);
             }
 
-            if (config.Lexicons != null)
+            if (config.Lexicons?.Remote != null)
             {
                 await dataDownloader.DownloadFile(new Uri(config.Lexicons.Remote), config.Resources, true).ConfigureAwait(false);
             }
