@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 return MeasureLookupSentiment(word);
             }
 
-            var sentiment = new SentimentValue(word, new SentimentValueData(value.Data.Value));
+            var sentiment = new SentimentValue(word, value.Word, new SentimentValueData(value.Data.Value));
             return sentiment;
         }
 
@@ -79,11 +79,11 @@ namespace Wikiled.Sentiment.Text.Parser
                 var value = new SentimentValueData(item.Value);
                 if (item.Key[item.Key.Length - 1] == '*')
                 {
-                    var word = item.Key.Substring(0, item.Key.Length - 1);
+                    var word = string.Intern(item.Key.Substring(0, item.Key.Length - 1));
                     instance.SetValue(new WordSentimentValueData(word, value));
                     if (word.Length > 4)
                     {
-                        instance.EmotionsLookup.Add(string.Intern(word), value);
+                        instance.EmotionsLookup.Add(word, value);
                     }
                 }
                 else
@@ -112,7 +112,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 word.Text.EndsWith("proof", StringComparison.OrdinalIgnoreCase) ||
                 word.Text.EndsWith("less", StringComparison.OrdinalIgnoreCase);
             var invertingEnd = isInverted ? -1 : 1;
-            var sentiment = new SentimentValue(word, new SentimentValueData(value.Value * invertingEnd));
+            var sentiment = new SentimentValue(word, word.Text, new SentimentValueData(value.Value * invertingEnd));
             return sentiment;
         }
     }

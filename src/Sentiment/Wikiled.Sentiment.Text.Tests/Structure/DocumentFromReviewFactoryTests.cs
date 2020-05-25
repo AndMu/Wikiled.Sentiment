@@ -40,7 +40,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
                 {
                     var wordItem = new TestWordItem("Word");
                     wordItem.Relationship = new TestWordItemRelationship();
-                    wordItem.Relationship.Sentiment = new SentimentValue(wordItem, i + 1);
+                    wordItem.Relationship.Sentiment = new SentimentValue(wordItem, "Text", i + 1);
                     currentWords.Add(wordItem);
                     words.Add(wordItem);
                 }
@@ -57,7 +57,7 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             for (var i = 0; i < words.Count; i++)
             {
                 var word = words[i];
-                adjustment.Setup(item => item.GetSentiment(word)).Returns(new SentimentValue(word, 10));
+                adjustment.Setup(item => item.GetSentiment(word)).Returns(new SentimentValue(word, "Text", 10));
             }
 
             review.Setup(item => item.Sentences).Returns(sentences.Select(item => item.Object).ToList());

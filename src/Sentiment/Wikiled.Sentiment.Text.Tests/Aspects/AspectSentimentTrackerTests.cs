@@ -51,7 +51,7 @@ namespace Wikiled.Sentiment.Text.Tests.Aspects
             factory.Setup(item => item.Construct(words[2].Relationship)).Returns(sentiment.Object);
             factory.Setup(item => item.Construct(words[3].Relationship)).Returns(sentiment.Object);
             var sentiments = new List<SentimentValue>();
-            sentiments.Add(new SentimentValue(words[0], 10));
+            sentiments.Add(new SentimentValue(words[0], "Text", 10));
             sentiment.Setup(item => item.Sentiments).Returns(sentiments);
         }
 

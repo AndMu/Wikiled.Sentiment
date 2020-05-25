@@ -61,7 +61,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 calculatedSentiments[sentiment.Owner.Relationship.Inverted] = 
                     new SentimentValue(
-                        sentiment.Owner.Relationship.Inverted, 
+                        sentiment.Owner.Relationship.Inverted,
+                        $"NOT {sentiment.Span}",
                         new SentimentValueData(0, SentimentSource.AdjustedCanceled));
             }
 

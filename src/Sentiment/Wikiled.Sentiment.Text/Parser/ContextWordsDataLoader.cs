@@ -84,7 +84,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 if (builtIn != null)
                 {
                     // original max strength is 3 we move it save scale as custom and also make it 4 time less powerfull
-                    return new SentimentValue(word, builtIn.DataValue.Value / 3 * Context.Lexicon.AverageStrength / 4);
+                    return new SentimentValue(word, builtIn.Span, builtIn.DataValue.Value / 3 * Context.Lexicon.AverageStrength / 4);
                 }
                 else
                 {

@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.4" />
     <PackageReference Include="Moq" Version="4.14.1" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
-    <PackageReference Include="NLog" version="4.7.1" />
+    <PackageReference Include="NLog" version="4.7.2" />
     <PackageReference Include="NUnit" version="3.12.0" />
     <PackageReference Include="Polly" version="7.2.1" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.30" />
@@ -28,7 +28,7 @@
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Redis" version="3.6.13" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.43" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.52" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.54" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>
     <packagereference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>

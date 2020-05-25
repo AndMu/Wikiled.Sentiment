@@ -19,7 +19,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void Netgative()
         {
-            var value = new SentimentValue(wordItem.Object, - 0.5);
+            var value = new SentimentValue(wordItem.Object, "Text", - 0.5);
             Assert.AreEqual(-0.5, value.DataValue.Value);
             Assert.IsFalse(value.DataValue.IsPositive);
         }
@@ -27,7 +27,7 @@ namespace Wikiled.Sentiment.Text.Tests.Sentiment
         [Test]
         public void Positive()
         {
-            var value = new SentimentValue(wordItem.Object, 0.5);
+            var value = new SentimentValue(wordItem.Object, "Text", 0.5);
             Assert.AreEqual(0.5, value.DataValue.Value);
             Assert.IsTrue(value.DataValue.IsPositive);
         }

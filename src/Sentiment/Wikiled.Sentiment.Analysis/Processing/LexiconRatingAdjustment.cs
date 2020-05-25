@@ -29,6 +29,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 if (sentiment != null)
                 {
                     Add(new SentimentValue(reviewItem,
+                        sentiment.Span,
                         new SentimentValueData(sentiment.DataValue.Value, SentimentSource.CustomAdjusted)));
                 }
             }

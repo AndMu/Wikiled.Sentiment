@@ -44,7 +44,14 @@ namespace Wikiled.Sentiment.Text.Structure
                     word.IsStop = wordItem.IsStopWord;
                     word.Phrase = wordItem.Parent?.Text;
                     word.NormalizedEntity = wordItem.NormalizedEntity;
-                    word.Value = wordItem.Relationship.Sentiment?.DataValue?.Value;
+                    word.Span = word.Text;
+                    var sentiment = wordItem.Relationship.Sentiment?.DataValue;
+                    if (sentiment != null)
+                    {
+                        word.Value = sentiment.Value;
+                        word.Span = wordItem.Relationship.Sentiment.Span;
+                    }
+
                     word.IsAspect = wordItem.IsFeature;
                     SentimentValue value = adjustment.GetSentiment(wordItem);
                     if (value != null)
@@ -56,6 +63,7 @@ namespace Wikiled.Sentiment.Text.Structure
                         word.CalculatedValue = 0;
                     }
 
+                    word.Value = 0;
                     sentenceItem.Add(word);
                 }
             }

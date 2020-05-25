@@ -66,7 +66,8 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
                 if (cell.Item != null)
                 {
-                    Add(new SentimentValue((IWordItem)cell.Item, new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
+                    var word = (IWordItem)cell.Item;
+                    Add(new SentimentValue(word, word.Text, new SentimentValueData(item.Calculated, SentimentSource.AdjustedSVM)));
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 foreach (SentimentValue sentiment in notAddedSentiments)
                 {
-                    Add(new SentimentValue(sentiment.Owner, new SentimentValueData(sentiment.DataValue.Value * fallbackWeight, SentimentSource.AdjustedCalculated)));
+                    Add(new SentimentValue(sentiment.Owner, sentiment.Span, new SentimentValueData(sentiment.DataValue.Value * fallbackWeight, SentimentSource.AdjustedCalculated)));
                 }
             }
 
@@ -101,6 +102,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
             {
                 Add(new SentimentValue(
                     WordOccurrence.CreateBasic(Constants.BIAS, POSTags.Instance.JJ),
+                    "BIAS",
                     new SentimentValueData(bias, SentimentSource.AdjustedSVM)));
             }
 

@@ -40,6 +40,7 @@ namespace Wikiled.Sentiment.Text.Data.Weighting
             calculatedValue = calculatedValue * quantitifier;
             var value = new SentimentValue(
                 wordItem,
+                sentimentValue.Span,
                 new SentimentValueData(calculatedValue, sentimentValue.DataValue.SentimentSource));
             return value;
         }
