@@ -63,7 +63,6 @@ namespace Wikiled.Sentiment.Text.Structure
                         word.CalculatedValue = 0;
                     }
 
-                    word.Value = 0;
                     sentenceItem.Add(word);
                 }
             }
