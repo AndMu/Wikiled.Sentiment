@@ -29,9 +29,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
 
         public IMachineSentiment Model { get; }
 
-        public static IRatingAdjustment Create(IParsedReview review, IMachineSentiment model)
+        public static IRatingAdjustment Create(IParsedReview review, IMachineSentiment model = null)
         {
-            if (model is NullMachineSentiment)
+            if (model == null || model is NullMachineSentiment)
             {
                 return new NullRatingAdjustment(review);
             }

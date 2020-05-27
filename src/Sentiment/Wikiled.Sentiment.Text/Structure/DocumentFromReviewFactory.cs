@@ -24,9 +24,11 @@ namespace Wikiled.Sentiment.Text.Structure
                 document.Stars = adjustment.Rating.StarsRating;
             }
 
-            if (adjustment.Review.Text == null)
+            bool buildText = false;
+            if (adjustment.Review.Text != null)
             {
                 document.Text = adjustment.Review.Text;
+                buildText = true;
             }
 
             foreach (var sentence in adjustment.Review.Sentences)
@@ -37,7 +39,7 @@ namespace Wikiled.Sentiment.Text.Structure
                 }
 
                 var sentenceItem = new SentenceItem(sentence.Text);
-                document.Add(sentenceItem);
+                document.Add(sentenceItem, buildText);
                 foreach (var wordItem in sentence.Occurrences)
                 {
                     var word = WordExFactory.Construct(wordItem);

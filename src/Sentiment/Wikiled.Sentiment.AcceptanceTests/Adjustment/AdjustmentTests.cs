@@ -3,11 +3,13 @@ using NUnit.Framework;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Wikiled.Sentiment.Analysis.Processing;
 using Wikiled.Sentiment.TestLogic.Shared.Helpers;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.NLP;
 using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
@@ -91,6 +93,13 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             ActualWordsHandler.InstanceOpen.Container.Context.NGram = 3;
             review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.AreEqual(5, review.CalculateRawRating().StarsRating);
+
+            IRatingAdjustment adjustment = RatingAdjustment.Create(review, null);
+            var resultDocument = new DocumentFromReviewFactory().ReparseDocument(adjustment);
+
+
+            Assert.AreEqual(5, resultDocument.Stars);
+            Assert.AreEqual("I Veto it really", resultDocument.Text);
         }
     }
 }

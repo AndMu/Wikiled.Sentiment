@@ -28,7 +28,7 @@
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Redis" version="3.6.13" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.43" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.54" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.55" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>
     <packagereference Include="NUnit3TestAdapter" Version="3.16.1">
       <PrivateAssets>all</PrivateAssets>

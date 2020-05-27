@@ -30,7 +30,7 @@ namespace Wikiled.Sentiment.Text.Extensions
             foreach (var sentence in document.Sentences)
             {
                 var resultSentence = new SentenceItem(sentence.Text);
-                result.Add(resultSentence);
+                result.Add(resultSentence, false);
                 if (sentence.Words != null)
                 {
                     for (var i = 0; i < sentence.Words.Length; i++)
