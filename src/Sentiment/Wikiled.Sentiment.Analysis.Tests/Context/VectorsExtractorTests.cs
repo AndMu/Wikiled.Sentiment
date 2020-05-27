@@ -23,7 +23,7 @@ namespace Wikiled.Sentiment.Analysis.Tests.Context
                 sentence.Add("w1");
                 sentence.Add("w2");
                 sentence.Add("w3");
-                document.Add(sentence);
+                document.Add(sentence, false);
                 foreach (var wordEx in sentence.Words)
                 {
                     wordEx.Value = 1;
