@@ -84,6 +84,7 @@ namespace Wikiled.Sentiment.Integration.Tests.Analysis
         [TestCase("like", -2, -1)]
         [TestCase("hate", 2, 1)]
         [TestCase("hate", -2, -1)]
+        [TestCase("hate*", -2, -1)]
         [TestCase("nope", -2, null)]
         public async Task AdjustSentiment(string word, int value, double? rating)
         {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using Wikiled.Common.Logging;
 using Wikiled.Sentiment.Text.Helpers;
 using Wikiled.Sentiment.Text.Resources;
 using Wikiled.Sentiment.Text.Sentiment;
@@ -15,6 +17,8 @@ namespace Wikiled.Sentiment.Text.Parser
         private Dictionary<string, WordSentimentValueData> EmotionsTable { get; } = new Dictionary<string, WordSentimentValueData>(StringComparer.OrdinalIgnoreCase);
 
         private readonly Lazy<double> averageStrength;
+
+        private static readonly ILogger logger = ApplicationLogging.LoggerFactory.CreateLogger<SentimentDataHolder>();
 
         public SentimentDataHolder()
         {
@@ -51,6 +55,7 @@ namespace Wikiled.Sentiment.Text.Parser
                 throw new ArgumentNullException(nameof(file));
             }
 
+            logger.LogDebug("Load {0}", file);
             var reader = new SentimentDataReader(file);
             return Load(reader.Read());
         }
@@ -60,7 +65,10 @@ namespace Wikiled.Sentiment.Text.Parser
             var holder = new SentimentDataHolder();
             foreach (var valueData in reader)
             {
-                holder.SetValue(valueData);
+                if (!SetMasked(valueData.Word, holder, valueData.Data))
+                {
+                    holder.SetValue(valueData);
+                }
             }
 
             return holder;
@@ -77,22 +85,35 @@ namespace Wikiled.Sentiment.Text.Parser
             foreach (var item in data)
             {
                 var value = new SentimentValueData(item.Value);
-                if (item.Key[item.Key.Length - 1] == '*')
-                {
-                    var word = string.Intern(item.Key.Substring(0, item.Key.Length - 1));
-                    instance.SetValue(new WordSentimentValueData(word, value));
-                    if (word.Length > 4)
-                    {
-                        instance.EmotionsLookup.Add(word, value);
-                    }
-                }
-                else
+                if (!SetMasked(item.Key, instance, value))
                 {
                     instance.SetValue(new WordSentimentValueData(item.Key, value));
                 }
             }
 
             return instance;
+        }
+
+        private static bool SetMasked(string wordMask, SentimentDataHolder instance, SentimentValueData value)
+        {
+            if (wordMask[wordMask.Length - 1] != '*')
+            {
+                return false;
+            }
+
+            var word = string.Intern(wordMask.Substring(0, wordMask.Length - 1));
+            instance.SetValue(new WordSentimentValueData(word, value));
+            if (word.Length > 4)
+            {
+                instance.EmotionsLookup.Add(word, value);
+            }
+            else
+            {
+                logger.LogWarning("Ignoring masked {0} as it is too short", word);
+            }
+
+            return true;
+
         }
 
         private void SetValue(WordSentimentValueData data)
