@@ -43,6 +43,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         public bool UseBuiltInSentiment { get; set; }
 
+        public bool ExtractAttributes { get; set; }
+
         public bool DisableInvertors
         {
             get => disableInvertors;

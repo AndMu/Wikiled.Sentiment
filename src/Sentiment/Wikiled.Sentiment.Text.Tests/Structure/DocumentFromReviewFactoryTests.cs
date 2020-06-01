@@ -9,6 +9,7 @@ using Wikiled.Sentiment.Text.Data;
 using Wikiled.Sentiment.Text.Extensions;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Tests.Structure
@@ -63,7 +64,8 @@ namespace Wikiled.Sentiment.Text.Tests.Structure
             review.Setup(item => item.Sentences).Returns(sentences.Select(item => item.Object).ToList());
             adjustment.Setup(item => item.Review).Returns(review.Object);
             review.Setup(item => item.Document).Returns(new Document("Test"));
-            var document = new DocumentFromReviewFactory().ReparseDocument(adjustment.Object);
+            review.Setup(item => item.Context).Returns(new Mock<ISessionContext>().Object);
+            var document = new DocumentFromReviewFactory(new Mock<INRCDictionary>().Object).ReparseDocument(adjustment.Object);
             Assert.AreEqual(2, document.Sentences.Count);
             foreach (var sentenceItem in document.Sentences)
             {

@@ -11,6 +11,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Text.Analysis.Structure;
+using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
 {
@@ -95,7 +96,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Adjustment
             Assert.AreEqual(5, review.CalculateRawRating().StarsRating);
 
             IRatingAdjustment adjustment = RatingAdjustment.Create(review, null);
-            var resultDocument = new DocumentFromReviewFactory().ReparseDocument(adjustment);
+            var resultDocument = new DocumentFromReviewFactory(ActualWordsHandler.InstanceOpen.Container.Resolve<INRCDictionary>()).ReparseDocument(adjustment);
 
 
             Assert.AreEqual(5, resultDocument.Stars);

@@ -15,6 +15,8 @@ namespace Wikiled.Sentiment.Text.Sentiment
 
         bool UseBuiltInSentiment { get; }
 
+        bool ExtractAttributes { get; }
+
         bool DisableInvertors { get; }
 
         ISentimentDataHolder Lexicon { get; }

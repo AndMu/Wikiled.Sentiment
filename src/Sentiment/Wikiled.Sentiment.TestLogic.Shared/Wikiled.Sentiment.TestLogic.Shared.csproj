@@ -21,8 +21,8 @@
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Redis" version="3.6.13" />
-    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.55" />
-    <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.30" />
+    <PackageReference Include="Wikiled.Text.Analysis" version="1.7.63" />
+    <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.31" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.4" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>

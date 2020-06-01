@@ -72,7 +72,7 @@ namespace Wikiled.Sentiment.Text.NLP
 
                     // !! we need to create new - because if we use underlying
                     // we can lose if words is changed to aspect
-                    IWordItem word = wordsFactory.CreateWord(documentWord.Text, documentWord.Type);
+                    IWordItem word = wordsFactory.CreateWord(documentWord.Text, documentWord.POS);
                     word.NormalizedEntity = documentWord.NormalizedEntity;
                     word.Entity = documentWord.EntityType;
                     word.CustomEntity = documentWord.CustomEntity;

@@ -63,7 +63,7 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [TestCase(2, 1)]
         public void AddWordConjunction(int index, int parts)
         {
-            (document.Sentences[0].Words[index]).Type = ",";
+            (document.Sentences[0].Words[index]).POS = ",";
             var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             var review = factory.Create();
             Assert.AreEqual(1, review.Sentences.Count);
@@ -74,8 +74,8 @@ namespace Wikiled.Sentiment.Text.Tests.NLP
         [Test]
         public void AddWordTwoConjunctionEmpty()
         {
-            document.Sentences[0].Words[1].Type = ",";
-            document.Sentences[0].Words[2].Type = ",";
+            document.Sentences[0].Words[1].POS = ",";
+            document.Sentences[0].Words[2].POS = ",";
 
             var factory = (ParsedReviewManager)ActualWordsHandler.InstanceSimple.Container.Resolve<Func<Document, IParsedReviewManager>>()(document);
             var review = factory.Create();

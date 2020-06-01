@@ -11,6 +11,7 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Sentiment.Text.Structure;
 using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
@@ -33,7 +34,7 @@ namespace Wikiled.Sentiment.TestLogic.Shared.Helpers
             var factory = helper.Resolve<IWordFactory>();
             var document = result.Construct(factory);
             var review = helper.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
-            var documentFromReview = new DocumentFromReviewFactory();
+            var documentFromReview = new DocumentFromReviewFactory(helper.Resolve<INRCDictionary>());
             return documentFromReview.ReparseDocument(new NullRatingAdjustment(review));
         }
 

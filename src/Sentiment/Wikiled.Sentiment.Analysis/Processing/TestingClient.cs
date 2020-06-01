@@ -30,9 +30,9 @@ namespace Wikiled.Sentiment.Analysis.Processing
 {
     public class TestingClient : ITestingClient
     {
-        private readonly ILogger<TestingClient > log;
+        private readonly ILogger<TestingClient> log;
 
-        private readonly IDocumentFromReviewFactory documentFromReview = new DocumentFromReviewFactory();
+        private readonly IDocumentFromReviewFactory documentFromReview;
 
         private readonly StatisticsCalculator statistics = new StatisticsCalculator();
 
@@ -53,15 +53,17 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 throw new ArgumentNullException(nameof(log));
             }
 
+            this.clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+
             if (string.IsNullOrEmpty(clientContext.Context.SvmPath))
             {
                 DisableSvm = true;
             }
 
-            this.clientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
             this.log = log;
             AspectSentiment = new AspectSentimentTracker(new ContextSentimentFactory());
             SentimentVector = new SentimentVector();
+            documentFromReview = new DocumentFromReviewFactory(clientContext.NrcDictionary);
         }
 
         public IProcessingPipeline Pipeline => clientContext.Pipeline;
@@ -134,7 +136,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                     log.LogWarning("{0} aspects file not found", path);
                 }
             }
-            
+
             log.LogInformation("Processing...");
             initialized = true;
         }
@@ -195,7 +197,7 @@ namespace Wikiled.Sentiment.Analysis.Processing
                 context.Processed = context.Original.CloneJson();
                 context.Processed.Status = Status.Error;
             }
-           
+
             return context;
         }
 

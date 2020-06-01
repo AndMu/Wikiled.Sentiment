@@ -1,15 +1,26 @@
-﻿using Wikiled.Sentiment.Text.Sentiment;
+﻿using System;
+using System.Linq;
+using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Words;
+using Wikiled.Text.Analysis.NLP.NRC;
 using Wikiled.Text.Analysis.Structure;
 
 namespace Wikiled.Sentiment.Text.Structure
 {
     public class DocumentFromReviewFactory : IDocumentFromReviewFactory
     {
+        private readonly INRCDictionary nrcDictionary;
+
+        public DocumentFromReviewFactory(INRCDictionary nrcDictionary)
+        {
+            this.nrcDictionary = nrcDictionary ?? throw new ArgumentNullException(nameof(nrcDictionary));
+        }
+
         public Document ReparseDocument(IRatingAdjustment adjustment)
         {
             if (adjustment?.Review?.Document == null)
             {
-                throw new System.ArgumentNullException(nameof(adjustment));
+                throw new ArgumentNullException(nameof(adjustment));
             }
 
             adjustment.CalculateRating();
@@ -30,6 +41,8 @@ namespace Wikiled.Sentiment.Text.Structure
                 document.Text = adjustment.Review.Text;
                 buildText = true;
             }
+
+            var vector = new SentimentVector();
 
             foreach (var sentence in adjustment.Review.Sentences)
             {
@@ -65,12 +78,30 @@ namespace Wikiled.Sentiment.Text.Structure
                         word.CalculatedValue = 0;
                     }
 
+                    if (adjustment.Review.Context.ExtractAttributes)
+                    {
+                        PopulateAttributes(vector, word, wordItem);
+                    }
+
                     sentenceItem.Add(word);
                 }
             }
 
             document.Text = adjustment.Review.Document.Text;
+            if (adjustment.Review.Context.ExtractAttributes)
+            {
+                document.Attributes = vector.GetProbabilities().ToDictionary(item => item.Data, item => item.Probability.ToString());
+            }
+
             return document;
+        }
+
+        private void PopulateAttributes(SentimentVector vector, WordEx word, IWordItem original)
+        {
+            var record = nrcDictionary.FindRecord(word);
+            vector.ExtractData(record);
+            word.Emotions = record?.GetDefinedCategories().ToArray();
+            word.Attributes = original.Inquirer.Records.SelectMany(item => item.Description.Attributes).ToArray();
         }
     }
 }

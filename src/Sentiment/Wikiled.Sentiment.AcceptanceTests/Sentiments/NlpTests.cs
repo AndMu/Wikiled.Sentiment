@@ -12,6 +12,10 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Wikiled.Text.Analysis.Structure;
 using Microsoft.Extensions.Logging;
+using Wikiled.Sentiment.Analysis.Processing;
+using Wikiled.Sentiment.Text.Sentiment;
+using Wikiled.Sentiment.Text.Structure;
+using Wikiled.Text.Analysis.NLP.NRC;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
 {
@@ -64,6 +68,24 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
             var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
             Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
             Assert.AreEqual(4, review.ImportantWords.Count());
+            Assert.IsNull(document.Attributes);
+        }
+
+        [Test]
+        public async Task TestAttributes()
+        {
+            ActualWordsHandler.InstanceOpen.Container.Context.ExtractAttributes = true;
+            var result = await ActualWordsHandler.InstanceOpen.TextSplitter.Process(new ParseRequest("In the forest I like perfect dinner")).ConfigureAwait(false);
+            var document = result.Construct(ActualWordsHandler.InstanceOpen.WordFactory);
+            Text.Data.IParsedReview review = ActualWordsHandler.InstanceOpen.Container.Resolve<Func<Document, IParsedReviewManager>>()(document).Create();
+            Assert.AreEqual(4, review.ImportantWords.Count());
+            var reparse = new DocumentFromReviewFactory(ActualWordsHandler.InstanceOpen.Container.Resolve<INRCDictionary>());
+            IRatingAdjustment adjustment = RatingAdjustment.Create(review, null);
+            document = reparse.ReparseDocument(adjustment);
+            Assert.AreEqual(8, document.Attributes.Count);
+            Assert.AreEqual(7, document.Words.Count(item => item.Attributes.Length > 0));
+            Assert.AreEqual(2, document.Words.Count(item => item.Emotions?.Length > 0));
+            ActualWordsHandler.InstanceOpen.Container.Context.ExtractAttributes = false;
         }
     }
 }

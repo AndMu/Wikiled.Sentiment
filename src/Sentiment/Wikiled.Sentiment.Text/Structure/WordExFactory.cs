@@ -16,7 +16,7 @@ namespace Wikiled.Sentiment.Text.Structure
             word.NormalizedEntity = item.NormalizedEntity;
             word.EntityType = item.Entity;
             word.CustomEntity = item.CustomEntity;
-            word.Type = item.POS.Tag;
+            word.POS = item.POS.Tag;
             word.IsAspect = item.IsFeature;
             word.IsStop = item.IsStopWord;
             word.IsInvertor = item.IsInvertor;
