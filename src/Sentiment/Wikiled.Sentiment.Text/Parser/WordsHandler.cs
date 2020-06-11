@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using Wikiled.Common.Serialization;
+using Wikiled.Common.Utilities.Resources.Config;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Sentiment.Text.Sentiment;

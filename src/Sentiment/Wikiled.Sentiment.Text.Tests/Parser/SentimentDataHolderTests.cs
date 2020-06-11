@@ -10,6 +10,8 @@ using Wikiled.Sentiment.Text.Parser;
 using Wikiled.Sentiment.Text.Sentiment;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 using Microsoft.Extensions.Logging;
+using Wikiled.Common.Utilities.Resources;
+using Wikiled.Common.Utilities.Resources.Config;
 
 namespace Wikiled.Sentiment.Text.Tests.Parser
 {
@@ -21,7 +23,9 @@ namespace Wikiled.Sentiment.Text.Tests.Parser
         [SetUp]
         public void Setup()
         {
-            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
+            var loader = new LexiconConfigLoader(
+                ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>(),
+                new DataDownloader(ApplicationLogging.LoggerFactory.CreateLogger<DataDownloader>()));
             var config = loader.Load(TestContext.CurrentContext.TestDirectory);
             var path = config.GetFullPath(item => item.Model);
             var stream = new DictionaryStream(Path.Combine(path, "EmotionLookupTable.txt"), new FileStreamSource());

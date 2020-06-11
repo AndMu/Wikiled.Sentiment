@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Resources;
+using Wikiled.Common.Utilities.Resources.Config;
 
 namespace Wikiled.Sentiment.Text.Config
 {
@@ -12,9 +13,12 @@ namespace Wikiled.Sentiment.Text.Config
     {
         private readonly ILogger<LexiconConfigLoader> log;
 
-        public LexiconConfigLoader(ILogger<LexiconConfigLoader> log)
+        private readonly IDataDownloader dataDownloader;
+
+        public LexiconConfigLoader(ILogger<LexiconConfigLoader> log, IDataDownloader loader)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
+            this.dataDownloader = loader ?? throw new ArgumentNullException(nameof(loader));
         }
 
         public ILexiconConfig Load(string root = null)
@@ -34,7 +38,6 @@ namespace Wikiled.Sentiment.Text.Config
         public async Task<ILexiconConfig> Download(string location = null)
         {
             var config = Load(location);
-            var dataDownloader = new DataDownloader(ApplicationLogging.LoggerFactory);
             if (Directory.Exists(config.GetFullPath(item => item.Model)))
             {
                 log.LogInformation("Resources folder {0} found.", config.Resources);

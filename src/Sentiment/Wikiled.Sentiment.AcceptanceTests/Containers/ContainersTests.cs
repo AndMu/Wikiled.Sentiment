@@ -9,6 +9,7 @@ using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Text.Analysis.Structure;
 using Microsoft.Extensions.Logging;
+using Wikiled.Common.Utilities.Resources;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Containers
 {
@@ -18,8 +19,11 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
         [Test]
         public async Task Construct()
         {
-            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
+            var loader = new LexiconConfigLoader(
+                ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>(),
+                new DataDownloader(ApplicationLogging.LoggerFactory.CreateLogger<DataDownloader>()));
             var configuration = loader.Load();
+            Assert.IsNotNull(configuration);
 
             var builder = new ServiceCollection();
             builder.RegisterModule<LoggingModule>();

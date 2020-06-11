@@ -1,17 +1,13 @@
-using System;
+using Wikiled.Common.Utilities.Resources.Config;
 
 namespace Wikiled.Sentiment.Text.Config
 {
-    public interface ILexiconConfig
+    public interface ILexiconConfig : ILocalDownload
     {
-        string Resources { get; }
-
         string NlpModels { get; }
 
         LocationConfig Model { get; }
 
         LocationConfig Lexicons { get; }
-
-        string GetFullPath(Func<ILexiconConfig, LocationConfig> config);
     }
 }

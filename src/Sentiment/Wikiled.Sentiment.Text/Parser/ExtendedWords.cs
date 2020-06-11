@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Wikiled.Common.Utilities.Resources.Config;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Text.Analysis.Dictionary.Streams;
 

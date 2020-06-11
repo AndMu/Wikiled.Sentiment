@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Wikiled.Common.Utilities.Resources.Config;
 using Wikiled.Sentiment.Text.Config;
 using Wikiled.Text.Analysis.Dictionary;
 using Wikiled.Text.Analysis.Emojis;

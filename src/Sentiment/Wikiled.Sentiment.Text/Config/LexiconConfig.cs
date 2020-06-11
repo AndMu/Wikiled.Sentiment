@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Wikiled.Common.Utilities.Resources.Config;
 
 namespace Wikiled.Sentiment.Text.Config
 {
@@ -12,10 +13,5 @@ namespace Wikiled.Sentiment.Text.Config
         public LocationConfig Model { get; set; }
 
         public LocationConfig Lexicons { get; set; }
-
-        public string GetFullPath(Func<ILexiconConfig, LocationConfig> config)
-        {
-            return Path.Combine(Resources ?? string.Empty, config(this).Local);
-        }
     }
 }
