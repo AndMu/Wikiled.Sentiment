@@ -46,7 +46,7 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 builder.AddSingleton<ICacheFactory, RedisDocumentCacheFactory>();
             }
 
-            builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load());
+            builder.AddSingleton<LexiconLoader>().As<ILexiconLoader, LexiconLoader>();
             builder.AddSingleton(new RecyclableConfig());
             builder.AddTransient<OpenNLPTextSplitter>();
 
