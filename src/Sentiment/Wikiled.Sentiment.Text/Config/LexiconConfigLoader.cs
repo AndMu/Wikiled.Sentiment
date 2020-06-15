@@ -3,7 +3,6 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Wikiled.Common.Logging;
 using Wikiled.Common.Utilities.Resources;
 using Wikiled.Common.Utilities.Resources.Config;
 
@@ -18,13 +17,13 @@ namespace Wikiled.Sentiment.Text.Config
         public LexiconConfigLoader(ILogger<LexiconConfigLoader> log, IDataDownloader loader)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            this.dataDownloader = loader ?? throw new ArgumentNullException(nameof(loader));
+            dataDownloader = loader ?? throw new ArgumentNullException(nameof(loader));
         }
 
-        public ILexiconConfig Load(string root = null)
+        public ILexiconConfig Load(string root = null, string fileName = "lexicon.json")
         {
             root ??= string.Empty;
-            var fileLocation = Path.Combine(root, "lexicon.json");
+            var fileLocation = Path.Combine(root, fileName);
             log.LogInformation("Load configuration {0}...", fileLocation);
             var config = JsonSerializer.Deserialize<LexiconConfig>(File.ReadAllBytes(fileLocation));
             if (!string.IsNullOrEmpty(root))
@@ -35,9 +34,8 @@ namespace Wikiled.Sentiment.Text.Config
             return config;
         }
 
-        public async Task<ILexiconConfig> Download(string location = null)
+        public async Task Download(ILexiconConfig config, string location = null)
         {
-            var config = Load(location);
             if (Directory.Exists(config.GetFullPath(item => item.Model)))
             {
                 log.LogInformation("Resources folder {0} found.", config.Resources);
@@ -56,8 +54,6 @@ namespace Wikiled.Sentiment.Text.Config
             {
                 await dataDownloader.DownloadFile(new Uri(config.Lexicons.Remote), config.Resources, true).ConfigureAwait(false);
             }
-
-            return config;
         }
     }
 }

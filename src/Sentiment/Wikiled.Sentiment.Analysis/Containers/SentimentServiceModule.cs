@@ -47,7 +47,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
             }
 
             builder.AddSingleton<LexiconLoader>().AsSingleton<ILexiconLoader, LexiconLoader>(item => item.Load());
-            builder.AddSingleton(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Download(LibraryPath).Result);
             builder.AddSingleton(new RecyclableConfig());
             builder.AddTransient<OpenNLPTextSplitter>();
 

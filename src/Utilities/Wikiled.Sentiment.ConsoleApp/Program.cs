@@ -38,7 +38,7 @@ namespace Wikiled.Sentiment.ConsoleApp
             starter.Init = async provider =>
             {
                 var loader = provider.GetRequiredService<LexiconConfigLoader>();
-                await loader.Download().ConfigureAwait(false);
+                await loader.Download(loader.Load()).ConfigureAwait(false);
             };
 
             try
