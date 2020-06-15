@@ -20,7 +20,7 @@
     <PackageReference Include="System.Reactive" version="4.4.1" />
     <PackageReference Include="System.ValueTuple" version="4.5.0" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.6.13" />
+    <PackageReference Include="Wikiled.Redis" version="3.6.15" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.63" />
     <PackageReference Include="Wikiled.Text.Inquirer" version="1.2.31" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.5" />

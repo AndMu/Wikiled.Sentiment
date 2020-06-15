@@ -31,7 +31,7 @@
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
     <PackageReference Include="Wikiled.Common" Version="1.1.10" />
     <PackageReference Include="Wikiled.MachineLearning" version="2.4.25" />
-    <PackageReference Include="Wikiled.Redis" version="3.6.13" />
+    <PackageReference Include="Wikiled.Redis" version="3.6.15" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.63" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>
     <packagereference Include="NUnit3TestAdapter" Version="3.16.1">

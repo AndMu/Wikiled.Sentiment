@@ -26,7 +26,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.1.55" />
     <PackageReference Include="System.Reactive" version="4.4.1" />
     <PackageReference Include="Wikiled.Arff" version="2.2.24" />
-    <PackageReference Include="Wikiled.Redis" version="3.6.13" />
+    <PackageReference Include="Wikiled.Redis" version="3.6.15" />
     <PackageReference Include="Wikiled.RedisInside" Version="3.2.101.43" />
     <PackageReference Include="Wikiled.Text.Analysis" version="1.7.63" />
     <packagereference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"></packagereference>
