@@ -29,8 +29,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
     {
         public POSTaggerType Tagger { get; set; } = POSTaggerType.SharpNLP;
 
-        public string LibraryPath { get; set; }
-
         public bool UseNER { get; set; }
 
         public IServiceCollection ConfigureServices(IServiceCollection services)
@@ -42,7 +40,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<LexiconConfigLoader>();
-            services.AddSingleton(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(LibraryPath));
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 
