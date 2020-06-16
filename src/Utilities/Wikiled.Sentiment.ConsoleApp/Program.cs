@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
+using Wikiled.Common.Utilities.Resources.Config;
 using Wikiled.Console.Arguments;
 using Wikiled.Sentiment.ConsoleApp.Analysis;
 using Wikiled.Sentiment.ConsoleApp.Analysis.Config;
@@ -37,8 +38,9 @@ namespace Wikiled.Sentiment.ConsoleApp
 
             starter.Init = async provider =>
             {
-                var loader = provider.GetRequiredService<LexiconConfigLoader>();
-                await loader.Download(loader.Load()).ConfigureAwait(false);
+                var downloader = provider.GetRequiredService<ConfigDownloader<ILexiconConfig>>();
+                await downloader.Download(item => item.Model).ConfigureAwait(false);
+                await downloader.Download(item => item.Lexicons, always: true).ConfigureAwait(false);
             };
 
             try

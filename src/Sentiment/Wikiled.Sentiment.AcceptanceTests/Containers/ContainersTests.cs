@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using Wikiled.Common.Logging;
@@ -8,8 +9,6 @@ using Wikiled.Sentiment.Text.Config;
 using Wikiled.Sentiment.Text.Data.Review;
 using Wikiled.Sentiment.Text.NLP.Repair;
 using Wikiled.Text.Analysis.Structure;
-using Microsoft.Extensions.Logging;
-using Wikiled.Common.Utilities.Resources;
 
 namespace Wikiled.Sentiment.AcceptanceTests.Containers
 {
@@ -19,17 +18,15 @@ namespace Wikiled.Sentiment.AcceptanceTests.Containers
         [Test]
         public async Task Construct()
         {
-            var loader = new LexiconConfigLoader(
-                ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>(),
-                new DataDownloader(ApplicationLogging.LoggerFactory.CreateLogger<DataDownloader>()));
+            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
             var configuration = loader.Load();
             Assert.IsNotNull(configuration);
 
             var builder = new ServiceCollection();
             builder.RegisterModule<LoggingModule>();
             builder.RegisterModule<CommonModule>();
-            builder.RegisterModule(new SentimentMainModule());
-            builder.RegisterModule(new SentimentServiceModule { LibraryPath = "." });
+            builder.RegisterModule(new SentimentMainModule { LocalConfig = true });
+            builder.RegisterModule(new SentimentServiceModule());
             var container = builder.BuildServiceProvider();
 
             for (int i = 0; i < 2; i++)

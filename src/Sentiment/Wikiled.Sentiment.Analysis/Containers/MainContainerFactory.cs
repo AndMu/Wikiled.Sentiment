@@ -102,10 +102,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
                 new SentimentMainModule
                 {
                     Tagger = value,
-                    UseNER = useNER
+                    UseNER = useNER,
+                    LocalConfig = true,
+                    Root = rootPath
                 });
 
-            builder.AddSingleton(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(rootPath));
             return this;
         }
 

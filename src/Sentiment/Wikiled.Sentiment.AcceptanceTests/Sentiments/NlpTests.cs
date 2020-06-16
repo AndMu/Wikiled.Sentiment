@@ -28,9 +28,7 @@ namespace Wikiled.Sentiment.AcceptanceTests.Sentiments
         [SetUp]
         public void Setup()
         {
-            var loader = new LexiconConfigLoader(
-                ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>(),
-                new DataDownloader(ApplicationLogging.LoggerFactory.CreateLogger<DataDownloader>()));
+            var loader = new LexiconConfigLoader(ApplicationLogging.LoggerFactory.CreateLogger<LexiconConfigLoader>());
             path = loader.Load().Resources;
         }
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Microsoft.Extensions.Logging;
 using Wikiled.Common.Utilities.Modules;
+using Wikiled.Common.Utilities.Resources.Config;
 using Wikiled.Sentiment.Analysis.Pipeline;
 using Wikiled.Sentiment.Analysis.Pipeline.Persistency;
 using Wikiled.Sentiment.Analysis.Processing;
@@ -31,6 +32,10 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public bool UseNER { get; set; }
 
+        public bool LocalConfig { get; set; }
+
+        public string Root { get; set; }
+
         public IServiceCollection ConfigureServices(IServiceCollection services)
         {
             services.RegisterModule<DefaultNlpModule>();
@@ -40,6 +45,11 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
             services.AddTransient<ISessionContainer, SessionContainer>();
             services.AddSingleton<LexiconConfigLoader>();
+            if (LocalConfig)
+            {
+                services.AddSingleton(ctx => ctx.GetRequiredService<LexiconConfigLoader>().Load(Root));
+            }
+
             services.AddSingleton<InquirerManager>().AsSingleton<IInquirerManager, InquirerManager>(item => item.Load());
             services.AddTransient<IParsedReviewManager, ParsedReviewManager>();
 

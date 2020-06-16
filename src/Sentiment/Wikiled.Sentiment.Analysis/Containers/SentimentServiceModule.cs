@@ -22,8 +22,6 @@ namespace Wikiled.Sentiment.Analysis.Containers
 
         public string Name { get; set; }
 
-        public string LibraryPath { get; set; }
-
         public IServiceCollection ConfigureServices(IServiceCollection builder)
         {
             if (RedisConfiguration == null)

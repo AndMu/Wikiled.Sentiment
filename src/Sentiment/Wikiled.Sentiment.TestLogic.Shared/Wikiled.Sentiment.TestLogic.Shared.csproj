@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
-    <PackageReference Include="Moq" Version="4.14.1" />
+    <PackageReference Include="Moq" Version="4.14.2" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NLog" version="4.7.2" />
     <PackageReference Include="NUnit" version="3.12.0" />
